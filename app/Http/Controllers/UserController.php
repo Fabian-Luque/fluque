@@ -7,11 +7,31 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use Illuminate\Support\Facades\Validator;
 use App\User;
+use Response;
 
 
 
 class UserController extends Controller
 {
+
+
+	public function index(){
+
+		$usuarios = User::all();
+
+
+	      $respuesta = [
+
+            'data' => $usuarios,
+            'errors' => false,
+
+        ];
+
+        return Response::json($respuesta, 200);
+
+
+
+	}
     
 
 
