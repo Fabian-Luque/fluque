@@ -12,7 +12,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password','telefono'
+        'name', 'email', 'password','phone'
     ];
 
     /**
@@ -23,4 +23,15 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+
+    public function propiedad(){
+
+
+        return $this->hasOne('App\Propiedad', 'user_id'); //relacion uno a uno
+
+
+    }
+
+
 }

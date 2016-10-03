@@ -24,11 +24,41 @@
 
            <div class="form-group has-feedback">
                 <label>telefono</label>
-            <input type="telefono" class="form-control" name="telefono" >
+            <input type="text" class="form-control" name="phone" >
             <span class="glyphicon glyphicon-lock form-control-feedback"></span>
           </div>
 
+          Propiedad
 
+              <div class="form-group has-feedback">
+                <label>nombre propiedad</label>
+            <input type="text" class="form-control" name="nombre" >
+            <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+          </div>
+
+            <div class="form-group has-feedback">
+                <label>Tipo propiedad</label>
+            <input type="text" class="form-control" name="tipo" >
+            <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+          </div>
+
+             <div class="form-group has-feedback">
+                <label>Numero habitaciones</label>
+            <input type="text" class="form-control" name="numero_habitaciones" >
+            <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+          </div>
+
+             <div class="form-group has-feedback">
+                <label>Ciudad</label>
+            <input type="text" class="form-control" name="ciudad" >
+            <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+          </div>
+
+              <div class="form-group has-feedback">
+              <label>Direccion</label>
+            <input type="text" class="form-control" name="direccion" >
+            <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+          </div>
          
           <div class="row">
             
