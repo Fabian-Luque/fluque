@@ -18,5 +18,16 @@ Route::get('/', function () {
 
 Route::get('register', 'UserController@register');
 Route::post('register', 'UserController@store');
+Route::auth();
+
+
+Route::group(['middleware' => 'auth'], function(){
+
+
+
+Route::get('/home', 'HomeController@index');
+
 Route::get('users', 'UserController@index');
 
+
+});
