@@ -11,23 +11,24 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
 
 
-Route::get('register', 'UserController@register');
-Route::post('register', 'UserController@store');
 Route::auth();
 
 
+Route::post('registro', 'UserController@store');
+
 Route::group(['middleware' => 'auth'], function(){
 
-
-
-Route::get('/home', 'HomeController@index');
+Route::get('/', function () {
+    return view('welcome');
+  });
 
 Route::get('users', 'UserController@index');
+
+
+
+
 
 
 });
