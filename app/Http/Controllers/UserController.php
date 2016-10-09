@@ -33,7 +33,7 @@ class UserController extends Controller
 
         return Response::json($respuesta, 200);
 
-
+  
 
 	}
     

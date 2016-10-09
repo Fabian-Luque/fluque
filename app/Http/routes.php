@@ -15,6 +15,7 @@
 
 Route::auth();
 
+Route::get('users', 'UserController@index');
 
 Route::post('registro', 'UserController@store');
 
@@ -24,7 +25,6 @@ Route::get('/', function () {
     return view('welcome');
   });
 
-Route::get('users', 'UserController@index');
 
 
 
