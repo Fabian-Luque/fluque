@@ -20,7 +20,21 @@ Route::get('users', 'UserController@index');
 
 Route::post('registro', 'UserController@store');
 
-Route::group(['middleware' => 'auth'], function(){
+Route::get('/', function () {
+    return view('welcome');
+  });
+
+Route::group(['middleware' => 'cors'], function(){
+
+	Route::post('/auth_login', 'ApiAuthcontroller@userAuth');
+
+
+});
+
+
+
+
+/*Route::group(['middleware' => 'auth'], function(){
 
 Route::get('/', function () {
     return view('welcome');
@@ -32,4 +46,4 @@ Route::get('/', function () {
 
 
 
-});
+});*/
