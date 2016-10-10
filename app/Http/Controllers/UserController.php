@@ -19,6 +19,7 @@ class UserController extends Controller
 {
 
 
+
 	public function index(){
 
 		$usuarios = User::all();
@@ -38,13 +39,6 @@ class UserController extends Controller
 	}
     
 
-
-    public function register(){
-
-    	return view('register');
-
-
-    }
 
 	public function store(Request $request){
 

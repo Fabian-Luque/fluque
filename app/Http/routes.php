@@ -15,6 +15,7 @@
 
 Route::auth();
 
+
 Route::get('users', 'UserController@index');
 
 Route::post('registro', 'UserController@store');

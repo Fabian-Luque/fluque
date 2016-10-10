@@ -1,4 +1,4 @@
-        <form action="register" method="post">
+        <form action="registrar" method="post">
       <input type="hidden" name="_token" value="<?php echo csrf_token(); ?>">   
 
       
