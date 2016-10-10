@@ -28,8 +28,6 @@ class ApiAuthController extends Controller
 			}
 
 
-
-
 		}catch(JWTException $ex){
 
 			return response()->json(['error' => 'algo anda mal'], 500);
@@ -37,7 +35,9 @@ class ApiAuthController extends Controller
 
 		}
 
-		return response()->json(compact('token'));
+		$user = JWTAuth::toUser($token);
+
+		return response()->json(compact('token', 'user'));
 
 
 		}
