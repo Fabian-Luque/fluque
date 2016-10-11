@@ -8,6 +8,10 @@ use App\Http\Requests;
 
 use Tymon\JWTAuth\Facades\JWTAuth;
 
+use App\User;
+
+use DB;
+
 class ApiAuthController extends Controller
 {
     
@@ -37,7 +41,11 @@ class ApiAuthController extends Controller
 
 		$user = JWTAuth::toUser($token);
 
-		return response()->json(compact('token', 'user'));
+		/*$userProp = User::with('propiedad')->where('id', $user->id);*/
+
+		$userProp = DB::table('propiedades')->where('user_id', $user->id)->value('nombre');
+
+		return response()->json(compact('token', 'user', 'userProp'));
 
 
 		}
