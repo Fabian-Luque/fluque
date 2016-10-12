@@ -18,7 +18,6 @@ Route::auth();
 
 Route::get('users', 'UserController@index');
 
-Route::post('registro', 'UserController@store');
 
 Route::get('/', function () {
     return view('welcome');
@@ -26,7 +25,8 @@ Route::get('/', function () {
 
 Route::group(['middleware' => 'cors'], function(){
 
-	Route::post('/auth_login', 'ApiAuthcontroller@userAuth');
+	Route::post('registro', 'UserController@store');
+	Route::post('/auth_login', 'ApiAuthController@userAuth');
 
 
 });
