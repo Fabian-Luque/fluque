@@ -87,7 +87,15 @@ class UserController extends Controller
  			$propiedad->save();
             
 
-			return 'usuario creado';
+			/*return 'usuario creado';*/
+
+			      $data = [
+                'errors' => false,
+                'msg' => 'usuario creado satisfactoriamente',
+
+            	];
+
+			return Response::json($data, 201);
 
             
         }
