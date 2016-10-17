@@ -41,10 +41,13 @@ class ApiAuthController extends Controller
 
 		$user = JWTAuth::toUser($token);
 
+		$userId = $user->id;
 
-		$userProp = DB::table('propiedades')->where('user_id', $user->id)->value('nombre');
 
-		return response()->json(compact('token', 'user', 'userProp'));
+		/*$userProp = DB::table('propiedades')->where('user_id', $user->id)->value('nombre');*/
+
+		/*return response()->json(compact('token', 'user', 'userProp'));*/
+		return response()->json(compact('token', 'userId'));
 
 
 		}

@@ -20,7 +20,7 @@ class UserController extends Controller
 
 
 
-	public function index(){
+/*	public function index(){
 
 		$usuarios = User::all();
 
@@ -35,6 +35,25 @@ class UserController extends Controller
         return Response::json($respuesta, 200);
 
   
+
+	}*/
+
+
+	public function show($id){
+
+		  try {
+            return User::where('id', $id)->with('propiedad')->get();
+        } catch (ModelNotFoundException $e) {
+            $data = [
+                'errors' => true,
+                'msg'    => $e->getMessage(),
+            ];
+            return Response::json($data, 404);
+        }
+
+
+
+
 
 	}
     
@@ -102,6 +121,9 @@ class UserController extends Controller
 
 
 	}
+
+
+
 
 
 
