@@ -65,7 +65,7 @@ class UserController extends Controller
 			'name' 					=> 	'required',
 			'email' 				=> 	'required|unique:users,email',
 			'phone' 				=>	'required',
-			'password' 				=>	'required',
+			'password' 				=>	'required|min:6',
 			'nombre'				=>  'required',
 			'tipo'					=>	'required',
 			'numero_habitaciones'   =>	'required',
@@ -89,7 +89,8 @@ class UserController extends Controller
       	    $usuario                       = new User();
             $usuario->name          	   = $request->get('name');
            	$usuario->email            	   = $request->get('email');
-          	$usuario->password             = bcrypt($request->get('password'));
+          	/*$usuario->password             = bcrypt($request->get('password'));*/
+          	$usuario->password             = $request->get('password');
           	$usuario->phone                = $request->get('phone');
    
             $usuario->save();
@@ -118,6 +119,57 @@ class UserController extends Controller
 
             
         }
+
+
+	}
+
+
+	public function update(Request $request, $id){
+
+			$rules = array(
+
+			'name' 				=> 'required',
+			'email'	 			=> 'email|required',
+			'password'			=> 'min:6',
+			'phone'				=> 'required',
+
+			
+		);
+
+		$validator = Validator::make($request->all(), $rules);
+
+
+ 	     if ($validator->fails()) {
+
+            $data = [
+
+                'errors' => true,
+                'msg' => $validator->messages(),
+
+            ];
+
+            return Response::json($data, 400);
+
+        } else {
+
+            $user = User::findOrFail($id);
+            $user->update($request->all());
+            $user->touch();
+
+            $data = [
+
+                'errors' => false,
+                'msg' => 'Usuario actualizado satisfactoriamente',
+
+            ];
+
+            return Response::json($data, 201);
+
+        }
+
+
+
+
 
 
 	}
