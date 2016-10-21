@@ -22,5 +22,12 @@ class Propiedad extends Model
 
     }
 
+    public function habitaciones(){
+
+    	return $this->hasMany('App\Habitacion', 'propiedad_id');
+
+
+    }
+
 
 }

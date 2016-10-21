@@ -20,7 +20,7 @@ class AddAttributesPropiedadesTable extends Migration
             $table->string('email')->after('telefono');
             $table->string('nombre_responsable')->after('email');
             $table->string('descripcion')->after('nombre_responsable');
-          
+           
 
         });
     }
