@@ -36,8 +36,6 @@ class HabitacionController extends Controller
         }
         
 
-
-
     }
 
 
