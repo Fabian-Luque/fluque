@@ -27,20 +27,14 @@ class HabitacionController extends Controller
     
 
 
-    public function getHabitaciones($id){
+    public function index(Request $request){
 
-    	  try {
-            return Propiedad::where('id', $id)->with('habitaciones.equipamiento')->get();
+    	  if($request->has('propiedad_id')){
+            return $habitaciones = Propiedad::where('id', $request->input('propiedad_id'))->with('habitaciones.equipamiento')->get();
 
 
-        } catch (ModelNotFoundException $e) {
-            $data = [
-                'errors' => true,
-                'msg'    => $e->getMessage(),
-            ];
-            return Response::json($data, 404);
         }
-
+        
 
 
 
