@@ -16,6 +16,8 @@ use App\Habitacion;
 
 use App\Equipamiento;
 
+use App\Propiedad;
+
 
 
 
@@ -24,13 +26,36 @@ class HabitacionController extends Controller
 {
     
 
+
+    public function getHabitaciones($id){
+
+    	  try {
+            return Propiedad::where('id', $id)->with('habitaciones.equipamiento')->get();
+
+
+        } catch (ModelNotFoundException $e) {
+            $data = [
+                'errors' => true,
+                'msg'    => $e->getMessage(),
+            ];
+            return Response::json($data, 404);
+        }
+
+
+
+
+    }
+
+
+
 	public function store(Request $request){
 
 			$rules = array(
 
 			'nombre' 		=> 'required',
 			'tipo'			=> 'required',
-			'precio'		=> 'required|numeric',	
+			'precio'		=> 'required|numeric',
+			'piso'			=> 'required|numeric',
 			'propiedad_id'  => 'required|numeric',
 			'bano'      	=> 'numeric',
             'tv'        	=> 'numeric',
@@ -61,6 +86,7 @@ class HabitacionController extends Controller
             $habitacion->nombre          	      = $request->get('nombre');
            	$habitacion->tipo           	      = $request->get('tipo');
           	$habitacion->precio                   = $request->get('precio');
+          	$habitacion->piso                     = $request->get('piso'); 
           	$habitacion->propiedad_id             = $request->get('propiedad_id');
    
             $habitacion->save();
@@ -79,7 +105,7 @@ class HabitacionController extends Controller
 
 			     $data = [
                 'errors' => false,
-                'msg' => 'usuario creado satisfactoriamente',
+                'msg' => 'Habitacion creado satisfactoriamente',
 
             	];
 

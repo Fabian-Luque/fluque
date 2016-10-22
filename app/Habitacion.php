@@ -12,7 +12,7 @@ class Habitacion extends Model
 
 	protected $table = 'habitaciones';
 
-	protected $fillable = ['nombre' , 'tipo', 'precio'];
+	protected $fillable = ['nombre' , 'tipo', 'precio', 'piso'];
 
 	public function propiedad(){
 

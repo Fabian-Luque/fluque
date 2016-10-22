@@ -19,6 +19,7 @@ class CreateHabitacionesTable extends Migration
         $table->string('nombre');
         $table->string('tipo');
         $table->integer('precio');
+        $table->integer('piso');
         $table->integer('propiedad_id')->unsigned();
         $table->foreign('propiedad_id')->references('id')->on('propiedades');
         $table->timestamps();

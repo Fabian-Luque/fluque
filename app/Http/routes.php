@@ -31,6 +31,7 @@ Route::group(['middleware' => 'cors'], function(){
 	Route::post('registro', 'UserController@store');
 	Route::post('/auth_login', 'ApiAuthController@userAuth');
 
+	Route::get('getHabitaciones/{id}', 'HabitacionController@getHabitaciones');
 
 
 	Route::resource('user', 'UserController', ['except' => ['create', 'edit','store']]);
