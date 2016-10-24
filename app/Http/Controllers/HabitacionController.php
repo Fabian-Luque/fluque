@@ -83,64 +83,15 @@ class HabitacionController extends Controller
             $habitacion->save();
 
 
-            $equipamiento                    	  	  = new Equipamiento();
+            $equipamiento                    	  = new Equipamiento();
 
 
-            if($request->get('bano') == 'true'){
-			$equipamiento ->bano              	 	  = '1';
-
-            }else{
-
-            if($request->get('bano') == 'false'){
-            $equipamiento ->bano                      = '0';
-
-            }
-            }
-
-            if($request->get('tv') == 'true'){
-
-			$equipamiento ->tv              		  = '1';
-            }else{
-
-            if($request->get('tv') == 'false'){
-
-            $equipamiento ->tv                        = '0';
-
-            }    
+			$equipamiento ->bano              	  = $request->get('bano');
+            $equipamiento ->tv                    = $request->get('tv');
+            $equipamiento ->wifi                  = $request->get('wifi');
+            $equipamiento ->frigobar              = $request->get('frigobar');
 
 
-            }
-
-            if($request->get('wifi') == 'true'){
-
-
-			$equipamiento ->wifi  	 			      = '1';
-
-            }else{
-
-
-            if($request->get('wifi') == 'false'){
-
-            $equipamiento ->wifi                      = '0';
-
-            }
-
-            }
-
-            if($request->get('frigobar') == 'true'){
-
-			$equipamiento ->frigobar               	  = '1';
-
-            }else{
-
-            if($request->get('frigobar') == 'false'){
-
-            $equipamiento ->frigobar                  = '0';
-
-
-            }
-
-            }
 
 			$equipamiento ->habitacion_id			  = $habitacion->id; 
 
