@@ -164,6 +164,23 @@ class HabitacionController extends Controller
 
 
 
+    public function destroy($id){
+
+        $habitacion = Habitacion::findOrFail($id);
+        $habitacion->delete();
+
+        $data = [
+
+            'errors' => false,
+            'msg'    => 'Habitacion eliminada satisfactoriamente',
+
+        ];
+
+        return Response::json($data, 202);
+
+
+
+    }
 
 
 
