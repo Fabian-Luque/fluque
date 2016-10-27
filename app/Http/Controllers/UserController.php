@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 use App\User;
 use Response;
 use App\Propiedad;
+use App\Servicio;
 use DB;
 
 
@@ -105,6 +106,39 @@ class UserController extends Controller
 			$propiedad->user_id				 = $usuario->id; 
 
  			$propiedad->save();
+
+
+            $servicio1                        = new Servicio();
+            $servicio1->nombre                = 'Desayuno';
+            $servicio1->categoria             = '';
+            $servicio1->precio                = '';
+            $servicio1->propiedad_id          = $usuario->id; 
+
+            $servicio1->save();
+
+            $servicio2                        = new Servicio();
+            $servicio2->nombre                = 'Almuerzo';
+            $servicio2->categoria             = '';
+            $servicio2->precio                = '';
+            $servicio2->propiedad_id          = $usuario->id; 
+
+            $servicio2->save();
+
+            $servicio3                        = new Servicio();
+            $servicio3->nombre                = 'Cena';
+            $servicio3->categoria             = '';
+            $servicio3->precio                = '';
+            $servicio3->propiedad_id          = $usuario->id; 
+
+            $servicio3->save();
+
+
+
+
+
+
+
+
             
 
 			/*return 'usuario creado';*/
@@ -118,6 +152,8 @@ class UserController extends Controller
 			return Response::json($data, 201);
 
             
+
+
         }
 
 

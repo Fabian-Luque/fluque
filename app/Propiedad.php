@@ -29,5 +29,11 @@ class Propiedad extends Model
 
     }
 
+    public function servicios(){
+
+    	return $this->hasMany('App\Servicio', 'propiedad_id');
+
+    }
+
 
 }

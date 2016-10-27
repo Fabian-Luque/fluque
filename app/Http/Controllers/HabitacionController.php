@@ -170,20 +170,13 @@ class HabitacionController extends Controller
 
         }
 
-
-
-
-
-
-
-
     }
 
 
 
 
 
-    public function destroy($id){
+        public function destroy($id){
 
         $habitacion = Habitacion::findOrFail($id);
         $habitacion->delete();
