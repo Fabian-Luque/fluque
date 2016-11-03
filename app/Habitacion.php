@@ -12,7 +12,7 @@ class Habitacion extends Model
 
 	protected $table = 'habitaciones';
 
-	protected $fillable = ['nombre' , 'tipo', 'precio', 'piso'];
+	protected $fillable = ['nombre' , 'tipo', 'precio_base', 'disponibilidad_base', 'piso'];
 
 	public function propiedad(){
 
@@ -26,6 +26,13 @@ class Habitacion extends Model
 
 
 		return $this->hasOne('App\Equipamiento', 'habitacion_id');
+
+
+	}
+
+	public function calendarios(){
+
+		return $this->hasMany('App\Calendario', 'habitacion_id');
 
 
 	}
