@@ -30,6 +30,8 @@ Route::group(['middleware' => 'cors'], function(){
 
 	Route::post('disponibilidad', 'HabitacionController@Disponibilidad');
 
+	Route::post('reserva/Habitacion', 'ReservaController@reserva');
+
 
 	Route::resource('user', 'UserController', ['except' => ['create', 'edit','store']]);
 	Route::resource('propiedad', 'PropiedadController', ['except' => ['create', 'edit', 'store']]);

@@ -19,7 +19,14 @@ use Carbon\Carbon;
 
 class HabitacionController extends Controller
 {
-
+    /**
+     * se obtiene las habitaciones disponibles en un rango de fechas
+     *
+     * @author ALLEN
+     *
+     * @param  Request          $request (propiedad_id, fecha_inicio, fecha_fin)
+     * @return Response::json
+     */
 
     public function Disponibilidad(Request $request){
 
@@ -46,12 +53,8 @@ class HabitacionController extends Controller
     }
 
 
-
-
     }
 
-
-    
 
 
     public function index(Request $request){
