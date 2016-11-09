@@ -17,6 +17,13 @@ class CreateClientesTable extends Migration
         $table->increments('id');
         $table->string('nombre');
         $table->string('apellido');
+        $table->string('razon_social');
+        $table->string('giro');
+        $table->integer('rut');
+        $table->string('direccion');
+        $table->string('ciudad');
+        $table->string('pais');
+        $table->string('telefono');
         $table->string('email');
         $table->timestamps();
         $table->softDeletes(); 

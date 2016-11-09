@@ -18,6 +18,8 @@ class ReservaController extends Controller
 
 	public function reserva(Request $request){
 
+
+
 	  $habitacion_info = $request['habitacion_info'];
 
 
