@@ -16,58 +16,71 @@ class ReservaController extends Controller
 {
     
 
+	 /**
+     * realizar reservas para un cliente, de una o mas habitaciones
+     *
+     * @author ALLEN
+     *
+     * @param  Request          $request ()
+     * @return Response::json
+     */
+
 	public function reserva(Request $request){
 
+   	$habitaciones_info = $request['habitacion_info'];
+
+    if (!is_array($habitaciones_info)){
+        $habitaciones_info = [];
+        $habitaciones_info.push($request['habitacion_info']);
+    }
 
 
-	  $habitacion_info = $request['habitacion_info'];
+    $fecha_inicio = $request->input('fecha_inicio');
+    $fecha_fin    = $request->input('fecha_fin');
 
+    $cliente = Cliente::firstOrCreate($request['cliente']);
 
-	  $fecha_inicio = $request->input('fecha_inicio');
-      $fecha_fin    = $request->input('fecha_fin');
+    foreach ($habitaciones_info as $habitacion_info) {
 
-      $cliente = Cliente::firstOrCreate($request['cliente']);
+    	
 
-      $reserva = new Reserva();
-      $reserva->precio_total = $habitacion_info['precio_base'];
-      $reserva->ocupacion 	 = $request['ocupacion'];
-      $reserva->cliente_id	 = $cliente->id;
-      $reserva->checkin      = $fecha_inicio;
-      $reserva->checkout     = $fecha_fin;
+        $reserva = new Reserva();
+        $reserva->precio_total   = $habitacion_info['precio_base'];
+        $reserva->ocupacion      = $request['ocupacion'];
+        $reserva->cliente_id     = $cliente->id;
+        $reserva->checkin        = $fecha_inicio;
+        $reserva->checkout       = $fecha_fin;
+        $reserva->save();
 
-      $reserva->save();
+        $fecha = $fecha_inicio;
 
+        while (strtotime($fecha) < strtotime($fecha_fin)){
 
-      $fecha = $fecha_inicio;
+            $calendario = Calendario::where('fecha','=', $fecha)->where('habitacion_id', '=', $habitacion_info['id'])->first();
 
-      while(strtotime($fecha) < strtotime($fecha_fin)){
+            $noche = new DetalleNoche();
+            $noche->precio            = $calendario->precio;
+            $noche->fecha             = $fecha;
+            $noche->habitacion_id     = $habitacion_info['id'];
+            $noche->reserva_id        = $reserva->id;
+            $noche->save();
 
-      $calendario = Calendario::where('fecha','=', $fecha)->where('habitacion_id', '=', $habitacion_info['id'])->first();
+            $calendario->disponibilidad--;
+            $calendario->reservas++;
+            $calendario->save();
+      
+            $fecha = date ("Y-m-d", strtotime("+1 day", strtotime($fecha)));
+        } 
+    }
 
-      $noche = new DetalleNoche();
-      $noche->precio 			= $calendario->precio;
-      $noche->fecha 			= $fecha;
-      $noche->habitacion_id 	= $habitacion_info['id'];
-      $noche->reserva_id 		= $reserva->id;
-
-      $calendario->disponibilidad--;
-      $calendario->reservas++;
-
-      $calendario->save();
-      $noche->save();
-
-      $fecha = date ("Y-m-d", strtotime("+1 day", strtotime($fecha)));
-
-
-      } 
-
-
-
-      return $reserva;
-
-
-	}
+    return 'Habitacion reservada satisfactoriamente';
+}
 	
     
     
 }   
+
+
+
+
+
