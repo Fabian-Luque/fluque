@@ -27,6 +27,8 @@ class ReservaController extends Controller
 
 	public function reserva(Request $request){
 
+	$clientes = $request['cliente'];
+
    	$habitaciones_info = $request['habitacion_info'];
 
     if (!is_array($habitaciones_info)){
@@ -38,7 +40,39 @@ class ReservaController extends Controller
     $fecha_inicio = $request->input('fecha_inicio');
     $fecha_fin    = $request->input('fecha_fin');
 
-    $cliente = Cliente::firstOrCreate($request['cliente']);
+
+    if($clientes['tipo'] == 'particular'){
+
+   $cliente = Cliente::firstOrNew($request['cliente']);
+
+		   $cliente->rut = $clientes['rut'];
+		   $cliente->tipo = $clientes['tipo'];
+		   $cliente->direccion = $clientes['direccion'];
+		   $cliente->ciudad = $clientes['ciudad'];
+		   $cliente->pais = $clientes['pais'];
+		   $cliente->telefono = $clientes['telefono'];
+		   $cliente->giro = null;
+		   $cliente->save();
+
+    }else{
+
+    if($clientes['tipo'] == 'empresa'){
+
+		   $cliente = Cliente::firstOrNew($request['cliente']);
+
+		   $cliente->rut = $clientes['rut'];
+		   $cliente->tipo = $clientes['tipo'];
+		   $cliente->direccion = $clientes['direccion'];
+		   $cliente->ciudad = $clientes['ciudad'];
+		   $cliente->pais = $clientes['pais'];
+		   $cliente->telefono = $clientes['telefono'];
+		   $cliente->giro = $clientes['giro'];
+		   $cliente->save();
+    	}
+
+    }
+
+
 
     foreach ($habitaciones_info as $habitacion_info) {
 
@@ -84,3 +118,14 @@ class ReservaController extends Controller
 
 
 
+
+
+/*    "nombre": "tomas",
+    "rut": "169973433",
+    "tipo": "empresa",
+    "direccion": "las heras",
+    "ciudad": "temuco",
+    "pais": "chile",
+    "telefono": "880573342",
+    "email": "tomas@gmial.com",
+    "giro": "ingenieri"*/
