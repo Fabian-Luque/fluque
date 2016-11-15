@@ -78,13 +78,15 @@ class ReservaController extends Controller
 
     	
 
-        $reserva = new Reserva();
-        $reserva->precio_total   = $habitacion_info['precio_base'];
-        $reserva->ocupacion      = $request['ocupacion'];
-        $reserva->cliente_id     = $cliente->id;
-        $reserva->checkin        = $fecha_inicio;
-        $reserva->checkout       = $fecha_fin;
-        $reserva->save();
+	        $reserva = new Reserva();
+	        $reserva->monto_total    = $habitacion_info['monto_total'];
+	        $reserva->monto_sugerido = $habitacion_info['monto_sugerido'];
+	        $reserva->ocupacion      = $habitacion_info['ocupacion'];
+	        $reserva->fuente	     = $request['fuente'];
+	        $reserva->cliente_id     = $cliente->id;
+	        $reserva->checkin        = $fecha_inicio;
+	        $reserva->checkout       = $fecha_fin;
+	        $reserva->save();
 
         $fecha = $fecha_inicio;
 

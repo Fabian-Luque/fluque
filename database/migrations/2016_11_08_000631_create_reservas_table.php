@@ -15,8 +15,10 @@ class CreateReservasTable extends Migration
         
         Schema::create('reservas', function(Blueprint $table){
         $table->increments('id');
-        $table->integer('precio_total');
+        $table->integer('monto_total');
+        $table->integer('monto_sugerido');
         $table->integer('ocupacion');
+        $table->string('fuente');
         $table->date('checkin');
         $table->date('checkout');
         $table->integer('cliente_id')->unsigned();
