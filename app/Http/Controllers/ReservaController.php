@@ -81,6 +81,7 @@ class ReservaController extends Controller
 	        $reserva = new Reserva();
 	        $reserva->monto_total    = $habitacion_info['monto_total'];
 	        $reserva->monto_sugerido = $habitacion_info['monto_sugerido'];
+	        $reserva->metodo_pago    = $request['metodo_pago'];
 	        $reserva->ocupacion      = $habitacion_info['ocupacion'];
 	        $reserva->fuente	     = $request['fuente'];
 	        $reserva->cliente_id     = $cliente->id;
@@ -116,18 +117,3 @@ class ReservaController extends Controller
     
 }   
 
-
-
-
-
-
-
-/*    "nombre": "tomas",
-    "rut": "169973433",
-    "tipo": "empresa",
-    "direccion": "las heras",
-    "ciudad": "temuco",
-    "pais": "chile",
-    "telefono": "880573342",
-    "email": "tomas@gmial.com",
-    "giro": "ingenieri"*/
