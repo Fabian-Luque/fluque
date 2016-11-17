@@ -11,6 +11,7 @@ use App\Cliente;
 use App\Reserva;
 use App\Calendario;
 use App\DetalleNoche;
+use App\Habitacion;
 
 class ReservaController extends Controller
 {
@@ -111,6 +112,26 @@ class ReservaController extends Controller
     }
 
     return 'Habitacion reservada satisfactoriamente';
+}
+
+
+
+public function index(Request $request){
+
+
+
+
+	if($request->has('propiedad_id')){
+
+		$reservas = Habitacion::where('propiedad_id',  $request['propiedad_id'])->with('detalleNoches.reserva.cliente')->get();
+
+			return $reservas;
+
+
+	}
+
+
+
 }
 	
     

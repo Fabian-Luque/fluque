@@ -225,7 +225,7 @@ class HabitacionController extends Controller
 
 
 
-/*        public function destroy($id){
+        public function destroy($id){
 
         $habitacion = Habitacion::findOrFail($id);
         $habitacion->delete();
@@ -241,33 +241,50 @@ class HabitacionController extends Controller
 
 
 
-    }*/
-
-
-    public function destroy($id)
-    {
-        try {
-             $habitacion = Habitacion::findOrFail($id);
-      	     $habitacion->delete();
-            $data = [
-                'errors' => false,
-                'msg'    => 'Habitacion eliminada satisfactoriamente',
-            ];
-            return Response::json($data, 202);
-        } catch (QueryException $e) {
-            $data = [
-                'errors' => true,
-                'msg'    => 'An error ocurred',
-            ];
-            return Response::json($data, 500);
-        } catch (ModelNotFoundException $e) {
-            $data = [
-                'errors' => true,
-                'msg'    => $e->getMessage(),
-            ];
-            return Response::json($data, 404);
-        }
     }
+
+
+
+
+/*public function destroy($id){
+
+        $habitacion = Habitacion::findOrFail($id);
+        if ($habitacion->has('detalleNoches')){
+           $data = [
+
+            'errors' => true,
+            'msg'    => 'no se puede',
+
+        ];
+
+        return Response::json($data, 401);
+
+
+
+        }else{
+
+
+
+        $habitacion->delete();
+
+        $data = [
+
+            'errors' => false,
+            'msg'    => 'Habitacion eliminada satisfactoriamente',
+
+        ];
+
+        return Response::json($data, 202);
+
+            
+        }
+
+
+
+
+}*/
+
+
 
 
 
@@ -278,9 +295,7 @@ class HabitacionController extends Controller
 
 
 
-/*
-
-    public function index()
+/*    public function index()
     {
         try {
             $response = ApiUser::all();
@@ -303,10 +318,10 @@ class HabitacionController extends Controller
                 'code' => 50
             ],500));
         }
-    }
+    }*/
 
 
-*/
+
 
 
 
