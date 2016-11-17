@@ -43,7 +43,7 @@ class ReservaController extends Controller
 
     if($clientes['tipo'] == 'particular'){
 
-   $cliente = Cliente::firstOrNew($request['cliente']);
+    $cliente = Cliente::firstOrNew($request['cliente']);
 
 		   $cliente->rut = $clientes['rut'];
 		   $cliente->tipo = $clientes['tipo'];

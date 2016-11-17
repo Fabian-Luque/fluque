@@ -225,7 +225,7 @@ class HabitacionController extends Controller
 
 
 
-        public function destroy($id){
+/*        public function destroy($id){
 
         $habitacion = Habitacion::findOrFail($id);
         $habitacion->delete();
@@ -241,6 +241,32 @@ class HabitacionController extends Controller
 
 
 
+    }*/
+
+
+    public function destroy($id)
+    {
+        try {
+             $habitacion = Habitacion::findOrFail($id);
+      	     $habitacion->delete();
+            $data = [
+                'errors' => false,
+                'msg'    => 'Habitacion eliminada satisfactoriamente',
+            ];
+            return Response::json($data, 202);
+        } catch (QueryException $e) {
+            $data = [
+                'errors' => true,
+                'msg'    => 'An error ocurred',
+            ];
+            return Response::json($data, 500);
+        } catch (ModelNotFoundException $e) {
+            $data = [
+                'errors' => true,
+                'msg'    => $e->getMessage(),
+            ];
+            return Response::json($data, 404);
+        }
     }
 
 
@@ -252,9 +278,35 @@ class HabitacionController extends Controller
 
 
 
+/*
+
+    public function index()
+    {
+        try {
+            $response = ApiUser::all();
+            if(!$response) {
+                return (new Response([
+                    'error' => [
+                        'message' => 'No users were found.',
+                        'code' => '20'
+                    ]
+                ], 404));
+            }
+            else {
+                return (new Response([
+                    'data' => $response
+                ],200));
+            }
+        } catch (\Exception $e) {
+            return (new Response([
+                'error' => 'Users could not be loaded. Method failed.',
+                'code' => 50
+            ],500));
+        }
+    }
+
+
+*/
 
 
 
-
-
-/*   $habitacion_dia =  Calendario::firstOrNew(array('fecha'=>$fecha, 'disponibilidad' => $habitacion_base->disponibilidad_base, 'precio' => $habitacion_base->precio_base, 'habitacion_id' => $habitacion_tipo));*/
