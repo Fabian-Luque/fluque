@@ -32,14 +32,12 @@ Route::group(['middleware' => 'cors'], function(){
 
 	Route::post('reserva/habitacion', 'ReservaController@reserva');
 
-
-
 	Route::resource('user', 'UserController', ['except' => ['create', 'edit','store']]);
 	Route::resource('propiedad', 'PropiedadController', ['except' => ['create', 'edit', 'store']]);
 	Route::resource('habitacion', 'HabitacionController', ['except' => ['create', 'edit']]);
 	Route::resource('servicio', 'ServicioController', ['except' => ['create', 'edit']]);
 	Route::resource('reserva', 'ReservaController', ['except' => ['create', 'edit']]);
-
+	Route::resource('cliente', 'ClienteController', ['except' => ['create', 'edit']]);
 
 
 });
