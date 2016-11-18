@@ -10,7 +10,6 @@ use Response;
 use App\Cliente;
 use App\Reserva;
 use App\Calendario;
-use App\DetalleNoche;
 use App\Habitacion;
 
 class ReservaController extends Controller
@@ -97,12 +96,6 @@ class ReservaController extends Controller
 
             $calendario = Calendario::where('fecha','=', $fecha)->where('habitacion_id', '=', $habitacion_info['id'])->first();
 
-/*          $noche = new DetalleNoche();
-            $noche->precio            = $calendario->precio;
-            $noche->fecha             = $fecha;
-            $noche->habitacion_id     = $habitacion_info['id'];
-            $noche->reserva_id        = $reserva->id;
-            $noche->save();*/
 
             $calendario->disponibilidad--;
             $calendario->reservas++;
@@ -139,3 +132,14 @@ public function index(Request $request){
     
 }   
 
+
+
+
+
+
+/*          $noche = new DetalleNoche();
+            $noche->precio            = $calendario->precio;
+            $noche->fecha             = $fecha;
+            $noche->habitacion_id     = $habitacion_info['id'];
+            $noche->reserva_id        = $reserva->id;
+            $noche->save();*/

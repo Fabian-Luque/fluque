@@ -224,11 +224,18 @@ class HabitacionController extends Controller
 
 
 
+public function destroy($id){
 
-        public function destroy($id){
+
+
+         $habitaciones = Habitacion::where('id', $id)->whereHas('calendarios', function($query){
+           $query->where('reservas', 1);})->get();
+
+         if(count($habitaciones) == 0 ){
 
         $habitacion = Habitacion::findOrFail($id);
         $habitacion->delete();
+
 
         $data = [
 
@@ -239,88 +246,26 @@ class HabitacionController extends Controller
 
         return Response::json($data, 202);
 
+         }elseif (count($habitaciones) == 1) {
 
 
-    }
-
-
-
-
-/*public function destroy($id){
-
-        $habitacion = Habitacion::findOrFail($id);
-        if ($habitacion->has('detalleNoches')){
-           $data = [
+        $data = [
 
             'errors' => true,
-            'msg'    => 'no se puede',
+            'msg'    => 'Metodo fallido',
 
         ];
 
         return Response::json($data, 401);
 
 
-
-        }else{
-
-
-
-        $habitacion->delete();
-
-        $data = [
-
-            'errors' => false,
-            'msg'    => 'Habitacion eliminada satisfactoriamente',
-
-        ];
-
-        return Response::json($data, 202);
-
             
-        }
-
-
-
-
-}*/
-
-
-
-
-
+         }
 
 }
 
 
-
-
-
-/*    public function index()
-    {
-        try {
-            $response = ApiUser::all();
-            if(!$response) {
-                return (new Response([
-                    'error' => [
-                        'message' => 'No users were found.',
-                        'code' => '20'
-                    ]
-                ], 404));
-            }
-            else {
-                return (new Response([
-                    'data' => $response
-                ],200));
-            }
-        } catch (\Exception $e) {
-            return (new Response([
-                'error' => 'Users could not be loaded. Method failed.',
-                'code' => 50
-            ],500));
-        }
-    }*/
-
-
+}
 
 
 
