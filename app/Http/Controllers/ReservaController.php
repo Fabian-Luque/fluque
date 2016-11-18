@@ -85,6 +85,7 @@ class ReservaController extends Controller
 	        $reserva->metodo_pago    = $request['metodo_pago'];
 	        $reserva->ocupacion      = $habitacion_info['ocupacion'];
 	        $reserva->fuente	     = $request['fuente'];
+	        $reserva->habitacion_id  = $habitacion_info['id'];
 	        $reserva->cliente_id     = $cliente->id;
 	        $reserva->checkin        = $fecha_inicio;
 	        $reserva->checkout       = $fecha_fin;
@@ -96,12 +97,12 @@ class ReservaController extends Controller
 
             $calendario = Calendario::where('fecha','=', $fecha)->where('habitacion_id', '=', $habitacion_info['id'])->first();
 
-            $noche = new DetalleNoche();
+/*          $noche = new DetalleNoche();
             $noche->precio            = $calendario->precio;
             $noche->fecha             = $fecha;
             $noche->habitacion_id     = $habitacion_info['id'];
             $noche->reserva_id        = $reserva->id;
-            $noche->save();
+            $noche->save();*/
 
             $calendario->disponibilidad--;
             $calendario->reservas++;
@@ -123,7 +124,7 @@ public function index(Request $request){
 
 	if($request->has('propiedad_id')){
 
-		$reservas = Habitacion::where('propiedad_id',  $request['propiedad_id'])->with('detalleNoches.reserva.cliente')->get();
+		$reservas = Habitacion::where('propiedad_id',  $request['propiedad_id'])->with('reservas.cliente')->get();
 
 			return $reservas;
 

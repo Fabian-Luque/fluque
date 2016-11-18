@@ -11,16 +11,17 @@ class Reserva extends Model
 	use SoftDeletes;
     protected $table = 'reservas';
 
-	protected $fillable = ['precio_total', 'ocupacion', 'cliente_id','checkin', 'checkout'];
+	protected $fillable = ['monto_total','monto_sugerido','metodo_pago', 'ocupacion','fuente',' habitacion_id ' ,'cliente_id','checkin', 'checkout'];
 
 
 
-	public function detalleNoches(){
+	public function habitacion(){
 
-		return $this->hasMany('App\DetalleNoche', 'reserva_id');
+		return $this->belongsTo('App\Habitacion', 'habitacion_id');
 
 
 	}
+
 
 	public function cliente(){
 

@@ -22,6 +22,8 @@ class CreateReservasTable extends Migration
         $table->string('fuente');
         $table->date('checkin');
         $table->date('checkout');
+        $table->integer('habitacion_id')->unsigned();
+        $table->foreign('habitacion_id')->references('id')->on('habitaciones');
         $table->integer('cliente_id')->unsigned();
         $table->foreign('cliente_id')->references('id')->on('clientes');
         $table->timestamps();

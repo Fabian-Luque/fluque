@@ -37,9 +37,9 @@ class Habitacion extends Model
 
 	}
 
-	public function detalleNoches(){
+	public function reservas(){
 
-		return $this->hasMany('App\DetalleNoche', 'habitacion_id');
+		return $this->hasMany('App\Reserva', 'habitacion_id');
 
 
 	}
