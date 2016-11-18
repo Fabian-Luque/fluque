@@ -31,14 +31,14 @@ class ClienteController extends Controller
 
 				);
 
-				return Response::json($data, 404);
+			return Response::json($data, 404);
 
 
 
 
 			}else{
 
-				return $cliente = Cliente::where('rut', $cliente_rut)->first();
+			return $cliente = Cliente::where('rut', $cliente_rut)->first();
 
 
 
