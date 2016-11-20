@@ -30,5 +30,12 @@ class Reserva extends Model
 
 	}
 
+	public function huespedes(){
+
+		return $this->hasMany('App\Huesped', 'reserva_id');
+
+
+	}
+
 
 }
