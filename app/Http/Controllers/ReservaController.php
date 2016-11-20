@@ -89,6 +89,7 @@ class ReservaController extends Controller
 	        $reserva->checkin        = $fecha_inicio;
 	        $reserva->checkout       = $fecha_fin;
 	        $reserva->estado		 = $request['estado'];
+	        $reserva->noches         = $request['noches'];
 	        $reserva->save();
 
         $fecha = $fecha_inicio;
