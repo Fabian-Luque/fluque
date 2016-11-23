@@ -118,11 +118,16 @@ class ReservaController extends Controller
 
             if ($fechaInicio < $fechaFin) {
                 $fechas       = [$fechaInicio, $fechaFin];
-                $habitaciones = Habitacion::where('propiedad_id', $request['propiedad_id'])->whereHas('reservas', function ($query) use ($fechas) {
-                    $query->whereBetween('checkin', $fechas);
-                })->orWhereHas('reservas', function ($query) use ($fechas) {
-                    $query->whereNotBetween('checkin', $fechas);
-                })->orHas('reservas', '=', 0)->with('reservas.cliente')->get();
+                $habitaciones = Habitacion::where('propiedad_id', $request['propiedad_id'])
+                    ->where(function ($query) use ($fechas) {
+                        $query->whereHas('reservas', function ($query) use ($fechas) {
+                            $query->whereBetween('checkin', $fechas);
+                        });
+                        $query->orWhereHas('reservas', function ($query) use ($fechas) {
+                            $query->whereNotBetween('checkin', $fechas);
+                        });
+                        $query->orHas('reservas', '=', 0);
+                    })->with('reservas.cliente')->get();
 
                 foreach ($habitaciones as $habitacion) {
                     $dias     = array();
