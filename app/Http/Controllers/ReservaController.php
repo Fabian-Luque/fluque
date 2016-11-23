@@ -162,6 +162,35 @@ class ReservaController extends Controller
             ->header('Access-Control-Allow-Origin', '*');
     }
 
+
+
+
+
+    public function getReservas(Request $request){
+
+
+    	if($request->has('propiedad_id')){
+
+	     	return	$reservas = Habitacion::where('propiedad_id', $request->propiedad_id)->with('reservas.cliente')->get();
+
+
+
+    	}
+
+
+
+
+    } 
+
+
+
+
+
+
+
+
+
+
 }
 
 /*          $noche = new DetalleNoche();
