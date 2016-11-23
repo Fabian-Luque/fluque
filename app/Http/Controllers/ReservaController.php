@@ -118,7 +118,7 @@ class ReservaController extends Controller
 
             if ($fechaInicio < $fechaFin) {
                 $fechas       = [$fechaInicio, $fechaFin];
-                $habitaciones = Habitacion::where('propiedad_id', $request['propiedad_id'])
+                $habitaciones = Habitacion::where('propiedad_id', $request->propiedad_id)
                     ->where(function ($query) use ($fechas) {
                         $query->whereHas('reservas', function ($query) use ($fechas) {
                             $query->whereBetween('checkin', $fechas);
