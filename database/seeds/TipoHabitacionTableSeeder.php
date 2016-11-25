@@ -22,19 +22,16 @@ class TipoHabitacionTableSeeder extends Seeder
 
     			'nombre' => 'Doble',
 
-
     		],
 
     		[
 
     			'nombre' => 'Tiple',
 
-
     		],
     		[
 
     			'nombre' => 'Cuadruple',
-
 
     		],
 
