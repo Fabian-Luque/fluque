@@ -12,6 +12,7 @@ use App\Equipamiento;
 use App\Propiedad;
 use App\Calendario;
 use Carbon\Carbon;
+use App\TipoHabitacion;
 
 
 
@@ -74,11 +75,11 @@ class HabitacionController extends Controller
 			$rules = array(
 
 			'nombre' 		       => 'required',
-			'tipo'			       => 'required',
 			'precio_base'	       => 'required|numeric',
             'disponibilidad_base'  => 'required|numeric',
 			'piso'			       => 'required|numeric',
 			'propiedad_id'         => 'required|numeric',
+            'tipo_habitacion_id'   => 'required|numeric',
 			'bano'      	       => 'required',
             'tv'        	       => 'required',
             'wifi'      	       => 'required',
@@ -106,11 +107,11 @@ class HabitacionController extends Controller
 
             $habitacion                           = new Habitacion();
             $habitacion->nombre          	      = $request->get('nombre');
-           	$habitacion->tipo           	      = $request->get('tipo');
           	$habitacion->precio_base              = $request->get('precio_base');
             $habitacion->disponibilidad_base      = $request->get('disponibilidad_base');
-          	$habitacion->piso                     = $request->get('piso'); 
+          	$habitacion->piso                     = $request->get('piso');
           	$habitacion->propiedad_id             = $request->get('propiedad_id');
+            $habitacion->tipo_habitacion_id       = $request->get('tipo_habitacion_id');
             $habitacion->save();
 
             $equipamiento                    	  = new Equipamiento();
