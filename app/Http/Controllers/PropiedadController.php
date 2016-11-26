@@ -45,11 +45,11 @@ class PropiedadController extends Controller
 		$rules = array(
 
 			'nombre' 						=> 'required',
-			'tipo'	 						=> 'required',
+			'tipo'	 						=> 'required|numeric',
 			'numero_habitaciones'			=> 'required|numeric',
 			'pais' 							=> 'required',
 			'ciudad'					    => 'required', 
-			'region'					    => 'required', 
+			'region'					    => 'required',
 			'direccion'					    => 'required',
 			'telefono'					    => 'required',
 			'email'					        => 'required',

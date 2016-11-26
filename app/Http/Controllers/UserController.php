@@ -68,7 +68,7 @@ class UserController extends Controller
 			'phone' 				=>	'required',
 			'password' 				=>	'required|min:6',
 			'nombre'				=>  'required',
-			'tipo'					=>	'required',
+			'tipo'					=>	'required|numeric',
 			'numero_habitaciones'   =>	'required',
 			'ciudad'				=>  'required',
 			'direccion'				=> 	'required',
@@ -99,10 +99,10 @@ class UserController extends Controller
 
             $propiedad                    	 = new Propiedad();
 			$propiedad->nombre               = $request->get('nombre');
-			$propiedad->tipo              	 = $request->get('tipo');
 			$propiedad->numero_habitaciones  = $request->get('numero_habitaciones');
 			$propiedad->ciudad               = $request->get('ciudad');
 			$propiedad->direccion            = $request->get('direccion');
+            $propiedad->tipo_propiedad_id    = $request->get('tipo');
 			$propiedad->user_id				 = $usuario->id; 
 
  			$propiedad->save();
@@ -143,7 +143,7 @@ class UserController extends Controller
 
 			/*return 'usuario creado';*/
 
-			      $data = [
+	   $data = [
                 'errors' => false,
                 'msg' => 'usuario creado satisfactoriamente',
 
