@@ -69,7 +69,7 @@ class UserController extends Controller
 			'password' 				=>	'required|min:6',
 			'nombre'				=>  'required',
 			'tipo'					=>	'required|numeric',
-			'numero_habitaciones'   =>	'required',
+			'numero_habitaciones'   =>	'required|numeric',
 			'ciudad'				=>  'required',
 			'direccion'				=> 	'required',
 

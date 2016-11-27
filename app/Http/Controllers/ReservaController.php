@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Calendario;
 use App\Cliente;
 use App\Habitacion;
+use App\TipoFuente;
+use App\MetodoPago;
+use App\EstadoReserva;
 use App\Http\Controllers\Controller;
 use App\Reserva;
 use Illuminate\Http\Request;
@@ -71,18 +74,18 @@ class ReservaController extends Controller
 
         foreach ($habitaciones_info as $habitacion_info) {
 
-            $reserva                 = new Reserva();
-            $reserva->monto_total    = $habitacion_info['monto_total'];
-            $reserva->monto_sugerido = $habitacion_info['monto_sugerido'];
-            $reserva->metodo_pago    = $request['metodo_pago'];
-            $reserva->ocupacion      = $habitacion_info['ocupacion'];
-            $reserva->fuente         = $request['fuente'];
-            $reserva->habitacion_id  = $habitacion_info['id'];
-            $reserva->cliente_id     = $cliente->id;
-            $reserva->checkin        = $fecha_inicio;
-            $reserva->checkout       = $fecha_fin;
-            $reserva->estado         = $request['estado'];
-            $reserva->noches         = $request['noches'];
+            $reserva                        = new Reserva();
+            $reserva->monto_total           = $habitacion_info['monto_total'];
+            $reserva->monto_sugerido        = $habitacion_info['monto_sugerido'];
+            $reserva->metodo_pago_id        = $request['metodo_pago'];
+            $reserva->ocupacion             = $habitacion_info['ocupacion'];
+            $reserva->tipo_fuente_id        = $request['fuente'];
+            $reserva->habitacion_id         = $habitacion_info['id'];
+            $reserva->cliente_id            = $cliente->id;
+            $reserva->checkin               = $fecha_inicio;
+            $reserva->checkout              = $fecha_fin;
+            $reserva->estado_reserva_id     = $request['estado'];
+            $reserva->noches                = $request['noches'];
             $reserva->save();
 
             $fecha = $fecha_inicio;
@@ -180,22 +183,40 @@ class ReservaController extends Controller
 
 
 
-    } 
+    }
+
+
+    public function getTipoFuente(){
+
+        $TipoFuente = TipoFuente::all();
+            return $TipoFuente;
+
+
+    }
+
+    public function getMetodoEstadoPago(){
+
+        $EstadoReserva = EstadoReserva::all();
+
+        $MetodoPago = MetodoPago::all();
 
 
 
+        $respuesta = [
+
+        'estado_reserva' => $EstadoReserva,
+        'Metodo_pago' => $MetodoPago,
+
+        ];
 
 
+        return $respuesta;
 
 
+    }
 
 
 
 }
 
-/*          $noche = new DetalleNoche();
-$noche->precio            = $calendario->precio;
-$noche->fecha             = $fecha;
-$noche->habitacion_id     = $habitacion_info['id'];
-$noche->reserva_id        = $reserva->id;
-$noche->save();*/
+

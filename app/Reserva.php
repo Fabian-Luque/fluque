@@ -11,14 +11,13 @@ class Reserva extends Model
 	use SoftDeletes;
     protected $table = 'reservas';
 
-	protected $fillable = ['monto_total','monto_sugerido','metodo_pago', 'ocupacion','fuente',' habitacion_id ' ,'cliente_id','checkin', 'checkout'];
+	protected $fillable = ['monto_total','monto_sugerido','metodo_pago_id', 'ocupacion','tipo_fuente_id',' habitacion_id ' ,'cliente_id','checkin', 'checkout','estado_reserva_id'];
 
 
 
 	public function habitacion(){
 
 		return $this->belongsTo('App\Habitacion', 'habitacion_id');
-
 
 	}
 
@@ -27,13 +26,29 @@ class Reserva extends Model
 
 		return $this->belongsTo('App\Cliente', 'cliente_id');
 
-
 	}
 
 	public function huespedes(){
 
 		return $this->hasMany('App\Huesped', 'reserva_id');
 
+	}
+
+	public function tipoFuente(){
+
+		return $this->belongsTo('App\tipoFuente', 'tipo_fuente_id');
+
+	}
+
+	public function metodoPago(){
+
+		return $this->belongsTo('App\MetodoPago', 'metodo_pago_id');
+
+	}
+
+	public function estadoReserva(){
+
+		return $this->belongsTo('App\EstadoReserva', 'estado_reserva_id');
 
 	}
 
