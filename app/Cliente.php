@@ -12,13 +12,19 @@ class Cliente extends Model
 	use SoftDeletes;
     protected $table = 'clientes';
 
-	protected $fillable = ['nombre', 'apellido', 'email'];
+	protected $fillable = ['nombre','rut', 'direccion','ciudad','pais','telefono', 'email', 'giro', 'tipo_cliente_id'];
 
 
 	public function reservas(){
 
 		return $this->hasMany('App\Reserva', 'cliente_id');
 
+
+	}
+
+	public function tipoCliente(){
+
+		return $this->belongsTo('App\tipoCliente', 'tipo_cliente_id');
 
 	}
 

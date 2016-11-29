@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use Response;
 use App\Cliente;
+use App\TipoCliente;
 
 class ClienteController extends Controller
 {
@@ -47,6 +48,19 @@ class ClienteController extends Controller
 		}
 
 	}	
+
+
+	public function getTipoCliente(){
+
+
+		$tipoCliente = TipoCliente::all();
+
+			return $tipoCliente;
+
+
+
+	}
+
 
 
 

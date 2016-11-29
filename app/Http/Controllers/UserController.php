@@ -68,7 +68,7 @@ class UserController extends Controller
 			'phone' 				=>	'required',
 			'password' 				=>	'required|min:6',
 			'nombre'				=>  'required',
-			'tipo'					=>	'required|numeric',
+			'tipo_propiedad_id'		=>	'required|numeric',
 			'numero_habitaciones'   =>	'required|numeric',
 			'ciudad'				=>  'required',
 			'direccion'				=> 	'required',
@@ -102,7 +102,7 @@ class UserController extends Controller
 			$propiedad->numero_habitaciones  = $request->get('numero_habitaciones');
 			$propiedad->ciudad               = $request->get('ciudad');
 			$propiedad->direccion            = $request->get('direccion');
-            $propiedad->tipo_propiedad_id    = $request->get('tipo');
+            $propiedad->tipo_propiedad_id    = $request->get('tipo_propiedad_id');
 			$propiedad->user_id				 = $usuario->id; 
 
  			$propiedad->save();

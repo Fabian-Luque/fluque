@@ -224,7 +224,8 @@ class HabitacionController extends Controller
 
 
 
-public function destroy($id){
+        public function destroy($id)
+        {
 
 
 
@@ -262,7 +263,19 @@ public function destroy($id){
             
          }
 
-}
+        }
+
+
+        public function getTipoHabitacion(){
+
+
+         $tipoHabitacion = TipoHabitacion::all();
+            return $tipoHabitacion;
+
+
+        }
+
+
 
 
 }

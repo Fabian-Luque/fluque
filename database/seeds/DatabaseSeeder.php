@@ -16,5 +16,6 @@ class DatabaseSeeder extends Seeder
         $this->call(TipoFuenteTableSeeder::class);
         $this->call(MetodoPagoTableSeeder::class);
         $this->call(EstadoReservaTableSeeder::class);
+        $this->call(TipoClienteTableSeeder::class);
     }
 }

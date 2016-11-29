@@ -36,7 +36,13 @@ Route::group(['middleware' => 'cors'], function(){
 
 	Route::get('tipo-fuente', 'ReservaController@getTipoFuente');
 
-	Route::get('Metodo-estado-pago', 'ReservaController@getMetodoEstadoPago');
+	Route::get('estado-reserva', 'ReservaController@getMetodoEstadoPago');
+
+	Route::get('tipo-habitacion', 'HabitacionController@getTipoHabitacion');
+
+	Route::get('tipo-propiedad', 'PropiedadController@getTipoPropiedad');
+
+	Route::get('tipo-cliente', 'ClienteController@getTipoCliente');
 
 	Route::resource('user', 'UserController', ['except' => ['create', 'edit','store']]);
 	Route::resource('propiedad', 'PropiedadController', ['except' => ['create', 'edit', 'store']]);
@@ -44,8 +50,7 @@ Route::group(['middleware' => 'cors'], function(){
 	Route::resource('servicio', 'ServicioController', ['except' => ['create', 'edit']]);
 	Route::resource('reserva', 'ReservaController', ['except' => ['create', 'edit']]);
 	Route::resource('cliente', 'ClienteController', ['except' => ['create', 'edit']]);
-	Route::resource('tipo-habitacion', 'TipoHabitacionController', ['except' => ['create', 'edit']]);
-	Route::resource('tipo-propiedad', 'TipoPropiedadController', ['except' => ['create', 'edit']]);
+
 
 
 

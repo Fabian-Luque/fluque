@@ -8,6 +8,7 @@ use App\Http\Requests;
 use Validator;
 use App\Propiedad;
 use Response;
+use App\TipoPropiedad;
 
 
 
@@ -45,7 +46,7 @@ class PropiedadController extends Controller
 		$rules = array(
 
 			'nombre' 						=> 'required',
-			'tipo'	 						=> 'required|numeric',
+			'tipo_propiedad_id'	 			=> 'required|numeric',
 			'numero_habitaciones'			=> 'required|numeric',
 			'pais' 							=> 'required',
 			'ciudad'					    => 'required', 
@@ -91,13 +92,14 @@ class PropiedadController extends Controller
 
 
 
-
-
-
-
-
 	}
 
+
+    public function getTipoPropiedad(){
+
+    $TipoPropiedad = TipoPropiedad::all();
+        return $TipoPropiedad; 
+    }
 
 
 }
