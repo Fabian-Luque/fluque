@@ -57,7 +57,7 @@ class TipoHabitacionTableSeeder extends Seeder
 
 			[
 
-				'nombre' => 'presidencial',
+				'nombre' => 'Presidencial',
 			]
 
     		]);
