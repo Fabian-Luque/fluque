@@ -20,6 +20,20 @@ class PropiedadController extends Controller
 {
 
 
+    public function index(Request $request){
+
+        if($request->has('id')){
+            $propiedad = Propiedad::where('id', $request->input('id'))->with('tipoPropiedad')->get();
+            return $propiedad;
+
+        }
+
+
+
+
+    }
+
+
 		public function show($id){
 
 		  try {
