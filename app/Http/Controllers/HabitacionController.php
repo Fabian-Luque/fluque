@@ -61,8 +61,8 @@ class HabitacionController extends Controller
     public function index(Request $request){
 
     	  if($request->has('propiedad_id')){
-            return $habitaciones = Propiedad::where('id', $request->input('propiedad_id'))->with('habitaciones.tipoHabitacion')->with('habitaciones.equipamiento')->get();
-
+            $habitaciones = Habitacion::where('propiedad_id', $request->input('propiedad_id'))->with('tipoHabitacion')->with('equipamiento')->get();
+            return $habitaciones;
 
         }
         
