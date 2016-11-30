@@ -37,7 +37,7 @@ class Propiedad extends Model
 
     public function tipoPropiedad(){
 
-        return $this->belongsTo('App\tipoPropiedad', 'tipo_propiedad_id');
+        return $this->belongsTo('App\TipoPropiedad', 'tipo_propiedad_id');
 
 
     }

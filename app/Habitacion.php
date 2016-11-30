@@ -46,7 +46,7 @@ class Habitacion extends Model
 
 	public function tipoHabitacion(){
 
-		return $this->belongsTo('App\tipoHabitacion', 'tipo_habitacion_id');
+		return $this->belongsTo('App\TipoHabitacion', 'tipo_habitacion_id');
 
 
 	}
