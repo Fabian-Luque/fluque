@@ -35,9 +35,6 @@ class HabitacionController extends Controller
         $fecha_fin    = $request->input('fecha_fin');
             
 
-
-
-
         $rango = [$fecha_inicio, $fecha_fin];
 
         $dias = ((strtotime($fecha_fin)-strtotime($fecha_inicio))/86400)+1;
@@ -47,11 +44,78 @@ class HabitacionController extends Controller
         if($request->has('propiedad_id')){
 
          $habitaciones = Habitacion::where('propiedad_id', $request->input('propiedad_id'))->whereHas('calendarios', function($query) use($rango) {
-           $query->whereBetween('fecha',  $rango)->where('reservas', 0);}, '=', $dias)->get();
+           $query->whereBetween('fecha',  $rango)->where('reservas', 0);}, '=', $dias)->with('tipoHabitacion')->get();
 
-        return $habitaciones;
 
     }
+
+
+        $habitacion_individual          = [];
+        $habitacion_doble               = [];
+        $habitacion_triple              = [];
+        $habitacion_cuadruple           = [];
+        $habitacion_quintuple           = [];
+        $habitacion_matrimonial         = [];
+        $habitacion_suite               = [];
+        $habitacion_presidencial        = [];
+
+        foreach ($habitaciones as $habitacion) {
+            
+            if($habitacion->tipo_habitacion_id == 1){
+
+                array_push($habitacion_individual, $habitacion);
+
+            }elseif($habitacion->tipo_habitacion_id == 2){
+
+                array_push($habitacion_doble, $habitacion);
+
+
+            }elseif($habitacion->tipo_habitacion_id == 3){
+
+
+                array_push($habitacion_triple, $habitacion);
+
+            }elseif ($habitacion->tipo_habitacion_id == 4) {
+
+                array_push($habitacion_cuadruple, $habitacion);
+                
+            }elseif ($habitacion->tipo_habitacion_id == 5) {
+
+                array_push($habitacion_quintuple, $habitacion);
+
+            }elseif ($habitacion->tipo_habitacion_id == 6) {
+
+                array_push($habitacion_matrimonial, $habitacion);
+
+            }elseif ($habitacion->tipo_habitacion_id == 7) {
+
+                array_push($habitacion_suite, $habitacion);
+
+            }elseif ($habitacion->tipo_habitacion_id == 8) {
+                
+                array_push($habitacion_presidencial, $habitacion);
+            }
+
+        }
+
+    $habitaciones_tipo = array(
+            'tipos'           => [
+        ['id' => 1, 'nombre' => 'individual',   'habitaciones' => $habitacion_individual],
+        ['id' => 2, 'nombre' => 'doble',        'habitaciones' => $habitacion_doble],
+        ['id' => 3, 'nombre' => 'triple',       'habitaciones' => $habitacion_triple],
+        ['id' => 4, 'nombre' => 'cuadruple',    'habitaciones' => $habitacion_cuadruple],
+        ['id' => 5, 'nombre' => 'quintuple',    'habitaciones' => $habitacion_quintuple],
+        ['id' => 6, 'nombre' => 'matrimonial',  'habitaciones' => $habitacion_matrimonial],
+        ['id' => 7, 'nombre' => 'suite',        'habitaciones' => $habitacion_suite],
+        ['id' => 8, 'nombre' => 'presidencial', 'habitaciones' => $habitacion_presidencial],
+
+
+    ],
+
+    );
+
+
+    return $habitaciones_tipo;
 
 
     }
