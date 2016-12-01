@@ -187,13 +187,6 @@ class ReservaController extends Controller
     	}
 
 
-        foreach ($habitaciones as $habitacion) {
-            
-            if($reserva->has('reservas'))
-
-
-        }
-
 
 
 
