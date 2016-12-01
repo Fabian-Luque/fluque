@@ -136,7 +136,7 @@ class ReservaController extends Controller
                             $query->whereNotBetween('checkin', $fechas);
                         });
                         $query->orHas('reservas', '=', 0);
-                    })->with('reservas.cliente', 'reservas.tipoFuente', 'reservas.metodoPago', 'reservas.estadoReserva')->get();
+                    })->with('tipoHabitacion')->with('reservas.cliente', 'reservas.tipoFuente', 'reservas.metodoPago', 'reservas.estadoReserva')->get();
 
                 foreach ($habitaciones as $habitacion) {
                     $dias     = array();
@@ -180,11 +180,19 @@ class ReservaController extends Controller
 
     	if($request->has('propiedad_id')){
 
-	     	return	$reservas = Habitacion::where('propiedad_id', $request->propiedad_id)->with('tipoHabitacion')->with('reservas.cliente', 'reservas.tipoFuente', 'reservas.metodoPago', 'reservas.estadoReserva')->get();
+	     	$habitaciones = Habitacion::where('propiedad_id', $request->propiedad_id)->with('tipoHabitacion')->with('reservas.cliente', 'reservas.tipoFuente', 'reservas.metodoPago', 'reservas.estadoReserva')->get();
 
 
 
     	}
+
+
+        foreach ($habitaciones as $habitacion) {
+            
+            if($reserva->has('reservas'))
+
+
+        }
 
 
 
