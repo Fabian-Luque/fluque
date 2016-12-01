@@ -36,7 +36,7 @@ class Reserva extends Model
 
 	public function tipoFuente(){
 
-		return $this->belongsTo('App\tipoFuente', 'tipo_fuente_id');
+		return $this->belongsTo('App\TipoFuente', 'tipo_fuente_id');
 
 	}
 
