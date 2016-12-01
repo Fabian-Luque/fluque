@@ -92,7 +92,7 @@ class HabitacionController extends Controller
                 array_push($habitacion_suite, $habitacion);
 
             }elseif ($habitacion->tipo_habitacion_id == 8) {
-                
+
                 array_push($habitacion_presidencial, $habitacion);
             }
 
@@ -100,14 +100,14 @@ class HabitacionController extends Controller
 
     $habitaciones_tipo = array(
             'tipos'           => [
-        ['id' => 1, 'nombre' => 'individual',   'habitaciones' => $habitacion_individual],
-        ['id' => 2, 'nombre' => 'doble',        'habitaciones' => $habitacion_doble],
-        ['id' => 3, 'nombre' => 'triple',       'habitaciones' => $habitacion_triple],
-        ['id' => 4, 'nombre' => 'cuadruple',    'habitaciones' => $habitacion_cuadruple],
-        ['id' => 5, 'nombre' => 'quintuple',    'habitaciones' => $habitacion_quintuple],
-        ['id' => 6, 'nombre' => 'matrimonial',  'habitaciones' => $habitacion_matrimonial],
-        ['id' => 7, 'nombre' => 'suite',        'habitaciones' => $habitacion_suite],
-        ['id' => 8, 'nombre' => 'presidencial', 'habitaciones' => $habitacion_presidencial],
+        ['id' => 1, 'nombre' => 'individual',   'habitaciones' => $habitacion_individual    ],
+        ['id' => 2, 'nombre' => 'doble',        'habitaciones' => $habitacion_doble         ],
+        ['id' => 3, 'nombre' => 'triple',       'habitaciones' => $habitacion_triple        ],
+        ['id' => 4, 'nombre' => 'cuadruple',    'habitaciones' => $habitacion_cuadruple     ],
+        ['id' => 5, 'nombre' => 'quintuple',    'habitaciones' => $habitacion_quintuple     ],
+        ['id' => 6, 'nombre' => 'matrimonial',  'habitaciones' => $habitacion_matrimonial   ],
+        ['id' => 7, 'nombre' => 'suite',        'habitaciones' => $habitacion_suite         ],
+        ['id' => 8, 'nombre' => 'presidencial', 'habitaciones' => $habitacion_presidencial  ],
 
 
     ],
@@ -237,6 +237,7 @@ class HabitacionController extends Controller
             'precio_base'           => 'numeric',
             'disponibilidad_base'   => 'numeric',
             'piso'                  => 'numeric',
+            'tipo_habitacion_id'    => 'numeric',
             'bano'                  => '',
             'tv'                    => '',
             'wifi'                  => '',
