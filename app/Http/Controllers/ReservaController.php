@@ -189,7 +189,10 @@ class ReservaController extends Controller
 
               if($request->has('propiedad_id')){
 
-               $id = $request->has('propiedad_id');
+
+
+               $id = $request->input('propiedad_id');
+
 
                 $reservas = Reserva::whereHas('habitacion', function($query) use($id){
 
