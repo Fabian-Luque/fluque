@@ -24,7 +24,7 @@ class Cliente extends Model
 
 	public function tipoCliente(){
 
-		return $this->belongsTo('App\tipoCliente', 'tipo_cliente_id');
+		return $this->belongsTo('App\TipoCliente', 'tipo_cliente_id');
 
 	}
 

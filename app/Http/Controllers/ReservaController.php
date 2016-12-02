@@ -197,7 +197,7 @@ class ReservaController extends Controller
 
 
 
-                })->with('habitacion.tipoHabitacion')->with('cliente.tipoCliente')->with('cliente', 'tipoFuente', 'metodoPago', 'estadoReserva')->get();
+                })->with('habitacion.tipoHabitacion')->with('cliente.tipoCliente')->with('tipoFuente', 'metodoPago', 'estadoReserva')->get();
 
 
 
