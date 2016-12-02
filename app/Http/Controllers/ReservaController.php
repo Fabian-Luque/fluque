@@ -178,14 +178,40 @@ class ReservaController extends Controller
     public function getReservas(Request $request){
 
 
-    	if($request->has('propiedad_id')){
+
+/*    	if($request->has('propiedad_id')){
 
 	     	$habitaciones = Habitacion::where('propiedad_id', $request->propiedad_id)->with('tipoHabitacion')->with('reservas.cliente', 'reservas.tipoFuente', 'reservas.metodoPago', 'reservas.estadoReserva')->get();
 
 
 
-    	}
+    	}*/
 
+              if($request->has('propiedad_id')){
+
+               $id = $request->has('propiedad_id');
+
+                $reservas = Reserva::whereHas('habitacion', function($query) use($id){
+
+                    $query->where('propiedad_id', $id);
+
+
+
+                })->with('habitacion.tipoHabitacion')->with('cliente.tipoCliente')->with('cliente', 'tipoFuente', 'metodoPago', 'estadoReserva')->get();
+
+
+
+        }
+
+        
+
+        $data = [
+        
+            'reservas' => $reservas,
+
+        ];
+
+        return $data;
 
 
 
