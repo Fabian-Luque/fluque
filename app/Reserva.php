@@ -30,7 +30,7 @@ class Reserva extends Model
 
 	public function huespedes(){
 
-		return $this->hasMany('App\Huesped', 'reserva_id');
+		return $this->belongsToMany('App\Huesped', 'huesped_reserva');
 
 	}
 
@@ -51,6 +51,7 @@ class Reserva extends Model
 		return $this->belongsTo('App\EstadoReserva', 'estado_reserva_id');
 
 	}
+
 
 
 }

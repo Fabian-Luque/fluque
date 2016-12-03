@@ -21,8 +21,6 @@ class CreateHuespedesTable extends Migration
         $table->string('rut')->unique();
         $table->string('email');
         $table->integer('telefono');
-        $table->integer('reserva_id')->unsigned();
-        $table->foreign('reserva_id')->references('id')->on('reservas')->onDelete('cascade');
         $table->timestamps();
 
         });

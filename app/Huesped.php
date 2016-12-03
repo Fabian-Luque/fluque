@@ -12,9 +12,9 @@ class Huesped extends Model
 	protected $fillable = ['nombre', 'apellido', 'rut', 'pais', 'email', 'telefono', 'reserva_id'];
 
 
-	public function reserva(){
+	public function reservas(){
 
-		return $this->belongsTo('App\Reserva', 'reserva_id');
+		return $this->belongsToMany('App\Reserva', 'huesped_reserva');
 
 
 	}
