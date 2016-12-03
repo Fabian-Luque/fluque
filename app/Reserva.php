@@ -52,6 +52,4 @@ class Reserva extends Model
 
 	}
 
-
-
 }

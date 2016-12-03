@@ -10,6 +10,7 @@ use App\MetodoPago;
 use App\EstadoReserva;
 use App\Http\Controllers\Controller;
 use App\Reserva;
+use App\Huesped;
 use Illuminate\Http\Request;
 use Response;
 use \Carbon\Carbon;
@@ -80,6 +81,9 @@ class ReservaController extends Controller
 
         foreach ($habitaciones_info as $habitacion_info) {
 
+            $huespedes = $habitacion_info['huesped'];
+
+
             $reserva                        = new Reserva();
             $reserva->monto_total           = $habitacion_info['monto_total'];
             $reserva->monto_sugerido        = $habitacion_info['monto_sugerido'];
@@ -93,6 +97,34 @@ class ReservaController extends Controller
             $reserva->estado_reserva_id     = $request['estado_reserva_id'];
             $reserva->noches                = $request['noches'];
             $reserva->save();
+
+            if(!empty($huespedes)){
+
+            foreach ($huespedes as $habitacion){
+                
+            $huesped = new Huesped();
+            $huesped->nombre         = $habitacion['nombre'];
+            $huesped->apellido       = $habitacion['apellido'];
+            $huesped->rut            = $habitacion['rut'];
+            $huesped->email          = $habitacion['email'];
+            $huesped->telefono       = $habitacion['telefono'];
+            $huesped->save();
+
+
+            $reserva->huespedes()->attach($huesped->id);
+
+
+
+            }
+
+
+
+        }
+
+
+
+
+
 
             $fecha = $fecha_inicio;
 
