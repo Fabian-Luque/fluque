@@ -81,7 +81,7 @@ class ReservaController extends Controller
 
         foreach ($habitaciones_info as $habitacion_info) {
 
-            $huespedes = $habitacion_info['huesped'];
+            $huespedes = $habitacion_info['huespedes'];
 
 
             $reserva                        = new Reserva();
