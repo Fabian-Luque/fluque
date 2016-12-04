@@ -262,9 +262,9 @@ class ReservaController extends Controller
 
     }
 
-    public function getMetodoEstadoPago(){
+    public function getMetodoPago(){
 
-        $EstadoReserva = EstadoReserva::all();
+      
 
         $MetodoPago = MetodoPago::all();
 
@@ -272,8 +272,28 @@ class ReservaController extends Controller
 
         $respuesta = [
 
-        'estado_reserva' => $EstadoReserva,
         'Metodo_pago' => $MetodoPago,
+
+        ];
+
+
+        return $respuesta;
+
+
+    }
+
+
+    public function getEstadoReserva(){
+
+      
+
+        $EstadoReserva = EstadoReserva::all();
+
+
+
+        $respuesta = [
+
+        'Estado_reserva' => $EstadoReserva,
 
         ];
 

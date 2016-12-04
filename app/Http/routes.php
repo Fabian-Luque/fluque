@@ -36,7 +36,9 @@ Route::group(['middleware' => 'cors'], function(){
 
 	Route::get('tipo-fuente', 'ReservaController@getTipoFuente');
 
-	Route::get('estado-reserva', 'ReservaController@getMetodoEstadoPago');
+	Route::get('metodo-pago', 'ReservaController@getMetodoPago');
+
+	Route::get('estado-reserva', 'ReservaController@getEstadoReserva');
 
 	Route::get('tipo-habitacion', 'HabitacionController@getTipoHabitacion');
 
