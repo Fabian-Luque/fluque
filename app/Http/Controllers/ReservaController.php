@@ -33,9 +33,6 @@ class ReservaController extends Controller
 
 
 
-
-
-
         $clientes = $request['cliente'];
       
         $habitaciones_info = $request['habitacion_info'];
@@ -100,30 +97,22 @@ class ReservaController extends Controller
 
             if(!empty($huespedes)){
 
-            foreach ($huespedes as $habitacion){
+           foreach ($huespedes as $huesped) {
                 
-            $huesped = new Huesped();
-            $huesped->nombre         = $habitacion['nombre'];
-            $huesped->apellido       = $habitacion['apellido'];
-            $huesped->rut            = $habitacion['rut'];
-            $huesped->email          = $habitacion['email'];
-            $huesped->telefono       = $habitacion['telefono'];
+            $huesped = Huesped::firstOrNew($huesped);
+          
+            $huesped->apellido       = $huesped['apellido'];
+            $huesped->rut            = $huesped['rut'];
+            $huesped->telefono       = $huesped['telefono'];
             $huesped->save();
-
 
             $reserva->huespedes()->attach($huesped->id);
 
-
-
-            }
+           }
 
 
 
         }
-
-
-
-
 
 
             $fecha = $fecha_inicio;
