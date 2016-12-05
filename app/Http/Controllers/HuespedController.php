@@ -43,9 +43,6 @@ class HuespedController extends Controller
 		}
 
 
-
-
-
 	}
 
 

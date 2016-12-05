@@ -84,6 +84,7 @@ class ReservaController extends Controller
                 $reserva                        = new Reserva();
                 $reserva->monto_total           = $habitacion_info['monto_total'];
                 $reserva->monto_sugerido        = $habitacion_info['monto_sugerido'];
+                $reserva->monto_por_pagar       = $habitacion_info['monto_por_pagar'];
                 $reserva->metodo_pago_id        = $request['metodo_pago_id'];
                 $reserva->ocupacion             = $habitacion_info['ocupacion'];
                 $reserva->tipo_fuente_id        = $request['tipo_fuente_id'];

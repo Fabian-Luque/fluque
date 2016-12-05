@@ -17,6 +17,7 @@ class CreateReservasTable extends Migration
         $table->increments('id');
         $table->integer('monto_total');
         $table->integer('monto_sugerido');
+        $table->integer('monto_por_pagar');
         $table->integer('ocupacion');
         $table->date('checkin');
         $table->date('checkout');
