@@ -52,6 +52,7 @@ Route::group(['middleware' => 'cors'], function(){
 	Route::resource('servicio', 'ServicioController', ['except' => ['create', 'edit']]);
 	Route::resource('reserva', 'ReservaController', ['except' => ['create', 'edit']]);
 	Route::resource('cliente', 'ClienteController', ['except' => ['create', 'edit']]);
+	Route::resource('huesped', 'HuespedController', ['except' => ['create', 'edit']]);
 
 
 
