@@ -47,18 +47,18 @@ class ReservaController extends Controller
 
         if ($clientes['tipo_cliente_id'] == 1) {
 
-            $cliente = Cliente::firstOrNew($request['cliente']);
+                $cliente = Cliente::firstOrNew($request['cliente']);
 
-            $cliente->rut                   = $clientes['rut'];
-            $cliente->tipo_cliente_id       = $clientes['tipo_cliente_id'];
-            $cliente->direccion             = $clientes['direccion'];
-            $cliente->ciudad                = $clientes['ciudad'];
-            $cliente->pais                  = $clientes['pais'];
-            $cliente->telefono              = $clientes['telefono'];
-            $cliente->giro                  = null;
-            $cliente->save();
+                $cliente->rut                   = $clientes['rut'];
+                $cliente->tipo_cliente_id       = $clientes['tipo_cliente_id'];
+                $cliente->direccion             = $clientes['direccion'];
+                $cliente->ciudad                = $clientes['ciudad'];
+                $cliente->pais                  = $clientes['pais'];
+                $cliente->telefono              = $clientes['telefono'];
+                $cliente->giro                  = null;
+                $cliente->save();
 
-        } else {
+            } else {
 
             if ($clientes['tipo_cliente_id'] == 2) {
 
@@ -76,38 +76,38 @@ class ReservaController extends Controller
 
         }
 
-        foreach ($habitaciones_info as $habitacion_info) {
+            foreach ($habitaciones_info as $habitacion_info) {
 
-            $huespedes = $habitacion_info['huespedes'];
+                $huespedes = $habitacion_info['huespedes'];
 
 
-            $reserva                        = new Reserva();
-            $reserva->monto_total           = $habitacion_info['monto_total'];
-            $reserva->monto_sugerido        = $habitacion_info['monto_sugerido'];
-            $reserva->metodo_pago_id        = $request['metodo_pago_id'];
-            $reserva->ocupacion             = $habitacion_info['ocupacion'];
-            $reserva->tipo_fuente_id        = $request['tipo_fuente_id'];
-            $reserva->habitacion_id         = $habitacion_info['id'];
-            $reserva->cliente_id            = $cliente->id;
-            $reserva->checkin               = $fecha_inicio;
-            $reserva->checkout              = $fecha_fin;
-            $reserva->estado_reserva_id     = $request['estado_reserva_id'];
-            $reserva->noches                = $request['noches'];
-            $reserva->save();
+                $reserva                        = new Reserva();
+                $reserva->monto_total           = $habitacion_info['monto_total'];
+                $reserva->monto_sugerido        = $habitacion_info['monto_sugerido'];
+                $reserva->metodo_pago_id        = $request['metodo_pago_id'];
+                $reserva->ocupacion             = $habitacion_info['ocupacion'];
+                $reserva->tipo_fuente_id        = $request['tipo_fuente_id'];
+                $reserva->habitacion_id         = $habitacion_info['id'];
+                $reserva->cliente_id            = $cliente->id;
+                $reserva->checkin               = $fecha_inicio;
+                $reserva->checkout              = $fecha_fin;
+                $reserva->estado_reserva_id     = $request['estado_reserva_id'];
+                $reserva->noches                = $request['noches'];
+                $reserva->save();
 
             if(!empty($huespedes)){
 
            foreach ($huespedes as $huesped) {
                 
-            $huesped = Huesped::firstOrNew($huesped);
-          
-            $huesped->apellido       = $huesped['apellido'];
-            $huesped->rut            = $huesped['rut'];
-            $huesped->telefono       = $huesped['telefono'];
-            $huesped->pais           = $huesped['pais'];
-            $huesped->save();
+                $huesped = Huesped::firstOrNew($huesped);
+              
+                $huesped->apellido       = $huesped['apellido'];
+                $huesped->rut            = $huesped['rut'];
+                $huesped->telefono       = $huesped['telefono'];
+                $huesped->pais           = $huesped['pais'];
+                $huesped->save();
 
-            $reserva->huespedes()->attach($huesped->id);
+                $reserva->huespedes()->attach($huesped->id);
 
            }
 
@@ -158,7 +158,7 @@ class ReservaController extends Controller
                             $query->whereNotBetween('checkin', $fechas);
                         });
                         $query->orHas('reservas', '=', 0);
-                    })->with('tipoHabitacion')->with('reservas.cliente', 'reservas.tipoFuente', 'reservas.metodoPago', 'reservas.estadoReserva')->get();
+                    })->with('tipoHabitacion')->with('reservas.cliente','reservas.huespedes' ,'reservas.tipoFuente', 'reservas.metodoPago', 'reservas.estadoReserva')->get();
 
                 foreach ($habitaciones as $habitacion) {
                     $dias     = array();
@@ -222,7 +222,7 @@ class ReservaController extends Controller
 
 
 
-                })->with('habitacion.tipoHabitacion')->with('cliente.tipoCliente')->with('tipoFuente', 'metodoPago', 'estadoReserva')->get();
+                })->with('habitacion.tipoHabitacion')->with('cliente.tipoCliente')->with('huespedes')->with('tipoFuente', 'metodoPago', 'estadoReserva')->get();
 
 
 
