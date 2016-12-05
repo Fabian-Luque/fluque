@@ -104,6 +104,7 @@ class ReservaController extends Controller
             $huesped->apellido       = $huesped['apellido'];
             $huesped->rut            = $huesped['rut'];
             $huesped->telefono       = $huesped['telefono'];
+            $huesped->pais           = $huesped['pais'];
             $huesped->save();
 
             $reserva->huespedes()->attach($huesped->id);
