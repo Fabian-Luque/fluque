@@ -30,8 +30,9 @@ class ReservaController extends Controller
     public function reserva(Request $request)
     {
 
+/*        $reserva = Reserva::all()->last();
 
-
+        return $reserva->monto_total + 1;*/
 
         $clientes = $request['cliente'];
       
@@ -77,11 +78,34 @@ class ReservaController extends Controller
         }
 
             foreach ($habitaciones_info as $habitacion_info) {
-
                 $huespedes = $habitacion_info['huespedes'];
+                $propiedad_id = $habitacion_info['propiedad_id'];
+
+                $reservas = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
+
+                    $query->where('propiedad_id', $propiedad_id);
+
+                })->get();
+
+                $reserva = $reservas->last();
+
+                if(!empty($reserva)){
+
+                $numero = $reserva->numero_reserva;
+
+                }else{
+
+                $numero = 0;    
+
+                }
 
 
                 $reserva                        = new Reserva();
+                if(!empty($reserva)){
+                $reserva->numero_reserva        = $numero + 1;
+                }else{
+                $reserva->numero_reserva        = 1;
+                }
                 $reserva->monto_total           = $habitacion_info['monto_total'];
                 $reserva->monto_sugerido        = $habitacion_info['monto_sugerido'];
                 $reserva->monto_por_pagar       = $habitacion_info['monto_por_pagar'];
