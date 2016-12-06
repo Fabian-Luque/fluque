@@ -70,6 +70,8 @@ class PropiedadController extends Controller
 			'email'					        => 'required',
 			'nombre_responsable'	        => 'required',
 			'descripcion'					=> 'required',
+            'iva'                           => 'required|numeric',
+            'porcentaje_deposito'           => 'required|numeric',
 			
 		);
 

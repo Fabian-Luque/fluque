@@ -10,7 +10,7 @@ class Propiedad extends Model
 	use SoftDeletes;
     protected $table = 'propiedades';
 
-	protected $fillable = [  'nombre','tipo', 'numero_habitaciones','region','pais','ciudad','estado','direccion', 'telefono', 'email', 'nombre_responsable', 'descripcion'];
+	protected $fillable = [  'nombre','tipo', 'numero_habitaciones','region','pais','ciudad','estado','direccion', 'telefono', 'email', 'nombre_responsable', 'descripcion','iva', 'porcentaje_deposito'];
 
 
 

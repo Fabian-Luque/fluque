@@ -20,6 +20,8 @@ class AddAttributesPropiedadesTable extends Migration
             $table->string('email')->after('telefono');
             $table->string('nombre_responsable')->after('email');
             $table->string('descripcion')->after('nombre_responsable');
+            $table->integer('iva')->after('descripcion');
+            $table->integer('porcentaje_deposito')->after('iva');
            
 
         });

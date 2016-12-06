@@ -83,9 +83,7 @@ class ReservaController extends Controller
 
                 $reservas = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
 
-                    $query->where('propiedad_id', $propiedad_id);
-
-                })->get();
+                    $query->where('propiedad_id', $propiedad_id);})->get();
 
                 $reserva = $reservas->last();
 
@@ -226,13 +224,6 @@ class ReservaController extends Controller
 
 
 
-/*    	if($request->has('propiedad_id')){
-
-	     	$habitaciones = Habitacion::where('propiedad_id', $request->propiedad_id)->with('tipoHabitacion')->with('reservas.cliente', 'reservas.tipoFuente', 'reservas.metodoPago', 'reservas.estadoReserva')->get();
-
-
-
-    	}*/
 
               if($request->has('propiedad_id')){
 
