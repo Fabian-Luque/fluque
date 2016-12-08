@@ -50,9 +50,6 @@ class HuespedController extends Controller
 
 	public function ingresoHuesped(Request $request){
 
-		/*id reserva
-		huespedes*/
-
 		if($request->has('reserva_id') && $request->has('huespedes')){
 		 
 
@@ -69,7 +66,8 @@ class HuespedController extends Controller
 				'erros'		=> true);
 
 			  return Response::json($retorno, 404);
-		}else{
+			  
+			}else{
 
 			foreach($huespedes as $huesped){
 
@@ -80,7 +78,7 @@ class HuespedController extends Controller
                 $huesped->telefono       = $huesped['telefono'];
                 $huesped->pais           = $huesped['pais'];
                 $huesped->save();
-
+                					
                 $reserva->huespedes()->attach($huesped->id);
 
 
@@ -111,10 +109,6 @@ class HuespedController extends Controller
 
 
 		}	
-
-
-		
-
 
 
 	}	

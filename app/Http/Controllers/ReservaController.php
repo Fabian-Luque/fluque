@@ -230,7 +230,7 @@ class ReservaController extends Controller
 
 
 
-               $id = $request->input('propiedad_id');
+                $id = $request->input('propiedad_id');
 
 
                 $reservas = Reserva::whereHas('habitacion', function($query) use($id){
@@ -242,18 +242,26 @@ class ReservaController extends Controller
                 })->with('habitacion.tipoHabitacion')->with('cliente.tipoCliente')->with('huespedes')->with('tipoFuente', 'metodoPago', 'estadoReserva')->get();
 
 
+                $data = ['reservas' => $reservas,];
+
+                return $data;
+
+        }else{
+
+            $retorno = array(
+
+                'msj'       => "No se envia id propiedad",
+                'errors'    => true
+
+
+                );
+
+                 return Response::json($retorno, 400);
 
         }
 
         
 
-        $data = [
-        
-            'reservas' => $reservas,
-
-        ];
-
-        return $data;
 
 
 
