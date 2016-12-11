@@ -14,6 +14,7 @@ use App\Huesped;
 use Illuminate\Http\Request;
 use Response;
 use \Carbon\Carbon;
+use Validator;
 
 
 class ReservaController extends Controller
@@ -261,12 +262,66 @@ class ReservaController extends Controller
         }
 
         
+    }
 
+
+
+
+    public function update(Request $request, $id){
+
+
+
+        $rules = array(
+
+            'monto_sugerido'    => 'numeric',
+            'monto_por_pagar'   => 'numeric',
+            'estado_reserva_id' => 'numeric',
+
+
+            );
+
+
+        $validator = Validator::make($request->all(), $rules);
+
+
+         if ($validator->fails()) {
+
+            $data = [
+
+                'errors' => true,
+                'msg' => $validator->messages(),
+
+            ];
+
+            return Response::json($data, 400);
+
+        } else {
+
+            $propiedad = Reserva::findOrFail($id);
+            $propiedad->update($request->all());
+            $propiedad->touch();
+
+            $data = [
+
+                'errors' => false,
+                'msg' => 'Reserva actualizada satisfactoriamente',
+
+            ];
+
+            return Response::json($data, 201);
+
+        }
 
 
 
 
     }
+
+
+
+
+
+
 
 
     public function getTipoFuente(){
