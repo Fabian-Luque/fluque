@@ -111,7 +111,110 @@ class HuespedController extends Controller
 		}	
 
 
-	}	
+	}
+
+
+
+
+
+
+
+	public function getHuespedes(Request $request){
+
+
+
+			$id = $request->input('propiedad_id');
+
+			$fecha = $request->input('fecha_a_evaluar');
+
+			$fecha_a_evaluar = strtotime($fecha);
+
+			$reserva_info = [];
+			$huespedes_info = [];
+
+
+
+            $huespedes = Huesped::whereHas('reservas.habitacion', function($query) use($id){
+
+                    $query->where('propiedad_id', $id);
+
+					})->with(['reservas' => function ($q) {
+
+    				$q->where('estado_reserva_id', 3);}])->get();
+
+
+			
+
+
+
+			foreach ($huespedes as $huesped) {
+
+				$reservas = $huesped->reservas;
+
+
+/*				foreach ($reservas as $reserva) {
+					
+					if(!empty($reserva)){
+
+						array_push($huespedes_info, $huesped);
+
+					}
+
+				}*/
+					
+				if(count($huesped->reservas) != 0) {
+
+					array_push($huespedes_info, $huesped);
+
+
+				}
+
+			}
+
+			return $huespedes_info;
+
+
+
+/*		    foreach($huespedes as $huesped){
+
+
+		    	$reservas = $huesped->reservas;
+
+		    	array_push($huespedes_info, $huesped);
+
+		    	foreach ($reservas as $reserva) {
+		    		
+		    	$fecha_inicio = $reserva->checkin;
+		    	$fecha_fin	  = $reserva->checkout;
+
+
+
+		    	$inicio =strtotime($fecha_inicio);
+		    	$fin 	=strtotime($fecha_fin);
+
+
+		    	if($fecha_a_evaluar >= $inicio && $fecha_a_evaluar <= $fin ){
+
+					array_push($reserva_info, $reserva);
+
+
+
+
+			}
+
+
+
+
+		    	}
+
+		    }*/
+
+		    
+
+
+
+	}
+
 
 
 

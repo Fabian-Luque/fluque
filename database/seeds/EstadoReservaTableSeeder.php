@@ -25,7 +25,7 @@ class EstadoReservaTableSeeder extends Seeder
     		],
     		[
 
-    			'nombre' => 'Check in',
+    			'nombre' => 'En curso',
 
     		]
 
