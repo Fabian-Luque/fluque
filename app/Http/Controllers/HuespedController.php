@@ -140,7 +140,7 @@ class HuespedController extends Controller
 
 					})->with(['reservas' => function ($q) {
 
-    				$q->where('estado_reserva_id', 3);}])->get();
+    				$q->where('estado_reserva_id', 3);}])->with('reservas.habitacion')->get();
 
 
 			
