@@ -151,16 +151,6 @@ class HuespedController extends Controller
 
 				$reservas = $huesped->reservas;
 
-
-/*				foreach ($reservas as $reserva) {
-					
-					if(!empty($reserva)){
-
-						array_push($huespedes_info, $huesped);
-
-					}
-
-				}*/
 					
 				if(count($huesped->reservas) != 0) {
 
@@ -175,42 +165,39 @@ class HuespedController extends Controller
 
 
 
-/*		    foreach($huespedes as $huesped){
-
-
-		    	$reservas = $huesped->reservas;
-
-		    	array_push($huespedes_info, $huesped);
-
-		    	foreach ($reservas as $reserva) {
-		    		
-		    	$fecha_inicio = $reserva->checkin;
-		    	$fecha_fin	  = $reserva->checkout;
-
-
-
-		    	$inicio =strtotime($fecha_inicio);
-		    	$fin 	=strtotime($fecha_fin);
-
-
-		    	if($fecha_a_evaluar >= $inicio && $fecha_a_evaluar <= $fin ){
-
-					array_push($reserva_info, $reserva);
+	}
 
 
 
 
-			}
+
+	public function ingresoConsumo(Request $request){
+
+
+		if($request->has('consumo_servicio')){
+
+			$consumos = $request->input('consumo_servicio');
+
+		}
+
+		foreach ($consumos as $consumo) {
+				
+		$reserva_id = $consumo['reserva_id'];
+		$huesped_id = $consumo['huesped_id'];
+		$servicio_id = $consumo['servicio_id'];
+		$cantidad = $consumo['cantidad'];
+		$precio_total = $consumo['precio_total'];
+
+		$reserva = Reserva::where('id', $reserva_id)->first();
+
+
+		$reserva->reservasHuespedes()->attach($huesped_id, ['servicio_id' => $servicio_id, 'cantidad' => $cantidad , 'precio_total' => $precio_total]);
 
 
 
+		}
 
-		    	}
-
-		    }*/
-
-		    
-
+		return "consumo agregado";
 
 
 	}

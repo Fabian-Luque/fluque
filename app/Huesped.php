@@ -19,7 +19,29 @@ class Huesped extends Model
 
 	}
 
+	public function huespedesReservas(){
 
+
+		return $this->belongsToMany('App\Reserva', 'huesped_reserva_servicio')
+			->withPivot('servicio_id','cantidad', 'precio_total')
+			->withTimestamps();
+
+
+
+
+	}
+
+	public function servicios(){
+
+
+		return $this->belongsToMany('App\Servicio', 'huesped_reserva_servicio')
+			->withPivot('reserva_id','cantidad', 'precio_total')
+			->withTimestamps();
+
+
+
+
+	}
 
 
 }
