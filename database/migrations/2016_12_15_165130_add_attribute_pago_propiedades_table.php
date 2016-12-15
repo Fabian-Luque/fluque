@@ -14,7 +14,7 @@ class AddAttributePagoPropiedadesTable extends Migration
     {
         Schema::table('propiedades', function (Blueprint $table) {
 
-            $table->enum('pago', [0,1])->after('porcentaje_deposito')->default(0);
+            $table->boolean('pago')->after('porcentaje_deposito')->default(0);
         });
     }
 
