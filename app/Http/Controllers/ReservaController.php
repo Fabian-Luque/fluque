@@ -183,7 +183,7 @@ class ReservaController extends Controller
                             $query->whereNotBetween('checkin', $fechas);
                         });
                         $query->orHas('reservas', '=', 0);
-                    })->with('tipoHabitacion')->with('reservas.cliente','reservas.huespedes' ,'reservas.tipoFuente', 'reservas.metodoPago', 'reservas.estadoReserva')->get();
+                    })->with('tipoHabitacion')->with('reservas.habitacion','reservas.cliente','reservas.huespedes' ,'reservas.tipoFuente', 'reservas.metodoPago', 'reservas.estadoReserva')->get();
 
                 foreach ($habitaciones as $habitacion) {
                     $dias     = array();
