@@ -12,7 +12,7 @@ class Cliente extends Model
 	use SoftDeletes;
     protected $table = 'clientes';
 
-	protected $fillable = ['nombre','rut', 'direccion','ciudad','pais','telefono', 'email', 'giro', 'tipo_cliente_id'];
+	protected $fillable = ['nombre','rut', 'direccion','ciudad','pais','telefono', 'email', 'giro', 'tipo_cliente_id','calificacion_promedio'];
 
 
 	public function reservas(){
@@ -27,6 +27,16 @@ class Cliente extends Model
 		return $this->belongsTo('App\TipoCliente', 'tipo_cliente_id');
 
 	}
+
+	public function calificacionPropiedades(){
+
+        return $this->belongsToMany('App\Propiedad', 'cliente_propiedad')
+        ->withPivot('comentario', 'calificacion')
+    	->withTimestamps();
+
+
+
+    }
 
 
 }
