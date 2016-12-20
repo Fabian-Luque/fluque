@@ -16,8 +16,9 @@ class CreateReservasTable extends Migration
         Schema::create('reservas', function(Blueprint $table){
         $table->increments('id');
         $table->integer('numero_reserva');
+        $table->integer('monto_alojamiento');
+        $table->integer('monto_consumo')->default(0);
         $table->integer('monto_total');
-        $table->integer('monto_sugerido');
         $table->integer('monto_por_pagar');
         $table->integer('ocupacion');
         $table->date('checkin');
@@ -25,7 +26,7 @@ class CreateReservasTable extends Migration
         $table->integer('noches');
         $table->integer('tipo_fuente_id')->unsigned();
         $table->foreign('tipo_fuente_id')->references('id')->on('tipo_fuente');
-        $table->integer('metodo_pago_id')->unsigned();
+        $table->integer('metodo_pago_id')->unsigned()->nullable();
         $table->foreign('metodo_pago_id')->references('id')->on('metodo_pago');
         $table->integer('estado_reserva_id')->unsigned();
         $table->foreign('estado_reserva_id')->references('id')->on('estado_reserva');
