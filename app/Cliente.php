@@ -28,15 +28,6 @@ class Cliente extends Model
 
 	}
 
-	public function calificacionPropiedades(){
-
-        return $this->belongsToMany('App\Propiedad', 'cliente_propiedad')
-        ->withPivot('comentario', 'calificacion')
-    	->withTimestamps();
-
-
-
-    }
 
 
 }

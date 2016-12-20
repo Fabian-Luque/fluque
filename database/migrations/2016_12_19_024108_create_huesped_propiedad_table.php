@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateClientePropiedadTable extends Migration
+class CreateHuespedPropiedadTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,12 +12,12 @@ class CreateClientePropiedadTable extends Migration
      */
     public function up()
     {
-            Schema::create('cliente_propiedad', function (Blueprint $table) {
+        Schema::create('huesped_propiedad', function (Blueprint $table) {
             $table->increments('id');
             $table->string('comentario',250);
             $table->integer('calificacion')->unsigned();
-            $table->integer('cliente_id')->unsigned();
-            $table->foreign('cliente_id')->references('id')->on('clientes');
+            $table->integer('huesped_id')->unsigned();
+            $table->foreign('huesped_id')->references('id')->on('huespedes');
             $table->integer('propiedad_id')->unsigned();
             $table->foreign('propiedad_id')->references('id')->on('propiedades');
             $table->timestamps();
@@ -31,6 +31,6 @@ class CreateClientePropiedadTable extends Migration
      */
     public function down()
     {
-        Schema::drop('cliente_propiedad');
+        Schema::drop('huesped_propiedad');
     }
 }

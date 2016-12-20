@@ -9,6 +9,7 @@ use Response;
 use App\Cliente;
 use App\TipoCliente;
 use App\Propiedad;
+use App\Huesped;
 
 class ClienteController extends Controller
 {
@@ -56,37 +57,42 @@ class ClienteController extends Controller
 
 		$propiedad_id = $request->input('propiedad_id');
 		$huespedes = $request->input('huespedes');
-		$cliente_id = $request->input('cliente_id');
-		$calificacion_cliente = $request->input('calificacion_cliente');
-		$comentario_cliente = $request->input('comentario_cliente');
-
-
-
+		$comentario_huesped = $request->input('comentario_huesped');
+		$calificacion_huesped = $request->input('calificacion_huesped');
 
 		$propiedad = Propiedad::where('id', $propiedad_id)->first();
 
-		$cliente = Cliente::where('id', $cliente_id)->first();
 
 
-		$propiedad->calificacionClientes()->attach($cliente_id,['comentario' => $comentario_cliente, 'calificacion' => $calificacion_cliente]);
+		
+		foreach ($huespedes as $huesped) {
+			
+			$huesped_id = $huesped;
+
+			$huesped = Huesped::where('id', $huesped_id)->first();
+
+			$propiedad->calificacionHuespedes()->attach($huesped->id, ['comentario' => $comentario_huesped, 'calificacion' => $calificacion_huesped]);
+
+			$numero_calificaciones = $huesped->calificacionPropiedades()->count();
 
 
-		$n_calificaciones = $cliente->calificacionPropiedades()->count();
+			$calificacion_total = 0;
+			foreach ($huesped->calificacionPropiedades as $calificacion) {
+						
+				$num = $calificacion->pivot->calificacion;
 
-		$suma_calificacion = 0;
+				$calificacion_total = $calificacion_total + $num;
 
-		foreach($cliente->calificacionPropiedades as $calificacion){
+				$promedio = $calificacion_total / $numero_calificaciones;
 
-			$numero = $calificacion->pivot->calificacion;
-			$suma_calificacion = $suma_calificacion + $numero;
+				$huesped->update(array('calificacion_promedio' => $promedio));
 
 
+			}
+		
 		}
 
-		$calificacion_promedio = $suma_calificacion / $n_calificaciones;
-		$cliente->update(array('calificacion_promedio' => $calificacion_promedio));
-
-
+		
 		return "calificados";
 
 

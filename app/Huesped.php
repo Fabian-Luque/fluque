@@ -9,7 +9,7 @@ class Huesped extends Model
     
 	protected $table = 'huespedes';
 
-	protected $fillable = ['nombre', 'apellido', 'rut', 'pais', 'email', 'telefono', 'reserva_id'];
+	protected $fillable = ['nombre', 'apellido', 'rut', 'pais', 'email', 'telefono', 'reserva_id','calificacion_promedio'];
 
 
 	public function reservas(){
@@ -26,9 +26,6 @@ class Huesped extends Model
 			->withPivot('servicio_id','cantidad', 'precio_total')
 			->withTimestamps();
 
-
-
-
 	}
 
 	public function servicios(){
@@ -38,10 +35,18 @@ class Huesped extends Model
 			->withPivot('reserva_id','cantidad', 'precio_total')
 			->withTimestamps();
 
-
-
-
 	}
+
+	public function calificacionPropiedades(){
+
+        return $this->belongsToMany('App\Propiedad', 'huesped_propiedad')
+        ->withPivot('comentario', 'calificacion')
+        ->withTimestamps();
+
+
+    }
+
+
 
 
 }

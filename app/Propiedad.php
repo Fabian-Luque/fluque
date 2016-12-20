@@ -42,13 +42,12 @@ class Propiedad extends Model
 
     }
 
-    public function calificacionClientes(){
 
-        return $this->belongsToMany('App\Cliente', 'cliente_propiedad')
+    public function calificacionHuespedes(){
+
+        return $this->belongsToMany('App\Huesped', 'huesped_propiedad')
         ->withPivot('comentario', 'calificacion')
         ->withTimestamps();
-
-
 
     }
 
