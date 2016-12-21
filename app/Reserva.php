@@ -11,7 +11,7 @@ class Reserva extends Model
 	use SoftDeletes;
     protected $table = 'reservas';
 
-	protected $fillable = ['monto_total','monto_sugerido','metodo_pago_id','monto_por_pagar', 'ocupacion','tipo_fuente_id',' habitacion_id ' ,'cliente_id','checkin', 'checkout','estado_reserva_id'];
+	protected $fillable = ['monto_consumo','monto_total','monto_sugerido','metodo_pago_id','monto_por_pagar', 'ocupacion','tipo_fuente_id',' habitacion_id ' ,'cliente_id','checkin', 'checkout','estado_reserva_id'];
 
 
 

@@ -246,17 +246,17 @@ class ReservaController extends Controller
 
                 return $data;
 
-        }else{
+                }else{
 
-            $retorno = array(
+                    $retorno = array(
 
-                'msj'       => "No se envia id propiedad",
-                'errors'    => true
+                    'msj'       => "No se envia id propiedad",
+                    'errors'    => true
 
 
-                );
+                    );
 
-                 return Response::json($retorno, 400);
+                     return Response::json($retorno, 400);
 
         }
 
@@ -315,11 +315,6 @@ class ReservaController extends Controller
 
 
     }
-
-
-
-
-
 
 
 

@@ -189,11 +189,28 @@ class HuespedController extends Controller
 		$precio_total = $consumo['precio_total'];
 
 		$reserva = Reserva::where('id', $reserva_id)->first();
-
-
 		$reserva->reservasHuespedes()->attach($huesped_id, ['servicio_id' => $servicio_id, 'cantidad' => $cantidad , 'precio_total' => $precio_total]);
 
 
+		$consumo =$precio_total + $reserva->monto_consumo;
+		$total = $precio_total + $reserva->monto_total;
+		$por_pagar =$precio_total + $reserva->monto_por_pagar;
+
+
+		$reserva->update(array('monto_consumo' => $consumo, 'monto_total' => $total , 'monto_por_pagar' => $por_pagar));
+
+
+/*		$suma_servicios = 0;
+		foreach ($reserva->servicios as $servicio) {
+			
+			$precio = $servicio->pivot->precio_total;
+
+			
+			$suma_servicios = $suma_servicios + $precio;
+
+
+
+		}*/
 
 		}
 
