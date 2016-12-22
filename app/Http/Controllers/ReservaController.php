@@ -242,6 +242,23 @@ class ReservaController extends Controller
                 })->with('habitacion.tipoHabitacion')->with('cliente.tipoCliente')->with('huespedes.servicios')->with('tipoFuente', 'metodoPago', 'estadoReserva')->get();
 
 
+                foreach ($reservas as $reserva){
+                    
+                    foreach ($reserva['huespedes'] as $huesped) {
+                        $huesped->consumo_total = 0;
+                        foreach ($huesped['servicios'] as $servicio) {
+                            $huesped->consumo_total += $servicio->pivot->precio_total;
+
+                        }
+                    }
+
+                }
+
+
+
+
+
+
                 $data = ['reservas' => $reservas,];
 
                 return $data;
