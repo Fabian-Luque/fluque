@@ -10,6 +10,7 @@ use App\Cliente;
 use App\TipoCliente;
 use App\Propiedad;
 use App\Huesped;
+use App\Reserva;
 
 class ClienteController extends Controller
 {
@@ -56,11 +57,15 @@ class ClienteController extends Controller
 
 
 		$propiedad_id = $request->input('propiedad_id');
+		$reserva_id = $request->input('reserva_id');
 		$huespedes = $request->input('huespedes');
 		$comentario_huesped = $request->input('comentario_huesped');
 		$calificacion_huesped = $request->input('calificacion_huesped');
 
 		$propiedad = Propiedad::where('id', $propiedad_id)->first();
+		$reserva = Reserva::where('id', $reserva_id)->first();
+		$reserva->update(array('estado_reserva_id' => 4));
+
 
 
 
@@ -94,9 +99,6 @@ class ClienteController extends Controller
 
 		
 		return "calificados";
-
-
-
 
 	}
 

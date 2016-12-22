@@ -27,7 +27,12 @@ class EstadoReservaTableSeeder extends Seeder
 
     			'nombre' => 'En curso',
 
-    		]
+    		],
+            [
+
+                'nombre' => 'Finalizada',
+
+            ]
 
     		]);
 
