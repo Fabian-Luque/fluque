@@ -52,6 +52,12 @@ class Reserva extends Model
 
 	}
 
+	public function pagos(){
+
+		return $this->hasMany('App\Pago', 'reserva_id');
+
+	}
+
 	public function reservasHuespedes(){
 
 
@@ -67,9 +73,6 @@ class Reserva extends Model
 				->withPivot('huesped_id','cantidad', 'precio_total')
 				->withTimestamps();
 				
-
-
-
 
 	}
 

@@ -11,6 +11,7 @@ use App\EstadoReserva;
 use App\Http\Controllers\Controller;
 use App\Reserva;
 use App\Huesped;
+use App\Pago;
 use Illuminate\Http\Request;
 use Response;
 use \Carbon\Carbon;
@@ -278,6 +279,119 @@ class ReservaController extends Controller
         }
 
         
+    }
+
+    public function pagoReserva(Request $request){
+
+      $metodo_pago = $request->input('metodo_pago_id');
+      $monto_pago =  $request->input('monto_pago'); 
+      $reserva = Reserva::where('id', $request->input('reserva_id'))->first();
+
+      if(is_null($metodo_pago)){
+
+            if($reserva->estado_reserva_id == 1){
+
+               $monto = $reserva->monto_por_pagar;
+               $monto -= $monto_pago;
+
+               $pago                        = new Pago();
+               $pago->monto_pago            = $monto_pago;
+               $pago->tipo                  = "Confirmacion de pago";
+               $pago->reserva_id            = $reserva->id;
+               $pago->save();
+
+               $reserva->update(array('monto_por_pagar' => $monto , 'estado_reserva_id' => 2));
+
+               $data = array(
+
+                'msj' => "Deposito sugerido ingresado satisfactoriamente",
+                'errors' =>false
+               );
+
+                return Response::json($data, 200);
+
+
+
+            }else{
+
+                $data = array(
+
+                'msj' => "Deposito sugerido ya fue ingresado",
+                'errors' =>true
+                );
+
+                return Response::json($data, 400);
+
+
+
+            }
+
+
+      }else{
+
+
+               $monto = $reserva->monto_por_pagar;
+               $monto -= $monto_pago;
+
+               if($reserva->monto_por_pagar > 0){
+
+                   if($monto_pago <= $reserva->monto_por_pagar){
+
+                 
+
+                   $pago                        = new Pago();
+                   $pago->monto_pago            = $monto_pago;
+                   $pago->tipo                  = "Pago parcial o total";
+                   $pago->reserva_id            = $reserva->id;
+                   $pago->save();
+
+                   $reserva->update(array('monto_por_pagar' => $monto, 'metodo_pago_id' => $metodo_pago));
+
+                   $data = array(
+
+                    'msj' => "Pago ingresado satisfactoriamente",
+                    'errors' =>false
+                   );
+
+                    return Response::json($data, 200);
+
+                }elseif($monto_pago > $reserva->monto_por_pagar){
+
+                    $data = array(
+
+                    'msj' => "El monto ingresado es mayor al monto por pagar",
+                    'errors' =>true
+                    );
+
+                    return Response::json($data, 400);
+
+
+                }
+            }else{
+
+
+                $data = array(
+
+                'msj' => "La reserva ya fue pagada",
+                'errors' =>true
+                );
+
+                return Response::json($data, 400);
+
+
+
+            }
+
+
+      }
+
+
+
+
+        
+
+
+
     }
 
 
