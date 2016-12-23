@@ -240,7 +240,7 @@ class ReservaController extends Controller
 
 
 
-                })->with('habitacion.tipoHabitacion')->with('cliente.tipoCliente')->with('huespedes.servicios')->with('tipoFuente', 'metodoPago', 'estadoReserva')->get();
+                })->with('habitacion.tipoHabitacion')->with('pagos')->with('cliente.tipoCliente')->with('huespedes.servicios')->with('tipoFuente', 'metodoPago', 'estadoReserva')->get();
 
 
                 foreach ($reservas as $reserva){
