@@ -386,15 +386,53 @@ class ReservaController extends Controller
       }
 
 
-
-
-        
-
-
-
     }
 
+    public function panel(Request $request){
 
+
+        $id = $request->input('propiedad_id');
+        $fecha = $request->input('fecha_actual');
+
+
+        $entradas = Reserva::whereHas('habitacion', function($query) use($id){
+
+                    $query->where('propiedad_id', $id);
+
+        })->where('checkin', $fecha)->get();
+
+
+        $salidas = Reserva::whereHas('habitacion', function($query) use($id){
+
+                    $query->where('propiedad_id', $id);
+
+        })->where('checkout', $fecha)->get();
+
+       $habitaciones_occupadas = Reserva::whereHas('habitacion', function($query) use($id){
+
+                    $query->where('propiedad_id', $id);
+
+        })->where('estado_reserva_id', 3)->get();
+
+
+
+        $cantidad_entradas = count($entradas);
+        $cantidad_salidas  = count($salidas); 
+        $cantidad_ocupadas = count($habitaciones_occupadas); 
+
+
+        $data = array(
+
+            'entradas' => $cantidad_entradas,
+            'salidas'  => $cantidad_salidas,
+            'habitaciones_ocupadas' => $cantidad_ocupadas
+
+
+            );
+
+        return $data;
+
+    }
 
 
     public function update(Request $request, $id){
