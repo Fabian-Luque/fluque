@@ -399,14 +399,14 @@ class ReservaController extends Controller
 
                     $query->where('propiedad_id', $id);
 
-        })->where('checkin', $fecha)->get();
+        })->where('checkin', $fecha)->with('habitacion')->with('huespedes')->with('cliente')->with('estadoReserva')->get();
 
 
         $salidas = Reserva::whereHas('habitacion', function($query) use($id){
 
                     $query->where('propiedad_id', $id);
 
-        })->where('checkout', $fecha)->get();
+        })->where('checkout', $fecha)->with('habitacion')->with('huespedes')->with('cliente')->with('estadoReserva')->get();
 
        $habitaciones_occupadas = Reserva::whereHas('habitacion', function($query) use($id){
 
@@ -423,9 +423,11 @@ class ReservaController extends Controller
 
         $data = array(
 
-            'entradas' => $cantidad_entradas,
-            'salidas'  => $cantidad_salidas,
-            'habitaciones_ocupadas' => $cantidad_ocupadas
+            'cantidad_entradas' => $cantidad_entradas,
+            'cantidad_salidas'  => $cantidad_salidas,
+            'habitaciones_ocupadas' => $cantidad_ocupadas,
+            'entradas' => $entradas,
+            'salidas'  => $salidas
 
 
             );
