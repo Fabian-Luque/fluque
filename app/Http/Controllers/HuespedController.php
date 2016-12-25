@@ -21,6 +21,8 @@ class HuespedController extends Controller
 
 			$huesped = Huesped::where('rut', $request->input('rut'))->first();
 
+
+			
 			if(is_null($huesped)){
 
 				$data = array(
@@ -36,7 +38,15 @@ class HuespedController extends Controller
 
 			}else{
 
-				return $huesped;
+			$comentario = $huesped->calificacionPropiedades->last();
+
+				$data = array(
+					'huesped' 			   => $huesped,
+					'ultimo_comentario'    => $comentario
+
+					);
+
+				return $data;
 
 
 
