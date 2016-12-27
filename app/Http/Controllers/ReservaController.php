@@ -454,7 +454,7 @@ class ReservaController extends Controller
 
             
                 'date' =>$fecha,
-                'value' =>$porcentaje
+                'value' =>round($porcentaje)
 
         ];
 
