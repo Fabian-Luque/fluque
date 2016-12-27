@@ -317,7 +317,7 @@ class ReservaController extends Controller
 
                 $data = array(
 
-                'msj' => "Deposito sugerido ya fue ingresado",
+                'msj' => "No permitido",
                 'errors' =>true
                 );
 

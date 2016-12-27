@@ -189,15 +189,17 @@ class HabitacionController extends Controller
 
             $habitacion_tipo    = $habitacion->id;
             $habitacion_precio  = $habitacion->precio_base;
-            $fecha_inicio       = '1 January, 2016';
-            $fecha_fin          = '31 December, 2016';
+            $fecha_inicio       = '2016-11-01';
+            $fecha_fin          = '2017-12-31';
+
+            
             $fecha              = date ("Y-m-d",strtotime($fecha_inicio));
+
 
             $habitacion_base = Habitacion::find($habitacion_tipo);
 
 
             while (strtotime($fecha) <= strtotime($fecha_fin)) {
-                
                 
 
            $habitacion_dia =  Calendario::firstOrNew(array('fecha'=>$fecha, 'disponibilidad' => $habitacion_base->disponibilidad_base, 'precio' => $habitacion_base->precio_base,'habitacion_id' => $habitacion_tipo));
