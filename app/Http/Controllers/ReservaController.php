@@ -12,6 +12,7 @@ use App\Http\Controllers\Controller;
 use App\Reserva;
 use App\Huesped;
 use App\Pago;
+use App\Propiedad;
 use Illuminate\Http\Request;
 use Response;
 use \Carbon\Carbon;
@@ -393,6 +394,8 @@ class ReservaController extends Controller
 
         $id = $request->input('propiedad_id');
         $fecha = $request->input('fecha_actual');
+        $fecha_inicio = $request->input('fecha_inicio');
+        $fecha_fin = $request->input('fecha_fin');
 
 
         $entradas = Reserva::whereHas('habitacion', function($query) use($id){
@@ -408,7 +411,7 @@ class ReservaController extends Controller
 
         })->where('checkout', $fecha)->with('habitacion.tipoHabitacion')->with('huespedes')->with('cliente')->with('estadoReserva')->get();
 
-       $habitaciones_occupadas = Reserva::whereHas('habitacion', function($query) use($id){
+        $habitaciones_occupadas = Reserva::whereHas('habitacion', function($query) use($id){
 
                     $query->where('propiedad_id', $id);
 
@@ -421,13 +424,55 @@ class ReservaController extends Controller
         $cantidad_ocupadas = count($habitaciones_occupadas); 
 
 
+
+
+
+
+        $fechaInicio=strtotime($fecha_inicio);
+        $fechaFin=strtotime($fecha_fin);
+        $ocupacion = [];
+
+        $propiedad = Propiedad::where('id', $id)->first();
+        $numero_habitaciones = $propiedad->numero_habitaciones;
+
+
+
+        for($i=$fechaInicio; $i<=$fechaFin; $i+=86400){
+            
+            $fecha = date("Y-m-d", $i);
+
+        $reservas = Reserva::whereHas('habitacion', function($query) use($id){
+
+                    $query->where('propiedad_id', $id);
+
+        })->where('checkin','<=' ,$fecha)->where('checkout', '>', $fecha)->get();
+
+
+        $porcentaje = count($reservas)*100 / $numero_habitaciones;
+
+        $ocupacion_fecha = [
+
+            
+                'date' =>$fecha,
+                'value' =>$porcentaje
+
+        ];
+
+
+        array_push($ocupacion, $ocupacion_fecha);
+
+        unset($ocupacion_fecha);
+
+        }
+
         $data = array(
 
             'cantidad_entradas' => $cantidad_entradas,
             'cantidad_salidas'  => $cantidad_salidas,
             'habitaciones_ocupadas' => $cantidad_ocupadas,
             'entradas' => $entradas,
-            'salidas'  => $salidas
+            'salidas'  => $salidas,
+            'porcentaje_ocupacion' => $ocupacion
 
 
             );

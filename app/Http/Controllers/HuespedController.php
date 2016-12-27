@@ -12,6 +12,10 @@ use App\Reserva;
 class HuespedController extends Controller
 {
     
+
+
+
+
 	public function index(Request $request){
 
 
@@ -122,10 +126,6 @@ class HuespedController extends Controller
 
 
 	}
-
-
-
-
 
 
 

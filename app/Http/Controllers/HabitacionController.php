@@ -122,6 +122,29 @@ class HabitacionController extends Controller
 
 
 
+
+    public function ocupacion(Request $request){
+
+        $fecha = $request->input('fecha');
+
+
+
+
+
+       return $fechaInicio = new Carbon($fecha);
+       return strtotime("2015-01-03");
+
+       
+
+    }
+
+
+
+
+
+
+
+
     public function index(Request $request){
 
     	  if($request->has('propiedad_id')){
