@@ -505,11 +505,13 @@ class ReservaController extends Controller
 
         $q->where('propiedad_id', $id);}])->get();*/
 
-        $tipos = TipoHabitacion::whereHas('habitaciones', function($query) use($id){
+       $tipos = TipoHabitacion::whereHas('habitaciones', function($query) use($id){
 
                     $query->where('propiedad_id', $id);
 
-        })->with('habitaciones')->get();
+        })->with(['habitaciones' => function ($q) use($id) {
+
+        $q->where('propiedad_id', $id);}])->get();
 
 
 
@@ -523,20 +525,21 @@ class ReservaController extends Controller
 
 
 
-        $habitaciones = [];
+        $habitaciones_tipo = [];
 
         foreach ($tipos as $tipo) {
                 
+            $habitaciones = $tipo->habitaciones;
             $nombre_tipo = $tipo->nombre;
 
             $nombre = [ 'nombre' => $nombre_tipo, 'header' => 1];
-            array_push($habitaciones, $nombre);
+            array_push($habitaciones_tipo, $nombre);
 
-            foreach ($tipo->Habitaciones as $habitacion) {
+            foreach ($habitaciones as $habitacion) {
                 
                 $nombre_habitacion = $habitacion->nombre;
                 $hab = [ 'nombre' => $nombre_habitacion];
-                array_push($habitaciones, $hab);
+                array_push($habitaciones_tipo, $hab);
 
 
 
@@ -544,6 +547,8 @@ class ReservaController extends Controller
 
 
         }
+
+        /*return $habitaciones_tipo;*/
 
 
         $reservas_calendario = [];
@@ -562,7 +567,7 @@ class ReservaController extends Controller
 
         }
 
-        array_push($calendario, $habitaciones);
+        array_push($calendario, $habitaciones_tipo);
         array_push($calendario, $reservas_calendario);
 
         return $calendario;
