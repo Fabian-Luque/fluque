@@ -12,7 +12,7 @@ use App\Http\Controllers\Controller;
 use App\Reserva;
 use App\Huesped;
 use App\Pago;
-use App\tipoHabitacion;
+use App\TipoHabitacion;
 use App\Propiedad;
 use Illuminate\Http\Request;
 use Response;
@@ -501,7 +501,7 @@ class ReservaController extends Controller
         $fechas = [$fecha_inicio, $fecha_fin];
 
 
-        $tipos = tipoHabitacion::with(['habitaciones' => function ($q) use($id) {
+        $tipos = TipoHabitacion::with(['habitaciones' => function ($q) use($id) {
 
         $q->where('propiedad_id', $id);}])->get();
 
