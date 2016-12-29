@@ -12,6 +12,7 @@ use App\Http\Controllers\Controller;
 use App\Reserva;
 use App\Huesped;
 use App\Pago;
+use App\tipoHabitacion;
 use App\Propiedad;
 use Illuminate\Http\Request;
 use Response;
@@ -480,6 +481,89 @@ class ReservaController extends Controller
         return $data;
 
     }
+
+
+    public function calendario(Request $request){
+
+
+   
+
+        /*$dia = date ("j",strtotime($fecha));*/
+
+        $id = $request->input('propiedad_id');
+        $fecha_inicio = $request->input('fecha_inicio');
+        $fecha_fin    = $request->input('fecha_fin');
+        $ancho_calendario = $request->input('ancho_calendario');
+        $ancho_celdas = $request->input('ancho_celdas');
+        $calendario = [];
+
+
+        $fechas = [$fecha_inicio, $fecha_fin];
+
+
+        $tipos = tipoHabitacion::with(['habitaciones' => function ($q) use($id) {
+
+        $q->where('propiedad_id', $id);}])->get();
+
+
+        $reservas = Reserva::whereHas('habitacion', function($query) use($id){
+
+                    $query->where('propiedad_id', $id);
+
+        })->with('habitacion')->whereBetween('checkin', $fechas)->get();
+
+
+
+
+        $habitaciones = [];
+
+        foreach ($tipos as $tipo) {
+                
+            $nombre_tipo = $tipo->nombre;
+
+            $nombre = [ 'nombre' => $nombre_tipo, 'header' => 1];
+            array_push($habitaciones, $nombre);
+
+            foreach ($tipo->Habitaciones as $habitacion) {
+                
+                $nombre_habitacion = $habitacion->nombre;
+                $hab = [ 'nombre' => $nombre_habitacion];
+                array_push($habitaciones, $hab);
+
+
+
+            }
+
+
+        }
+
+
+        $reservas_calendario = [];
+        foreach ($reservas as $reserva) {
+       
+            $noches = $reserva->noches;
+            $dia = date ("j",strtotime($reserva->checkin));
+            $reserva->left = $dia * $ancho_celdas;
+
+            $reserva->right = $ancho_calendario - $reserva->left - ($noches * $ancho_celdas);
+
+            array_push($reservas_calendario, $reserva);
+
+
+
+
+        }
+
+        array_push($calendario, $habitaciones);
+        array_push($calendario, $reservas_calendario);
+
+        return $calendario;
+
+
+
+
+    }
+
 
 
     public function update(Request $request, $id){
