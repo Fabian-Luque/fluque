@@ -501,9 +501,17 @@ class ReservaController extends Controller
         $fechas = [$fecha_inicio, $fecha_fin];
 
 
-        $tipos = TipoHabitacion::with(['habitaciones' => function ($q) use($id) {
+/*        $tipos = TipoHabitacion::with(['habitaciones' => function ($q) use($id) {
 
-        $q->where('propiedad_id', $id);}])->get();
+        $q->where('propiedad_id', $id);}])->get();*/
+
+        $tipos = TipoHabitacion::whereHas('habitaciones', function($query) use($id){
+
+                    $query->where('propiedad_id', $id);
+
+        })->with('habitaciones')->get();
+
+
 
 
         $reservas = Reserva::whereHas('habitacion', function($query) use($id){
