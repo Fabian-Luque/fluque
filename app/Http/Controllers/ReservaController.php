@@ -506,13 +506,13 @@ class ReservaController extends Controller
         $q->where('propiedad_id', $id);}])->get();
 
 
-
+/*with('tipoHabitacion')->with('reservas.habitacion.tipoHabitacion','reservas.cliente','reservas.huespedes' ,'reservas.tipoFuente', 'reservas.metodoPago', 'reservas.estadoReserva')*/
 
         $reservas = Reserva::whereHas('habitacion', function($query) use($id){
 
                     $query->where('propiedad_id', $id);
 
-        })->with('habitacion')->whereBetween('checkin', $fechas)->get();
+        })->with('habitacion.tipoHabitacion')->with('cliente','huespedes','tipoFuente', 'metodoPago','estadoReserva')->whereBetween('checkin', $fechas)->get();
 
 
 
