@@ -497,7 +497,7 @@ class ReservaController extends Controller
         $fechas = [$fecha_inicio, $fecha_fin];
 
 
-       $tipos = TipoHabitacion::whereHas('habitaciones', function($query) use($id){
+        $tipos = TipoHabitacion::whereHas('habitaciones', function($query) use($id){
 
                     $query->where('propiedad_id', $id);
 
@@ -512,6 +512,13 @@ class ReservaController extends Controller
 
         })->with('habitacion.tipoHabitacion')->with('cliente','huespedes','tipoFuente', 'metodoPago','estadoReserva')->whereBetween('checkin', $fechas)->get();
 
+
+
+        $reservas_checkout = Reserva::whereHas('habitacion', function($query) use($id){
+
+                    $query->where('propiedad_id', $id);
+
+        })->with('habitacion.tipoHabitacion')->with('cliente','huespedes','tipoFuente', 'metodoPago','estadoReserva')->whereBetween('checkout', $fechas)->get();
 
 
 
@@ -541,6 +548,7 @@ class ReservaController extends Controller
 
 
         $reservas_calendario = [];
+        $mes_calendario =date ("F",strtotime($fecha_inicio));
         foreach ($reservas as $reserva) {
        
 
@@ -548,16 +556,17 @@ class ReservaController extends Controller
             $checkout =date ("F",strtotime($reserva->checkout));
 
             if($checkin == $checkout){
-            $noches = $reserva->noches;
-            $dia = date ("j",strtotime($reserva->checkin));
-            $reserva->left = $dia * $ancho_celdas;
 
-            $reserva->right = $ancho_calendario - $reserva->left - ($noches * $ancho_celdas);
+                $noches = $reserva->noches;
+                $dia = date ("j",strtotime($reserva->checkin));
+                $reserva->left = $dia * $ancho_celdas;
 
-            array_push($reservas_calendario, $reserva);
-        }else{
+                $reserva->right = $ancho_calendario - $reserva->left - ($noches * $ancho_celdas);
 
+                array_push($reservas_calendario, $reserva);
+             }else{
 
+                
             $mes_checkin =date ("F",strtotime($reserva->checkin));
             $mes_calendario =date ("F",strtotime($fecha_inicio));
 
@@ -569,26 +578,43 @@ class ReservaController extends Controller
 
                 $reserva->right = 0;
 
-            } else {
+                } 
 
-
-                $reserva->left = 0;
-                $reserva->right = $ancho_calendario - ( $ancho_celdas * $dia_checkout);
-            }
+            ###########################################################################
+            //recorriendo resultado de reservas por checkout
+            ###########################################################################
 
             array_push($reservas_calendario, $reserva);
 
 
-        }
+            }
 
 
 
         }
 
-        array_push($calendario, $habitaciones_tipo);
-        array_push($calendario, $reservas_calendario);
+            foreach ($reservas_checkout as $reserva_checkout) {
+                $mes_checkout =date ("F",strtotime($reserva_checkout->checkout));
+                $mes_checkin =date ("F",strtotime($reserva_checkout->checkin));
+                $dia_checkout= date ("j",strtotime($reserva_checkout->checkout));
+            
+                 if ($mes_checkout == $mes_calendario) {
+                     if ($mes_checkin != $mes_calendario) {
 
-        return $calendario;
+                    $reserva_checkout->left = 0;
+                    $reserva_checkout->right = $ancho_calendario - ( $ancho_celdas * $dia_checkout);
+
+                    array_push($reservas_calendario, $reserva_checkout);
+
+                         }
+                    }
+
+                }
+
+            array_push($calendario, $habitaciones_tipo);
+            array_push($calendario, $reservas_calendario);
+
+         return $calendario;
 
 
 
