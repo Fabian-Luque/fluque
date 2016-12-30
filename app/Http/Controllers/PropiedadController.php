@@ -9,6 +9,8 @@ use Validator;
 use App\Propiedad;
 use Response;
 use App\TipoPropiedad;
+use App\habitacion;
+use App\TipoHabitacion;
 
 
 
@@ -37,7 +39,30 @@ class PropiedadController extends Controller
 		public function show($id){
 
 		  try {
-            return Propiedad::where('id', $id)->get();
+
+
+
+           $propiedad = Propiedad::where('id', $id)->get();
+
+           $tipos = TipoHabitacion::whereHas('habitaciones', function($query) use($id){
+
+                    $query->where('propiedad_id', $id);
+
+           })->get();
+
+           foreach ($propiedad as $prop) {
+
+                $prop->tipos_habitaciones = count($tipos);
+
+
+           }
+
+           return $propiedad;
+
+
+
+
+
         } catch (ModelNotFoundException $e) {
             $data = [
                 'errors' => true,

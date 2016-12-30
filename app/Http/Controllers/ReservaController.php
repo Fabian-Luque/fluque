@@ -486,10 +486,6 @@ class ReservaController extends Controller
     public function calendario(Request $request){
 
 
-   
-
-        /*$dia = date ("j",strtotime($fecha));*/
-
         $id = $request->input('propiedad_id');
         $fecha_inicio = $request->input('fecha_inicio');
         $fecha_fin    = $request->input('fecha_fin');
@@ -500,10 +496,6 @@ class ReservaController extends Controller
 
         $fechas = [$fecha_inicio, $fecha_fin];
 
-
-/*        $tipos = TipoHabitacion::with(['habitaciones' => function ($q) use($id) {
-
-        $q->where('propiedad_id', $id);}])->get();*/
 
        $tipos = TipoHabitacion::whereHas('habitaciones', function($query) use($id){
 
@@ -548,7 +540,6 @@ class ReservaController extends Controller
 
         }
 
-        /*return $habitaciones_tipo;*/
 
 
         $reservas_calendario = [];
