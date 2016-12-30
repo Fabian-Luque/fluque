@@ -11,6 +11,7 @@ use App\User;
 use Response;
 use App\Propiedad;
 use App\Servicio;
+use App\TipoHabitacion;
 use DB;
 
 
@@ -21,29 +22,30 @@ class UserController extends Controller
 
 
 
-/*	public function index(){
-
-		$usuarios = User::all();
-
-
-	      $respuesta = [
-
-            'data' => $usuarios,
-            'errors' => false,
-
-        ];
-
-        return Response::json($respuesta, 200);
-
-  
-
-	}*/
-
 
 	public function show($id){
 
 		  try {
-            return User::where('id', $id)->with('propiedad')->get();
+
+            $users = User::where('id', $id)->with('propiedad')->get();
+
+            foreach ($users as $user) {
+                    
+                $id = $user->propiedad->id;
+
+                $tipos = TipoHabitacion::whereHas('habitaciones', function($query) use($id){
+
+                    $query->where('propiedad_id', $id);
+
+                })->get();
+
+
+                $user->tipos_habitaciones = count($tipos);
+
+            }
+
+            return $users;
+
         } catch (ModelNotFoundException $e) {
             $data = [
                 'errors' => true,
@@ -51,10 +53,6 @@ class UserController extends Controller
             ];
             return Response::json($data, 404);
         }
-
-
-
-
 
 	}
     
@@ -133,15 +131,6 @@ class UserController extends Controller
             $servicio3->save();
 
 
-
-
-
-
-
-
-            
-
-			/*return 'usuario creado';*/
 
 	   $data = [
                 'errors' => false,
