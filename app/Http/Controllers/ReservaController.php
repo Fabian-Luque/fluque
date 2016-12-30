@@ -506,8 +506,6 @@ class ReservaController extends Controller
         $q->where('propiedad_id', $id);}])->get();
 
 
-/*with('tipoHabitacion')->with('reservas.habitacion.tipoHabitacion','reservas.cliente','reservas.huespedes' ,'reservas.tipoFuente', 'reservas.metodoPago', 'reservas.estadoReserva')*/
-
         $reservas = Reserva::whereHas('habitacion', function($query) use($id){
 
                     $query->where('propiedad_id', $id);
@@ -545,6 +543,11 @@ class ReservaController extends Controller
         $reservas_calendario = [];
         foreach ($reservas as $reserva) {
        
+
+            $checkin =date ("F",strtotime($reserva->checkin));
+            $checkout =date ("F",strtotime($reserva->checkout));
+
+            if($checkin == $checkout){
             $noches = $reserva->noches;
             $dia = date ("j",strtotime($reserva->checkin));
             $reserva->left = $dia * $ancho_celdas;
@@ -552,7 +555,31 @@ class ReservaController extends Controller
             $reserva->right = $ancho_calendario - $reserva->left - ($noches * $ancho_celdas);
 
             array_push($reservas_calendario, $reserva);
+        }else{
 
+
+            $mes_checkin =date ("F",strtotime($reserva->checkin));
+            $mes_calendario =date ("F",strtotime($fecha_inicio));
+
+            if ($mes_checkin == $mes_calendario) {
+
+
+                $dia = date ("j",strtotime($reserva->checkin));
+                $reserva->left = $dia * $ancho_celdas;
+
+                $reserva->right = 0;
+
+            } else {
+
+
+                $reserva->left = 0;
+                $reserva->right = $ancho_calendario - ( $ancho_celdas * $dia_checkout);
+            }
+
+            array_push($reservas_calendario, $reserva);
+
+
+        }
 
 
 
