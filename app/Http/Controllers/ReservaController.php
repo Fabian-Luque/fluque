@@ -564,9 +564,9 @@ class ReservaController extends Controller
 
                 $noches = $reserva->noches;
                 $dia = date ("j",strtotime($reserva->checkin));
-                $reserva->left = $dia * $ancho_celdas;
+                $reserva->left = ($dia * $ancho_celdas)-30;
 
-                $reserva->right = ($ancho_calendario - $reserva->left - ($noches * $ancho_celdas))+$ancho_celdas;
+                $reserva->right = (($ancho_calendario - $reserva->left - ($noches * $ancho_celdas))+$ancho_celdas)-60;
 
                 array_push($reservas_calendario, $reserva);
              }else{
@@ -579,7 +579,7 @@ class ReservaController extends Controller
 
 
                 $dia = date ("j",strtotime($reserva->checkin));
-                $reserva->left = $dia * $ancho_celdas;
+                $reserva->left = ($dia * $ancho_celdas)-30;
 
                 $reserva->right = 0;
 
@@ -607,7 +607,7 @@ class ReservaController extends Controller
                      if ($mes_checkin != $mes_calendario) {
 
                     $reserva_checkout->left = 0;
-                    $reserva_checkout->right = ($ancho_calendario - ( $ancho_celdas * $dia_checkout))+$ancho_celdas;
+                    $reserva_checkout->right = (($ancho_calendario - ( $ancho_celdas * $dia_checkout))+$ancho_celdas)-30;
 
                     array_push($reservas_calendario, $reserva_checkout);
 
