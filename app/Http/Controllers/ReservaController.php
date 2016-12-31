@@ -545,8 +545,6 @@ class ReservaController extends Controller
 
         }
 
-
-
         $reservas_calendario = [];
         $mes_calendario =date ("F",strtotime($fecha_inicio));
         foreach ($reservas as $reserva) {
