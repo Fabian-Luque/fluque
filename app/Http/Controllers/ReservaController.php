@@ -419,6 +419,13 @@ class ReservaController extends Controller
         })->where('estado_reserva_id', 3)->get();
 
 
+/*       return  $reservas_dia = Reserva::whereHas('habitacion', function($query) use($id){
+
+                    $query->where('propiedad_id', $id);
+
+        })->where('created_at', $fecha)->get();*/
+
+
 
         $cantidad_entradas = count($entradas);
         $cantidad_salidas  = count($salidas); 
@@ -559,7 +566,7 @@ class ReservaController extends Controller
                 $dia = date ("j",strtotime($reserva->checkin));
                 $reserva->left = $dia * $ancho_celdas;
 
-                $reserva->right = $ancho_calendario - $reserva->left - ($noches * $ancho_celdas);
+                $reserva->right = ($ancho_calendario - $reserva->left - ($noches * $ancho_celdas))+$ancho_celdas;
 
                 array_push($reservas_calendario, $reserva);
              }else{
@@ -600,7 +607,7 @@ class ReservaController extends Controller
                      if ($mes_checkin != $mes_calendario) {
 
                     $reserva_checkout->left = 0;
-                    $reserva_checkout->right = $ancho_calendario - ( $ancho_celdas * $dia_checkout);
+                    $reserva_checkout->right = ($ancho_calendario - ( $ancho_celdas * $dia_checkout))+$ancho_celdas;
 
                     array_push($reservas_calendario, $reserva_checkout);
 
