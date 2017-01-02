@@ -393,10 +393,16 @@ class ReservaController extends Controller
     public function panel(Request $request){
 
 
+        $startDate = Carbon::today()->startOfDay();
+        $endDate = Carbon::today()->endOfDay();
+
+
         $id = $request->input('propiedad_id');
         $fecha = $request->input('fecha_actual');
         $fecha_inicio = $request->input('fecha_inicio');
         $fecha_fin = $request->input('fecha_fin');
+
+        $fecha_hoy = Carbon::today();
 
 
         $entradas = Reserva::whereHas('habitacion', function($query) use($id){
@@ -419,19 +425,19 @@ class ReservaController extends Controller
         })->where('estado_reserva_id', 3)->get();
 
 
-/*       return  $reservas_dia = Reserva::whereHas('habitacion', function($query) use($id){
+
+        $reservas_dia = Reserva::whereHas('habitacion', function($query) use($id){
 
                     $query->where('propiedad_id', $id);
 
-        })->where('created_at', $fecha)->get();*/
+        })->whereBetween('created_at', [$startDate, $endDate])->with('habitacion.tipoHabitacion')->with('huespedes')->with('cliente')->with('estadoReserva')->with('metodoPago')->with('tipoFuente')->get();
 
 
 
-        $cantidad_entradas = count($entradas);
-        $cantidad_salidas  = count($salidas); 
-        $cantidad_ocupadas = count($habitaciones_occupadas); 
-
-
+        $cantidad_entradas     = count($entradas);
+        $cantidad_salidas      = count($salidas); 
+        $cantidad_ocupadas     = count($habitaciones_occupadas); 
+        $cantidad_reservas_dia = count($reservas_dia);
 
 
 
@@ -473,6 +479,19 @@ class ReservaController extends Controller
 
         }
 
+        $suma_monto_total = 0;
+        $suma_noches = 0;
+        foreach ($reservas_dia as $reserva_dia) {
+            
+            $monto_total = $reserva_dia->monto_total;
+            $suma_monto_total += $monto_total;
+
+            $noches = $reserva_dia->noches;
+            $suma_noches += $noches;
+
+
+        }
+
         $data = array(
 
             'cantidad_entradas' => $cantidad_entradas,
@@ -480,7 +499,11 @@ class ReservaController extends Controller
             'habitaciones_ocupadas' => $cantidad_ocupadas,
             'entradas' => $entradas,
             'salidas'  => $salidas,
-            'porcentaje_ocupacion' => $ocupacion
+            'cantidad_reservas_dia' => $cantidad_reservas_dia,
+            'suma_monto_total' => $suma_monto_total,
+            'suma_noches' => $suma_noches,
+            'porcentaje_ocupacion' => $ocupacion,
+            'reservas_dia' => $reservas_dia,
 
 
             );
