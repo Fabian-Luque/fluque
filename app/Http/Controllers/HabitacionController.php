@@ -169,6 +169,14 @@ class HabitacionController extends Controller
         } else {
 
 
+            $propiedad_id = $request->get('propiedad_id');
+            $propiedad = Propiedad::where('id', $propiedad_id)->first();
+            $cantidad_habitaciones = $propiedad->numero_habitaciones;
+
+            $habitaciones_ingresadas = $propiedad->habitaciones->count();
+
+            if($cantidad_habitaciones > $habitaciones_ingresadas){
+
             $habitacion                           = new Habitacion();
             $habitacion->nombre          	      = $request->get('nombre');
           	$habitacion->precio_base              = $request->get('precio_base');
@@ -220,6 +228,20 @@ class HabitacionController extends Controller
             	];
 
 			return Response::json($data, 201);
+
+        }else{
+
+                $data = [
+                'errors' => true,
+                'msg' => 'habitaciones ya creadas',
+
+                ];
+
+            return Response::json($data, 400);
+
+
+
+        }
 
         }
 
