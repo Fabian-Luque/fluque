@@ -97,7 +97,7 @@ class PropiedadController extends Controller
 			'descripcion'					=> 'required',
             'iva'                           => 'required|numeric',
             'porcentaje_deposito'           => 'required|numeric',
-            'pago'                          => 'numeric',
+
 			
 		);
 
