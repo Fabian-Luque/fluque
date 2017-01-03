@@ -26,7 +26,7 @@ class TipoHabitacionTableSeeder extends Seeder
 
     		[
 
-    			'nombre' => 'Tiple',
+    			'nombre' => 'Triple',
 
     		],
     		[
