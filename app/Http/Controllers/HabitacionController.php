@@ -233,7 +233,7 @@ class HabitacionController extends Controller
 
                 $data = [
                 'errors' => true,
-                'msg' => 'habitaciones ya creadas',
+                'msg' => 'Habitaciones ya creadas',
 
                 ];
 
