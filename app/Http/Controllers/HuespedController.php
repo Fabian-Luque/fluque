@@ -153,9 +153,6 @@ class HuespedController extends Controller
     				$q->where('estado_reserva_id', 3)->with('habitacion');}])->get();
 
 
-			
-
-
 
 			foreach ($huespedes as $huesped) {
 
