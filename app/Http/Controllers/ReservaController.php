@@ -232,10 +232,13 @@ class ReservaController extends Controller
               if($request->has('propiedad_id')){
 
 
-
                 $id = $request->input('propiedad_id');
 
+                $propiedad = Propiedad::where('id', $id)->first();
 
+                if(!is_null($propiedad)){
+
+                    
                 $reservas = Reserva::whereHas('habitacion', function($query) use($id){
 
                     $query->where('propiedad_id', $id);
@@ -257,14 +260,30 @@ class ReservaController extends Controller
 
                 }
 
-
-
-
-
-
                 $data = ['reservas' => $reservas,];
 
                 return $data;
+
+
+                }else{
+
+
+                $data = array(
+
+                    'msj' => " No se encuentra propiedad",
+                    'errors' => true
+
+
+                );
+
+                return Response::json($data, 404);
+
+
+
+
+                }
+
+
 
                 }else{
 
