@@ -74,11 +74,13 @@ class ClienteController extends Controller
 
 		if($reserva_checkout == $fecha_hoy){
 
+			return "estamos en iguales";
 	
 		$reserva->update(array('estado_reserva_id' => 4));
 
 
 		foreach ($huespedes as $huesped) {
+
 			
 			$huesped_id = $huesped;
 
@@ -107,9 +109,43 @@ class ClienteController extends Controller
 
 
 
+		}elseif($reserva_checkout < $fecha_hoy){
+
+			$reserva->update(array('estado_reserva_id' => 4));
+
+
+			foreach ($huespedes as $huesped) {
+
+			
+			$huesped_id = $huesped;
+
+			$huesped = Huesped::where('id', $huesped_id)->first();
+
+			$propiedad->calificacionHuespedes()->attach($huesped->id, ['comentario' => $comentario_huesped, 'calificacion' => $calificacion_huesped]);
+
+			$numero_calificaciones = $huesped->calificacionPropiedades()->count();
+
+
+			$calificacion_total = 0;
+			foreach ($huesped->calificacionPropiedades as $calificacion) {
+						
+				$num = $calificacion->pivot->calificacion;
+
+				$calificacion_total = $calificacion_total + $num;
+
+				$promedio = $calificacion_total / $numero_calificaciones;
+
+				$huesped->update(array('calificacion_promedio' => $promedio));
+
+
+			}
+		
+		}
+
 
 
 		}else{
+
 
 			$habitacion = Habitacion::where('id', $reserva->habitacion_id)->first();
 
@@ -148,7 +184,36 @@ class ClienteController extends Controller
 
 
 			}	
+			
 			$reserva->update(array('estado_reserva_id' => 4,'monto_alojamiento' => $precio_alojamiento, 'monto_total' => $monto_total, 'monto_por_pagar' => $monto_por_pagar, 'checkout' => $fecha_actual, 'noches' => $noches));
+
+
+			foreach ($huespedes as $huesped) {
+
+			$huesped_id = $huesped;
+
+			$huesped = Huesped::where('id', $huesped_id)->first();
+
+			$propiedad->calificacionHuespedes()->attach($huesped->id, ['comentario' => $comentario_huesped, 'calificacion' => $calificacion_huesped]);
+
+			$numero_calificaciones = $huesped->calificacionPropiedades()->count();
+
+
+			$calificacion_total = 0;
+			foreach ($huesped->calificacionPropiedades as $calificacion) {
+						
+				$num = $calificacion->pivot->calificacion;
+
+				$calificacion_total = $calificacion_total + $num;
+
+				$promedio = $calificacion_total / $numero_calificaciones;
+
+				$huesped->update(array('calificacion_promedio' => $promedio));
+
+
+			}
+		
+		}
 
 
 		}	
