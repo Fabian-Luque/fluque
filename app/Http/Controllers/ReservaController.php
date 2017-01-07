@@ -552,14 +552,14 @@ class ReservaController extends Controller
 
         })->with(['habitaciones' => function ($q) use($id) {
 
-        $q->where('propiedad_id', $id);}])->get();
+        $q->where('propiedad_id', $id)->with('tipoHabitacion');}])->get();
 
 
         $reservas = Reserva::whereHas('habitacion', function($query) use($id){
 
                     $query->where('propiedad_id', $id);
 
-        })->with('habitacion.propiedad','habitacion.tipoHabitacion')->with('cliente','huespedes.servicios','tipoFuente', 'metodoPago','estadoReserva','pagos')->whereBetween('checkin', $fechas)->get();
+        })->with('habitacion.tipoHabitacion')->with('cliente','huespedes.servicios','tipoFuente', 'metodoPago','estadoReserva','pagos')->whereBetween('checkin', $fechas)->get();
 
 
 
@@ -583,9 +583,9 @@ class ReservaController extends Controller
 
             foreach ($habitaciones as $habitacion) {
                 
-                $nombre_habitacion = $habitacion->nombre;
-                $hab = [ 'nombre' => $nombre_habitacion];
-                array_push($habitaciones_tipo, $hab);
+/*                $nombre_habitacion = $habitacion->nombre;
+                $hab = [ 'nombre' => $nombre_habitacion];*/
+                array_push($habitaciones_tipo, $habitacion);
 
 
 
