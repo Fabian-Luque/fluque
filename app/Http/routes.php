@@ -60,6 +60,11 @@ Route::group(['middleware' => 'cors'], function(){
 
 	Route::get('calendario', 'ReservaController@calendario');
 
+
+
+	Route::post('usuarios/excel','ExcelController@importUsuarios');
+
+
 	Route::resource('user', 'UserController', ['except' => ['create', 'edit','store']]);
 	Route::resource('propiedad', 'PropiedadController', ['except' => ['create', 'edit', 'store']]);
 	Route::resource('habitacion', 'HabitacionController', ['except' => ['create', 'edit']]);
