@@ -10,7 +10,6 @@ use Response;
 use App\Habitacion;
 use App\Equipamiento;
 use App\Propiedad;
-/*use App\Calendario;*/
 use Carbon\Carbon;
 use App\TipoHabitacion;
 
@@ -193,32 +192,6 @@ class HabitacionController extends Controller
             $equipamiento ->frigobar              = $request->get('frigobar');
 			$equipamiento ->habitacion_id		  = $habitacion->id; 
  			$equipamiento->save();
-
-
-/*            $habitacion_tipo    = $habitacion->id;
-            $habitacion_precio  = $habitacion->precio_base;
-            $fecha_inicio       = '2016-11-01';
-            $fecha_fin          = '2017-12-31';
-
-            
-            $fecha              = date ("Y-m-d",strtotime($fecha_inicio));
-
-
-            $habitacion_base = Habitacion::find($habitacion_tipo);
-
-
-            while (strtotime($fecha) <= strtotime($fecha_fin)) {
-                
-
-           $habitacion_dia =  Calendario::firstOrNew(array('fecha'=>$fecha, 'disponibilidad' => $habitacion_base->disponibilidad_base, 'precio' => $habitacion_base->precio_base,'habitacion_id' => $habitacion_tipo));
-
-           $habitacion_dia->save();
-
-           $fecha = date ("Y-m-d", strtotime("+1 day", strtotime($fecha)));
-
-
-
-            }*/
 
 
 			     $data = [

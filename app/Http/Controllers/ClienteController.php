@@ -12,7 +12,7 @@ use App\Propiedad;
 use App\Huesped;
 use App\Reserva;
 use App\Habitacion;
-/*use App\Calendario;*/
+
 
 class ClienteController extends Controller
 {
@@ -167,23 +167,6 @@ class ClienteController extends Controller
 
 			$monto_por_pagar = $monto_total - $total_pagos;
 
-
-			//se recorre las fechas del calendario para habilitar la habitacion 
-
-/*			$fecha_fin = date('Y-m-d', strtotime($reserva->checkout));
-			$fecha_inicio = date('Y-m-d', strtotime('now'));
-			$disponibilidad_base = $habitacion->disponibilidad_base;
-			 while (strtotime($fecha_inicio) < strtotime($fecha_fin)) {
-
-			 	$calendario = Calendario::where('habitacion_id', $habitacion->id)->where('fecha', $fecha_inicio)->first();
-			 	$calendario->update(array('disponibilidad' => $disponibilidad_base, 'reservas' => 0));
-
-
-			 	$fecha_inicio = date ("Y-m-d", strtotime("+1 day", strtotime($fecha_inicio)));
-
-
-
-			}	*/
 			
 			$reserva->update(array('estado_reserva_id' => 4,'monto_alojamiento' => $precio_alojamiento, 'monto_total' => $monto_total, 'monto_por_pagar' => $monto_por_pagar, 'checkout' => $fecha_actual, 'noches' => $noches));
 
