@@ -721,6 +721,26 @@ class ReservaController extends Controller
     }
 
 
+    public function destroy($id){
+
+
+        $reserva = Reserva::findOrFail($id);
+        $reserva->delete();
+
+        $data = [
+
+            'errors' => false,
+            'msg' => 'Reserva eliminada satisfactoriamente',
+
+        ];
+
+        return Response::json($data, 202);
+
+    }
+
+
+
+
 
     public function getTipoFuente(){
 

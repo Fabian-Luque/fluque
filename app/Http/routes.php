@@ -26,9 +26,8 @@ Route::get('/', function () {
 Route::group(['middleware' => 'cors'], function(){
 
 	Route::post('registro', 'UserController@store');
+	
 	Route::post('/auth_login', 'ApiAuthController@userAuth');
-
-	/*Route::post('disponibilidad', 'HabitacionController@Disponibilidad');*/
 
 	Route::post('reserva/habitacion', 'ReservaController@reserva');
 
