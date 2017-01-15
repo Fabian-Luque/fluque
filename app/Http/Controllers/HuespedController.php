@@ -8,6 +8,7 @@ use App\Http\Requests;
 use Response;
 use App\Huesped;
 use App\Reserva;
+use App\HuespedReservaServicio;
 
 class HuespedController extends Controller
 {
@@ -225,6 +226,31 @@ class HuespedController extends Controller
 
 
 	}
+
+	public function eliminarConsumo($id){
+
+
+	$consumo = HuespedReservaServicio::where('id', $id)->first();
+
+	$reserva_id = $consumo->reserva_id;
+
+	$reserva = Reserva::where('id', $reserva_id)->first();
+
+	$monto_consumo = $reserva->monto_consumo - $consumo->precio_total;
+	$monto_total = $reserva->monto_total - $consumo->precio_total;
+	$monto_por_pagar = $reserva->monto_por_pagar - $consumo->precio_total;
+
+	$reserva->update(array('monto_consumo' => $monto_consumo, 'monto_total' => $monto_total, 'monto_por_pagar' => $monto_por_pagar));
+
+	$consumo->delete();
+
+	return "consumo eliminado";
+
+
+
+
+
+	}	
 
 
 
