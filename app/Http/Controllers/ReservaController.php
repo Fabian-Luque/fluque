@@ -627,9 +627,6 @@ class ReservaController extends Controller
 
                 } 
 
-            ###########################################################################
-            //recorriendo resultado de reservas por checkout
-            ###########################################################################
 
             array_push($reservas_calendario, $reserva);
 
@@ -667,6 +664,39 @@ class ReservaController extends Controller
 
 
     }
+
+    public function show($id){
+
+
+
+       $reservas = Reserva::where('id', $id)->first();
+
+       if(!is_null($reservas)){
+
+
+      return $reserva = Reserva::where('id', $id)->with('habitacion.tipoHabitacion')->with('cliente','huespedes.servicios','tipoFuente', 'metodoPago','estadoReserva','pagos')->first();
+
+
+
+       }else{
+
+            $data = array(
+
+                    'msj' => "Reserva no encontrada",
+                    'errors' => true
+
+
+                );
+
+            return Response::json($data, 404);
+
+
+
+       }
+
+
+
+    }   
 
 
 
