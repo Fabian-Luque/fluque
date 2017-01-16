@@ -26,9 +26,8 @@ Route::get('/', function () {
 Route::group(['middleware' => 'cors'], function(){
 
 	Route::post('registro', 'UserController@store');
+	
 	Route::post('/auth_login', 'ApiAuthController@userAuth');
-
-	Route::post('disponibilidad', 'HabitacionController@Disponibilidad');
 
 	Route::post('reserva/habitacion', 'ReservaController@reserva');
 
@@ -60,9 +59,9 @@ Route::group(['middleware' => 'cors'], function(){
 
 	Route::get('calendario', 'ReservaController@calendario');
 
-
-
 	Route::post('usuarios/excel','ExcelController@importUsuarios');
+
+	Route::delete('consumo/{id}', 'HuespedController@eliminarConsumo');
 
 
 	Route::resource('user', 'UserController', ['except' => ['create', 'edit','store']]);

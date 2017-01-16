@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Calendario;
+
 use App\Cliente;
 use App\Habitacion;
 use App\TipoFuente;
@@ -142,7 +142,7 @@ class ReservaController extends Controller
 
         }
 
-
+/*
             $fecha = $fecha_inicio;
 
             while (strtotime($fecha) < strtotime($fecha_fin)) {
@@ -154,7 +154,7 @@ class ReservaController extends Controller
                 $calendario->save();
 
                 $fecha = date("Y-m-d", strtotime("+1 day", strtotime($fecha)));
-            }
+            }*/
         }
 
         return 'Habitacion reservada satisfactoriamente';
@@ -719,6 +719,26 @@ class ReservaController extends Controller
 
 
     }
+
+
+    public function destroy($id){
+
+
+        $reserva = Reserva::findOrFail($id);
+        $reserva->delete();
+
+        $data = [
+
+            'errors' => false,
+            'msg' => 'Reserva eliminada satisfactoriamente',
+
+        ];
+
+        return Response::json($data, 202);
+
+    }
+
+
 
 
 
