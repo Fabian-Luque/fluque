@@ -687,8 +687,9 @@ class ReservaController extends Controller
 
             }
 
-                return $reservas;
 
+            $reserva =  $reservas->first();
+            return $reserva;
 
 
        }else{
