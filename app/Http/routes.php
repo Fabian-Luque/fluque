@@ -71,10 +71,20 @@ Route::group(['middleware' => 'cors'], function(){
 
 
 
+});
+
+
+Route::get('pdf', function(){
+
+
+	$pdf = PDF::loadView('vista');
+	return $pdf->download('archivo.pdf');
+
+
+
 
 
 });
-
 
 
 
