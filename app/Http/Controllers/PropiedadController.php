@@ -84,19 +84,19 @@ class PropiedadController extends Controller
 
 		$rules = array(
 
-			'nombre' 						=> 'required',
-			'tipo_propiedad_id'	 			=> 'required|numeric',
-			'numero_habitaciones'			=> 'required|numeric',
-			'pais' 							=> 'required',
-			'ciudad'					    => 'required', 
-			'region'					    => 'required',
-			'direccion'					    => 'required',
-			'telefono'					    => 'required',
-			'email'					        => 'required',
-			'nombre_responsable'	        => 'required',
-			'descripcion'					=> 'required',
-            'iva'                           => 'required|numeric',
-            'porcentaje_deposito'           => 'required|numeric',
+			'nombre' 						=> '',
+			'tipo_propiedad_id'	 			=> 'numeric',
+			'numero_habitaciones'			=> 'numeric',
+			'pais' 							=> '',
+			'ciudad'					    => '', 
+			'region'					    => '',
+			'direccion'					    => '',
+			'telefono'					    => '',
+			'email'					        => '',
+			'nombre_responsable'	        => '',
+			'descripcion'					=> '',
+            'iva'                           => 'numeric',
+            'porcentaje_deposito'           => 'numeric',
 
 			
 		);
