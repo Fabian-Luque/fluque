@@ -53,7 +53,7 @@ class PDFController extends Controller
 
 
 		$pdf = PDF::loadView('pdf.vista', ['propiedad' => $propiedad,  'cliente'=> $cliente ,'reservas_pdf'=> $reservas_pdf, 'neto' => $neto , 'iva' => $iva, 'total' => $total]);
-		return $pdf->stream('archivo.pdf');
+		return $pdf->download('archivo.pdf');
 
 
 
