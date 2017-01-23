@@ -71,10 +71,10 @@ Route::group(['middleware' => 'cors'], function(){
 
 
 
-
-
 });
 
+
+Route::post('pdf', 'PDFController@getPDF');
 
 
 

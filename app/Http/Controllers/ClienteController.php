@@ -74,7 +74,6 @@ class ClienteController extends Controller
 
 		if($reserva_checkout == $fecha_hoy){
 
-		
 	
 		$reserva->update(array('estado_reserva_id' => 4));
 
