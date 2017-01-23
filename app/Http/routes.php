@@ -74,7 +74,7 @@ Route::group(['middleware' => 'cors'], function(){
 });
 
 
-Route::get('pdf', 'PDFController@getPDF');
+Route::post('pdf', 'PDFController@getPDF');
 
 
 
