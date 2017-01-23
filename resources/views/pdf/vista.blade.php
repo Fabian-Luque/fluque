@@ -78,7 +78,7 @@
                     <td><p class="nombre">${{ $neto }}</p></td>
                 </tr>
                 <tr>
-                    <th><p class="titulo align-right">iva</p></th>
+                    <th><p class="titulo align-right">IVA</p></th>
                     <td><p class="nombre">${{ $iva }}</p></td>
                 </tr>
                 <tr >

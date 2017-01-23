@@ -45,9 +45,9 @@ class PDFController extends Controller
 
 		/*return $reservas_pdf;*/
 
-		$neto = $suma_total;
-		$iva = ($suma_total * 19) / 100;
-		$total = $neto + $iva;
+		$neto = round($suma_total);
+		$iva = round(($suma_total * 19) / 100);
+		$total = round($neto + $iva);
 
 	
 
