@@ -60,6 +60,8 @@ Route::group(['middleware' => 'cors'], function(){
 	Route::get('calendario', 'ReservaController@calendario');
 
 	Route::delete('consumo/{id}', 'HuespedController@eliminarConsumo');
+	
+	Route::post('pdf', 'PDFController@getPDF');
 
 	Route::resource('user', 'UserController', ['except' => ['create', 'edit','store']]);
 	Route::resource('propiedad', 'PropiedadController', ['except' => ['create', 'edit', 'store']]);
@@ -74,7 +76,6 @@ Route::group(['middleware' => 'cors'], function(){
 });
 
 
-Route::post('pdf', 'PDFController@getPDF');
 
 
 
