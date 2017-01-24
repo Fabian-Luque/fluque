@@ -62,6 +62,8 @@ Route::group(['middleware' => 'cors'], function(){
 	Route::post('usuarios/excel','ExcelController@importUsuarios');
 
 	Route::delete('consumo/{id}', 'HuespedController@eliminarConsumo');
+	
+	Route::post('pdf', 'PDFController@getPDF');
 
 
 	Route::resource('user', 'UserController', ['except' => ['create', 'edit','store']]);
@@ -74,9 +76,8 @@ Route::group(['middleware' => 'cors'], function(){
 
 
 
-
-
 });
+
 
 
 

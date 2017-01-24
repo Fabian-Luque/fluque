@@ -96,6 +96,7 @@ class UserController extends Controller
 
 
             $propiedad                    	 = new Propiedad();
+            $propiedad->id                   = $usuario->id;
 			$propiedad->nombre               = $request->get('nombre');
 			$propiedad->numero_habitaciones  = $request->get('numero_habitaciones');
 			$propiedad->ciudad               = $request->get('ciudad');
