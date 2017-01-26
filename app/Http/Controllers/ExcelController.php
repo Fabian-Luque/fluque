@@ -8,7 +8,7 @@ use App\Http\Requests;
 use Illuminate\Support\Facades\Input;
 use App\User;
 use App\Propiedad;
-use App\habitacion;
+use App\Habitacion;
 use Excel;
 use DB;
 use \Carbon\Carbon;
