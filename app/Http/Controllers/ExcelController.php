@@ -42,6 +42,7 @@ class ExcelController extends Controller
 
 			foreach ($users as $key => $value) {
 						$usuario=new User;
+						$usuario->id= $value->id;
 						$usuario->name= $value->name;
 						$usuario->email= $value->email;
 						$usuario->password= $value->password;
@@ -51,6 +52,31 @@ class ExcelController extends Controller
 						$usuario->updated_at= $value->updated_at;
 						$usuario->deleted_at= null;
 						$usuario->save();
+
+
+						$propiedad=new Propiedad;
+						$propiedad->id= $usuario->id;
+						$propiedad->nombre= $value->nombre;
+						$propiedad->numero_habitaciones= $value->numero_habitaciones;
+						$propiedad->pais= $value->pais;
+						$propiedad->ciudad= $value->ciudad;
+						$propiedad->region= $value->region;
+						$propiedad->direccion= $value->direccion;
+						$propiedad->telefono= $value->telefono;
+						$propiedad->email= $value->email;
+						$propiedad->nombre_responsable= $value->nombre_responsable;
+						$propiedad->descripcion= $value->descripcion;
+						$propiedad->iva= $value->iva;
+						$propiedad->porcentaje_deposito= $value->porcentaje_deposito;
+						$propiedad->user_id= $usuario->id;
+						$propiedad->tipo_propiedad_id= $value->tipo_propiedad_id;
+						$propiedad->created_at= $value->created_at;
+						$propiedad->updated_at= $value->updated_at;
+						$propiedad->deleted_at= null;
+						$propiedad->save();
+
+
+
 
 
 				}
@@ -86,7 +112,9 @@ class ExcelController extends Controller
 
 
 			foreach ($prop as $key => $value) {
+
 						$Propiedad=new Propiedad;
+						$Propiedad->id= $value->id;
 						$Propiedad->nombre= $value->nombre;
 						$Propiedad->numero_habitaciones= $value->numero_habitaciones;
 						$Propiedad->pais= $value->pais;
@@ -103,7 +131,7 @@ class ExcelController extends Controller
 						$Propiedad->tipo_propiedad_id= $value->tipo_propiedad_id;
 						$Propiedad->created_at= $value->created_at;
 						$Propiedad->updated_at= $value->updated_at;
-						$Propiedad->deleted_at= $value->updated_at;
+						$Propiedad->deleted_at= null;
 						$Propiedad->save();
 
 
