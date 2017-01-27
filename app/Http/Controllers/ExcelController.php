@@ -42,7 +42,6 @@ class ExcelController extends Controller
 
 			foreach ($users as $key => $value) {
 						$usuario=new User;
-						$usuario->id= $value->id;
 						$usuario->name= $value->name;
 						$usuario->email= $value->email;
 						$usuario->password= $value->password;
@@ -63,7 +62,7 @@ class ExcelController extends Controller
 						$propiedad->region= $value->region;
 						$propiedad->direccion= $value->direccion;
 						$propiedad->telefono= $value->telefono;
-						$propiedad->email= $value->email;
+						$propiedad->email= $value->email_propiedad;
 						$propiedad->nombre_responsable= $value->nombre_responsable;
 						$propiedad->descripcion= $value->descripcion;
 						$propiedad->iva= $value->iva;
