@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Input;
 use App\User;
 use App\Propiedad;
 use App\Habitacion;
+use App\Equipamiento;
 use Excel;
 use DB;
 use \Carbon\Carbon;
@@ -174,6 +175,7 @@ class ExcelController extends Controller
 
 
 			foreach ($hab as $key => $value) {
+
 						$habitacion=new Habitacion;
 						$habitacion->nombre= $value->nombre;
 						$habitacion->precio_base= $value->precio_base;
@@ -185,6 +187,18 @@ class ExcelController extends Controller
 						$habitacion->updated_at= $value->updated_at;
 						$habitacion->deleted_at= $value->updated_at;
 						$habitacion->save();
+
+						$equipamiento = new Equipamiento;
+						$equipamiento->bano 		 = $value->bano;
+						$equipamiento->tv 			 = $value->tv;
+						$equipamiento->wifi 		 = $value->wifi;
+						$equipamiento->frigobar 	 = $value->frigobar;
+						$equipamiento->habitacion_id = $habitacion->id;
+						$equipamiento->created_at	 = $value->created_at;
+						$equipamiento->updated_at	 = $value->updated_at;
+						$equipamiento->deleted_at	 = $value->updated_at;
+						$equipamiento->save();
+						
 
 
 				}
