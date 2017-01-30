@@ -10,6 +10,7 @@ use App\User;
 use App\Propiedad;
 use App\Habitacion;
 use App\Equipamiento;
+use App\Servicio;
 use Excel;
 use DB;
 use \Carbon\Carbon;
@@ -199,6 +200,60 @@ class ExcelController extends Controller
 						$equipamiento->updated_at	 = $value->updated_at;
 						$equipamiento->deleted_at	 = $value->deleted_at;
 						$equipamiento->save();
+						
+
+
+				}
+
+			}
+
+
+			
+		}
+
+		return "excel importado";
+
+
+
+	}
+		public function importServicios(){
+
+
+		if(Input::hasFile('file')){
+			$path = Input::file('file')->getRealPath();
+
+		$data = Excel::load($path, function($reader) {
+			})->get();
+
+			$serv = [];
+			if(!empty($data)){
+
+				foreach ($data as $servicios) {
+					foreach ($servicios as $servicio) {
+						if($servicio->nombre){
+						array_push($serv, $servicio);
+
+						}
+					}
+
+					
+				}
+
+
+
+			foreach ($serv as $key => $value) {
+
+						$servicio=new Servicio;
+						$servicio->nombre= $value->nombre;
+						$servicio->categoria= $value->categoria;
+						$servicio->precio= $value->precio;
+						$servicio->propiedad_id= $value->propiedad_id;
+						$servicio->created_at= $value->created_at;
+						$servicio->updated_at= $value->updated_at;
+						$servicio->deleted_at= $value->deleted_at;
+						$servicio->save();
+
+
 						
 
 
