@@ -185,10 +185,11 @@ class ExcelController extends Controller
 						$habitacion->tipo_habitacion_id= $value->tipo_habitacion_id;
 						$habitacion->created_at= $value->created_at;
 						$habitacion->updated_at= $value->updated_at;
-						$habitacion->deleted_at= $value->updated_at;
+						$habitacion->deleted_at= $value->deleted_at;
 						$habitacion->save();
 
 						$equipamiento = new Equipamiento;
+						$equipamiento->id 			 = $habitacion->id;
 						$equipamiento->bano 		 = $value->bano;
 						$equipamiento->tv 			 = $value->tv;
 						$equipamiento->wifi 		 = $value->wifi;
@@ -196,7 +197,7 @@ class ExcelController extends Controller
 						$equipamiento->habitacion_id = $habitacion->id;
 						$equipamiento->created_at	 = $value->created_at;
 						$equipamiento->updated_at	 = $value->updated_at;
-						$equipamiento->deleted_at	 = $value->updated_at;
+						$equipamiento->deleted_at	 = $value->deleted_at;
 						$equipamiento->save();
 						
 
