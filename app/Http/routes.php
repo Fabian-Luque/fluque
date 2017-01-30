@@ -59,7 +59,18 @@ Route::group(['middleware' => 'cors'], function(){
 
 	Route::get('calendario', 'ReservaController@calendario');
 
+	Route::post('usuarios/excel','ExcelController@importUsuarios');
+
+	Route::post('propiedades/excel','ExcelController@importPropiedades');
+
+	Route::post('habitaciones/excel','ExcelController@importHabitaciones');
+
+	Route::post('servicios/excel','ExcelController@importServicios');
+
 	Route::delete('consumo/{id}', 'HuespedController@eliminarConsumo');
+	
+	Route::post('pdf', 'PDFController@getPDF');
+
 
 	Route::resource('user', 'UserController', ['except' => ['create', 'edit','store']]);
 	Route::resource('propiedad', 'PropiedadController', ['except' => ['create', 'edit', 'store']]);
@@ -71,9 +82,8 @@ Route::group(['middleware' => 'cors'], function(){
 
 
 
-
-
 });
+
 
 
 

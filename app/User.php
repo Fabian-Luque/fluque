@@ -35,7 +35,7 @@ class User extends Authenticatable
 
     }
 
-    public function setPasswordAttribute($value){
+/*    public function setPasswordAttribute($value){
 
         if(!empty($value))
         {
@@ -46,7 +46,7 @@ class User extends Authenticatable
 
 
 
-    }
+    }*/
 
 
 

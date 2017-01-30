@@ -1,0 +1,43 @@
+* {
+  margin: 0px;
+  padding: 0px;
+}
+
+
+.encabezado {
+  padding: 20px;
+}
+
+.cliente, .detalles {
+  padding: 20px;
+}
+
+
+.tabla-cliente, .tabla-detalles {
+  border-collapse: collapse;
+  border: 1px solid black;
+  width: 100%;
+}
+
+.titulo {
+  border-right: 1px solid black;
+  padding: 0px 10px;
+}
+
+.align-right {
+  text-align: right;
+}
+
+.align-left {
+  text-align: left;
+}
+
+.nombre {
+  /*border-right: 1px solid black;*/
+  padding-left: 10px;
+}
+
+
+td, th {
+  border-bottom: 1px solid black;
+}

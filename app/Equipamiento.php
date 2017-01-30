@@ -11,7 +11,7 @@ class Equipamiento extends Model
 	use SoftDeletes;
 	protected $table = 'equipamiento';
 
-	protected $fillable = [ 'bano' , 'tv', 'wifi', 'frigobar'];
+	protected $fillable = [ 'bano' , 'tv', 'wifi', 'frigobar', 'habitacion_id'];
 
 	
 
