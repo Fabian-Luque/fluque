@@ -71,6 +71,8 @@ Route::group(['middleware' => 'cors'], function(){
 	
 	Route::post('pdf', 'PDFController@getPDF');
 
+	Route::post('ingreso/servicio', 'PropiedadController@ingresoServicio');
+
 
 	Route::resource('user', 'UserController', ['except' => ['create', 'edit','store']]);
 	Route::resource('propiedad', 'PropiedadController', ['except' => ['create', 'edit', 'store']]);

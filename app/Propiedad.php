@@ -51,5 +51,15 @@ class Propiedad extends Model
 
     }
 
+    public function vendeServicios(){
+
+            return $this->belongsToMany('App\Servicio', 'propiedad_servicio')
+            ->withPivot('cantidad', 'precio_total')
+            ->withTimestamps();
+
+
+
+    }
+
 
 }

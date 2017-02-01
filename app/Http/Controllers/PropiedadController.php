@@ -11,6 +11,7 @@ use Response;
 use App\TipoPropiedad;
 use App\habitacion;
 use App\TipoHabitacion;
+use App\Servicio;
 
 
 
@@ -20,6 +21,112 @@ use App\TipoHabitacion;
 
 class PropiedadController extends Controller
 {
+
+
+
+
+    public function ingresoServicio(Request $request){
+   
+
+       if($request->has('venta_servicio') && $request->has('propiedad_id')){
+
+   
+         $propiedad =  Propiedad::where('id', $request->input('propiedad_id'))->first();
+
+          if(!is_null($propiedad)){
+
+
+
+           $servicios = $request->input('venta_servicio');
+
+            foreach ($servicios as $servicio) {
+               
+                
+                $servicio_id = $servicio['servicio_id'];
+                $cantidad = $servicio['cantidad'];
+                $precio_total = $servicio['precio_total'];
+
+
+                 $serv = Servicio::where('id', $servicio_id)->where('propiedad_id', $request->input('propiedad_id'))->first();
+
+                 if(!is_null($serv)){
+                 $servicio_id = $serv->id;
+                 $servicio_nombre = $serv->nombre;
+
+
+                $propiedad->vendeServicios()->attach($servicio_id, ['cantidad' => $cantidad , 'precio_total' => $precio_total]);
+              
+
+
+
+
+                 }else{
+
+                $retorno = array(
+
+                'msj'    => "El servicio no pertenece a la propiedad",
+                'errors' => true
+                );
+
+                return Response::json($retorno, 400);
+
+
+
+
+
+             }
+
+                
+            }
+
+                $retorno = array(
+
+                    'msj' => "Servicios ingresados correctamente",
+                    'erros' =>false
+                );
+
+                return Response::json($retorno, 200);
+          
+
+          }else{
+
+
+
+                $data = array(
+
+                    'msj' => "Propiedad no encontrada",
+                    'errors' => true
+
+
+                );
+
+            return Response::json($data, 404);
+
+
+
+          }
+
+
+       }else{
+
+
+            $retorno = array(
+
+                'msj'    => "La solicitud esta incompleta",
+                'errors' => true
+            );
+
+            return Response::json($retorno, 400);
+
+
+
+       }
+
+
+
+
+    }
+
 
 
     public function index(Request $request){
