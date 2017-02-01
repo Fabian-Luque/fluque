@@ -9,6 +9,7 @@ use PDF;
 use App\Reserva;
 use App\Propiedad;
 use App\Cliente;
+use \Carbon\Carbon;
 
 class PDFController extends Controller
 {
@@ -28,13 +29,25 @@ class PDFController extends Controller
 
 
 		$reservas_pdf = [];
-		$suma_total = 0;
+		$monto_alojamiento = 0;
+		$consumo = 0;
 		foreach($reservas as $id){
 
-		$reserva = Reserva::where('id', $id)->with('cliente')->with('habitacion')->get();
+		$reserva = Reserva::where('id', $id)->with('cliente')->with('habitacion.tipoHabitacion')->with('huespedes.servicios')->get();
 
 			foreach ($reserva as $ra) {
-				$suma_total += $ra->monto_total;
+				$monto_alojamiento += $ra->monto_alojamiento;
+				foreach($ra->huespedes as $huesped){
+					$huesped->monto_consumo = 0;
+					foreach($huesped->servicios as $servicio){
+					/*	return $servicio;*/
+						$huesped->monto_consumo += $servicio->pivot->precio_total;
+						$consumo += $servicio->pivot->precio_total;
+
+
+					}
+					
+				}
 
 			}
 
@@ -43,17 +56,48 @@ class PDFController extends Controller
 
 		}
 
-		/*return $reservas_pdf;*/
+		
 
-		$neto = round($suma_total);
-		$iva = round(($suma_total * 19) / 100);
+		$neto = $monto_alojamiento + $consumo; 
+		$iva = round(($neto * 19) / 100);
 		$total = round($neto + $iva);
 
 	
 
 
-		$pdf = PDF::loadView('pdf.vista', ['propiedad' => $propiedad,  'cliente'=> $cliente ,'reservas_pdf'=> $reservas_pdf, 'neto' => $neto , 'iva' => $iva, 'total' => $total]);
-		return $pdf->stream('archivo.pdf');
+
+/*		
+		$consumos_fecha = [];
+
+			foreach ($reserva as $ra) {
+				foreach($ra->huespedes as $huesped){
+
+					foreach($huesped->servicios as $servicio){
+				
+						$fecha =  date('d-m-Y',strtotime($servicio->pivot->created_at));
+
+						$fecha
+						array_push($consumos_fecha, $fecha);
+						array_push($consumos_fecha, $servicio->nombre);
+						array_push($consumos_fecha, $servicio->pivot->cantidad);
+
+						return $consumos_fecha;
+
+
+					}
+					
+				}
+
+			}
+
+		return $consumos_fecha;*/
+
+
+
+
+
+		$pdf = PDF::loadView('pdf.vista', ['propiedad' => $propiedad,'consumo' => $consumo , 'cliente'=> $cliente ,'reservas_pdf'=> $reservas_pdf, 'neto' => $neto , 'iva' => $iva, 'total' => $total]);
+		return $pdf->download('archivo.pdf');
 
 
 
