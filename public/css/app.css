@@ -3,26 +3,57 @@
   padding: 0px;
 }
 
-
-.encabezado {
-  padding: 20px;
+body {
+  font-family: sans-serif;
 }
 
-.cliente, .detalles {
-  padding: 20px;
+.page-break {
+    page-break-after: always;
 }
 
 
-.tabla-cliente, .tabla-detalles {
+.contenedor {
+  padding:30px;
+}
+
+p {
+  font-size: 12px;
+}
+
+
+.estado-cuenta > .titulo {
+  text-align:center;
+  margin-bottom: 20px;
+}
+
+.cliente {
+  margin-bottom: 30px;
+}
+
+.tabla-cliente,
+.tabla-detalles,
+.tabla-comsumos {
   border-collapse: collapse;
-  border: 1px solid black;
   width: 100%;
 }
 
-.titulo {
-  border-right: 1px solid black;
-  padding: 0px 10px;
+.head-tabla-cliente {
+  width: 130px;
+  background: #212121;
+  color: white;
+  padding:5px 10px;
 }
+
+.data-tabla-cliente {
+  background: #f1f1f1;
+  border:1px solid white;
+}
+
+.data-tabla-cliente > .nombre {
+  padding-left: 10px;
+}
+
+
 
 .align-right {
   text-align: right;
@@ -32,12 +63,93 @@
   text-align: left;
 }
 
-.nombre {
-  /*border-right: 1px solid black;*/
-  padding-left: 10px;
+
+.detalles > .titulo {
+  margin-bottom: 20px;
+}
+
+.data-tabla-detalles {
+  background: #f1f1f1;
+  border-bottom: 1px solid white;
+  padding: 5px 5px 5px 10px;
+}
+
+.data-tabla-detalles-right {
+  background: #f1f1f1;
+  border-bottom: 1px solid white;
+  padding: 5px 5px 5px 10px;
+  width: 120px;
+}
+
+.data-tabla-detalles-right > .nombre {
+  text-align: right;
+  padding-right: 10px;
 }
 
 
-td, th {
-  border-bottom: 1px solid black;
+
+.borde-derecha {
+  border-right: 1px solid white;
+}
+
+.data-tabla-detalles > .nombre {
+  text-align: right;
+  padding-right: 10px;
+}
+
+
+.firmas {
+  margin-top: 50px;
+  margin-bottom: 20px;
+  padding-left: 100px;
+
+  position: absolute;
+  right: 0;
+  bottom: 50;
+  left: 0;
+}
+
+.firmas > .seccion {
+  width:50%;
+  float: left;
+  text-align:center;
+}
+
+.firma {
+  width:200px;
+  border-top:1px solid black;
+}
+
+.footer {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  text-align: left;
+  padding: 0px 0px 30px 30px;
+  color: #a6a6a6;
+}
+
+
+.black {
+  background: #212121;
+  color: white;
+  padding: 10px;
+}
+
+.detalle-consumo > .titulo {
+  text-align: center;
+  margin: 10px 0px;
+}
+
+.margen {
+  margin: 10px 0px;
+}
+
+span {
+  font-weight: normal;
+}
+
+.negrita {
+  font-weight: bold;
 }
