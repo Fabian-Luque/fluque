@@ -17,7 +17,25 @@ class MetodoPago extends Model
 	}
 
 
+	public function propiedades(){
 
+
+		return $this->belongsToMany('App\Propiedad', 'metodo_pago_propiedad_servicio')
+			->withPivot('servicio_id','cantidad', 'precio_total')
+			->withTimestamps();
+
+
+	}
+
+	public function servicios(){
+
+
+		return $this->belongsToMany('App\Propiedad', 'metodo_pago_propiedad_servicio')
+			->withPivot('propiedad_id','cantidad', 'precio_total')
+			->withTimestamps();
+
+
+	}
 
 
 

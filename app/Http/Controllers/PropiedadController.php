@@ -28,10 +28,11 @@ class PropiedadController extends Controller
     public function ingresoServicio(Request $request){
    
 
-       if($request->has('venta_servicio') && $request->has('propiedad_id')){
+       if($request->has('venta_servicio') && $request->has('propiedad_id') && $request->has('metodo_pago_id')){
 
    
          $propiedad =  Propiedad::where('id', $request->input('propiedad_id'))->first();
+         $metodo_pago_id = $request->input('metodo_pago_id');
 
           if(!is_null($propiedad)){
 
@@ -45,6 +46,7 @@ class PropiedadController extends Controller
                 $servicio_id = $servicio['servicio_id'];
                 $cantidad = $servicio['cantidad'];
                 $precio_total = $servicio['precio_total'];
+                
 
 
                  $serv = Servicio::where('id', $servicio_id)->where('propiedad_id', $request->input('propiedad_id'))->first();
@@ -54,10 +56,8 @@ class PropiedadController extends Controller
                  $servicio_nombre = $serv->nombre;
 
 
-                $propiedad->vendeServicios()->attach($servicio_id, ['cantidad' => $cantidad , 'precio_total' => $precio_total]);
+                $propiedad->vendeServicios()->attach($servicio_id, ['metodo_pago_id' => $metodo_pago_id,'cantidad' => $cantidad , 'precio_total' => $precio_total]);
               
-
-
 
 
                  }else{
