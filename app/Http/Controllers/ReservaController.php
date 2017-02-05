@@ -83,6 +83,7 @@ class ReservaController extends Controller
         }
 
             foreach ($habitaciones_info as $habitacion_info) {
+                $habitacion_id = $habitacion_info['id'];
                 $huespedes = $habitacion_info['huespedes'];
                 $propiedad_id = $habitacion_info['propiedad_id'];
 
@@ -102,7 +103,13 @@ class ReservaController extends Controller
 
                 }
 
+                $reserv =  Reserva::where('habitacion_id', $habitacion_info['id'])->where('checkin', $fecha_inicio)->where('checkout', $fecha_fin)->first();
 
+
+
+                if(is_null($reserv)){
+
+                   
                 $reserva                        = new Reserva();
                 if(!empty($reserva)){
                 $reserva->numero_reserva        = $numero + 1;
@@ -136,11 +143,34 @@ class ReservaController extends Controller
 
                 $reserva->huespedes()->attach($huesped->id);
 
+              }
+
+
+
+             }
+
+            }else{
+
+                    $retorno = array(
+
+                    'msj'       => "La reserva ya fue creada",
+                    'errors'    => true
+
+
+                    );
+
+                     return Response::json($retorno, 406);
+
+
+
+
+
+
+
            }
 
 
-
-        }
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /*
             $fecha = $fecha_inicio;
@@ -155,10 +185,24 @@ class ReservaController extends Controller
 
                 $fecha = date("Y-m-d", strtotime("+1 day", strtotime($fecha)));
             }*/
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
         }
 
-        return 'Habitacion reservada satisfactoriamente';
+
+                    $retorno = array(
+
+                    'msj'       => "Reserva creada satisfactoriamente",
+                    'errors'    => false
+
+
+                    );
+
+                     return Response::json($retorno, 201);
+
     }
+
+    
 
     public function index(Request $request)
     {
