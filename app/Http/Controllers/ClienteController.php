@@ -136,18 +136,75 @@ class ClienteController extends Controller
 
 		 }
 
+	}
+
+
+	public function getClientes(Request $request){
+
+
+
+		if($request->has('propiedad_id') && $request->has('fecha_inicio') && $request->has('fecha_fin')){
+
+
+		$propiedad_id = $request->input('propiedad_id');
+		$fecha_inicio = $request->input('fecha_inicio');
+		$fecha_fin = $request->input('fecha_fin');
+		$rango = [$fecha_inicio, $fecha_fin];
+
+		$propiedad = Propiedad::where('id', $propiedad_id)->first();
+
+		if(!is_null($propiedad)){
+
+
+
+		$clientes = Cliente::whereHas('reservas.habitacion', function($query) use($propiedad_id){
+
+                    $query->where('propiedad_id', $propiedad_id);
+
+                	})->whereHas('reservas', function($query) use($rango){
+
+                    $query->whereBetween('checkin' ,$rango);
+
+               		 })->where('tipo_cliente_id', 2)->get();
+			
+
+        		return $clientes;
 
 
 
 
+		}else{
+
+
+			$data = array(
+
+                    'msj' => "Propiedad no encontrada",
+                    'errors' => true
+                );
+
+            return Response::json($data, 404);
+
+
+		}
+
+			
+		}else{
 
 
 
+			$retorno = array(
 
+	            'msj'    => "La solicitud esta incompleta",
+	            'errors' => true
+	        );
 
+	        return Response::json($retorno, 400);
+
+		}
 
 
 	}
+
 
     
 	public function index(Request $request){

@@ -75,6 +75,8 @@ Route::group(['middleware' => 'cors'], function(){
 
 	Route::post('ingreso/servicio/cliente', 'ClienteController@ingresoServicio');
 
+	Route::get('cliente/empresa', 'ClienteController@getClientes');
+
 	Route::resource('user', 'UserController', ['except' => ['create', 'edit','store']]);
 	Route::resource('propiedad', 'PropiedadController', ['except' => ['create', 'edit', 'store']]);
 	Route::resource('habitacion', 'HabitacionController', ['except' => ['create', 'edit']]);
