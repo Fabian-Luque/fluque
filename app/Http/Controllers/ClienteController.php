@@ -59,15 +59,6 @@ class ClienteController extends Controller
                 $propiedad->consumoClienteServicios()->attach($servicio_id, ['cliente_id' => $cliente_id,'nombre_consumidor' => $nombre_consumidor,'apellido_consumidor' => $apellido_consumidor,'rut_consumidor' => $rut_consumidor,'cantidad' => $cantidad , 'precio_total' => $precio_total]);
 
 
-                $retorno = array(
-
-                    'msj' => "Servicios ingresados correctamente",
-                    'errors' =>false
-                );
-
-                return Response::json($retorno, 201);
-              	
-
             	}else{
 
 
@@ -98,6 +89,14 @@ class ClienteController extends Controller
              }
 
 		 		}
+
+		 		$retorno = array(
+
+                    'msj' => "Servicios ingresados correctamente",
+                    'errors' =>false
+                );
+
+                return Response::json($retorno, 201);
 		 		
 
 
