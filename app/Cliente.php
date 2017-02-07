@@ -28,6 +28,22 @@ class Cliente extends Model
 
 	}
 
+	public function servicios(){
+
+            return $this->belongsToMany('App\Servicio', 'cliente_propiedad_servicio')
+            ->withPivot('propiedad_id', 'nombre_consumidor','apellido_consumidor' ,'rut_consumidor','cantidad', 'precio_total')
+            ->withTimestamps();
+
+    }
+
+
+    public function propiedades(){
+
+            return $this->belongsToMany('App\Propiedad', 'cliente_propiedad_servicio')
+            ->withPivot('servicio_id','nombre_consumidor','apellido_consumidor' ,'rut_consumidor','cantidad', 'precio_total')
+            ->withTimestamps();
+
+    }
 
 
 }

@@ -12,10 +12,144 @@ use App\Propiedad;
 use App\Huesped;
 use App\Reserva;
 use App\Habitacion;
+use App\Servicio;
+
 
 
 class ClienteController extends Controller
 {
+
+
+
+	public function ingresoServicio(Request $request){
+
+		 if($request->has('venta_servicio') && $request->has('propiedad_id')){
+
+		 	$propiedad =  Propiedad::where('id', $request->input('propiedad_id'))->first();
+
+		 	if(!is_null($propiedad)){
+
+		 		$servicios = $request->input('venta_servicio');
+
+		 		foreach ($servicios as $servicio) {
+
+
+
+		 		$nombre_consumidor = $servicio['nombre_consumidor'];
+		 		$apellido_consumidor = $servicio['apellido_consumidor'];
+		 		$rut_consumidor = $servicio['rut_consumidor'];
+		 		$servicio_id = $servicio['servicio_id'];
+                $cantidad = $servicio['cantidad'];
+                $precio_total = $servicio['precio_total'];
+                $cliente_id = $servicio['cliente_id'];
+
+                $serv = Servicio::where('id', $servicio_id)->where('propiedad_id', $request->input('propiedad_id'))->first();
+
+                if(!is_null($serv)){
+
+                $servicio_id = $serv->id;
+                $servicio_nombre = $serv->nombre;
+
+
+               	$cliente = Cliente::where('id', $cliente_id)->first();
+
+               	if(!is_null($cliente)){
+
+
+                $propiedad->consumoClienteServicios()->attach($servicio_id, ['cliente_id' => $cliente_id,'nombre_consumidor' => $nombre_consumidor,'apellido_consumidor' => $apellido_consumidor,'rut_consumidor' => $rut_consumidor,'cantidad' => $cantidad , 'precio_total' => $precio_total]);
+
+
+                $retorno = array(
+
+                    'msj' => "Servicios ingresados correctamente",
+                    'errors' =>false
+                );
+
+                return Response::json($retorno, 201);
+              	
+
+            	}else{
+
+
+            	$data = array(
+
+					'msj' => "Cliente no encontrado",
+					'errors' => true
+
+
+				);
+
+				return Response::json($data, 404);
+
+
+            	}
+
+                 }else{
+
+                $retorno = array(
+
+                'msj'    => "El servicio no pertenece a la propiedad",
+                'errors' => true
+                );
+
+                return Response::json($retorno, 400);
+
+
+             }
+
+		 		}
+		 		
+
+
+
+		 	}else{
+
+
+		 		$data = array(
+
+                    'msj' => "Propiedad no encontrada",
+                    'errors' => true
+
+
+                );
+
+            return Response::json($data, 404);
+
+
+
+		 	}
+
+
+
+		 }else{
+
+		 	$retorno = array(
+
+                'msj'    => "La solicitud esta incompleta",
+                'errors' => true
+            );
+
+            return Response::json($retorno, 400);
+
+
+
+
+
+		 }
+
+
+
+
+
+
+
+
+
+
+
+
+	}
+
     
 	public function index(Request $request){
 
