@@ -77,6 +77,8 @@ Route::group(['middleware' => 'cors'], function(){
 
 	Route::get('cliente/empresa', 'ClienteController@getClientes');
 
+	Route::get('tipo-comprobante', 'ReservaController@getTipoComprobante');
+
 	Route::resource('user', 'UserController', ['except' => ['create', 'edit','store']]);
 	Route::resource('propiedad', 'PropiedadController', ['except' => ['create', 'edit', 'store']]);
 	Route::resource('habitacion', 'HabitacionController', ['except' => ['create', 'edit']]);

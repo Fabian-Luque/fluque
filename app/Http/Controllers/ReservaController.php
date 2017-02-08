@@ -14,6 +14,7 @@ use App\Huesped;
 use App\Pago;
 use App\TipoHabitacion;
 use App\Propiedad;
+use App\TipoComprobante;
 use Illuminate\Http\Request;
 use Response;
 use \Carbon\Carbon;
@@ -881,6 +882,25 @@ class ReservaController extends Controller
 
 
         return $respuesta;
+
+
+    }
+
+
+    public function getTipoComprobante(){
+
+
+        $TipoComprobante = TipoComprobante::all();
+
+        $respuesta = [
+
+        'Tipo_comprobante' => $TipoComprobante,
+
+        ];
+
+
+        return $respuesta;
+
 
 
     }
