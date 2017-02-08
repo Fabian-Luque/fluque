@@ -725,7 +725,7 @@ class ReservaController extends Controller
        if(!is_null($reservas)){
 
 
-        $reservas = Reserva::where('id', $id)->with('habitacion.tipoHabitacion')->with('cliente','huespedes.servicios','tipoFuente', 'metodoPago','estadoReserva','pagos')->get();
+        $reservas = Reserva::where('id', $id)->with('habitacion.tipoHabitacion')->with('cliente','huespedes.servicios','tipoFuente', 'metodoPago','estadoReserva','pagos.tipoComprobante')->get();
 
             foreach ($reservas as $reserva){
                 foreach ($reserva['huespedes'] as $huesped) {
