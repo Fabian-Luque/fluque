@@ -349,7 +349,9 @@ class ReservaController extends Controller
     public function pagoReserva(Request $request){
 
       $metodo_pago = $request->input('metodo_pago_id');
-      $monto_pago =  $request->input('monto_pago'); 
+      $monto_pago =  $request->input('monto_pago');
+      $numero_operacion = $request->input('numero_operacion');
+      $tipo_comprobante_id = $request->input('tipo_comprobante_id');
       $reserva = Reserva::where('id', $request->input('reserva_id'))->first();
 
       if(is_null($metodo_pago)){
@@ -362,6 +364,8 @@ class ReservaController extends Controller
                $pago                        = new Pago();
                $pago->monto_pago            = $monto_pago;
                $pago->tipo                  = "Confirmacion de pago";
+               $pago->numero_operacion      = null;
+               $pago->tipo_comprobante_id   = null;
                $pago->reserva_id            = $reserva->id;
                $pago->save();
 
@@ -407,6 +411,8 @@ class ReservaController extends Controller
                    $pago                        = new Pago();
                    $pago->monto_pago            = $monto_pago;
                    $pago->tipo                  = "Pago parcial o total";
+                   $pago->numero_operacion      = $numero_operacion;
+                   $pago->tipo_comprobante_id  =  $tipo_comprobante_id;
                    $pago->reserva_id            = $reserva->id;
                    $pago->save();
 
