@@ -23,7 +23,7 @@ class Huesped extends Model
 
 
 		return $this->belongsToMany('App\Reserva', 'huesped_reserva_servicio')
-			->withPivot('servicio_id','cantidad', 'precio_total', 'estado')
+			->withPivot('servicio_id','cantidad', 'precio_total')
 			->withTimestamps();
 
 	}
@@ -32,7 +32,7 @@ class Huesped extends Model
 
 
 		return $this->belongsToMany('App\Servicio', 'huesped_reserva_servicio')
-			->withPivot('id','reserva_id','cantidad', 'precio_total','estado')
+			->withPivot('id','reserva_id','cantidad', 'precio_total')
 			->withTimestamps();
 
 	}

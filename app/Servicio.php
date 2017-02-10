@@ -26,7 +26,7 @@ class Servicio extends Model
 
 
 		return $this->belongsToMany('App\Reserva', 'huesped_reserva_servicio')
-			->withPivot('id','huesped_id','cantidad', 'precio_total','estado')
+			->withPivot('id','huesped_id','cantidad', 'precio_total')
 			->withTimestamps();
 
 
@@ -37,7 +37,7 @@ class Servicio extends Model
 	public function huespedes(){
 
 		return $this->belongsToMany('App\Huesped', 'huesped_reserva_servicio')
-			->withPivot('reserva_id','cantidad', 'precio_total', 'estado')
+			->withPivot('reserva_id','cantidad', 'precio_total')
 			->withTimestamps();
 
 
