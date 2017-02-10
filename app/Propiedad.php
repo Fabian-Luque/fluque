@@ -71,5 +71,26 @@ class Propiedad extends Model
 
     }
 
+    
+    public function consumoServiciosClientes(){
+
+            return $this->belongsToMany('App\Cliente', 'cliente_propiedad_servicio')
+            ->withPivot('servicio_id', 'nombre_consumidor','apellido_consumidor' ,'rut_consumidor','cantidad', 'precio_total')
+            ->withTimestamps();
+
+
+
+    }
+
+    public function consumoClienteServicios(){
+
+            return $this->belongsToMany('App\Servicio', 'cliente_propiedad_servicio')
+            ->withPivot('cliente_id', 'nombre_consumidor','apellido_consumidor' ,'rut_consumidor','cantidad', 'precio_total')
+            ->withTimestamps();
+
+
+
+    }
+
 
 }

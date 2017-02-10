@@ -73,6 +73,13 @@ Route::group(['middleware' => 'cors'], function(){
 
 	Route::post('ingreso/servicio', 'PropiedadController@ingresoServicio');
 
+	Route::post('ingreso/servicio/cliente', 'ClienteController@ingresoServicio');
+
+	Route::get('cliente/empresa', 'ClienteController@getClientes');
+
+	Route::get('tipo-comprobante', 'ReservaController@getTipoComprobante');
+
+	Route::post('pago/consumo', 'ReservaController@pagoConsumo');
 
 	Route::resource('user', 'UserController', ['except' => ['create', 'edit','store']]);
 	Route::resource('propiedad', 'PropiedadController', ['except' => ['create', 'edit', 'store']]);
