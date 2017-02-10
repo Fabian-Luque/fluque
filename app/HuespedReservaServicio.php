@@ -10,6 +10,8 @@ class HuespedReservaServicio extends Model
 
 	protected $table = 'huesped_reserva_servicio';
 
+	protected $fillable = ['estado'];
+
 
 
 }
