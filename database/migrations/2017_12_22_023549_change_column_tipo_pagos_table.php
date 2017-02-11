@@ -12,7 +12,7 @@ class ChangeColumnTipoPagosTable extends Migration
      */
     public function up()
     {
-        DB::statement("ALTER TABLE pagos MODIFY tipo ENUM('Confirmacion de pago','Pago parcial o total','Pago consumos')");
+        DB::statement("ALTER TABLE pagos MODIFY tipo ENUM('Confirmacion de pago','Pago parcial o total','Pago consumos', 'Pago habitacion')");
     }
 
     /**
