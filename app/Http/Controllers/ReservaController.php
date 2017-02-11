@@ -354,9 +354,14 @@ class ReservaController extends Controller
       $monto_pago =  $request->input('monto_pago');
       $numero_operacion = $request->input('numero_operacion');
       $tipo_comprobante_id = $request->input('tipo_comprobante_id');
+      $tipo_pago = $request->input('tipo_pago');
+      $reserva_id = $request->input('reserva_id');
+
+
       $reserva = Reserva::where('id', $request->input('reserva_id'))->first();
 
       if(is_null($metodo_pago)){
+
 
             if($reserva->estado_reserva_id == 1){
 
@@ -404,6 +409,8 @@ class ReservaController extends Controller
                $monto = $reserva->monto_por_pagar;
                $monto -= $monto_pago;
 
+            if($tipo_pago == "Pago parcial o total"){
+
                if($reserva->monto_por_pagar > 0){
 
                    if($monto_pago <= $reserva->monto_por_pagar){
@@ -440,7 +447,7 @@ class ReservaController extends Controller
 
 
                 }
-            }else{
+             }else{
 
 
                 $data = array(
@@ -451,6 +458,72 @@ class ReservaController extends Controller
 
                 return Response::json($data, 400);
 
+
+
+            }
+
+            }elseif($tipo_pago == "Pago habitacion"){
+
+
+              $pago_habitacion =  Pago::where('reserva_id', $reserva_id)->where('tipo', 'Pago habitacion')->first();
+
+              $pago_total = Pago::where('reserva_id', $reserva_id)->where('tipo', 'Pago parcial o total')->first();
+
+              if(is_null($pago_habitacion) && is_null($pago_total)){
+
+
+                if($monto_pago <= $reserva->monto_por_pagar){
+
+
+                   $pago                        = new Pago();
+                   $pago->monto_pago            = $monto_pago;
+                   $pago->tipo                  = "Pago habitacion";
+                   $pago->numero_operacion      = $numero_operacion;
+                   $pago->tipo_comprobante_id  =  $tipo_comprobante_id;
+                   $pago->reserva_id            = $reserva->id;
+                   $pago->save();
+
+                   $reserva->update(array('monto_por_pagar' => $monto, 'metodo_pago_id' => $metodo_pago));
+
+                   $data = array(
+
+                    'msj' => "Pago ingresado satisfactoriamente",
+                    'errors' =>false
+                   );
+
+                    return Response::json($data, 201);
+
+
+
+                }else{
+
+
+                    $data = array(
+
+                    'msj' => "El monto a pagar no corresponde",
+                    'errors' =>true
+                    );
+
+                    return Response::json($data, 400);
+
+
+                }
+
+
+              }else{
+
+
+                    $data = array(
+
+                    'msj' => "La habitacion ya fue pagada",
+                    'errors' =>true
+                    );
+
+                    return Response::json($data, 400);
+
+
+
+              }
 
 
             }
