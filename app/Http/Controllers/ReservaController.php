@@ -466,7 +466,7 @@ class ReservaController extends Controller
 
 
 
-        if($request->has('servicio_id') && $request->has('reserva_id') && $request->has('numero_operacion') && $request->has('tipo_comprobante_id')){
+        if($request->has('servicio_id') && $request->has('reserva_id')){
 
         $servicios = $request->input('servicio_id');
         $tipo_comprobante_id = $request->input('tipo_comprobante_id');
@@ -533,7 +533,10 @@ class ReservaController extends Controller
             }
 
 
+
                 $reserva->update(array('monto_por_pagar' => $total));
+
+                if($request->has('numero_operacion') && $request->has('tipo_comprobante_id')){
 
                 $pago                        = new Pago();
                 $pago->monto_pago            = $total_consumos;
@@ -544,6 +547,22 @@ class ReservaController extends Controller
                 $pago->save();
 
 
+                }else{
+
+
+                $pago                        = new Pago();
+                $pago->monto_pago            = $total_consumos;
+                $pago->tipo                  = "Pago consumos";
+                $pago->numero_operacion      = null;
+                $pago->tipo_comprobante_id  =  null;
+                $pago->reserva_id            = $reserva->id;
+                $pago->save();
+
+
+
+
+                }
+
                 $retorno = array(
 
                     'msj' => "Pago realizado correctamente",
@@ -551,8 +570,6 @@ class ReservaController extends Controller
                 );
 
                 return Response::json($retorno, 201);
-
-
 
 
         }else{
@@ -602,6 +619,9 @@ class ReservaController extends Controller
         }
 
     }
+
+
+
 
     public function panel(Request $request){
 
