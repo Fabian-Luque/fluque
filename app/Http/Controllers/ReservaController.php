@@ -14,6 +14,7 @@ use App\Huesped;
 use App\Pago;
 use App\TipoHabitacion;
 use App\Propiedad;
+use App\Servicio;
 use App\TipoComprobante;
 use App\HuespedReservaServicio;
 use Illuminate\Http\Request;
@@ -409,7 +410,8 @@ class ReservaController extends Controller
                $monto = $reserva->monto_por_pagar;
                $monto -= $monto_pago;
 
-            if($tipo_pago == "Pago parcial o total"){
+            if($tipo_pago == "Pago reserva"){
+
 
                if($reserva->monto_por_pagar > 0){
 
@@ -419,13 +421,28 @@ class ReservaController extends Controller
 
                    $pago                        = new Pago();
                    $pago->monto_pago            = $monto_pago;
-                   $pago->tipo                  = "Pago parcial o total";
+                   $pago->tipo                  = "Pago reserva";
                    $pago->numero_operacion      = $numero_operacion;
                    $pago->tipo_comprobante_id  =  $tipo_comprobante_id;
                    $pago->reserva_id            = $reserva->id;
                    $pago->save();
 
                    $reserva->update(array('monto_por_pagar' => $monto, 'metodo_pago_id' => $metodo_pago));
+
+                   $consumos = HuespedReservaServicio::where('reserva_id', $reserva_id)->get();
+
+                    if(!is_null($consumos)){
+
+                        foreach ($consumos as $consumo){
+                            
+
+                            $consumo->update(array('estado' => 'Pagado'));
+
+                        }
+
+
+
+                    }
 
                    $data = array(
 
@@ -467,7 +484,7 @@ class ReservaController extends Controller
 
               $pago_habitacion =  Pago::where('reserva_id', $reserva_id)->where('tipo', 'Pago habitacion')->first();
 
-              $pago_total = Pago::where('reserva_id', $reserva_id)->where('tipo', 'Pago parcial o total')->first();
+              $pago_total = Pago::where('reserva_id', $reserva_id)->where('tipo', 'Pago reserva')->first();
 
               if(is_null($pago_habitacion) && is_null($pago_total)){
 
