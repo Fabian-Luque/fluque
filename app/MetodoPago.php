@@ -21,7 +21,7 @@ class MetodoPago extends Model
 
 
 		return $this->belongsToMany('App\Propiedad', 'metodo_pago_propiedad_servicio')
-			->withPivot('servicio_id','cantidad', 'precio_total')
+			->withPivot('servicio_id', 'tipo_comprobate_id','cantidad', 'precio_total', 'numero_operacion')
 			->withTimestamps();
 
 
@@ -31,11 +31,21 @@ class MetodoPago extends Model
 
 
 		return $this->belongsToMany('App\Propiedad', 'metodo_pago_propiedad_servicio')
-			->withPivot('propiedad_id','cantidad', 'precio_total')
+			->withPivot('propiedad_id','tipo_comprobate_id','cantidad', 'precio_total', 'numero_operacion')
 			->withTimestamps();
 
 
 	}
+
+    public function tiposComprobante(){
+
+            return $this->belongsToMany('App\TipoComprobante', 'metodo_pago_propiedad_servicio')
+            ->withPivot('servicio_id','propiedad_id' , 'cantidad', 'precio_total', 'numero_operacion')
+            ->withTimestamps();
+
+
+
+    }
 
 
 

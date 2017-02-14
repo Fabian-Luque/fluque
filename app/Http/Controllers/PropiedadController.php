@@ -30,9 +30,13 @@ class PropiedadController extends Controller
 
        if($request->has('venta_servicio') && $request->has('propiedad_id') && $request->has('metodo_pago_id')){
 
-   
+        
+
          $propiedad =  Propiedad::where('id', $request->input('propiedad_id'))->first();
          $metodo_pago_id = $request->input('metodo_pago_id');
+         $numero_operacion = $request->input('numero_operacion');
+         $tipo_comprobante_id = $request->input('tipo_comprobante_id');
+
 
           if(!is_null($propiedad)){
 
@@ -56,7 +60,7 @@ class PropiedadController extends Controller
                  $servicio_nombre = $serv->nombre;
 
 
-                $propiedad->vendeServicios()->attach($servicio_id, ['metodo_pago_id' => $metodo_pago_id,'cantidad' => $cantidad , 'precio_total' => $precio_total]);
+                $propiedad->vendeServicios()->attach($servicio_id, ['metodo_pago_id' => $metodo_pago_id,'cantidad' => $cantidad , 'precio_total' => $precio_total, 'numero_operacion' => $numero_operacion , 'tipo_comprobante_id' => $tipo_comprobante_id]);
               
 
 
