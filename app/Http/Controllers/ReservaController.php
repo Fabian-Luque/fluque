@@ -371,7 +371,7 @@ class ReservaController extends Controller
 
                $pago                        = new Pago();
                $pago->monto_pago            = $monto_pago;
-               $pago->tipo                  = "Confirmacion de pago";
+               $pago->tipo                  = "Confirmacion de reserva";
                $pago->numero_operacion      = null;
                $pago->tipo_comprobante_id   = null;
                $pago->reserva_id            = $reserva->id;
