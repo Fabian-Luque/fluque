@@ -727,14 +727,22 @@ class ReservaController extends Controller
 
                     $query->where('propiedad_id', $id);
 
-        })->where('checkin', $fecha)->with('habitacion.tipoHabitacion')->with('huespedes')->with('cliente')->with('estadoReserva')->get();
+        })->where('checkin', $fecha)->where('estado_reserva_id', '!=', 3 )->with('habitacion.tipoHabitacion')->with('huespedes')->with('cliente')->with('estadoReserva')->get();
+
+        $entradas_hoy = Reserva::whereHas('habitacion', function($query) use($id){
+
+                    $query->where('propiedad_id', $id);})->where('checkin', $fecha)->get();
 
 
         $salidas = Reserva::whereHas('habitacion', function($query) use($id){
 
                     $query->where('propiedad_id', $id);
 
-        })->where('checkout', $fecha)->with('habitacion.tipoHabitacion')->with('huespedes')->with('cliente')->with('estadoReserva')->get();
+        })->where('checkout', $fecha)->where('estado_reserva_id', '!=' , 4)->with('habitacion.tipoHabitacion')->with('huespedes')->with('cliente')->with('estadoReserva')->get();
+
+        $salidas_hoy = Reserva::whereHas('habitacion', function($query) use($id){
+
+                    $query->where('propiedad_id', $id);})->where('checkout', $fecha)->get();
 
         $habitaciones_occupadas = Reserva::whereHas('habitacion', function($query) use($id){
 
@@ -752,8 +760,8 @@ class ReservaController extends Controller
 
 
 
-        $cantidad_entradas     = count($entradas);
-        $cantidad_salidas      = count($salidas); 
+        $cantidad_entradas     = count($entradas_hoy);
+        $cantidad_salidas      = count($salidas_hoy); 
         $cantidad_ocupadas     = count($habitaciones_occupadas); 
         $cantidad_reservas_dia = count($reservas_dia);
 
