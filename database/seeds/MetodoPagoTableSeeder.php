@@ -24,9 +24,14 @@ class MetodoPagoTableSeeder extends Seeder
     		],
     		[
 
-    			'nombre' => 'Cheque',
+                'nombre' => 'Debito',
 
-    		]
+            ],
+            [
+
+                'nombre' => 'Cheque',
+
+            ]
 
     		]);
 
