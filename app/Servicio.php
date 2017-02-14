@@ -26,7 +26,7 @@ class Servicio extends Model
 
 
 		return $this->belongsToMany('App\Reserva', 'huesped_reserva_servicio')
-			->withPivot('id','huesped_id','cantidad', 'precio_total')
+			->withPivot('id','huesped_id','cantidad', 'precio_total', 'estado')
 			->withTimestamps();
 
 
@@ -37,7 +37,7 @@ class Servicio extends Model
 	public function huespedes(){
 
 		return $this->belongsToMany('App\Huesped', 'huesped_reserva_servicio')
-			->withPivot('reserva_id','cantidad', 'precio_total')
+			->withPivot('reserva_id','cantidad', 'precio_total', 'estado')
 			->withTimestamps();
 
 
@@ -48,7 +48,7 @@ class Servicio extends Model
 
 
 			return $this->belongsToMany('App\Propiedad', 'metodo_pago_propiedad_servicio')
-			->withPivot('metodo_pago_id','cantidad', 'precio_total')
+			->withPivot('metodo_pago_id','tipo_comprobante_id','cantidad', 'precio_total', 'numero_operacion')
 			->withTimestamps();
 
 
@@ -58,11 +58,21 @@ class Servicio extends Model
 
 
 			return $this->belongsToMany('App\MetodoPago', 'metodo_pago_propiedad_servicio')
-			->withPivot('propiedad_id','cantidad', 'precio_total')
+			->withPivot('propiedad_id', 'tipo_comprobante_id' ,'cantidad', 'precio_total', 'numero_operacion')
 			->withTimestamps();
 
 
 	}
+
+	public function tiposComprobante(){
+
+            return $this->belongsToMany('App\TipoComprobante', 'metodo_pago_propiedad_servicio')
+            ->withPivot('metodo_pago_id','propiedad_id' , 'cantidad', 'precio_total', 'numero_operacion')
+            ->withTimestamps();
+
+
+
+    }
 
 	public function clientePropiedades(){
 
