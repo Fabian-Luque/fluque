@@ -60,10 +60,8 @@ class ReservaController extends Controller
 
                 $cliente->rut                   = $clientes['rut'];
                 $cliente->tipo_cliente_id       = $clientes['tipo_cliente_id'];
-                $cliente->direccion             = $clientes['direccion'];
                 $cliente->ciudad                = $clientes['ciudad'];
                 $cliente->pais                  = $clientes['pais'];
-                $cliente->telefono              = $clientes['telefono'];
                 $cliente->giro                  = null;
                 $cliente->save();
 
@@ -75,10 +73,7 @@ class ReservaController extends Controller
 
                 $cliente->rut               = $clientes['rut'];
                 $cliente->tipo_cliente_id   = $clientes['tipo_cliente_id'];
-                $cliente->direccion         = $clientes['direccion'];
-                $cliente->ciudad            = $clientes['ciudad'];
                 $cliente->pais              = $clientes['pais'];
-                $cliente->telefono          = $clientes['telefono'];
                 $cliente->giro              = $clientes['giro'];
                 $cliente->save();
             }
