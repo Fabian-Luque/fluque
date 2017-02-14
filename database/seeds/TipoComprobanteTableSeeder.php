@@ -26,6 +26,11 @@ class TipoComprobanteTableSeeder extends Seeder
 
                 'nombre' => 'Boleta',
 
+            ],
+            [
+
+                'nombre' => 'Voucher',
+
             ]
 
     		]);
