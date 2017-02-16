@@ -26,14 +26,21 @@ class PDFController extends Controller
 		$propiedad = Propiedad::where('id', $propiedad_id)->get();
 		$cliente = Cliente::where('id', $cliente_id)->get();
 
+		$propiedad_iva = 0;
+		foreach ($propiedad as $prop) {
+			
+			$propiedad_iva = $prop->iva;
 
+		}
 
 		$reservas_pdf = [];
 		$monto_alojamiento = 0;
 		$consumo = 0;
 		foreach($reservas as $id){
 
-		$reserva = Reserva::where('id', $id)->with('cliente')->with('habitacion.tipoHabitacion')->with('huespedes.servicios')->get();
+		$reserva = Reserva::where('id', $id)->with('cliente')->with('habitacion.tipoHabitacion')->with(['huespedes.servicios' => function ($q) {
+
+        $q->where('estado', 'Por pagar');}])->get();
 
 			foreach ($reserva as $ra) {
 				$monto_alojamiento += $ra->monto_alojamiento;
@@ -59,7 +66,7 @@ class PDFController extends Controller
 		
 
 		$neto = $monto_alojamiento + $consumo; 
-		$iva = round(($neto * 19) / 100);
+		$iva = round(($neto * $propiedad_iva) / 100);
 		$total = round($neto + $iva);
 
 
