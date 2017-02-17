@@ -20,6 +20,7 @@ class PDFController extends Controller
 		$reservas = $request['reservas'];
 		$propiedad_id = $request->input('propiedad_id');
 		$cliente_id = $request->input('cliente_id');
+		$iva = $request->input('iva');
 
 
 
@@ -64,38 +65,16 @@ class PDFController extends Controller
 		}
 
 		
-
-		$neto = $monto_alojamiento + $consumo; 
+		if($iva == 1){
+		$neto = round($monto_alojamiento + $consumo); 
 		$iva = round(($neto * $propiedad_iva) / 100);
 		$total = round($neto + $iva);
+		}elseif($iva == 0){
+		$neto = round($monto_alojamiento + $consumo); 
+		$iva = round(($neto * 0) / 100);
+		$total = round($neto + $iva);
 
-
-/*		
-		$consumos_fecha = [];
-
-			foreach ($reserva as $ra) {
-				foreach($ra->huespedes as $huesped){
-
-					foreach($huesped->servicios as $servicio){
-				
-						$fecha =  date('d-m-Y',strtotime($servicio->pivot->created_at));
-
-						$fecha
-						array_push($consumos_fecha, $fecha);
-						array_push($consumos_fecha, $servicio->nombre);
-						array_push($consumos_fecha, $servicio->pivot->cantidad);
-
-						return $consumos_fecha;
-
-
-					}
-					
-				}
-
-			}
-
-		return $consumos_fecha;*/
-
+		}
 
 
 		$pdf = PDF::loadView('pdf.vista', ['propiedad' => $propiedad,'consumo' => $consumo , 'cliente'=> $cliente ,'reservas_pdf'=> $reservas_pdf, 'neto' => $neto , 'iva' => $iva, 'total' => $total]);
