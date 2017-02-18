@@ -18,6 +18,10 @@ use App\Propiedad;
 
 class ServicioController extends Controller
 {
+
+
+    ///////////////prueba////////////////////////
+
     
 		public function index(Request $request){
 
