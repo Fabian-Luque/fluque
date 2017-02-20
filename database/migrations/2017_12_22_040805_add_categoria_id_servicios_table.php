@@ -15,7 +15,7 @@ class AddCategoriaIdServiciosTable extends Migration
         Schema::table('servicios', function (Blueprint $table) {
         $table->dropColumn('categoria');
         $table->integer('cantidad_disponible')->after('precio')->default(0);
-        $table->integer('categoria_id')->after('cantidad_disponible')->default(1)->unsigned();
+        $table->integer('categoria_id')->after('cantidad_disponible')->nullable()->unsigned();
         $table->foreign('categoria_id')->references('id')->on('categorias');
         });
     }
