@@ -41,6 +41,8 @@ Route::group(['middleware' => 'cors'], function(){
 
 	Route::get('tipo-habitacion', 'HabitacionController@getTipoHabitacion');
 
+	Route::get('categorias', 'ServicioController@getCategoria');
+
 	Route::get('tipo-propiedad', 'PropiedadController@getTipoPropiedad');
 
 	Route::get('tipo-cliente', 'ClienteController@getTipoCliente');

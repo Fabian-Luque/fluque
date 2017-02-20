@@ -16,6 +16,8 @@ use App\Servicio;
 
 use App\Propiedad;
 
+use App\Categoria;
+
 class ServicioController extends Controller
 {
 
@@ -156,6 +158,17 @@ class ServicioController extends Controller
         ];
 
         return Response::json($data, 202);
+
+
+
+    }
+
+
+    public function getCategoria(){
+
+        $categorias = Categoria::all();
+
+        return $categorias;
 
 
 
