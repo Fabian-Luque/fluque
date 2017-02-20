@@ -39,10 +39,11 @@ class ServicioController extends Controller
 
 			$rules = array(
 
-			'nombre' 		=> 'required',
-			'categoria'		=> 'required',
-			'precio'		=> 'required|numeric',
-			'propiedad_id'  => 'required|numeric',
+			'nombre' 		      => 'required',
+            'precio'              => 'required|numeric',
+            'cantidad_disponible' => 'numeric',
+			'categoria_id'	      => 'required|numeric',
+			'propiedad_id'        => 'required|numeric',
 
 
 			
@@ -67,8 +68,9 @@ class ServicioController extends Controller
 
             $servicio                             = new Servicio();
             $servicio->nombre          	          = $request->get('nombre');
-           	$servicio->categoria           	      = $request->get('categoria');
-          	$servicio->precio                     = $request->get('precio');
+            $servicio->precio                     = $request->get('precio');
+            $servicio->cantidad_disponible        = $request->get('cantidad_disponible');
+           	$servicio->categoria_id           	  = $request->get('categoria_id');
           	$servicio->propiedad_id               = $request->get('propiedad_id');
    
             $servicio->save();
@@ -94,9 +96,10 @@ class ServicioController extends Controller
 
 			$rules = array(
 
-			'nombre' 		=> '',
-			'categoria'		=> '',
-			'precio'		=> 'numeric',
+			'nombre' 		       => '',
+			'precio'		       => 'numeric',
+            'cantidad_disponible'  => 'numeric',
+            'categoria_id'         => 'numeric',
 
 
 			
