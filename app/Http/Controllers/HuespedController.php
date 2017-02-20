@@ -8,6 +8,7 @@ use App\Http\Requests;
 use Response;
 use App\Huesped;
 use App\Reserva;
+use App\Servicio;
 use App\HuespedReservaServicio;
 
 class HuespedController extends Controller
@@ -197,32 +198,122 @@ class HuespedController extends Controller
 		$precio_total = $consumo['precio_total'];
 
 		$reserva = Reserva::where('id', $reserva_id)->first();
-		$reserva->reservasHuespedes()->attach($huesped_id, ['servicio_id' => $servicio_id, 'cantidad' => $cantidad , 'precio_total' => $precio_total]);
+
+		$servicio = Servicio::where('id' , $servicio_id)->first();
+		$cantidad_disponible = $servicio->cantidad_disponible;
 
 
-		$consumo =$precio_total + $reserva->monto_consumo;
-		$total = $precio_total + $reserva->monto_total;
-		$por_pagar =$precio_total + $reserva->monto_por_pagar;
+			if($cantidad >= 1){
 
 
-		$reserva->update(array('monto_consumo' => $consumo, 'monto_total' => $total , 'monto_por_pagar' => $por_pagar));
+				if(!is_null($servicio)){
 
 
-/*		$suma_servicios = 0;
-		foreach ($reserva->servicios as $servicio) {
-			
-			$precio = $servicio->pivot->precio_total;
+				 if($servicio->cantidad_disponible > 0){
+				 	
 
-			
-			$suma_servicios = $suma_servicios + $precio;
+				 	if($cantidad <= $servicio->cantidad_disponible){
+
+				 	$cantidad_disponible = $cantidad_disponible - $cantidad;
+
+				 	$servicio->update(array('cantidad_disponible' => $cantidad_disponible));
+
+
+					$reserva->reservasHuespedes()->attach($huesped_id, ['servicio_id' => $servicio_id, 'cantidad' => $cantidad , 'precio_total' => $precio_total]);
+
+
+					$consumo =$precio_total + $reserva->monto_consumo;
+					$total = $precio_total + $reserva->monto_total;
+					$por_pagar =$precio_total + $reserva->monto_por_pagar;
+
+
+					$reserva->update(array('monto_consumo' => $consumo, 'monto_total' => $total , 'monto_por_pagar' => $por_pagar));
+
+					}else{
+
+
+						$data = array(
+
+		                    'msj' => " La cantidad ingresada es mayor al stock del producto",
+		                    'errors' => true
+
+
+		                );
+
+		                return Response::json($data, 400);
 
 
 
-		}*/
 
-		}
+					}
 
-		return "consumo agregado";
+				 }else{
+
+
+					 $data = array(
+
+	                    'msj' => " El servicio no tiene stock",
+	                    'errors' => true
+
+
+	                );
+
+	                return Response::json($data, 400);
+
+
+
+				 }
+
+				}else{
+
+
+					$data = array(
+
+	                    'msj' => " No se encuentra servicio",
+	                    'errors' => true
+
+
+	                );
+
+	                return Response::json($data, 404);
+
+
+
+
+				}
+			}else{
+
+
+				return "la cantidad ingresada no corresponde";
+
+					$data = array(
+
+	                    'msj' => " La cantidad ingresada no corresponde",
+	                    'errors' => true
+
+
+	                );
+
+	                return Response::json($data, 400);
+
+
+
+			}
+
+
+
+
+
+
+				}
+
+				   $data = array(
+
+                    'msj' => "Consumo ingresado satisfactoriamente",
+                    'errors' =>false
+                   );
+
+                    return Response::json($data, 201);
 
 
 	}
