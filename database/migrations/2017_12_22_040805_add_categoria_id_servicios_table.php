@@ -14,7 +14,8 @@ class AddCategoriaIdServiciosTable extends Migration
     {
         Schema::table('servicios', function (Blueprint $table) {
         $table->dropColumn('categoria');
-        $table->integer('categoria_id')->after('nombre')->default(1)->unsigned();
+        $table->integer('cantidad_disponible')->after('precio')->default(0);
+        $table->integer('categoria_id')->after('cantidad_disponible')->default(1)->unsigned();
         $table->foreign('categoria_id')->references('id')->on('categorias');
         });
     }
@@ -27,6 +28,7 @@ class AddCategoriaIdServiciosTable extends Migration
     public function down()
     {
         Schema::table('servicios', function (Blueprint $table) {
+        $table->dropColumn('cantidad_disponible');
         $table->dropColumn('categoria_id');
     
         });

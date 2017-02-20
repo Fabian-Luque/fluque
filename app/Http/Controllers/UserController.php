@@ -109,24 +109,27 @@ class UserController extends Controller
 
             $servicio1                        = new Servicio();
             $servicio1->nombre                = 'Desayuno';
-            $servicio1->categoria             = '';
             $servicio1->precio                = '';
+            $servicio1->cantidad_disponible   = 0;
+            $servicio1->categoria_id          = 1;
             $servicio1->propiedad_id          = $usuario->id; 
 
             $servicio1->save();
 
             $servicio2                        = new Servicio();
             $servicio2->nombre                = 'Almuerzo';
-            $servicio2->categoria             = '';
             $servicio2->precio                = '';
+            $servicio2->cantidad_disponible   = 0;
+            $servicio2->categoria_id          = 1;
             $servicio2->propiedad_id          = $usuario->id; 
 
             $servicio2->save();
 
             $servicio3                        = new Servicio();
             $servicio3->nombre                = 'Cena';
-            $servicio3->categoria             = '';
             $servicio3->precio                = '';
+            $servicio3->cantidad_disponible   = 0;
+            $servicio3->categoria_id          = 1;
             $servicio3->propiedad_id          = $usuario->id; 
 
             $servicio3->save();
