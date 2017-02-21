@@ -284,7 +284,7 @@ class HuespedController extends Controller
 			}else{
 
 
-				return "la cantidad ingresada no corresponde";
+
 
 					$data = array(
 

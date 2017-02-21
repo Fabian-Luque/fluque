@@ -54,15 +54,77 @@ class PropiedadController extends Controller
 
 
                  $serv = Servicio::where('id', $servicio_id)->where('propiedad_id', $request->input('propiedad_id'))->first();
+                 $cantidad_disponible = $serv->cantidad_disponible;
 
                  if(!is_null($serv)){
-                 $servicio_id = $serv->id;
-                 $servicio_nombre = $serv->nombre;
 
 
-                $propiedad->vendeServicios()->attach($servicio_id, ['metodo_pago_id' => $metodo_pago_id,'cantidad' => $cantidad , 'precio_total' => $precio_total, 'numero_operacion' => $numero_operacion , 'tipo_comprobante_id' => $tipo_comprobante_id]);
-              
+                    if($cantidad >= 1){
 
+                        if($serv->cantidad_disponible > 0){
+
+                            if($cantidad <= $serv->cantidad_disponible){
+
+                             $servicio_id = $serv->id;
+                             $servicio_nombre = $serv->nombre;
+
+                             $cantidad_disponible = $cantidad_disponible - $cantidad;
+
+                             $serv->update(array('cantidad_disponible' => $cantidad_disponible));
+
+
+                             $propiedad->vendeServicios()->attach($servicio_id, ['metodo_pago_id' => $metodo_pago_id,'cantidad' => $cantidad , 'precio_total' => $precio_total, 'numero_operacion' => $numero_operacion , 'tipo_comprobante_id' => $tipo_comprobante_id]);
+                        
+                            }else{
+
+
+                            $data = array(
+
+                            'msj' => " La cantidad ingresada es mayor al stock del producto",
+                            'errors' => true
+
+
+                            );
+
+                            return Response::json($data, 400);
+
+
+                            }
+
+                        }else{
+
+                        $data = array(
+
+                        'msj' => " El servicio no tiene stock",
+                        'errors' => true
+
+
+                         );
+
+                         return Response::json($data, 400);
+
+
+
+
+                        }
+
+                    }else{
+
+                        $data = array(
+
+                        'msj' => " La cantidad ingresada no corresponde",
+                        'errors' => true
+
+
+                        );
+
+                        return Response::json($data, 400);
+
+
+
+
+
+                    }
 
                  }else{
 
