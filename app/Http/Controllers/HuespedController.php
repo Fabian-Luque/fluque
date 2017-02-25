@@ -209,6 +209,10 @@ class HuespedController extends Controller
 				if(!is_null($servicio)){
 
 
+			if($servicio->categoria_id == 2){
+
+
+
 				 if($servicio->cantidad_disponible > 0){
 				 	
 
@@ -263,6 +267,32 @@ class HuespedController extends Controller
 
 
 				 }
+
+				
+			}elseif($servicio->categoria_id == 1){
+
+
+					$reserva->reservasHuespedes()->attach($huesped_id, ['servicio_id' => $servicio_id, 'cantidad' => $cantidad , 'precio_total' => $precio_total]);
+
+
+					$consumo =$precio_total + $reserva->monto_consumo;
+					$total = $precio_total + $reserva->monto_total;
+					$por_pagar =$precio_total + $reserva->monto_por_pagar;
+
+
+					$reserva->update(array('monto_consumo' => $consumo, 'monto_total' => $total , 'monto_por_pagar' => $por_pagar));
+
+
+
+
+			}
+
+
+
+
+
+
+
 
 				}else{
 

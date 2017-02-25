@@ -59,6 +59,9 @@ class PropiedadController extends Controller
                  if(!is_null($serv)){
 
 
+            if($serv->categoria_id == 2){
+
+
                     if($cantidad >= 1){
 
                         if($serv->cantidad_disponible > 0){
@@ -125,6 +128,26 @@ class PropiedadController extends Controller
 
 
                     }
+
+
+
+            }elseif($serv->categoria_id == 1){
+
+
+                $propiedad->vendeServicios()->attach($servicio_id, ['metodo_pago_id' => $metodo_pago_id,'cantidad' => $cantidad , 'precio_total' => $precio_total, 'numero_operacion' => $numero_operacion , 'tipo_comprobante_id' => $tipo_comprobante_id]);
+
+
+
+            }
+
+
+
+
+
+
+
+
+
 
                  }else{
 

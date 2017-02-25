@@ -53,6 +53,7 @@ class ClienteController extends Controller
                 $servicio_nombre = $serv->nombre;
                 $cantidad_disponible = $serv->cantidad_disponible;
 
+            if($serv->categoria_id == 2){
 
 
                	if(!is_null($cliente)){
@@ -119,24 +120,37 @@ class ClienteController extends Controller
 
 
 
-            	}
+			            	}
 
 
-            	}else{
+			            	}else{
 
 
-            	$data = array(
+			            	$data = array(
 
-					'msj' => "Cliente no encontrado",
-					'errors' => true
-
-
-				);
-
-				return Response::json($data, 404);
+								'msj' => "Cliente no encontrado",
+								'errors' => true
 
 
-            	}
+							);
+
+							return Response::json($data, 404);
+
+
+			            	}
+
+
+
+            }elseif($serv->categoria_id == 1){
+
+
+            	$propiedad->consumoClienteServicios()->attach($servicio_id, ['cliente_id' => $cliente_id,'nombre_consumidor' => $nombre_consumidor,'apellido_consumidor' => $apellido_consumidor,'rut_consumidor' => $rut_consumidor,'cantidad' => $cantidad , 'precio_total' => $precio_total]);
+
+
+
+            }
+
+
 
                  }else{
 
@@ -150,6 +164,23 @@ class ClienteController extends Controller
 
 
              }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 		 		}
 
