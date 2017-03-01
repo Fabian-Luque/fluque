@@ -940,6 +940,11 @@ class ReservaController extends Controller
 
 
         /*ingresos por tipo de fuente*/
+        $ingreso_por_web = 0;
+        $ingreso_por_telefono = 0;
+        $ingreso_caminando = 0;
+        $ingreso_por_email = 0;
+        $ingreso_por_redes = 0;
 
         $reservas_web = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
 
@@ -947,11 +952,24 @@ class ReservaController extends Controller
 
         })->whereBetween('checkin' , $rango)->where('estado_reserva_id' , 4)->where('tipo_fuente_id' , 1)->get();
 
+        foreach($reservas_web as $reserva){
+
+          $ingreso_por_web += $reserva->monto_total;
+
+
+        }
+
         $reservas_caminando = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
 
             $query->where('propiedad_id', $propiedad_id);
 
         })->whereBetween('checkin' , $rango)->where('estado_reserva_id' , 4)->where('tipo_fuente_id' , 2)->get();
+
+        foreach($reservas_caminando as $reserva){
+
+          $ingreso_caminando += $reserva->monto_total;
+
+        }
 
         $reservas_telefono = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
 
@@ -959,11 +977,27 @@ class ReservaController extends Controller
 
         })->whereBetween('checkin' , $rango)->where('estado_reserva_id' , 4)->where('tipo_fuente_id' , 3)->get();
 
+        foreach($reservas_telefono as $reserva){
+
+          $ingreso_por_telefono += $reserva->monto_total;
+
+
+        }
+
+
+
         $reservas_email = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
 
             $query->where('propiedad_id', $propiedad_id);
 
         })->whereBetween('checkin' , $rango)->where('estado_reserva_id' , 4)->where('tipo_fuente_id' , 4)->get();
+
+        foreach($reservas_email as $reserva){
+
+          $ingreso_por_email += $reserva->monto_total;
+
+
+        }
 
         $reservas_sociales = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
 
@@ -971,7 +1005,72 @@ class ReservaController extends Controller
 
         })->whereBetween('checkin' , $rango)->where('estado_reserva_id' , 4)->where('tipo_fuente_id' , 5)->get();
 
+        foreach($reservas_sociales as $reserva){
 
+          $ingreso_por_redes += $reserva->monto_total;
+
+
+        }
+
+
+        /*ingresos por tipo de pago*/
+
+        $ingreso_efectivo = 0;
+        $ingreso_credito = 0;
+        $ingreso_debito = 0;
+        $ingreso_cheque = 0;
+
+        $reservas_efectivo = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
+
+            $query->where('propiedad_id', $propiedad_id);
+
+        })->whereBetween('checkin' , $rango)->where('estado_reserva_id' , 4)->where('metodo_pago_id', 1)->get();
+
+        foreach($reservas_efectivo as $reserva){
+
+          $ingreso_efectivo += $reserva->monto_total;
+
+
+        }
+
+        $reservas_credito = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
+
+            $query->where('propiedad_id', $propiedad_id);
+
+        })->whereBetween('checkin' , $rango)->where('estado_reserva_id' , 4)->where('metodo_pago_id', 2)->get();
+
+        foreach($reservas_credito as $reserva){
+
+          $ingreso_credito += $reserva->monto_total;
+
+
+        }
+
+        $reservas_debito = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
+
+            $query->where('propiedad_id', $propiedad_id);
+
+        })->whereBetween('checkin' , $rango)->where('estado_reserva_id' , 4)->where('metodo_pago_id', 3)->get();
+
+        foreach($reservas_debito as $reserva){
+
+          $ingreso_debito += $reserva->monto_total;
+
+
+        }
+
+        $reservas_cheque = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
+
+            $query->where('propiedad_id', $propiedad_id);
+
+        })->whereBetween('checkin' , $rango)->where('estado_reserva_id' , 4)->where('metodo_pago_id', 4)->get();
+
+        foreach($reservas_cheque as $reserva){
+
+          $ingreso_cheque += $reserva->monto_total;
+
+
+        }
 
 
             $data = array(
@@ -981,11 +1080,15 @@ class ReservaController extends Controller
             'ventas_totales'          => round($ventas_totales),
             'ingreso_empresas'        => round($ingreso_empresa),
             'ingreso_particulares'    => round($ingreso_particular),
-            'reservas_web'            => count($reservas_web),
-            'reservas_caminando'      => count($reservas_caminando),
-            'reservas_telefono'       => count($reservas_telefono),
-            'reservas_email'          => count($reservas_email),
-            'reservas_redes_sociales' => count($reservas_sociales),
+            'reservas_web'            => $ingreso_por_web,
+            'reservas_caminando'      => $ingreso_caminando,
+            'reservas_telefono'       => $ingreso_por_telefono,
+            'reservas_email'          => $ingreso_por_email,
+            'reservas_redes_sociales' => $ingreso_por_redes,
+            'reservas_efectivo'       => $ingreso_efectivo,
+            'reservas_credito'        => $ingreso_credito,
+            'reservas_debito'         => $ingreso_debito,
+            'reservas_cheque'         => $ingreso_cheque,
             );
 
             return $data;
