@@ -839,6 +839,97 @@ class ReservaController extends Controller
     }
 
 
+
+    public function ventas(Request $request){
+
+
+      if($request->has('propiedad_id') && $request->has('fecha_inicio') && $request->has('fecha_fin') && $request->has('dias')){
+
+        $propiedad_id = $request->input('propiedad_id');
+        $fecha_inicio = $request->input('fecha_inicio');
+        $fecha_fin = $request->input('fecha_fin');
+        $dias = $request->input('dias');
+        $rango = [$fecha_inicio, $fecha_fin];
+
+        $propiedad = Propiedad::where('id', $propiedad_id)->first();
+
+        $total_reservas = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
+
+            $query->where('propiedad_id', $propiedad_id);
+
+        })->whereBetween('checkin' , $rango)->where('estado_reserva_id' , 4)->get();
+
+        $fechaInicio=strtotime($fecha_inicio);
+        $fechaFin=strtotime($fecha_fin);
+        $numero_habitaciones = $propiedad->numero_habitaciones;
+        
+        $mes = $dias * $numero_habitaciones;
+        $suma_ocupacion = 0;
+
+
+
+        for($i=$fechaInicio; $i<=$fechaFin; $i+=86400){
+            
+        $fecha = date("Y-m-d", $i);
+      
+
+        $reservas = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
+
+                    $query->where('propiedad_id', $propiedad_id);
+
+        })->where('checkin','<=' ,$fecha)->where('checkout', '>', $fecha)->where('estado_reserva_id' , 4)->get();
+
+        $reservas_dia = count($reservas);
+
+        $suma_ocupacion += $reservas_dia;
+
+        }
+
+        $ocupacion = ($suma_ocupacion * 100) / $mes;
+
+        $ventas_totales = 0;
+        foreach($total_reservas as $reserva){
+
+          $ventas_totales += $reserva->monto_total;
+
+
+        }
+
+
+
+
+          $data = array(
+
+            'total_reservas' => count($total_reservas),
+            'ocupacion'      => round($ocupacion),
+            'ventas_totales' => round($ventas_totales),
+
+            );
+
+        return $data;
+
+
+      }else{
+
+
+            $retorno = array(
+
+                'msj'    => "La solicitud esta incompleta",
+                'errors' => true
+            );
+
+            return Response::json($retorno, 400);
+
+
+      }
+
+
+
+
+
+    }
+
+
     public function calendario(Request $request){
 
 
