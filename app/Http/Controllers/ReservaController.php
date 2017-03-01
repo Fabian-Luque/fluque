@@ -939,20 +939,56 @@ class ReservaController extends Controller
         }
 
 
+        /*ingresos por tipo de fuente*/
+
+        $reservas_web = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
+
+            $query->where('propiedad_id', $propiedad_id);
+
+        })->whereBetween('checkin' , $rango)->where('estado_reserva_id' , 4)->where('tipo_fuente_id' , 1)->get();
+
+        $reservas_caminando = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
+
+            $query->where('propiedad_id', $propiedad_id);
+
+        })->whereBetween('checkin' , $rango)->where('estado_reserva_id' , 4)->where('tipo_fuente_id' , 2)->get();
+
+        $reservas_telefono = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
+
+            $query->where('propiedad_id', $propiedad_id);
+
+        })->whereBetween('checkin' , $rango)->where('estado_reserva_id' , 4)->where('tipo_fuente_id' , 3)->get();
+
+        $reservas_email = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
+
+            $query->where('propiedad_id', $propiedad_id);
+
+        })->whereBetween('checkin' , $rango)->where('estado_reserva_id' , 4)->where('tipo_fuente_id' , 4)->get();
+
+        $reservas_sociales = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
+
+            $query->where('propiedad_id', $propiedad_id);
+
+        })->whereBetween('checkin' , $rango)->where('estado_reserva_id' , 4)->where('tipo_fuente_id' , 5)->get();
 
 
 
-          $data = array(
 
-            'total_reservas'        => count($total_reservas),
-            'ocupacion'             => round($ocupacion),
-            'ventas_totales'        => round($ventas_totales),
-            'ingreso_empresas'      => round($ingreso_empresa),
-            'ingreso_particulares'  => round($ingreso_particular),
+            $data = array(
 
+            'total_reservas'          => count($total_reservas),
+            'ocupacion'               => round($ocupacion),
+            'ventas_totales'          => round($ventas_totales),
+            'ingreso_empresas'        => round($ingreso_empresa),
+            'ingreso_particulares'    => round($ingreso_particular),
+            'reservas_web'            => count($reservas_web),
+            'reservas_caminando'      => count($reservas_caminando),
+            'reservas_telefono'       => count($reservas_telefono),
+            'reservas_email'          => count($reservas_email),
+            'reservas_redes_sociales' => count($reservas_sociales),
             );
 
-        return $data;
+            return $data;
 
 
       }else{
