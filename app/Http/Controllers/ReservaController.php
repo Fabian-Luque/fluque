@@ -895,14 +895,60 @@ class ReservaController extends Controller
 
         }
 
+        /*ingreso por tipo de cliente */
+
+        $ingreso_empresa = 0;
+        $ingreso_particular = 0;
+
+        $reserva_empresa = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
+
+            $query->where('propiedad_id', $propiedad_id);
+
+        })->whereHas('cliente', function($query){
+
+            $query->where('tipo_cliente_id', 2);
+
+        })->whereBetween('checkin' , $rango)->where('estado_reserva_id' , 4)->get();
+
+
+        foreach($reserva_empresa as $reserva){
+
+          $ingreso_empresa += $reserva->monto_total;
+
+
+
+        }
+
+        $reserva_particular = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
+
+            $query->where('propiedad_id', $propiedad_id);
+
+        })->whereHas('cliente', function($query){
+
+            $query->where('tipo_cliente_id', 1);
+
+        })->whereBetween('checkin' , $rango)->where('estado_reserva_id' , 4)->get();
+
+
+        foreach($reserva_particular as $reserva){
+
+          $ingreso_particular += $reserva->monto_total;
+
+
+
+        }
+
+
 
 
 
           $data = array(
 
-            'total_reservas' => count($total_reservas),
-            'ocupacion'      => round($ocupacion),
-            'ventas_totales' => round($ventas_totales),
+            'total_reservas'        => count($total_reservas),
+            'ocupacion'             => round($ocupacion),
+            'ventas_totales'        => round($ventas_totales),
+            'ingreso_empresas'      => round($ingreso_empresa),
+            'ingreso_particulares'  => round($ingreso_particular),
 
             );
 
