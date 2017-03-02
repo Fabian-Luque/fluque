@@ -1076,6 +1076,7 @@ class ReservaController extends Controller
         /*grafico, ingreso por tipo de cliente, particular y empresa*/
 
         $subs_empresa = [];
+        $subs_particular = [];
         $grafico_empresa_particular = [];
 
         if($ventas_totales == 0){
@@ -1121,7 +1122,7 @@ class ReservaController extends Controller
 
           }
           
-          $empresa_porcentaje = round(($total_cliente_empresa * 100) / $ventas_totales);
+          $empresa_porcentaje = round(($total_cliente_empresa * 100) / $ingreso_empresa);
 
           $sub = [
 
@@ -1148,6 +1149,8 @@ class ReservaController extends Controller
 
           ];
 
+
+
           array_push($grafico_empresa_particular, $grafico1);
 
 
@@ -1166,6 +1169,16 @@ class ReservaController extends Controller
         $q->whereBetween('checkin', $rango);}])->get();
 
 
+          $sub2 = [
+
+            'type'      =>'Particulares',
+            'percent'   =>$porcentaje_ingreso_particulares,
+
+
+
+          ];
+
+          array_push($subs_particular, $sub2);
 
 
           $grafico2 = [
@@ -1173,7 +1186,7 @@ class ReservaController extends Controller
                 'type'    => "Particulares",
                 'percent' => $porcentaje_ingreso_particulares,
                 'color'   => null,
-                'subs'    => ['type' => 'Particulares', 'percent' => $porcentaje_ingreso_particulares],
+                'subs'    => $subs_particular,
 
 
           ];
