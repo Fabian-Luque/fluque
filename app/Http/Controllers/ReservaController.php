@@ -1076,7 +1076,6 @@ class ReservaController extends Controller
         /*grafico, ingreso por tipo de cliente, particular y empresa*/
 
         $subs_empresa = [];
-        $subs_particular = [];
         $grafico_empresa_particular = [];
 
         if($ventas_totales == 0){
@@ -1099,7 +1098,7 @@ class ReservaController extends Controller
 
 
 
-        $clientes_empresa = Cliente::whereHas('reservas.habitacion', function($query) use($propiedad_id){
+        return $clientes_empresa = Cliente::whereHas('reservas.habitacion', function($query) use($propiedad_id){
 
               $query->where('propiedad_id', $propiedad_id);
 
@@ -1168,40 +1167,13 @@ class ReservaController extends Controller
 
 
 
-        foreach ($clientes_particular as $cliente) {
-        
-          $total_cliente_particular = 0;
-          foreach ($cliente->reservas as $reserva) {
-            $total_cliente_particular += $reserva->monto_total;
-
-
-
-          }
-         
-
-          $particular_porcentaje = round(($total_cliente_particular * 100) / $ventas_totales);
-
-          $sub = [
-
-            'type'      =>$cliente->nombre,
-            'percent'   =>$particular_porcentaje,
-
-
-
-          ];
-
-          array_push($subs_particular, $sub);
-
-
-
-        }
 
           $grafico2 = [
 
-                'type'    => "Particular",
+                'type'    => "Particulares",
                 'percent' => $porcentaje_ingreso_particulares,
                 'color'   => null,
-                'subs'    => $subs_particular,
+                'subs'    => ['type' => 'Particulares', 'percent' => $porcentaje_ingreso_particulares],
 
 
           ];
