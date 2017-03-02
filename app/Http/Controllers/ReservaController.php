@@ -1098,7 +1098,7 @@ class ReservaController extends Controller
 
 
 
-        return $clientes_empresa = Cliente::whereHas('reservas.habitacion', function($query) use($propiedad_id){
+        $clientes_empresa = Cliente::whereHas('reservas.habitacion', function($query) use($propiedad_id){
 
               $query->where('propiedad_id', $propiedad_id);
 
