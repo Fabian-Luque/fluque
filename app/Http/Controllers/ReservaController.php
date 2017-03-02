@@ -1122,7 +1122,7 @@ class ReservaController extends Controller
 
           }
           
-          $empresa_porcentaje = round(($total_cliente_empresa * 100) / $ingreso_empresa);
+          $empresa_porcentaje = round(($total_cliente_empresa * 100) / $ingreso_empresa, 2);
 
           $sub = [
 
