@@ -1078,10 +1078,23 @@ class ReservaController extends Controller
         $subs_empresa = [];
         $subs_particular = [];
         $grafico_empresa_particular = [];
+
+        if($ventas_totales == 0){
+
+          $porcentaje_ingreso_empresas = 0;
+          $porcentaje_ingreso_particulares = 0;
+
+
+        }else{
+
         
         $porcentaje_ingreso_empresas = round(($ingreso_empresa * 100) / $ventas_totales);
 
         $porcentaje_ingreso_particulares = round(($ingreso_particular * 100) / $ventas_totales);
+
+
+
+        
 
 
 
@@ -1096,7 +1109,9 @@ class ReservaController extends Controller
               $query->whereBetween('checkin' , $rango)->where('estado_reserva_id' , 4);
 
 
-        })->where('tipo_cliente_id', 2)->with('reservas')->get();
+        })->where('tipo_cliente_id', 2)->with(['reservas' => function ($q) use($rango) {
+
+        $q->whereBetween('checkin', $rango);}])->get();
 
 
         foreach($clientes_empresa as $cliente) {
@@ -1137,7 +1152,7 @@ class ReservaController extends Controller
           array_push($grafico_empresa_particular, $grafico1);
 
 
-       $clientes_particular = Cliente::whereHas('reservas.habitacion', function($query) use($propiedad_id){
+        $clientes_particular = Cliente::whereHas('reservas.habitacion', function($query) use($propiedad_id){
 
               $query->where('propiedad_id', $propiedad_id);
 
@@ -1147,7 +1162,9 @@ class ReservaController extends Controller
               $query->whereBetween('checkin' , $rango)->where('estado_reserva_id' , 4);
 
 
-        })->where('tipo_cliente_id', 1)->with('reservas')->get();
+        })->where('tipo_cliente_id', 1)->with(['reservas' => function ($q) use($rango) {
+
+        $q->whereBetween('checkin', $rango);}])->get();
 
 
 
@@ -1160,7 +1177,7 @@ class ReservaController extends Controller
 
 
           }
-
+         
 
           $particular_porcentaje = round(($total_cliente_particular * 100) / $ventas_totales);
 
@@ -1178,7 +1195,7 @@ class ReservaController extends Controller
 
 
         }
-        
+
           $grafico2 = [
 
                 'type'    => "Particular",
@@ -1192,7 +1209,7 @@ class ReservaController extends Controller
           array_push($grafico_empresa_particular, $grafico2);
 
 
-      
+      }
 
             $data = array(
 
