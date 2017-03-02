@@ -1073,6 +1073,127 @@ class ReservaController extends Controller
         }
 
 
+        /*grafico, ingreso por tipo de cliente, particular y empresa*/
+
+        $subs_empresa = [];
+        $subs_particular = [];
+        $grafico_empresa_particular = [];
+        
+        $porcentaje_ingreso_empresas = round(($ingreso_empresa * 100) / $ventas_totales);
+
+        $porcentaje_ingreso_particulares = round(($ingreso_particular * 100) / $ventas_totales);
+
+
+
+
+        $clientes_empresa = Cliente::whereHas('reservas.habitacion', function($query) use($propiedad_id){
+
+              $query->where('propiedad_id', $propiedad_id);
+
+
+        })->whereHas('reservas', function($query) use($rango){
+
+              $query->whereBetween('checkin' , $rango)->where('estado_reserva_id' , 4);
+
+
+        })->where('tipo_cliente_id', 2)->with('reservas')->get();
+
+
+        foreach($clientes_empresa as $cliente) {
+          
+          $total_cliente_empresa = 0; 
+          foreach ($cliente->reservas as $reserva) {
+              $total_cliente_empresa += $reserva->monto_total;
+
+          }
+          
+          $empresa_porcentaje = round(($total_cliente_empresa * 100) / $ventas_totales);
+
+          $sub = [
+
+            'type'      =>$cliente->nombre,
+            'percent'   =>$empresa_porcentaje,
+
+
+
+          ];
+
+          array_push($subs_empresa, $sub);
+
+
+
+        }
+
+          $grafico1 = [
+
+                'type'    => "Empresas",
+                'percent' => $porcentaje_ingreso_empresas,
+                'color'   => null,
+                'subs'    => $subs_empresa,
+
+
+          ];
+
+          array_push($grafico_empresa_particular, $grafico1);
+
+
+       $clientes_particular = Cliente::whereHas('reservas.habitacion', function($query) use($propiedad_id){
+
+              $query->where('propiedad_id', $propiedad_id);
+
+
+        })->whereHas('reservas', function($query) use($rango){
+
+              $query->whereBetween('checkin' , $rango)->where('estado_reserva_id' , 4);
+
+
+        })->where('tipo_cliente_id', 1)->with('reservas')->get();
+
+
+
+        foreach ($clientes_particular as $cliente) {
+        
+          $total_cliente_particular = 0;
+          foreach ($cliente->reservas as $reserva) {
+            $total_cliente_particular += $reserva->monto_total;
+
+
+
+          }
+
+
+          $particular_porcentaje = round(($total_cliente_particular * 100) / $ventas_totales);
+
+          $sub = [
+
+            'type'      =>$cliente->nombre,
+            'percent'   =>$particular_porcentaje,
+
+
+
+          ];
+
+          array_push($subs_particular, $sub);
+
+
+
+        }
+        
+          $grafico2 = [
+
+                'type'    => "Particular",
+                'percent' => $porcentaje_ingreso_particulares,
+                'color'   => null,
+                'subs'    => $subs_particular,
+
+
+          ];
+
+          array_push($grafico_empresa_particular, $grafico2);
+
+
+      
+
             $data = array(
 
             'total_reservas'          => count($total_reservas),
@@ -1089,6 +1210,7 @@ class ReservaController extends Controller
             'reservas_credito'        => $ingreso_credito,
             'reservas_debito'         => $ingreso_debito,
             'reservas_cheque'         => $ingreso_cheque,
+            'types'                   => $grafico_empresa_particular,
             );
 
             return $data;
