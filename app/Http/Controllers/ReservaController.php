@@ -58,7 +58,6 @@ class ReservaController extends Controller
 
                 $cliente = Cliente::firstOrNew($request['cliente']);
 
-                $cliente->rut                   = $clientes['rut'];
                 $cliente->tipo_cliente_id       = $clientes['tipo_cliente_id'];
                 $cliente->ciudad                = $clientes['ciudad'];
                 $cliente->pais                  = $clientes['pais'];
