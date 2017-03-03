@@ -1093,12 +1093,6 @@ class ReservaController extends Controller
         $porcentaje_ingreso_particulares = round(($ingreso_particular * 100) / $ventas_totales);
 
 
-
-        
-
-
-
-
         $clientes_empresa = Cliente::whereHas('reservas.habitacion', function($query) use($propiedad_id){
 
               $query->where('propiedad_id', $propiedad_id);
@@ -1111,7 +1105,7 @@ class ReservaController extends Controller
 
         })->where('tipo_cliente_id', 2)->with(['reservas' => function ($q) use($rango) {
 
-        $q->whereBetween('checkin', $rango);}])->get();
+        $q->whereBetween('checkin', $rango)->where('estado_reserva_id', 4);}])->get();
 
 
         foreach($clientes_empresa as $cliente) {
@@ -1154,7 +1148,7 @@ class ReservaController extends Controller
           array_push($grafico_empresa_particular, $grafico1);
 
 
-        $clientes_particular = Cliente::whereHas('reservas.habitacion', function($query) use($propiedad_id){
+/*        $clientes_particular = Cliente::whereHas('reservas.habitacion', function($query) use($propiedad_id){
 
               $query->where('propiedad_id', $propiedad_id);
 
@@ -1166,7 +1160,7 @@ class ReservaController extends Controller
 
         })->where('tipo_cliente_id', 1)->with(['reservas' => function ($q) use($rango) {
 
-        $q->whereBetween('checkin', $rango);}])->get();
+        $q->whereBetween('checkin', $rango)->where('estado_reserva_id', 4);}])->get();*/
 
 
           $sub2 = [
@@ -1195,6 +1189,14 @@ class ReservaController extends Controller
 
 
       }
+
+
+
+
+
+
+
+
 
             $data = array(
 
