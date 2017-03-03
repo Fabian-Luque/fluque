@@ -339,6 +339,46 @@ class ClienteController extends Controller
 	}
 
 
+	public function getCliente(Request $request){
+
+		if($request->has('email')){
+
+			$cliente_email = $request->input('email');
+
+			$cliente = Cliente::where('email', $cliente_email)->first();
+
+			if(is_null($cliente)){
+
+				$data = array(
+
+					'msj' => "Cliente no encontrado",
+					'errors' => true
+
+
+				);
+
+			return Response::json($data, 404);
+
+
+			}else{
+
+				return $cliente;
+
+
+
+			}
+
+
+
+
+		}
+
+
+
+	}
+
+
+
 	public function calificacion(Request $request){
 
 
