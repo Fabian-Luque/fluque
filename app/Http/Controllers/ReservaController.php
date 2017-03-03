@@ -1190,12 +1190,48 @@ class ReservaController extends Controller
 
       }
 
+ ////////////////////////*grafico de servicios vedidos*//////////////////////////////////////////////////////////////////////////7
+
+           $cantidad_servicio_vendido = [];
+           $servicios = Servicio::whereHas('propiedad', function($query) use($propiedad_id){
+
+              $query->where('id', $propiedad_id);
+
+           })->with(['reservas' => function ($q) use($rango) {
+
+              $q->whereBetween('checkin', $rango)->where('estado_reserva_id' , 4);
+
+           }])->get();
+
+
+           foreach($servicios as $servicio){
+
+              $consumos = 0;
+              $precio_total = 0;
+              foreach ($servicio['reservas'] as $reserva) {
+                    $consumos += $reserva->pivot->cantidad;
+                    $precio_total += $reserva->pivot->precio_total;
+
+              }
+
+                
+              $ventas_servicios = [
+
+              'monto'      =>$precio_total,
+              'servicio'   =>$servicio->nombre,
+              'consumos'   =>$consumos,
+              'color'      =>null,
+
+
+
+              ];
+
+             array_push($cantidad_servicio_vendido, $ventas_servicios);
 
 
 
 
-
-
+           }
 
 
             $data = array(
@@ -1215,6 +1251,7 @@ class ReservaController extends Controller
             'reservas_debito'         => $ingreso_debito,
             'reservas_cheque'         => $ingreso_cheque,
             'types'                   => $grafico_empresa_particular,
+            'types2'                  => $cantidad_servicio_vendido,
             );
 
             return $data;
