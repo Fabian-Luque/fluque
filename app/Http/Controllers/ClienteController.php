@@ -297,7 +297,20 @@ class ClienteController extends Controller
 
 			$data = array(
 
-					'msj' => "El email ya existe",
+					'msj' 	 => "El email ya existe",
+					'errors' => true
+
+				);
+
+			return $data;
+
+
+	  }else{
+
+	  		$data = array(
+
+					'msj' 	 => "Email correcto",
+					'errors' => false
 
 				);
 
@@ -321,11 +334,26 @@ class ClienteController extends Controller
 
 			$data = array(
 
-					'msj' => "El rut ya existe",
+					'msj' 	 => "El rut ya existe",
+					'errors' => true
 
 				);
 
 			return $data;
+
+
+	  }else{
+
+	  		$data = array(
+
+					'msj' 	 => "Rut correcto",
+					'errors' => false
+
+				);
+
+			return $data;
+
+
 
 
 	  }
