@@ -14,6 +14,7 @@ class ChangeAttributsClientesTable extends Migration
     {
         Schema::table('clientes', function(Blueprint $table){
             $table->string('rut')->nullable()->change();
+            $table->string('email')->nullable()->change();
         });
     }
 
