@@ -166,22 +166,6 @@ class ClienteController extends Controller
              }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 		 		}
 
 		 		$retorno = array(
@@ -298,6 +282,62 @@ class ClienteController extends Controller
 
 
 	}
+
+
+
+	public function buscarEmail(Request $request){
+
+
+	  $email = $request->input('email');
+
+	  $cliente = Cliente::where('email', $email)->first();
+
+	  if(!is_null($cliente)){
+
+
+			$data = array(
+
+					'msj' => "El email ya existe",
+
+				);
+
+			return $data;
+
+
+	  }
+
+
+	}
+
+	public function buscarRut(Request $request){
+
+
+	  $rut = $request->input('rut');
+
+	  $cliente = Cliente::where('rut', $rut)->first();
+
+	  if(!is_null($cliente)){
+
+
+			$data = array(
+
+					'msj' => "El rut ya existe",
+
+				);
+
+			return $data;
+
+
+	  }
+
+
+	}
+
+
+
+
+
+
 
 
     

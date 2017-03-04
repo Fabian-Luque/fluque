@@ -87,6 +87,10 @@ Route::group(['middleware' => 'cors'], function(){
 
 	Route::get('cliente/email', 'ClienteController@getCliente');
 
+	Route::get('buscar/email', 'ClienteController@buscarEmail');
+
+	Route::get('buscar/rut', 'ClienteController@buscarEmail');
+
 	Route::resource('user', 'UserController', ['except' => ['create', 'edit','store']]);
 	Route::resource('propiedad', 'PropiedadController', ['except' => ['create', 'edit', 'store']]);
 	Route::resource('habitacion', 'HabitacionController', ['except' => ['create', 'edit']]);
