@@ -166,22 +166,6 @@ class ClienteController extends Controller
              }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 		 		}
 
 		 		$retorno = array(
@@ -300,6 +284,90 @@ class ClienteController extends Controller
 	}
 
 
+
+	public function buscarEmail(Request $request){
+
+
+	  $email = $request->input('email');
+
+	  $cliente = Cliente::where('email', $email)->first();
+
+	  if(!is_null($cliente)){
+
+
+			$data = array(
+
+					'msj' 	 => "El email ya existe",
+					'errors' => true
+
+				);
+
+			return $data;
+
+
+	  }else{
+
+	  		$data = array(
+
+					'msj' 	 => "Email correcto",
+					'errors' => false
+
+				);
+
+			return $data;
+
+
+	  }
+
+
+	}
+
+	public function buscarRut(Request $request){
+
+
+	  $rut = $request->input('rut');
+
+	  $cliente = Cliente::where('rut', $rut)->first();
+
+	  if(!is_null($cliente)){
+
+
+			$data = array(
+
+					'msj' 	 => "El rut ya existe",
+					'errors' => true
+
+				);
+
+			return $data;
+
+
+	  }else{
+
+	  		$data = array(
+
+					'msj' 	 => "Rut correcto",
+					'errors' => false
+
+				);
+
+			return $data;
+
+
+
+
+	  }
+
+
+	}
+
+
+
+
+
+
+
+
     
 	public function index(Request $request){
 
@@ -337,6 +405,46 @@ class ClienteController extends Controller
 		}
 
 	}
+
+
+	public function getCliente(Request $request){
+
+		if($request->has('email')){
+
+			$cliente_email = $request->input('email');
+
+			$cliente = Cliente::where('email', $cliente_email)->first();
+
+			if(is_null($cliente)){
+
+				$data = array(
+
+					'msj' => "Cliente no encontrado",
+					'errors' => true
+
+
+				);
+
+			return Response::json($data, 404);
+
+
+			}else{
+
+				return $cliente;
+
+
+
+			}
+
+
+
+
+		}
+
+
+
+	}
+
 
 
 	public function calificacion(Request $request){
