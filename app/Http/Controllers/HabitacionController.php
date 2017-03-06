@@ -10,6 +10,7 @@ use Response;
 use App\Habitacion;
 use App\Equipamiento;
 use App\Propiedad;
+use App\Reserva;
 use Carbon\Carbon;
 use App\TipoHabitacion;
 
@@ -19,6 +20,150 @@ use App\TipoHabitacion;
 
 class HabitacionController extends Controller
 {
+
+
+    public function disponibilidad(Request $request){
+
+/*        $rango = [$fecha_inicio, $fecha_fin];
+
+        $habitaciones = Habitacion::where('propiedad_id', $request->input('propiedad_id'))->whereHas('reservas', function($query) use($fecha_inicio,$fecha_fin){
+
+                    $query->Where('checkin', '>' ,$fecha_inicio)->Where('checkin', '>=', $fecha_fin);
+
+        })->get();
+
+
+        return $habitaciones;*/
+
+
+        $propiedad_id = $request->input('propiedad_id');
+        $fecha_inicio = $request->input('fecha_inicio');
+        $fecha_fin = $request->input('fecha_fin');
+
+
+        $propiedad = Propiedad::where('id', $propiedad_id)->first();
+
+        if(!is_null($propiedad)){
+
+        $fechaInicio=strtotime($fecha_inicio);
+        $fechaFin=strtotime($fecha_fin);
+
+        if($fechaInicio < $fechaFin){
+
+
+        $habitaciones_ocupadas = [];
+        $all_habitaciones = [];
+        $habitaciones_disponibles = [];
+
+
+
+
+        $habitaciones_propiedad = Habitacion::where('propiedad_id', $propiedad_id)->get();
+
+
+    
+        for($i=$fechaInicio; $i<$fechaFin; $i+=86400){
+            
+            $fecha = date("Y-m-d", $i);
+
+
+            $habitaciones = Habitacion::where('propiedad_id', $request->input('propiedad_id'))->whereHas('reservas', function($query) use($fecha){
+
+                    $query->where('checkin','<=' ,$fecha)->where('checkout', '>', $fecha);
+
+        })->get();
+
+
+           foreach ($habitaciones as $habitacion){
+
+                if(!in_array($habitacion, $habitaciones_ocupadas)){
+
+
+                    array_push($habitaciones_ocupadas, $habitacion);
+            
+                }
+           }
+        }
+
+         foreach ($habitaciones_propiedad as $hab) {
+
+            array_push($all_habitaciones, $hab);
+
+
+
+         }
+
+
+         foreach ($all_habitaciones as $hab){
+
+                if(!in_array($hab, $habitaciones_ocupadas)){
+
+                array_push($habitaciones_disponibles, $hab);
+
+            }
+
+
+        }
+
+    
+         return $habitaciones_disponibles;
+
+
+        }else{
+
+            $retorno = array(
+
+                'msj'    => "Las fechas no corresponden",
+                'errors' => true
+            );
+
+            return Response::json($retorno, 400);
+
+
+
+        }
+
+        
+
+        }else{
+
+            
+            $data = array(
+
+                    'msj' => "Propiedad no encontrada",
+                    'errors' => true
+
+                );
+
+            return Response::json($data, 404);
+
+
+
+        }
+
+
+       
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     /**
      * se obtiene las habitaciones disponibles en un rango de fechas
      *
