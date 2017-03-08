@@ -59,8 +59,7 @@ class ReservaController extends Controller
                 $cliente = Cliente::firstOrNew($request['cliente']);
 
                 $cliente->tipo_cliente_id       = $clientes['tipo_cliente_id'];
-                $cliente->ciudad                = $clientes['ciudad'];
-                $cliente->pais                  = $clientes['pais'];
+                $cliente->nombre                = $clientes['nombre'];
                 $cliente->giro                  = null;
                 $cliente->save();
 
@@ -71,9 +70,8 @@ class ReservaController extends Controller
                 $cliente = Cliente::firstOrNew($request['cliente']);
 
                 $cliente->rut               = $clientes['rut'];
+                $cliente->nombre            = $clientes['nombre'];
                 $cliente->tipo_cliente_id   = $clientes['tipo_cliente_id'];
-                $cliente->pais              = $clientes['pais'];
-                $cliente->giro              = $clientes['giro'];
                 $cliente->save();
             }
 
