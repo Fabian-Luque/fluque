@@ -10,6 +10,7 @@ use Response;
 use App\Habitacion;
 use App\Equipamiento;
 use App\Propiedad;
+use App\Reserva;
 use Carbon\Carbon;
 use App\TipoHabitacion;
 
@@ -19,6 +20,202 @@ use App\TipoHabitacion;
 
 class HabitacionController extends Controller
 {
+
+
+    public function disponibilidad(Request $request){
+
+/*        $rango = [$fecha_inicio, $fecha_fin];
+
+        $habitaciones = Habitacion::where('propiedad_id', $request->input('propiedad_id'))->whereHas('reservas', function($query) use($fecha_inicio,$fecha_fin){
+
+                    $query->Where('checkin', '>' ,$fecha_inicio)->Where('checkin', '>=', $fecha_fin);
+
+        })->get();
+
+
+        return $habitaciones;*/
+
+
+        $propiedad_id = $request->input('propiedad_id');
+        $fecha_inicio = $request->input('fecha_inicio');
+        $fecha_fin = $request->input('fecha_fin');
+
+
+        $propiedad = Propiedad::where('id', $propiedad_id)->first();
+
+        if(!is_null($propiedad)){
+
+        $fechaInicio=strtotime($fecha_inicio);
+        $fechaFin=strtotime($fecha_fin);
+
+        if($fechaInicio < $fechaFin){
+
+
+        $habitaciones_ocupadas = [];
+        $all_habitaciones = [];
+        $habitaciones_disponibles = [];
+
+
+
+
+        $habitaciones_propiedad = Habitacion::where('propiedad_id', $propiedad_id)->get();
+
+
+    
+        for($i=$fechaInicio; $i<$fechaFin; $i+=86400){
+            
+            $fecha = date("Y-m-d", $i);
+
+
+            $habitaciones = Habitacion::where('propiedad_id', $request->input('propiedad_id'))->whereHas('reservas', function($query) use($fecha){
+
+                    $query->where('checkin','<=' ,$fecha)->where('checkout', '>', $fecha);
+
+        })->get();
+
+
+           foreach ($habitaciones as $habitacion){
+
+                if(!in_array($habitacion, $habitaciones_ocupadas)){
+
+
+                    array_push($habitaciones_ocupadas, $habitacion);
+            
+                }
+           }
+        }
+
+         foreach ($habitaciones_propiedad as $hab) {
+
+            array_push($all_habitaciones, $hab);
+
+
+
+         }
+
+
+         foreach ($all_habitaciones as $hab){
+
+                if(!in_array($hab, $habitaciones_ocupadas)){
+
+                array_push($habitaciones_disponibles, $hab);
+
+            }
+
+
+        }
+
+
+        $habitacion_individual          = [];
+        $habitacion_doble               = [];
+        $habitacion_triple              = [];
+        $habitacion_cuadruple           = [];
+        $habitacion_quintuple           = [];
+        $habitacion_matrimonial         = [];
+        $habitacion_suite               = [];
+        $habitacion_presidencial        = [];
+
+        foreach ($habitaciones_disponibles as $habitacion) {
+            
+            if($habitacion->tipo_habitacion_id == 1){
+
+                array_push($habitacion_individual, $habitacion);
+
+            }elseif($habitacion->tipo_habitacion_id == 2){
+
+                array_push($habitacion_doble, $habitacion);
+
+
+            }elseif($habitacion->tipo_habitacion_id == 3){
+
+
+                array_push($habitacion_triple, $habitacion);
+
+            }elseif ($habitacion->tipo_habitacion_id == 4) {
+
+                array_push($habitacion_cuadruple, $habitacion);
+                
+            }elseif ($habitacion->tipo_habitacion_id == 5) {
+
+                array_push($habitacion_quintuple, $habitacion);
+
+            }elseif ($habitacion->tipo_habitacion_id == 6) {
+
+                array_push($habitacion_matrimonial, $habitacion);
+
+            }elseif ($habitacion->tipo_habitacion_id == 7) {
+
+                array_push($habitacion_suite, $habitacion);
+
+            }elseif ($habitacion->tipo_habitacion_id == 8) {
+
+                array_push($habitacion_presidencial, $habitacion);
+            }
+
+        }
+
+    $habitaciones_tipo = array(
+            'tipos'           => [
+        ['id' => 1, 'nombre' => 'individual',   'habitaciones' => $habitacion_individual    ],
+        ['id' => 2, 'nombre' => 'doble',        'habitaciones' => $habitacion_doble         ],
+        ['id' => 3, 'nombre' => 'triple',       'habitaciones' => $habitacion_triple        ],
+        ['id' => 4, 'nombre' => 'cuadruple',    'habitaciones' => $habitacion_cuadruple     ],
+        ['id' => 5, 'nombre' => 'quintuple',    'habitaciones' => $habitacion_quintuple     ],
+        ['id' => 6, 'nombre' => 'matrimonial',  'habitaciones' => $habitacion_matrimonial   ],
+        ['id' => 7, 'nombre' => 'suite',        'habitaciones' => $habitacion_suite         ],
+        ['id' => 8, 'nombre' => 'presidencial', 'habitaciones' => $habitacion_presidencial  ],
+
+
+    ],
+
+    );
+
+
+        return $habitaciones_tipo;
+
+
+
+
+        }else{
+
+            $retorno = array(
+
+                'msj'    => "Las fechas no corresponden",
+                'errors' => true
+            );
+
+            return Response::json($retorno, 400);
+
+
+
+        }
+
+        
+
+        }else{
+
+            
+            $data = array(
+
+                    'msj' => "Propiedad no encontrada",
+                    'errors' => true
+
+                );
+
+            return Response::json($data, 404);
+
+
+
+        }
+
+
+       
+
+
+    }
+
+
+
     /**
      * se obtiene las habitaciones disponibles en un rango de fechas
      *

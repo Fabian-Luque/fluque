@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use Illuminate\Support\Facades\Validator;
 use Response;
 use App\Cliente;
 use App\TipoCliente;
@@ -597,9 +598,56 @@ class ClienteController extends Controller
 
 	}
 
+		public function update(Request $request, $id){
 
 
+		$rules = array(
 
+            'nombre'                => '',
+            'rut'   				=> '',
+            'direccion'				=> '',
+            'ciudad'				=> '',
+            'email'                 => '',
+            'telefono'   			=> '',
+            'pais'                  => '',
+            'giro'					=> '',
+            
+        );
+
+    	$validator = Validator::make($request->all(), $rules);
+
+
+         if ($validator->fails()) {
+
+            $data = [
+
+                'errors' => true,
+                'msg' => $validator->messages(),
+
+            ];
+
+            return Response::json($data, 400);
+
+        } else {
+
+            $cliente = Cliente::findOrFail($id);
+
+            $cliente->update($request->all());
+            $cliente->touch();
+            
+            $data = [
+
+                'errors' => false,
+                'msg' => 'Cliente actualizado satisfactoriamente',
+
+            ];
+
+            return Response::json($data, 201);
+
+        }
+
+
+	}
 
 
 

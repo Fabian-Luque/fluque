@@ -9,6 +9,7 @@ use Response;
 use App\Huesped;
 use App\Reserva;
 use App\Servicio;
+use Illuminate\Support\Facades\Validator;
 use App\HuespedReservaServicio;
 
 class HuespedController extends Controller
@@ -59,6 +60,56 @@ class HuespedController extends Controller
 			}
 
 		}
+
+
+	}
+
+
+	public function update(Request $request, $id){
+
+
+		$rules = array(
+
+            'nombre'                => '',
+            'apellido'          	=> '',
+            'rut'   				=> '',
+            'email'                 => '',
+            'telefono'   			=> '',
+            'pais'                  => '',
+            
+        );
+
+    	$validator = Validator::make($request->all(), $rules);
+
+
+         if ($validator->fails()) {
+
+            $data = [
+
+                'errors' => true,
+                'msg' => $validator->messages(),
+
+            ];
+
+            return Response::json($data, 400);
+
+        } else {
+
+            $huesped = Huesped::findOrFail($id);
+
+            $huesped->update($request->all());
+            $huesped->touch();
+            
+            $data = [
+
+                'errors' => false,
+                'msg' => 'Huesped actualizado satisfactoriamente',
+
+            ];
+
+            return Response::json($data, 201);
+
+        }
 
 
 	}
