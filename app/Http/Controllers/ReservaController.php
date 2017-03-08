@@ -56,12 +56,32 @@ class ReservaController extends Controller
 
         if ($clientes['tipo_cliente_id'] == 1) {
 
+            if($request->has('cliente.rut')){
+              
                 $cliente = Cliente::firstOrNew($request['cliente']);
 
                 $cliente->tipo_cliente_id       = $clientes['tipo_cliente_id'];
                 $cliente->nombre                = $clientes['nombre'];
                 $cliente->giro                  = null;
                 $cliente->save();
+
+
+            }else{
+
+                $cliente                        = new Cliente();
+                $cliente->nombre                = $clientes['nombre'];
+                $cliente->direccion             = $cliente['direccion'];
+                $cliente->ciudad                = $cliente['ciudad'];
+                $cliente->pais                  = $cliente['pais'];
+                $cliente->telefono              = $cliente['telefono'];
+                $cliente->email                 = $cliente['email'];
+                $cliente->tipo_cliente_id       = $clientes['tipo_cliente_id'];
+                $cliente->save();
+
+
+
+            }
+
 
             } else {
 
