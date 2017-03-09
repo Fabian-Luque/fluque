@@ -147,7 +147,7 @@ class HuespedController extends Controller
                 $huesped->save();
                 					
                 $reserva->huespedes()->attach($huesped->id);
-
+                $reserva->update(array('estado_reserva_id' => 3));
 
 
 			}
