@@ -62,6 +62,7 @@ class ReservaController extends Controller
 
                 $cliente->tipo_cliente_id       = $clientes['tipo_cliente_id'];
                 $cliente->nombre                = $clientes['nombre'];
+                $cliente->apellido              = $clientes['apellido'];
                 $cliente->giro                  = null;
                 $cliente->save();
 
@@ -70,6 +71,7 @@ class ReservaController extends Controller
 
                 $cliente                        = new Cliente();
                 $cliente->nombre                = $clientes['nombre'];
+                $cliente->apellido              = $clientes['apellido'];
                 $cliente->direccion             = $cliente['direccion'];
                 $cliente->ciudad                = $cliente['ciudad'];
                 $cliente->pais                  = $cliente['pais'];
@@ -225,26 +227,24 @@ class ReservaController extends Controller
       $reserva_id = $request->input('reserva_id');
 
       $reserva = Reserva::where('id', $reserva_id)->first();
+      $reserva_checkout = $reserva->checkout;
+      $reserva_checkin = $reserva->checkin;
 
       $habitacion_id = $reserva->habitacion_id;
       $hab = Habitacion::where('id' , $habitacion_id)->first();
 
-      if($request->has('fecha_fin')){
 
+      if($request->has('fecha_inicio')){
 
-          $fecha_fin = $request->input('fecha_fin');
-          $reserva_checkout = $reserva->checkout;
-          $reserva_checkin = $reserva->checkin;
           $habitacion_ocupada = [];
+          $fecha_inicio = $request->input('fecha_inicio');
 
+            if($reserva_checkout > $fecha_inicio){
 
-          if($reserva_checkin < $fecha_fin){
-
-              $fechaInicio=strtotime($reserva_checkout)+86400;
-              $fechaFin=strtotime($fecha_fin);
-
-
-              for($i=$fechaInicio; $i<=$fechaFin; $i+=86400){
+              $fechaInicio=strtotime($fecha_inicio);
+              $fechaFin=strtotime($reserva_checkin);
+              
+              for($i=$fechaInicio; $i<$fechaFin; $i+=86400){
 
               $fecha = date("Y-m-d", $i);
 
@@ -266,10 +266,96 @@ class ReservaController extends Controller
 
               }
 
+             } //fin for
+
+
+           /*  return $habitacion_ocupada;
+*/
+             if(count($habitacion_ocupada) == 0){
+
+                $noches = ((strtotime($reserva_checkout)-strtotime($fecha_inicio))/86400);
+                $monto_alojamiento = $noches * $hab->precio_base;
+                $monto_total = $monto_alojamiento + $reserva->monto_consumo;
+
+                $pagos_realizados = $reserva->pagos;
+                $monto_pagado = 0;
+                foreach($pagos_realizados as $pago){
+
+                  $monto_pagado += $pago->monto_pago;
+
+                }
+
+                $monto_por_pagar = $monto_total - $monto_pagado;
+
+                $reserva->update(array('monto_alojamiento' => $monto_alojamiento , 'monto_total' => $monto_total , 'monto_por_pagar' => $monto_por_pagar , 'checkin' => $fecha_inicio, 'noches' => $noches));
+
+
+             }else{
+
+              return "Seleccionar otra fecha de checkin, la habitacion ya esta reservada";
+
              }
 
 
+
+            }else{
+
+
+              return "fecha inicio debe ser menor a fecha checkout ";
+
+
+
+            }
+
+
+      }
+
+
+
+
+      if($request->has('fecha_fin')){
+          
+
+          $fecha_fin = $request->input('fecha_fin');
+          $reserva_checkout = $reserva->checkout;
+          $reserva_checkin = $reserva->checkin;
+          $habitacion_ocupada = [];
+
+
+          if($reserva_checkin < $fecha_fin){
+
+              $fechaInicio=strtotime($reserva_checkout)+86400;
+              $fechaFin=strtotime($fecha_fin);
+
+
+              for($i=$fechaInicio; $i<=$fechaFin; $i+=86400){
+
+               $fecha = date("Y-m-d", $i);
+
+
+               $habitacion = Habitacion::where('id', $habitacion_id)->whereHas('reservas', function($query) use($fecha){
+
+                        $query->where('checkin','<=' ,$fecha)->where('checkout', '>', $fecha);
+
+              })->get();
+
+
+              if(count($habitacion) != 0){
+
+                  if(!in_array($habitacion, $habitacion_ocupada)){
+
+                        array_push($habitacion_ocupada, $habitacion);
+                
+                    }
+
+              }
+
+             }
+
+
+
               if(count($habitacion_ocupada) == 0){
+
 
                 $noches = ((strtotime($fecha_fin)-strtotime($reserva_checkin))/86400);
                 $monto_alojamiento = $noches * $hab->precio_base;
@@ -288,20 +374,9 @@ class ReservaController extends Controller
                 $reserva->update(array('monto_alojamiento' => $monto_alojamiento , 'monto_total' => $monto_total , 'monto_por_pagar' => $monto_por_pagar , 'checkout' => $fecha_fin, 'noches' => $noches));
 
 
-
-                $data = [
-
-                'errors' => false,
-                'msg' => 'Reserva actualizada satisfactoriamente',
-
-                ];
-
-                 return Response::json($data, 201);
-
-
               }else{
 
-                return "Escoja otra fecha de checkout, la habitacion ya esta reservada";
+                return "Seleccionar otra fecha de checkout, la habitacion ya esta reservada";
 
 
 
@@ -318,13 +393,16 @@ class ReservaController extends Controller
           }
 
 
-
-
-
       }
 
+                 $data = [
 
+                'errors' => false,
+                'msg' => 'Reserva actualizada satisfactoriamente',
 
+                ];
+
+                 return Response::json($data, 201);
 
 
 
