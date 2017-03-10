@@ -62,6 +62,7 @@ class ReservaController extends Controller
 
                 $cliente->tipo_cliente_id       = $clientes['tipo_cliente_id'];
                 $cliente->nombre                = $clientes['nombre'];
+                $cliente->apellido              = $clientes['apellido'];
                 $cliente->giro                  = null;
                 $cliente->save();
 
@@ -70,6 +71,7 @@ class ReservaController extends Controller
 
                 $cliente                        = new Cliente();
                 $cliente->nombre                = $clientes['nombre'];
+                $cliente->apellido              = $clientes['apellido'];
                 $cliente->direccion             = $cliente['direccion'];
                 $cliente->ciudad                = $cliente['ciudad'];
                 $cliente->pais                  = $cliente['pais'];

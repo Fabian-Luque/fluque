@@ -604,6 +604,7 @@ class ClienteController extends Controller
 		$rules = array(
 
             'nombre'                => '',
+            'apellido'				=  '',
             'rut'   				=> '',
             'direccion'				=> '',
             'ciudad'				=> '',
