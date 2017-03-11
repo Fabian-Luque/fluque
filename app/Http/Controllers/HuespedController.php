@@ -9,6 +9,7 @@ use Response;
 use App\Huesped;
 use App\Reserva;
 use App\Servicio;
+use App\HuespedReserva;
 use Illuminate\Support\Facades\Validator;
 use App\HuespedReservaServicio;
 
@@ -146,8 +147,25 @@ class HuespedController extends Controller
                 $huesped->pais           = $huesped['pais'];
                 $huesped->save();
                 					
+                $huespedReserva = HuespedReserva::where('huesped_id', $huesped->id)->where('reserva_id', $reserva->id)->first();
+
+                if(is_null($huespedReserva)){
+
                 $reserva->huespedes()->attach($huesped->id);
                 $reserva->update(array('estado_reserva_id' => 3));
+
+
+                }else{
+
+                $retorno = array(
+				'msj' 		=> $huesped->nombre ." ". $huesped->apellido ." ya fue ingresado a la reserva",
+				'erros'		=> true);
+
+			    return Response::json($retorno, 400);
+
+
+                }
+
 
 
 			}
