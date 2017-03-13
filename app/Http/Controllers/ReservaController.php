@@ -292,7 +292,14 @@ class ReservaController extends Controller
 
              }else{
 
-              return "Seleccionar otra fecha de checkin, la habitacion ya esta reservada";
+
+                $retorno = array(
+
+                    'msj'    => "Seleccionar otra fecha de checkin, la habitacion ya esta reservada",
+                    'errors' => true
+                );
+
+                return Response::json($retorno, 400);
 
              }
 
@@ -301,7 +308,13 @@ class ReservaController extends Controller
             }else{
 
 
-              return "fecha inicio debe ser menor a fecha checkout ";
+                $retorno = array(
+
+                    'msj'    => "Las fechas no corresponden",
+                    'errors' => true
+                );
+
+                return Response::json($retorno, 400);
 
 
 
@@ -376,7 +389,14 @@ class ReservaController extends Controller
 
               }else{
 
-                return "Seleccionar otra fecha de checkout, la habitacion ya esta reservada";
+
+                $retorno = array(
+
+                    'msj'    => "Seleccionar otra fecha de checkout, la habitacion ya esta reservada",
+                    'errors' => true
+                );
+
+                return Response::json($retorno, 400);
 
 
 
@@ -386,7 +406,14 @@ class ReservaController extends Controller
 
           }else{
 
-            return "fecha fin debe ser mayor a fecha checkin ";
+                $retorno = [
+
+                'errors' => false,
+                'msj' => 'Las fechas no corresponden',
+
+                ];
+
+                 return Response::json($retorno, 201);
 
 
 
@@ -395,14 +422,14 @@ class ReservaController extends Controller
 
       }
 
-                 $data = [
+                 $retorno = [
 
                 'errors' => false,
-                'msg' => 'Reserva actualizada satisfactoriamente',
+                'msj' => 'Reserva actualizada satisfactoriamente',
 
                 ];
 
-                 return Response::json($data, 201);
+                 return Response::json($retorno, 201);
 
 
 
