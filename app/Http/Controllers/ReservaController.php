@@ -446,6 +446,39 @@ class ReservaController extends Controller
 
          }
 
+
+         if($request->has('ocupacion')){
+
+         $ocupacion = $request->input('ocupacion');
+
+         $disponibilidad_base = $hab->disponibilidad_base;
+
+         if($ocupacion <= $disponibilidad_base){
+
+          $reserva->update(array('ocupacion' => $ocupacion));
+
+
+         }else{
+
+          $retorno = array(
+
+                    'msj'    => "El valor supera la disponibilidad de la habitacion",
+                    'errors' => true
+                );
+
+          return Response::json($retorno, 400);
+
+
+
+         }
+
+
+
+
+
+
+         }
+
                  $retorno = [
 
                 'errors' => false,
