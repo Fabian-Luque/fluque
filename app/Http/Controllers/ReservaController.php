@@ -1856,6 +1856,34 @@ class ReservaController extends Controller
     }
 
 
+    public function modificaPrecio(){
+
+
+        $reservas = Reserva::all();
+
+        foreach ($reservas as $reserva) {
+          
+          $monto_alojamiento = $reserva->monto_alojamiento;
+
+          $noches = $reserva->noches;
+
+          $precio_habitacion = $monto_alojamiento / $noches;
+
+          $reserva->update(array('precio_habitacion' => $precio_habitacion));
+
+
+
+        }
+
+
+        return "precios habitaciones actualizados";
+
+
+
+
+    }
+
+
 
 }
 
