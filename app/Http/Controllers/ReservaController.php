@@ -423,6 +423,29 @@ class ReservaController extends Controller
 
       }
 
+          if($request->has('valor_habitacion')){
+
+          $valor_habitacion = $request->input('valor_habitacion');
+
+          $noches = ((strtotime($reserva_checkout)-strtotime($reserva_checkin))/86400);
+          $monto_alojamiento = $noches * $valor_habitacion;
+          $monto_total = $monto_alojamiento + $reserva->monto_consumo;
+
+          $pagos_realizados = $reserva->pagos;
+          $monto_pagado = 0;
+          foreach($pagos_realizados as $pago){
+            $monto_pagado += $pago->monto_pago;
+
+          }
+
+          $monto_por_pagar = $monto_total - $monto_pagado;
+
+          $reserva->update(array('precio_habitacion' => $valor_habitacion ,'monto_alojamiento' => $monto_alojamiento , 'monto_total' => $monto_total , 'monto_por_pagar' => $monto_por_pagar));
+
+          
+
+         }
+
                  $retorno = [
 
                 'errors' => false,
