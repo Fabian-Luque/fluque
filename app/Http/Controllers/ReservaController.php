@@ -133,6 +133,7 @@ class ReservaController extends Controller
                 }else{
                 $reserva->numero_reserva        = 1;
                 }
+                $reserva->precio_habitacion     = $habitacion_info['precio_habitacion'];
                 $reserva->monto_alojamiento     = $habitacion_info['monto_alojamiento'];
                 $reserva->monto_total           = $habitacion_info['monto_alojamiento'];
                 $reserva->monto_por_pagar       = $habitacion_info['monto_alojamiento'];
@@ -421,6 +422,62 @@ class ReservaController extends Controller
 
 
       }
+
+          if($request->has('precio_habitacion')){
+
+          $precio_habitacion = $request->input('precio_habitacion');
+
+          $noches = ((strtotime($reserva_checkout)-strtotime($reserva_checkin))/86400);
+          $monto_alojamiento = $noches * $precio_habitacion;
+          $monto_total = $monto_alojamiento + $reserva->monto_consumo;
+
+          $pagos_realizados = $reserva->pagos;
+          $monto_pagado = 0;
+          foreach($pagos_realizados as $pago){
+            $monto_pagado += $pago->monto_pago;
+
+          }
+
+          $monto_por_pagar = $monto_total - $monto_pagado;
+
+          $reserva->update(array('precio_habitacion' => $precio_habitacion ,'monto_alojamiento' => $monto_alojamiento , 'monto_total' => $monto_total , 'monto_por_pagar' => $monto_por_pagar));
+
+          
+
+         }
+
+
+         if($request->has('ocupacion')){
+
+         $ocupacion = $request->input('ocupacion');
+
+         $disponibilidad_base = $hab->disponibilidad_base;
+
+         if($ocupacion <= $disponibilidad_base){
+
+          $reserva->update(array('ocupacion' => $ocupacion));
+
+
+         }else{
+
+          $retorno = array(
+
+                    'msj'    => "El valor supera la disponibilidad de la habitacion",
+                    'errors' => true
+                );
+
+          return Response::json($retorno, 400);
+
+
+
+         }
+
+
+
+
+
+
+         }
 
                  $retorno = [
 
@@ -1793,6 +1850,34 @@ class ReservaController extends Controller
 
 
         return $respuesta;
+
+
+
+    }
+
+
+    public function modificaPrecio(){
+
+
+        $reservas = Reserva::all();
+
+        foreach ($reservas as $reserva) {
+          
+          $monto_alojamiento = $reserva->monto_alojamiento;
+
+          $noches = $reserva->noches;
+
+          $precio_habitacion = $monto_alojamiento / $noches;
+
+          $reserva->update(array('precio_habitacion' => $precio_habitacion));
+
+
+
+        }
+
+
+        return "precios habitaciones actualizados";
+
 
 
 
