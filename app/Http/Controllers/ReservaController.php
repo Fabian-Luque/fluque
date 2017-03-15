@@ -177,7 +177,7 @@ class ReservaController extends Controller
 
                     );
 
-                     return Response::json($retorno, 406);
+                     return Response::json($retorno, 201);
 
 
 
