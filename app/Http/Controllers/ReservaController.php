@@ -180,31 +180,9 @@ class ReservaController extends Controller
                      return Response::json($retorno, 201);
 
 
-
-
-
-
-
            }
 
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
-/*
-            $fecha = $fecha_inicio;
-
-            while (strtotime($fecha) < strtotime($fecha_fin)) {
-
-                $calendario = Calendario::where('fecha', '=', $fecha)->where('habitacion_id', '=', $habitacion_info['id'])->first();
-
-                $calendario->disponibilidad--;
-                $calendario->reservas++;
-                $calendario->save();
-
-                $fecha = date("Y-m-d", strtotime("+1 day", strtotime($fecha)));
-            }*/
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////
         }
 
 
