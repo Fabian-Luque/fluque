@@ -1,0 +1,28 @@
+<?php
+
+namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Precio extends Model
+{
+    protected $table = 'precios';
+
+
+    public function habitacion(){
+
+		return $this->belongsTo('App\Habitacion', 'habitacion_id');
+
+
+	}
+
+	public function TipoMoneda(){
+
+		return $this->belongsTo('App\TipoMoneda', 'tipo_moneda_id');
+
+
+	}
+
+
+
+}
