@@ -337,7 +337,6 @@ class HabitacionController extends Controller
 			$rules = array(
 
 			'nombre' 		       => 'required',
-			'precio_base'	       => 'required|numeric',
             'disponibilidad_base'  => 'required|numeric',
 			'piso'			       => 'required|numeric',
 			'propiedad_id'         => 'required|numeric',
@@ -377,7 +376,6 @@ class HabitacionController extends Controller
 
             $habitacion                           = new Habitacion();
             $habitacion->nombre          	      = $request->get('nombre');
-          	$habitacion->precio_base              = $request->get('precio_base');
             $habitacion->disponibilidad_base      = $request->get('disponibilidad_base');
           	$habitacion->piso                     = $request->get('piso');
           	$habitacion->propiedad_id             = $request->get('propiedad_id');
