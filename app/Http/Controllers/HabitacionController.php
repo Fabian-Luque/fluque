@@ -13,6 +13,8 @@ use App\Propiedad;
 use App\Reserva;
 use Carbon\Carbon;
 use App\TipoHabitacion;
+use App\TipoMoneda;
+use App\Precio;
 
 
 
@@ -390,6 +392,22 @@ class HabitacionController extends Controller
 			$equipamiento ->habitacion_id		  = $habitacion->id; 
  			$equipamiento->save();
 
+            $hab = Habitacion::where('id', $habitacion->id)->first();
+
+            foreach ($request->get('precios') as $precio) {
+            
+                $precio_base = $precio['precio_base'];
+                $tipo_moneda_id = $precio['tipo_moneda_id'];
+
+                $precio                           = new Precio();
+                $precio->precio_habitacion        = $precio_base;
+                $precio->tipo_moneda_id           = $tipo_moneda_id;
+                $precio->habitacion_id            = $hab->id;
+                $precio->save();
+               
+                
+            }
+
 
 			     $data = [
                 'errors' => false,
@@ -530,6 +548,16 @@ class HabitacionController extends Controller
 
          $tipoHabitacion = TipoHabitacion::all();
             return $tipoHabitacion;
+
+
+        }
+
+        public function getTipoMoneda(){
+
+        $tipoMoneda = TipoMoneda::all();
+
+        return $tipoMoneda;
+
 
 
         }

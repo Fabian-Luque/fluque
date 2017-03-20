@@ -97,6 +97,8 @@ Route::group(['middleware' => 'cors'], function(){
 
 	Route::get('modifica/precio', 'ReservaController@modificaPrecio');
 
+	Route::get('tipo-moneda', 'HabitacionController@getTipoMoneda');
+
 	Route::resource('user', 'UserController', ['except' => ['create', 'edit','store']]);
 	Route::resource('propiedad', 'PropiedadController', ['except' => ['create', 'edit', 'store']]);
 	Route::resource('habitacion', 'HabitacionController', ['except' => ['create', 'edit']]);
