@@ -335,8 +335,7 @@ class HabitacionController extends Controller
 			$rules = array(
 
 			'nombre' 		       => 'required',
-			'precio_clp'	       => 'required|numeric',
-            'precio_usd'           => 'required|numeric',
+			'precio_base'	       => 'required|numeric',
             'disponibilidad_base'  => 'required|numeric',
 			'piso'			       => 'required|numeric',
 			'propiedad_id'         => 'required|numeric',
