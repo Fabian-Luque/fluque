@@ -16,7 +16,7 @@ class CreatePreciosTable extends Migration
         $table->increments('id');
         $table->integer('precio_habitacion');
         $table->integer('habitacion_id')->unsigned();
-        $table->foreign('habitacion_id')->references('id')->on('habitaciones');
+        $table->foreign('habitacion_id')->references('id')->on('habitaciones')->onDelete('cascade');
         $table->integer('tipo_moneda_id')->unsigned();
         $table->foreign('tipo_moneda_id')->references('id')->on('tipo_moneda');
         $table->timestamps();
