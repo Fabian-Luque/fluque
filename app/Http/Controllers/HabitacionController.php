@@ -394,11 +394,11 @@ class HabitacionController extends Controller
 
             foreach ($request->get('precios') as $precio) {
             
-                $precio_base = $precio['precio_base'];
+                $precio_habitacion = $precio['precio_habitacion'];
                 $tipo_moneda_id = $precio['tipo_moneda_id'];
 
                 $precio                           = new Precio();
-                $precio->precio_habitacion        = $precio_base;
+                $precio->precio_habitacion        = $precio_habitacion;
                 $precio->tipo_moneda_id           = $tipo_moneda_id;
                 $precio->habitacion_id            = $hab->id;
                 $precio->save();
@@ -513,6 +513,18 @@ class HabitacionController extends Controller
         }
 
     }
+
+
+         public function crearPrecio(Request $request){
+
+
+            return "hola";
+
+
+
+
+
+         }
 
 
 
