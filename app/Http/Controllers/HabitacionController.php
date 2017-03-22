@@ -60,7 +60,7 @@ class HabitacionController extends Controller
 
 
 
-        $habitaciones_propiedad = Habitacion::where('propiedad_id', $propiedad_id)->get();
+        $habitaciones_propiedad = Habitacion::where('propiedad_id', $propiedad_id)->with('precios.TipoMoneda')->get();
 
 
     
@@ -73,7 +73,7 @@ class HabitacionController extends Controller
 
                     $query->where('checkin','<=' ,$fecha)->where('checkout', '>', $fecha);
 
-        })->get();
+        })->with('precios.TipoMoneda')->get();
 
 
            foreach ($habitaciones as $habitacion){
@@ -537,6 +537,40 @@ class HabitacionController extends Controller
 
             return Response::json($data, 201);
 
+
+
+
+
+         }
+
+         public function copiaPrecios(){
+
+
+
+          $habitaciones = Habitacion::all();
+
+          foreach ($habitaciones as $habitacion) {
+              
+             $precio_base = $habitacion->precio_base;
+             $habitacion_id = $habitacion->id;
+
+             $precio                           = new Precio();
+             $precio->precio_habitacion        = $precio_base;
+             $precio->tipo_moneda_id           = 1;
+             $precio->habitacion_id            = $habitacion_id;
+             $precio->save();
+
+
+
+          }
+
+             $data = [
+                'errors' => false,
+                'msg' => 'Precios creados satisfactoriamente',
+
+                ];
+
+            return Response::json($data, 201);
 
 
 
