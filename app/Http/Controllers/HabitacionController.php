@@ -517,8 +517,25 @@ class HabitacionController extends Controller
 
          public function crearPrecio(Request $request){
 
+                $habitacion_id  =  $request->input('habitacion_id');
 
-            return "hola";
+                $tipo_moneda_id =  $request->input('tipo_moneda_id');
+
+                $precio_habitacion = $request->input('precio_habitacion');
+
+                $precio                           = new Precio();
+                $precio->precio_habitacion        = $precio_habitacion;
+                $precio->tipo_moneda_id           = $tipo_moneda_id;
+                $precio->habitacion_id            = $habitacion_id;
+                $precio->save();
+
+                $data = [
+                'errors' => false,
+                'msg' => 'Precio creado satisfactoriamente',
+
+                ];
+
+            return Response::json($data, 201);
 
 
 
