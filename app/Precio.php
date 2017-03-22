@@ -8,6 +8,8 @@ class Precio extends Model
 {
     protected $table = 'precios';
 
+    protected $fillable = ['precio_habitacion'];
+
 
     public function habitacion(){
 

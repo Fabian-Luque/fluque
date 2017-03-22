@@ -445,6 +445,7 @@ class HabitacionController extends Controller
 
             'nombre'                => '',
             'precio_base'           => 'numeric',
+            'precios'               => 'array',
             'disponibilidad_base'   => 'numeric',
             'piso'                  => 'numeric',
             'tipo_habitacion_id'    => 'numeric',
@@ -482,6 +483,23 @@ class HabitacionController extends Controller
 
             $equipamiento->update($request->all());
             $equipamiento->touch();
+
+
+
+            foreach ($request->get('precios') as $precio) {
+                
+                $id = $precio['id'];
+                $precio_base = $precio['precio_base'];
+
+                $precio = Precio::where('id', $id)->first();
+                $precio->update(array('precio_habitacion' => $precio_base));
+
+            }
+
+
+
+
+
 
             $data = [
 
