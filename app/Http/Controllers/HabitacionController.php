@@ -489,10 +489,10 @@ class HabitacionController extends Controller
             foreach ($request->get('precios') as $precio) {
                 
                 $id = $precio['id'];
-                $precio_base = $precio['precio_base'];
+                $precio_habitacion = $precio['precio_habitacion'];
 
                 $precio = Precio::where('id', $id)->first();
-                $precio->update(array('precio_habitacion' => $precio_base));
+                $precio->update(array('precio_habitacion' => $precio_habitacion));
 
             }
 
