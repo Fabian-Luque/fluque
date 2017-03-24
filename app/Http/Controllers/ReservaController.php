@@ -760,7 +760,7 @@ class ReservaController extends Controller
 
               $pago_total = Pago::where('reserva_id', $reserva_id)->where('tipo', 'Pago reserva')->first();
 
-              if(is_null($pago_habitacion) && is_null($pago_total)){
+              if(is_null($pago_total)){
 
 
                 if($monto_pago <= $reserva->monto_por_pagar){
