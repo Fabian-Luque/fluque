@@ -459,52 +459,72 @@ class ClienteController extends Controller
 
 		$propiedad = Propiedad::where('id', $propiedad_id)->first();
 		$reserva = Reserva::where('id', $reserva_id)->first();
-
+		$reserva_checkout = $reserva->checkout;
+		$reserva_checkin = $reserva->checkin;
 		
-		$reserva_checkout = strtotime($reserva->checkout);
-		$fecha_hoy = strtotime('now');
+		/*$reserva_checkout = strtotime($reserva->checkout);*/
+		$fecha_actual = strtotime('now');
+
+		$fecha_hoy = date("Y-m-d", $fecha_actual);
 
 
 		if($reserva_checkout == $fecha_hoy){
 
-	
-		$reserva->update(array('estado_reserva_id' => 4));
+			if($reserva->monto_por_pagar == 0){
 
+			$reserva->update(array('estado_reserva_id' => 4));
 
-		foreach ($huespedes as $huesped) {
+			}elseif($reserva->monto_por_pagar > 0){
 
-			
-			$huesped_id = $huesped;
-
-			$huesped = Huesped::where('id', $huesped_id)->first();
-
-			$propiedad->calificacionHuespedes()->attach($huesped->id, ['comentario' => $comentario_huesped, 'calificacion' => $calificacion_huesped]);
-
-			$numero_calificaciones = $huesped->calificacionPropiedades()->count();
-
-
-			$calificacion_total = 0;
-			foreach ($huesped->calificacionPropiedades as $calificacion) {
-						
-				$num = $calificacion->pivot->calificacion;
-
-				$calificacion_total = $calificacion_total + $num;
-
-				$promedio = $calificacion_total / $numero_calificaciones;
-
-				$huesped->update(array('calificacion_promedio' => $promedio));
+			$reserva->update(array('estado_reserva_id' => 5));
 
 
 			}
-		
-		}
+			
+
+
+			foreach ($huespedes as $huesped) {
+
+				
+				$huesped_id = $huesped;
+
+				$huesped = Huesped::where('id', $huesped_id)->first();
+
+				$propiedad->calificacionHuespedes()->attach($huesped->id, ['comentario' => $comentario_huesped, 'calificacion' => $calificacion_huesped]);
+
+				$numero_calificaciones = $huesped->calificacionPropiedades()->count();
+
+
+				$calificacion_total = 0;
+				foreach ($huesped->calificacionPropiedades as $calificacion) {
+							
+					$num = $calificacion->pivot->calificacion;
+
+					$calificacion_total = $calificacion_total + $num;
+
+					$promedio = $calificacion_total / $numero_calificaciones;
+
+					$huesped->update(array('calificacion_promedio' => $promedio));
+
+
+				}
+			
+			}
 
 
 
 		}elseif($reserva_checkout < $fecha_hoy){
 
+			if($reserva->monto_por_pagar == 0){
+
 			$reserva->update(array('estado_reserva_id' => 4));
 
+			}elseif($reserva->monto_por_pagar > 0){
+
+			$reserva->update(array('estado_reserva_id' => 5));
+
+
+			}
 
 			foreach ($huespedes as $huesped) {
 
@@ -536,7 +556,7 @@ class ClienteController extends Controller
 
 
 
-		}else{
+		}elseif($reserva_checkin < $fecha_hoy && $reserva_checkout > $fecha_hoy){
 
 
 			$habitacion = Habitacion::where('id', $reserva->habitacion_id)->first();
@@ -544,7 +564,7 @@ class ClienteController extends Controller
 			$fecha_actual = date('Y-m-d', strtotime('now'));
 			$noches = (date('j', strtotime('now')) - date("j",strtotime($reserva->checkin)));
 
-			$precio_habitacion = $habitacion->precio_base;
+			$precio_habitacion = $reserva->precio_habitacion;
 
 			$precio_alojamiento = $noches * $precio_habitacion;
 
@@ -559,8 +579,16 @@ class ClienteController extends Controller
 
 			$monto_por_pagar = $monto_total - $total_pagos;
 
-			
+			if($reserva->monto_por_pagar == 0){
+
 			$reserva->update(array('estado_reserva_id' => 4,'monto_alojamiento' => $precio_alojamiento, 'monto_total' => $monto_total, 'monto_por_pagar' => $monto_por_pagar, 'checkout' => $fecha_actual, 'noches' => $noches));
+
+			}elseif($reserva->monto_por_pagar > 0){
+
+			$reserva->update(array('estado_reserva_id' => 5,'monto_alojamiento' => $precio_alojamiento, 'monto_total' => $monto_total, 'monto_por_pagar' => $monto_por_pagar, 'checkout' => $fecha_actual, 'noches' => $noches));
+
+
+			}
 
 
 			foreach ($huespedes as $huesped) {
@@ -591,12 +619,23 @@ class ClienteController extends Controller
 		}
 
 
+		}else{
+
+
+			return "Checkout no permitido, la reserva aun no se ha cursado";
+
+
 		}	
 
 
 		return "calificados";
 
 	}
+
+
+
+
+
 
 		public function update(Request $request, $id){
 
