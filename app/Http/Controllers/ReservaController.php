@@ -691,21 +691,31 @@ class ReservaController extends Controller
 
                    if($monto_pago <= $reserva->monto_por_pagar){
 
-                 
+                      
 
-                   $pago                        = new Pago();
-                   $pago->monto_pago            = $monto_pago;
-                   $pago->tipo                  = "Pago reserva";
-                   $pago->numero_operacion      = $numero_operacion;
-                   $pago->tipo_comprobante_id  =  $tipo_comprobante_id;
-                   $pago->reserva_id            = $reserva->id;
-                   $pago->save();
+                       $pago                        = new Pago();
+                       $pago->monto_pago            = $monto_pago;
+                       $pago->tipo                  = "Pago reserva";
+                       $pago->numero_operacion      = $numero_operacion;
+                       $pago->tipo_comprobante_id  =  $tipo_comprobante_id;
+                       $pago->reserva_id            = $reserva->id;
+                       $pago->save();
 
-                   $reserva->update(array('monto_por_pagar' => $monto, 'metodo_pago_id' => $metodo_pago));
 
-                   $consumos = HuespedReservaServicio::where('reserva_id', $reserva_id)->get();
+                      if($reserva->estado_reserva_id == 5 && $monto == 0){
 
-                    if(!is_null($consumos)){
+                        $reserva->update(array('monto_por_pagar' => $monto, 'metodo_pago_id' => $metodo_pago, 'estado_reserva_id' => 4));
+
+                      }else{
+
+                        $reserva->update(array('monto_por_pagar' => $monto, 'metodo_pago_id' => $metodo_pago));
+
+                      }
+
+
+                       $consumos = HuespedReservaServicio::where('reserva_id', $reserva_id)->get();
+
+                      if(!is_null($consumos)){
 
                         foreach ($consumos as $consumo){
                             
@@ -716,7 +726,7 @@ class ReservaController extends Controller
 
 
 
-                    }
+                      }
 
                    $data = array(
 
@@ -774,7 +784,16 @@ class ReservaController extends Controller
                    $pago->reserva_id            = $reserva->id;
                    $pago->save();
 
-                   $reserva->update(array('monto_por_pagar' => $monto, 'metodo_pago_id' => $metodo_pago));
+                      if($reserva->estado_reserva_id == 5 && $monto == 0){
+
+                        $reserva->update(array('monto_por_pagar' => $monto, 'metodo_pago_id' => $metodo_pago, 'estado_reserva_id' => 4));
+
+                      }else{
+
+                        $reserva->update(array('monto_por_pagar' => $monto, 'metodo_pago_id' => $metodo_pago));
+
+                      }
+
 
                    $data = array(
 
@@ -896,9 +915,16 @@ class ReservaController extends Controller
 
             }
 
+                if($reserva->estado_reserva_id == 5 && $total == 0){
 
+                  $reserva->update(array('monto_por_pagar' => $total, 'estado_reserva_id' => 4));
 
-                $reserva->update(array('monto_por_pagar' => $total));
+                }else{
+
+                  $reserva->update(array('monto_por_pagar' => $total));
+
+                }
+
 
                 if($request->has('numero_operacion') && $request->has('tipo_comprobante_id')){
 
