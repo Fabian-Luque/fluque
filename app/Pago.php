@@ -22,4 +22,10 @@ class Pago extends Model
 
 	}
 
+	public function metodoPago(){
+
+		return $this->belongsTo('App\MetodoPago', 'metodo_pago_id');
+
+	}
+
 }

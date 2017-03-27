@@ -631,12 +631,12 @@ class ReservaController extends Controller
       $tipo_comprobante_id = $request->input('tipo_comprobante_id');
       $tipo_pago = $request->input('tipo_pago');
       $reserva_id = $request->input('reserva_id');
+      $numero_cheque = $request->input('numero_cheque');
 
 
       $reserva = Reserva::where('id', $request->input('reserva_id'))->first();
 
-      if(is_null($metodo_pago)){
-
+      if($tipo_pago == "Confirmacion de reserva"){
 
             if($reserva->estado_reserva_id == 1){
 
@@ -645,9 +645,13 @@ class ReservaController extends Controller
 
                $pago                        = new Pago();
                $pago->monto_pago            = $monto_pago;
-               $pago->tipo                  = "Confirmacion de reserva";
-               $pago->numero_operacion      = null;
-               $pago->tipo_comprobante_id   = null;
+               $pago->tipo                  = $tipo_pago;
+               $pago->numero_operacion      = $numero_operacion;
+               $pago->tipo_comprobante_id   = $tipo_comprobante_id;
+               $pago->metodo_pago_id        = $metodo_pago;
+               if($metodo_pago == 4){
+               $pago->numero_cheque         = $numero_cheque;
+               }
                $pago->reserva_id            = $reserva->id;
                $pago->save();
 
@@ -695,9 +699,13 @@ class ReservaController extends Controller
 
                        $pago                        = new Pago();
                        $pago->monto_pago            = $monto_pago;
-                       $pago->tipo                  = "Pago reserva";
+                       $pago->tipo                  = $tipo_pago;
                        $pago->numero_operacion      = $numero_operacion;
                        $pago->tipo_comprobante_id  =  $tipo_comprobante_id;
+                       $pago->metodo_pago_id        = $metodo_pago;
+                       if($metodo_pago == 4){
+                       $pago->numero_cheque         = $numero_cheque;
+                       }
                        $pago->reserva_id            = $reserva->id;
                        $pago->save();
 
@@ -778,9 +786,13 @@ class ReservaController extends Controller
 
                    $pago                        = new Pago();
                    $pago->monto_pago            = $monto_pago;
-                   $pago->tipo                  = "Pago habitacion";
+                   $pago->tipo                  = $tipo_pago;
                    $pago->numero_operacion      = $numero_operacion;
                    $pago->tipo_comprobante_id  =  $tipo_comprobante_id;
+                   $pago->metodo_pago_id        = $metodo_pago;
+                   if($metodo_pago == 4){
+                   $pago->numero_cheque         = $numero_cheque;
+                   }
                    $pago->reserva_id            = $reserva->id;
                    $pago->save();
 
@@ -854,6 +866,8 @@ class ReservaController extends Controller
         $servicios = $request->input('servicio_id');
         $tipo_comprobante_id = $request->input('tipo_comprobante_id');
         $numero_operacion = $request->input('numero_operacion');
+        $metodo_pago = $request->input('metodo_pago_id');
+        $numero_cheque = $request->input('numero_cheque');
 
 
         $reserva_id = $request->input('reserva_id');
@@ -932,7 +946,11 @@ class ReservaController extends Controller
                 $pago->monto_pago            = $total_consumos;
                 $pago->tipo                  = "Pago consumos";
                 $pago->numero_operacion      = $numero_operacion;
-                $pago->tipo_comprobante_id  =  $tipo_comprobante_id;
+                $pago->tipo_comprobante_id   = $tipo_comprobante_id;
+                $pago->metodo_pago_id        = $metodo_pago;
+                if($metodo_pago == 4){
+                $pago->numero_cheque         = $numero_cheque;
+                }
                 $pago->reserva_id            = $reserva->id;
                 $pago->save();
 
@@ -944,7 +962,11 @@ class ReservaController extends Controller
                 $pago->monto_pago            = $total_consumos;
                 $pago->tipo                  = "Pago consumos";
                 $pago->numero_operacion      = null;
-                $pago->tipo_comprobante_id  =  null;
+                $pago->tipo_comprobante_id   = null;
+                $pago->metodo_pago_id        = $metodo_pago;
+                if($metodo_pago == 4){
+                $pago->numero_cheque         = $numero_cheque;
+                }
                 $pago->reserva_id            = $reserva->id;
                 $pago->save();
 
