@@ -31,6 +31,16 @@ class MetodoPagoTableSeeder extends Seeder
 
                 'nombre' => 'Cheque',
 
+            ],
+            [
+
+                'nombre' => 'Tarjeta credito',
+
+            ],
+            [
+
+                'nombre' => 'Transferencia',
+
             ]
 
     		]);
