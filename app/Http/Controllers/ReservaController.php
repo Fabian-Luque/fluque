@@ -1767,7 +1767,21 @@ class ReservaController extends Controller
 
 
             $reserva =  $reservas->first();
-            return $reserva;
+
+            $propiedad_id = $reserva->habitacion->propiedad_id;
+
+
+            $tipos = TipoHabitacion::whereHas('habitaciones', function($query) use($propiedad_id){
+
+            $query->where('propiedad_id', $propiedad_id);
+
+            })->with(['habitaciones' => function ($q) use($propiedad_id) {
+
+            $q->where('propiedad_id', $propiedad_id);}])->get();
+
+            $data = ['reserva' => $reserva, 'habitaciones' => $tipos];
+
+            return $data;
 
 
        }else{
