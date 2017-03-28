@@ -34,7 +34,7 @@ class MetodoPagoTableSeeder extends Seeder
             ],
             [
 
-                'nombre' => 'Tarjeta credito',
+                'nombre' => 'Tarjeta de credito',
 
             ],
             [
