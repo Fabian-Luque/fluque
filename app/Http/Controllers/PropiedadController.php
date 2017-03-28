@@ -33,9 +33,10 @@ class PropiedadController extends Controller
         
 
          $propiedad =  Propiedad::where('id', $request->input('propiedad_id'))->first();
-         $metodo_pago_id = $request->input('metodo_pago_id');
-         $numero_operacion = $request->input('numero_operacion');
-         $tipo_comprobante_id = $request->input('tipo_comprobante_id');
+         $metodo_pago_id        = $request->input('metodo_pago_id');
+         $numero_operacion      = $request->input('numero_operacion');
+         $tipo_comprobante_id   = $request->input('tipo_comprobante_id');
+         $numero_cheque         = $request->input('numero_cheque');   
 
 
           if(!is_null($propiedad)){
@@ -76,7 +77,7 @@ class PropiedadController extends Controller
                              $serv->update(array('cantidad_disponible' => $cantidad_disponible));
 
 
-                             $propiedad->vendeServicios()->attach($servicio_id, ['metodo_pago_id' => $metodo_pago_id,'cantidad' => $cantidad , 'precio_total' => $precio_total, 'numero_operacion' => $numero_operacion , 'tipo_comprobante_id' => $tipo_comprobante_id]);
+                             $propiedad->vendeServicios()->attach($servicio_id, ['metodo_pago_id' => $metodo_pago_id,'cantidad' => $cantidad , 'precio_total' => $precio_total, 'numero_operacion' => $numero_operacion , 'tipo_comprobante_id' => $tipo_comprobante_id, 'numero_cheque' => $numero_cheque]);
                         
                             }else{
 
@@ -134,7 +135,7 @@ class PropiedadController extends Controller
             }elseif($serv->categoria_id == 1){
 
 
-                $propiedad->vendeServicios()->attach($servicio_id, ['metodo_pago_id' => $metodo_pago_id,'cantidad' => $cantidad , 'precio_total' => $precio_total, 'numero_operacion' => $numero_operacion , 'tipo_comprobante_id' => $tipo_comprobante_id]);
+                $propiedad->vendeServicios()->attach($servicio_id, ['metodo_pago_id' => $metodo_pago_id,'cantidad' => $cantidad , 'precio_total' => $precio_total, 'numero_operacion' => $numero_operacion , 'tipo_comprobante_id' => $tipo_comprobante_id, 'numero_cheque' => $numero_cheque]);
 
 
 
