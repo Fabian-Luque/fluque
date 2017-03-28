@@ -14,7 +14,7 @@ class CreateHuespedPropiedadTable extends Migration
     {
         Schema::create('huesped_propiedad', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('comentario',250);
+            $table->string('comentario',250)->nullable();
             $table->integer('calificacion')->unsigned();
             $table->integer('huesped_id')->unsigned();
             $table->foreign('huesped_id')->references('id')->on('huespedes');
