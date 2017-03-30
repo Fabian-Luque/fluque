@@ -440,7 +440,7 @@ class ReservaController extends Controller
 
           $retorno = array(
 
-                    'msj'    => "El valor supera la disponibilidad de la habitacion",
+                    'msj'    => "El valor supera la disponibilidad de la habitación",
                     'errors' => true
                 );
 
@@ -473,7 +473,122 @@ class ReservaController extends Controller
 
 
 
+    public function cambiarHabitacion(Request $request){
 
+
+      if($request->has('reserva_id') && $request->has('habitacion_id')){
+
+
+      $reserva_id = $request->input('reserva_id');
+      $habitacion_id = $request->input('habitacion_id');
+
+      $reserva = Reserva::where('id', $reserva_id)->first();
+
+        if(!is_null($reserva)){
+
+          $habitacion = Habitacion::where('id', $habitacion_id)->first();
+
+          if(!is_null($habitacion)){
+
+          $fecha_inicio = $reserva->checkin;
+          $fecha_fin = $reserva->checkout;
+
+          $fechaInicio=strtotime($fecha_inicio);
+          $fechaFin=strtotime($fecha_fin);
+
+            for($i=$fechaInicio; $i<$fechaFin; $i+=86400){
+            
+            $fecha = date("Y-m-d", $i);
+
+
+            $habitacion = Habitacion::where('id', $habitacion_id)->whereHas('reservas', function($query) use($fecha){
+
+                    $query->where('checkin','<=' ,$fecha)->where('checkout', '>', $fecha);
+
+            })->first();
+
+
+            if(!is_null($habitacion)){
+
+              return "la habitación no esta disponible";
+
+              $retorno = array(
+
+                'msj'    => "La solicitud esta incompleta",
+                'errors' => true
+            );
+
+            return Response::json($retorno, 400);
+
+            }
+
+
+            }
+
+            $reserva->update(array('habitacion_id' => $habitacion_id));
+
+                $retorno = [
+
+                'errors' => false,
+                'msj' => 'Reserva actualizada satisfactoriamente',
+
+                ];
+
+                 return Response::json($retorno, 201);
+
+
+
+
+          }else{
+
+                $retorno = array(
+
+                    'msj' => "Habitación no encontrada",
+                    'errors' => true
+
+
+                );
+
+            return Response::json($retorno, 404);
+
+
+          }
+
+
+
+        }else{
+
+            $retorno = array(
+
+                    'msj' => "Reserva no encontrada",
+                    'errors' => true
+
+
+                );
+
+            return Response::json($retorno, 404);
+
+
+        }
+
+
+
+        
+      }else{
+
+            $retorno = array(
+
+                'msj'    => "La solicitud está incompleta",
+                'errors' => true
+            );
+
+            return Response::json($retorno, 400);
+
+
+      }
+
+
+    }
 
 
 
