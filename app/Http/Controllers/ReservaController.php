@@ -510,11 +510,9 @@ class ReservaController extends Controller
 
             if(!is_null($habitacion)){
 
-              return "la habitación no esta disponible";
-
               $retorno = array(
 
-                'msj'    => "La solicitud esta incompleta",
+                'msj'    => "La habitación no está disponible",
                 'errors' => true
             );
 
