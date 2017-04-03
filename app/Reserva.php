@@ -58,6 +58,12 @@ class Reserva extends Model
 
 	}
 
+	public function tipoMoneda(){
+
+		return $this->belongsTo('App\tipoMoneda', 'tipo_moneda_id');
+
+	}
+
 	public function reservasHuespedes(){
 
 

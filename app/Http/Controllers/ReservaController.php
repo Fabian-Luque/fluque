@@ -51,8 +51,9 @@ class ReservaController extends Controller
             $habitaciones_info . push($request['habitacion_info']);
         }
 
-        $fecha_inicio = $request->input('fecha_inicio');
-        $fecha_fin    = $request->input('fecha_fin');
+        $fecha_inicio   = $request->input('fecha_inicio');
+        $fecha_fin      = $request->input('fecha_fin');
+        $tipo_moneda_id = $request->input('tipo_moneda_id');
 
         if ($clientes['tipo_cliente_id'] == 1) {
 
@@ -143,6 +144,7 @@ class ReservaController extends Controller
                 $reserva->cliente_id            = $cliente->id;
                 $reserva->checkin               = $fecha_inicio;
                 $reserva->checkout              = $fecha_fin;
+                $reserva->tipo_moneda_id        = $tipo_moneda_id;
                 $reserva->estado_reserva_id     = $request['estado_reserva_id'];
                 $reserva->noches                = $request['noches'];
                 $reserva->save();

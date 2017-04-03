@@ -21,4 +21,11 @@ class TipoMoneda extends Model
 
 
 	}
+
+	public function reservas(){
+
+		return $this->hasMany('App\Reserva', 'tipo_moneda_id');
+
+
+	}
 }
