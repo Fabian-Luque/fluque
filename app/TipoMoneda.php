@@ -14,4 +14,11 @@ class TipoMoneda extends Model
 
 
 	}
+
+	public function precioServicios(){
+
+		return $this->hasMany('App\PrecioServicio', 'tipo_moneda_id');
+
+
+	}
 }

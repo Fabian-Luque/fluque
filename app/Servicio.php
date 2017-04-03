@@ -27,6 +27,13 @@ class Servicio extends Model
 
 	}
 
+	public function precios(){
+
+		return $this->hasMany('App\PrecioServicio', 'servicio_id');
+
+
+	}
+
 
 	public function reservas(){
 

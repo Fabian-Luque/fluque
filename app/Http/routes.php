@@ -99,9 +99,13 @@ Route::group(['middleware' => 'cors'], function(){
 
 	Route::get('tipo-moneda', 'HabitacionController@getTipoMoneda');
 
-	Route::post('crear/precio', 'HabitacionController@crearPrecio');
+	Route::post('crear/precio/habitacion', 'HabitacionController@crearPrecio');
 
-	Route::get('copia/precio', 'HabitacionController@copiaPrecios');
+	Route::post('crear/precio/servicio', 'ServicioController@crearPrecio');
+
+	Route::get('copia/precio/habitacion', 'HabitacionController@copiaPrecios');
+
+	Route::get('copia/precio/servicio', 'ServicioController@copiaPrecios');
 
 	Route::post('cambiar/habitacion', 'ReservaController@cambiarHabitacion');
 
