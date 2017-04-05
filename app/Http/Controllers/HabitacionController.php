@@ -490,9 +490,10 @@ class HabitacionController extends Controller
                 
                 $id = $precio['id'];
                 $precio_habitacion = $precio['precio_habitacion'];
+                $tipo_moneda       = $precio['tipo_moneda_id'];
 
                 $precio = Precio::where('id', $id)->first();
-                $precio->update(array('precio_habitacion' => $precio_habitacion));
+                $precio->update(array('precio_habitacion' => $precio_habitacion , 'tipo_moneda_id' => $tipo_moneda));
 
             }
 

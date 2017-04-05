@@ -8,7 +8,7 @@ class Precio extends Model
 {
     protected $table = 'precios';
 
-    protected $fillable = ['precio_habitacion'];
+    protected $fillable = ['precio_habitacion', 'tipo_moneda_id'];
 
 
     public function habitacion(){

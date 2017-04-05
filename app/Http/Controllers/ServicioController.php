@@ -140,9 +140,10 @@ class ServicioController extends Controller
                 
                 $id = $precio['id'];
                 $precio_servicio = $precio['precio_servicio'];
+                $tipo_moneda     = $precio['tipo_moneda_id'];
 
                 $precio = PrecioServicio::where('id', $id)->first();
-                $precio->update(array('precio_servicio' => $precio_servicio));
+                $precio->update(array('precio_servicio' => $precio_servicio, 'tipo_moneda_id' => $tipo_moneda));
 
             }
 

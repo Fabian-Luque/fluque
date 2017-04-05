@@ -8,7 +8,7 @@ class PrecioServicio extends Model
 {
     protected $table = 'precios_servicio';
 
-    protected $fillable = ['precio_servicio'];
+    protected $fillable = ['precio_servicio', 'tipo_moneda_id'];
 
 
     public function servicio(){
