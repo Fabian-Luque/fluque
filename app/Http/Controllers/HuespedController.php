@@ -12,6 +12,7 @@ use App\Servicio;
 use App\HuespedReserva;
 use Illuminate\Support\Facades\Validator;
 use App\HuespedReservaServicio;
+use App\Precio;
 
 class HuespedController extends Controller
 {
@@ -264,11 +265,16 @@ class HuespedController extends Controller
 		$huesped_id = $consumo['huesped_id'];
 		$servicio_id = $consumo['servicio_id'];
 		$cantidad = $consumo['cantidad'];
-		$precio_total = $consumo['precio_total'];
 
 		$reserva = Reserva::where('id', $reserva_id)->first();
 
+
 		$servicio = Servicio::where('id' , $servicio_id)->first();
+		$precio_servicio = Precio::where('tipo_moneda_id', $reserva->tipo_moneda_id)->where('habitacion_id', $reserva->habitacion_id)->lists('precio_habitacion')->first();
+
+	 	$precio_total = $cantidad * $precio_servicio;
+
+
 		$cantidad_disponible = $servicio->cantidad_disponible;
 
 
@@ -290,6 +296,11 @@ class HuespedController extends Controller
 				 	$cantidad_disponible = $cantidad_disponible - $cantidad;
 
 				 	$servicio->update(array('cantidad_disponible' => $cantidad_disponible));
+
+				 	if($reserva->$tipo_moneda_id == 2){
+				 		return "el tipo de monedda en usd";
+
+				 	}
 
 
 					$reserva->reservasHuespedes()->attach($huesped_id, ['servicio_id' => $servicio_id, 'cantidad' => $cantidad , 'precio_total' => $precio_total]);
