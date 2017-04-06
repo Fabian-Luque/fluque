@@ -137,6 +137,7 @@ class ReservaController extends Controller
                 $reserva->precio_habitacion     = $habitacion_info['precio_habitacion'];
                 $reserva->monto_alojamiento     = $habitacion_info['monto_alojamiento'];
                 $reserva->monto_total           = $habitacion_info['monto_alojamiento'];
+                $reserva->monto_consumo         = 0;
                 $reserva->monto_por_pagar       = $habitacion_info['monto_alojamiento'];
                 $reserva->ocupacion             = $habitacion_info['ocupacion'];
                 $reserva->tipo_fuente_id        = $request['tipo_fuente_id'];
