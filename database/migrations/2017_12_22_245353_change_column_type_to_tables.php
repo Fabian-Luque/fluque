@@ -21,6 +21,7 @@ class ChangeColumnTypeToTables extends Migration
         DB::statement('ALTER TABLE huesped_reserva_servicio MODIFY precio_total DOUBLE(10,2)');
         DB::statement('ALTER TABLE metodo_pago_propiedad_servicio MODIFY precio_total DOUBLE(10,2)');
         DB::statement('ALTER TABLE pagos MODIFY monto_pago DOUBLE(10,2)');
+        DB::statement('ALTER TABLE cliente_propiedad_servicio MODIFY precio_total DOUBLE(10,2)');
 
             
     }

@@ -14,6 +14,7 @@ use App\Huesped;
 use App\Reserva;
 use App\Habitacion;
 use App\Servicio;
+use App\PrecioServicio;
 
 
 
@@ -41,11 +42,12 @@ class ClienteController extends Controller
 		 		$rut_consumidor = $servicio['rut_consumidor'];
 		 		$servicio_id = $servicio['servicio_id'];
                 $cantidad = $servicio['cantidad'];
-                $precio_total = $servicio['precio_total'];
+              /*  $precio_total = $servicio['precio_total'];*/
                 $cliente_id = $servicio['cliente_id'];
 
                 $serv = Servicio::where('id', $servicio_id)->where('propiedad_id', $request->input('propiedad_id'))->first();
                	$cliente = Cliente::where('id', $cliente_id)->first();
+
 
 
                 if(!is_null($serv)){
@@ -59,6 +61,12 @@ class ClienteController extends Controller
 
                	if(!is_null($cliente)){
 
+               	$reservas = Reserva::where('cliente_id', $cliente->id)->get();
+               	$reserva = $reservas->last();
+               	
+
+                $precio_servicio = PrecioServicio::where('tipo_moneda_id', $reserva->tipo_moneda_id)->where('servicio_id', $servicio_id)->lists('precio_servicio')->first();
+                $precio_total = $precio_servicio * $cantidad;
 
                		if($cantidad >= 1){
 
@@ -143,6 +151,13 @@ class ClienteController extends Controller
 
 
             }elseif($serv->categoria_id == 1){
+
+            	$reservas = Reserva::where('cliente_id', $cliente->id)->get();
+               	$reserva = $reservas->last();
+               	
+
+                $precio_servicio = PrecioServicio::where('tipo_moneda_id', $reserva->tipo_moneda_id)->where('servicio_id', $servicio_id)->lists('precio_servicio')->first();
+                $precio_total = $precio_servicio * $cantidad;
 
 
             	$propiedad->consumoClienteServicios()->attach($servicio_id, ['cliente_id' => $cliente_id,'nombre_consumidor' => $nombre_consumidor,'apellido_consumidor' => $apellido_consumidor,'rut_consumidor' => $rut_consumidor,'cantidad' => $cantidad , 'precio_total' => $precio_total]);

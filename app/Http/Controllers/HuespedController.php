@@ -298,11 +298,6 @@ class HuespedController extends Controller
 
 				 	$servicio->update(array('cantidad_disponible' => $cantidad_disponible));
 
-				 	if($reserva->$tipo_moneda_id == 2){
-				 		return "el tipo de monedda en usd";
-
-				 	}
-
 
 					$reserva->reservasHuespedes()->attach($huesped_id, ['servicio_id' => $servicio_id, 'cantidad' => $cantidad , 'precio_total' => $precio_total]);
 
