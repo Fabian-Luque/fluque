@@ -13,6 +13,7 @@ use App\HuespedReserva;
 use Illuminate\Support\Facades\Validator;
 use App\HuespedReservaServicio;
 use App\Precio;
+use App\PrecioServicio;
 
 class HuespedController extends Controller
 {
@@ -270,7 +271,7 @@ class HuespedController extends Controller
 
 
 		$servicio = Servicio::where('id' , $servicio_id)->first();
-		$precio_servicio = Precio::where('tipo_moneda_id', $reserva->tipo_moneda_id)->where('habitacion_id', $reserva->habitacion_id)->lists('precio_habitacion')->first();
+		$precio_servicio = PrecioServicio::where('tipo_moneda_id', $reserva->tipo_moneda_id)->where('servicio_id', $servicio->id)->lists('precio_servicio')->first();
 
 	 	$precio_total = $cantidad * $precio_servicio;
 
