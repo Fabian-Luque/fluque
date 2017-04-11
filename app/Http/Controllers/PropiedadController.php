@@ -336,16 +336,24 @@ class PropiedadController extends Controller
 
     public function ingresoMonedas(Request $request){
 
-        if($request->has('propiedad_id') && $request->has('tipo_moneda_id') && $request->has('clasificacion_moneda_id')){
+        if($request->has('propiedad_id') && $request->has('moneda')){
 
             $propiedad = Propiedad::where('id', $request->input('propiedad_id'))->first();
 
             if(!is_null($propiedad)){
 
-                $clasificacion_moneda = $request->input('clasificacion_moneda_id');
-                $tipo_moneda = $request->input('tipo_moneda_id');
+
+                $monedas = $request->input('moneda');
+
+                foreach ($monedas as $moneda) {
+                    
+                $clasificacion_moneda = $moneda['clasificacion_moneda_id'];
+                $tipo_moneda = $moneda['tipo_moneda_id'];
 
                 $propiedad->clasificacionMonedas()->attach($clasificacion_moneda, ['tipo_moneda_id' => $tipo_moneda]);
+                    
+                }
+
 
                 $retorno = array(
 

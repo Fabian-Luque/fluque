@@ -111,7 +111,7 @@ Route::group(['middleware' => 'cors'], function(){
 
 	Route::get('clasificacion/moneda', 'PropiedadController@getClasificacionMoneda');
 
-	Route::get('ingreso/moneda/propiedad', 'PropiedadController@ingresoMonedas');
+	Route::post('ingreso/moneda/propiedad', 'PropiedadController@ingresoMonedas');
 
 	Route::resource('user', 'UserController', ['except' => ['create', 'edit','store']]);
 	Route::resource('propiedad', 'PropiedadController', ['except' => ['create', 'edit', 'store']]);
