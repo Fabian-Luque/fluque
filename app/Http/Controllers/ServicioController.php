@@ -22,7 +22,7 @@ class ServicioController extends Controller
 		public function index(Request $request){
 
     	  if($request->has('propiedad_id')){
-            return $servicios = Propiedad::where('id', $request->input('propiedad_id'))->with('servicios.precios')->with('servicios.categoria')->get();
+            return $servicios = Propiedad::where('id', $request->input('propiedad_id'))->with('servicios.precios.TipoMoneda')->with('servicios.categoria')->get();
 
 
         }
