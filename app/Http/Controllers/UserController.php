@@ -27,7 +27,7 @@ class UserController extends Controller
 
 		  try {
 
-            $users = User::where('id', $id)->with('propiedad')->get();
+            $users = User::where('id', $id)->with('propiedad')->with('propiedad.tipoMonedas.clasificacionMonedas')->get();
 
             foreach ($users as $user) {
                     
