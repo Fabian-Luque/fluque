@@ -12,7 +12,7 @@ use App\TipoPropiedad;
 use App\habitacion;
 use App\TipoHabitacion;
 use App\Servicio;
-
+use App\ClasificacionMoneda;
 
 
 
@@ -175,7 +175,7 @@ class PropiedadController extends Controller
                     'erros' =>false
                 );
 
-                return Response::json($retorno, 200);
+                return Response::json($retorno, 201);
           
 
           }else{
@@ -334,10 +334,85 @@ class PropiedadController extends Controller
 	}
 
 
+    public function ingresoMonedas(Request $request){
+
+        if($request->has('propiedad_id') && $request->has('tipo_moneda_id') && $request->has('clasificacion_moneda_id')){
+
+            $propiedad = Propiedad::where('id', $request->input('propiedad_id'))->first();
+
+            if(!is_null($propiedad)){
+
+                $clasificacion_moneda = $request->input('clasificacion_moneda_id');
+                $tipo_moneda = $request->input('tipo_moneda_id');
+
+                $propiedad->clasificacionMonedas()->attach($clasificacion_moneda, ['tipo_moneda_id' => $tipo_moneda]);
+
+                $retorno = array(
+
+                    'msj' => "Moneda ingresada correctamente",
+                    'erros' =>false
+                );
+
+                return Response::json($retorno, 201);
+
+            }else{
+
+                $retorno = array(
+
+                    'msj' => "Propiedad no encontrada",
+                    'errors' => true
+
+
+                );
+
+            return Response::json($retorno, 404);
+
+
+            }
+
+
+
+
+
+        }else{
+
+
+            $retorno = array(
+
+                'msj'    => "La solicitud esta incompleta",
+                'errors' => true
+            );
+
+            return Response::json($retorno, 400);
+
+
+
+        }
+
+
+    }
+
+
+
+
+
+
+
     public function getTipoPropiedad(){
 
     $TipoPropiedad = TipoPropiedad::all();
         return $TipoPropiedad; 
+    }
+
+
+
+    public function getClasificacionMoneda(){
+
+    $clasificacion = ClasificacionMoneda::all();
+        return $clasificacion;
+
+
+
     }
 
 
