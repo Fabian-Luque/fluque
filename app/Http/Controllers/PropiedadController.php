@@ -222,7 +222,8 @@ class PropiedadController extends Controller
     public function index(Request $request){
 
         if($request->has('id')){
-            $propiedad = Propiedad::where('id', $request->input('id'))->with('tipoPropiedad')->get();
+
+            $propiedad = Propiedad::where('id', $request->input('id'))->with('tipoPropiedad')->with('tipoMonedas.clasificacionMonedas')->get();
             return $propiedad;
 
         }
