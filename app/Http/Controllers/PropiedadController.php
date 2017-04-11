@@ -336,14 +336,14 @@ class PropiedadController extends Controller
 
     public function ingresoMonedas(Request $request){
 
-        if($request->has('propiedad_id') && $request->has('moneda')){
+        if($request->has('propiedad_id') && $request->has('monedas')){
 
             $propiedad = Propiedad::where('id', $request->input('propiedad_id'))->first();
 
             if(!is_null($propiedad)){
 
 
-                $monedas = $request->input('moneda');
+                $monedas = $request->input('monedas');
 
                 foreach ($monedas as $moneda) {
                     
