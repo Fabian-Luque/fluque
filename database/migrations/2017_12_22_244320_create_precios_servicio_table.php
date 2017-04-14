@@ -14,7 +14,7 @@ class CreatePreciosServicioTable extends Migration
     {
         Schema::create('precios_servicio', function(Blueprint $table){
         $table->increments('id');
-        $table->float('precio_servicio',10,2);
+        $table->float('precio_servicio',10,2)->nullable();
         $table->integer('servicio_id')->unsigned();
         $table->foreign('servicio_id')->references('id')->on('servicios')->onDelete('cascade');
         $table->integer('tipo_moneda_id')->unsigned();
