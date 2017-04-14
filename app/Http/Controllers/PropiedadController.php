@@ -4,16 +4,16 @@ namespace App\Http\Controllers;
 
 use App\ClasificacionMoneda;
 use App\Http\Controllers\Controller;
+use App\Precio;
+use App\PrecioServicio;
 use App\Propiedad;
+use App\PropiedadMoneda;
 use App\Servicio;
 use App\TipoHabitacion;
 use App\TipoPropiedad;
-use App\Precio;
-use App\PrecioServicio;
 use Illuminate\Http\Request;
 use Response;
 use Validator;
-
 
 class PropiedadController extends Controller
 {
@@ -256,9 +256,9 @@ class PropiedadController extends Controller
 
         if ($request->has('propiedad_id') && $request->has('monedas')) {
 
-            $propiedad = Propiedad::where('id', $request->input('propiedad_id'))->with('habitaciones')->with('servicios')->first();
+            $propiedad             = Propiedad::where('id', $request->input('propiedad_id'))->with('habitaciones')->with('servicios')->first();
             $cantidad_habitaciones = count($propiedad->habitaciones);
-            $cantidad_servicios = count($propiedad->servicios);
+            $cantidad_servicios    = count($propiedad->servicios);
 
             if (!is_null($propiedad)) {
 
@@ -271,43 +271,37 @@ class PropiedadController extends Controller
 
                     $propiedad->clasificacionMonedas()->attach($clasificacion_moneda, ['tipo_moneda_id' => $tipo_moneda]);
 
-                    if($cantidad_habitaciones > 0){
+                    if ($cantidad_habitaciones > 0) {
 
-                        foreach($propiedad->habitaciones as $habitacion){
+                        foreach ($propiedad->habitaciones as $habitacion) {
 
-                            $habitacion_id  =  $habitacion->id;
+                            $habitacion_id = $habitacion->id;
 
-                            $precio                           = new Precio();
-                            $precio->precio_habitacion        = null;
-                            $precio->tipo_moneda_id           = $tipo_moneda;
-                            $precio->habitacion_id            = $habitacion_id;
+                            $precio                    = new Precio();
+                            $precio->precio_habitacion = null;
+                            $precio->tipo_moneda_id    = $tipo_moneda;
+                            $precio->habitacion_id     = $habitacion_id;
                             $precio->save();
-
 
                         }
 
-
                     }
 
-                    if($cantidad_servicios > 0){
+                    if ($cantidad_servicios > 0) {
 
-                            foreach($propiedad->servicios as $servicio){
+                        foreach ($propiedad->servicios as $servicio) {
 
-                            $servicio_id  =  $servicio->id;
+                            $servicio_id = $servicio->id;
 
-                            $precio                           = new PrecioServicio();
-                            $precio->precio_servicio          = null;
-                            $precio->tipo_moneda_id           = $tipo_moneda;
-                            $precio->servicio_id              = $servicio_id;
+                            $precio                  = new PrecioServicio();
+                            $precio->precio_servicio = null;
+                            $precio->tipo_moneda_id  = $tipo_moneda;
+                            $precio->servicio_id     = $servicio_id;
                             $precio->save();
-
 
                         }
 
-
                     }
-
-
 
                 }
 
@@ -331,6 +325,59 @@ class PropiedadController extends Controller
                 return Response::json($retorno, 404);
 
             }
+
+        } else {
+
+            $retorno = array(
+
+                'msj'    => "La solicitud esta incompleta",
+                'errors' => true,
+            );
+
+            return Response::json($retorno, 400);
+
+        }
+
+    }
+
+    public function eliminarMoneda(Request $request)
+    {
+
+        if ($request->has('id')) {
+
+            $id = $request->input('id');
+
+            $moneda         = PropiedadMoneda::where('id', $id)->first();
+            $tipo_moneda_id = $moneda->tipo_moneda_id;
+            $propiedad_id   = $moneda->propiedad_id;
+
+            $precios_habitacion = Precio::where('tipo_moneda_id', $tipo_moneda_id)->whereHas('habitacion', function ($query) use ($propiedad_id) {
+
+                $query->where('propiedad_id', $propiedad_id);
+
+            })->get();
+
+
+            $precios_servicio = PrecioServicio::where('tipo_moneda_id', $tipo_moneda_id)->whereHas('servicio', function ($query) use ($propiedad_id) {
+
+                $query->where('propiedad_id', $propiedad_id);
+
+            })->get();
+
+
+            foreach ($precios_habitacion as $precio) {
+
+                $precio->delete();
+            }
+
+            foreach ($precios_servicio as $precio) {
+
+                $precio->delete();
+            }
+
+            $moneda->delete();
+
+            return "moneda aliminada";
 
         } else {
 
