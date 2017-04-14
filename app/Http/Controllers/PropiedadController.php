@@ -377,7 +377,14 @@ class PropiedadController extends Controller
 
             $moneda->delete();
 
-            return "moneda aliminada";
+            $retorno = [
+
+            'errors' => false,
+            'msj' => 'Moneda eliminada satisfactoriamente',
+
+             ];
+
+             return Response::json($retorno, 202);
 
         } else {
 
