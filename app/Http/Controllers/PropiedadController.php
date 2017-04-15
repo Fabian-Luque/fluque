@@ -357,13 +357,11 @@ class PropiedadController extends Controller
 
             })->get();
 
-
             $precios_servicio = PrecioServicio::where('tipo_moneda_id', $tipo_moneda_id)->whereHas('servicio', function ($query) use ($propiedad_id) {
 
                 $query->where('propiedad_id', $propiedad_id);
 
             })->get();
-
 
             foreach ($precios_habitacion as $precio) {
 
@@ -379,12 +377,12 @@ class PropiedadController extends Controller
 
             $retorno = [
 
-            'errors' => false,
-            'msj' => 'Moneda eliminada satisfactoriamente',
+                'errors' => false,
+                'msj'    => 'Moneda eliminada satisfactoriamente',
 
-             ];
+            ];
 
-             return Response::json($retorno, 202);
+            return Response::json($retorno, 202);
 
         } else {
 
@@ -395,6 +393,74 @@ class PropiedadController extends Controller
             );
 
             return Response::json($retorno, 400);
+
+        }
+
+    }
+
+    public function editarMoneda(Request $request, $id)
+    {
+
+        $rules = array(
+
+            'clasificacion_moneda_id' => 'numeric',
+            'tipo_moneda_id'          => 'numeric',
+
+        );
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+
+            $data = [
+
+                'errors' => true,
+                'msg'    => $validator->messages(),
+
+            ];
+
+            return Response::json($data, 400);
+
+        } else {
+
+            $moneda      = PropiedadMoneda::findOrFail($id);
+            $tipo_moneda = $moneda->tipo_moneda_id;
+            $moneda->update($request->all());
+            $moneda->touch();
+
+            $propiedad_id   = $moneda->propiedad_id;
+            $tipo_moneda_id = $request->input('tipo_moneda_id');
+
+            $precios_habitacion = Precio::where('tipo_moneda_id', $tipo_moneda)->whereHas('habitacion', function ($query) use ($propiedad_id) {
+
+                $query->where('propiedad_id', $propiedad_id);
+
+            })->get();
+
+            $precios_servicio = PrecioServicio::where('tipo_moneda_id', $tipo_moneda)->whereHas('servicio', function ($query) use ($propiedad_id) {
+
+                $query->where('propiedad_id', $propiedad_id);
+
+            })->get();
+
+            foreach ($precios_habitacion as $precio) {
+
+                $precio->update(array('precio_habitacion' => null, 'tipo_moneda_id' => $tipo_moneda_id));
+            }
+
+            foreach ($precios_servicio as $servicio) {
+
+                $servicio->update(array('precio_servicio' => null, 'tipo_moneda_id' => $tipo_moneda_id));
+            }
+
+            $data = [
+
+                'errors' => false,
+                'msg'    => 'Moneda actualizada satisfactoriamente',
+
+            ];
+
+            return Response::json($data, 201);
 
         }
 
