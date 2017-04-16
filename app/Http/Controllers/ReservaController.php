@@ -764,7 +764,8 @@ class ReservaController extends Controller
                $monto_equivalente = $request->input('monto_equivalente');
 
                $pago                        = new Pago();
-               $pago->monto_pago            = $monto_equivalente;
+               $pago->monto_pago            = $monto_pago;
+               $pago->monto_equivalente     = $monto_equivalente; 
                $pago->tipo                  = $tipo_pago;
                $pago->numero_operacion      = $numero_operacion;
                $pago->tipo_comprobante_id   = $tipo_comprobante_id;
@@ -780,6 +781,7 @@ class ReservaController extends Controller
 
                $pago                        = new Pago();
                $pago->monto_pago            = $monto_pago;
+               $pago->monto_equivalente     = $monto_pago; 
                $pago->tipo                  = $tipo_pago;
                $pago->numero_operacion      = $numero_operacion;
                $pago->tipo_comprobante_id   = $tipo_comprobante_id;
@@ -841,7 +843,8 @@ class ReservaController extends Controller
                      $monto_equivalente = $request->input('monto_equivalente');
 
                      $pago                        = new Pago();
-                     $pago->monto_pago            = $monto_equivalente;
+                     $pago->monto_pago            = $monto_pago;
+                     $pago->monto_equivalente     = $monto_equivalente; 
                      $pago->tipo                  = $tipo_pago;
                      $pago->numero_operacion      = $numero_operacion;
                      $pago->tipo_comprobante_id   = $tipo_comprobante_id;
@@ -857,6 +860,7 @@ class ReservaController extends Controller
 
                      $pago                        = new Pago();
                      $pago->monto_pago            = $monto_pago;
+                     $pago->monto_equivalente     = $monto_pago; 
                      $pago->tipo                  = $tipo_pago;
                      $pago->numero_operacion      = $numero_operacion;
                      $pago->tipo_comprobante_id   = $tipo_comprobante_id;
@@ -951,7 +955,8 @@ class ReservaController extends Controller
                      $monto_equivalente = $request->input('monto_equivalente');
 
                      $pago                        = new Pago();
-                     $pago->monto_pago            = $monto_equivalente;
+                     $pago->monto_pago            = $monto_pago;
+                     $pago->monto_equivalente     = $monto_equivalente; 
                      $pago->tipo                  = $tipo_pago;
                      $pago->numero_operacion      = $numero_operacion;
                      $pago->tipo_comprobante_id   = $tipo_comprobante_id;
@@ -967,6 +972,7 @@ class ReservaController extends Controller
 
                      $pago                        = new Pago();
                      $pago->monto_pago            = $monto_pago;
+                     $pago->monto_equivalente     = $monto_pago; 
                      $pago->tipo                  = $tipo_pago;
                      $pago->numero_operacion      = $numero_operacion;
                      $pago->tipo_comprobante_id   = $tipo_comprobante_id;

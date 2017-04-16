@@ -8,7 +8,7 @@ class Pago extends Model
 {
     protected $table = 'pagos';
 
-    protected $fillable = ['monto_pago','tipo' ,'numero_operacion' ,'tipo_comprobante_id','reserva_id'];
+    protected $fillable = ['monto_pago','monto_equivalente','tipo','numero_operacion','tipo_moneda_id','tipo_comprobante_id','reserva_id'];
 
 	public function reserva(){
 

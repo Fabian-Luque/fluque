@@ -13,6 +13,7 @@ class AddTipoMonedaIdToPagosTable extends Migration
     public function up()
     {
         Schema::table('pagos', function (Blueprint $table) {
+        $table->float('monto_equivalente',10,2)->after('monto_pago');
         $table->integer('tipo_moneda_id')->after('numero_operacion')->default(1)->unsigned();
         $table->foreign('tipo_moneda_id')->references('id')->on('tipo_moneda');
         });
