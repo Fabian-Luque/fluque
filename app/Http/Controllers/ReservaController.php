@@ -760,6 +760,24 @@ class ReservaController extends Controller
                $monto = $reserva->monto_por_pagar;
                $monto -= $monto_pago;
 
+               if($request->has('monto_pago') && $request->has('monto_equivalente')){
+               $monto_equivalente = $request->input('monto_equivalente');
+
+               $pago                        = new Pago();
+               $pago->monto_pago            = $monto_equivalente;
+               $pago->tipo                  = $tipo_pago;
+               $pago->numero_operacion      = $numero_operacion;
+               $pago->tipo_comprobante_id   = $tipo_comprobante_id;
+               $pago->metodo_pago_id        = $metodo_pago;
+               $pago->tipo_moneda_id        = $tipo_moneda_id;
+               if($metodo_pago == 4){
+               $pago->numero_cheque         = $numero_cheque;
+               }
+               $pago->reserva_id            = $reserva->id;
+               $pago->save();
+                
+               }else{
+
                $pago                        = new Pago();
                $pago->monto_pago            = $monto_pago;
                $pago->tipo                  = $tipo_pago;
@@ -772,6 +790,10 @@ class ReservaController extends Controller
                }
                $pago->reserva_id            = $reserva->id;
                $pago->save();
+
+
+
+               }
 
                $reserva->update(array('monto_por_pagar' => $monto , 'estado_reserva_id' => 2));
 
@@ -815,18 +837,40 @@ class ReservaController extends Controller
 
                       
 
-                       $pago                        = new Pago();
-                       $pago->monto_pago            = $monto_pago;
-                       $pago->tipo                  = $tipo_pago;
-                       $pago->numero_operacion      = $numero_operacion;
-                       $pago->tipo_comprobante_id   = $tipo_comprobante_id;
-                       $pago->metodo_pago_id        = $metodo_pago;
-                       $pago->tipo_moneda_id        = $tipo_moneda_id;
-                       if($metodo_pago == 4){
-                       $pago->numero_cheque         = $numero_cheque;
-                       }
-                       $pago->reserva_id            = $reserva->id;
-                       $pago->save();
+                     if($request->has('monto_pago') && $request->has('monto_equivalente')){
+                     $monto_equivalente = $request->input('monto_equivalente');
+
+                     $pago                        = new Pago();
+                     $pago->monto_pago            = $monto_equivalente;
+                     $pago->tipo                  = $tipo_pago;
+                     $pago->numero_operacion      = $numero_operacion;
+                     $pago->tipo_comprobante_id   = $tipo_comprobante_id;
+                     $pago->metodo_pago_id        = $metodo_pago;
+                     $pago->tipo_moneda_id        = $tipo_moneda_id;
+                     if($metodo_pago == 4){
+                     $pago->numero_cheque         = $numero_cheque;
+                     }
+                     $pago->reserva_id            = $reserva->id;
+                     $pago->save();
+                      
+                     }else{
+
+                     $pago                        = new Pago();
+                     $pago->monto_pago            = $monto_pago;
+                     $pago->tipo                  = $tipo_pago;
+                     $pago->numero_operacion      = $numero_operacion;
+                     $pago->tipo_comprobante_id   = $tipo_comprobante_id;
+                     $pago->metodo_pago_id        = $metodo_pago;
+                     $pago->tipo_moneda_id        = $tipo_moneda_id;
+                     if($metodo_pago == 4){
+                     $pago->numero_cheque         = $numero_cheque;
+                     }
+                     $pago->reserva_id            = $reserva->id;
+                     $pago->save();
+
+
+
+                   }
 
 
                       if($reserva->estado_reserva_id == 5 && $monto == 0){
@@ -903,18 +947,38 @@ class ReservaController extends Controller
                 if($monto_pago <= $reserva->monto_por_pagar){
 
 
-                   $pago                        = new Pago();
-                   $pago->monto_pago            = $monto_pago;
-                   $pago->tipo                  = $tipo_pago;
-                   $pago->numero_operacion      = $numero_operacion;
-                   $pago->tipo_comprobante_id   = $tipo_comprobante_id;
-                   $pago->metodo_pago_id        = $metodo_pago;
-                   $pago->tipo_moneda_id        = $tipo_moneda_id;
-                   if($metodo_pago == 4){
-                   $pago->numero_cheque         = $numero_cheque;
+                     if($request->has('monto_pago') && $request->has('monto_equivalente')){
+                     $monto_equivalente = $request->input('monto_equivalente');
+
+                     $pago                        = new Pago();
+                     $pago->monto_pago            = $monto_equivalente;
+                     $pago->tipo                  = $tipo_pago;
+                     $pago->numero_operacion      = $numero_operacion;
+                     $pago->tipo_comprobante_id   = $tipo_comprobante_id;
+                     $pago->metodo_pago_id        = $metodo_pago;
+                     $pago->tipo_moneda_id        = $tipo_moneda_id;
+                     if($metodo_pago == 4){
+                     $pago->numero_cheque         = $numero_cheque;
+                     }
+                     $pago->reserva_id            = $reserva->id;
+                     $pago->save();
+                      
+                     }else{
+
+                     $pago                        = new Pago();
+                     $pago->monto_pago            = $monto_pago;
+                     $pago->tipo                  = $tipo_pago;
+                     $pago->numero_operacion      = $numero_operacion;
+                     $pago->tipo_comprobante_id   = $tipo_comprobante_id;
+                     $pago->metodo_pago_id        = $metodo_pago;
+                     $pago->tipo_moneda_id        = $tipo_moneda_id;
+                     if($metodo_pago == 4){
+                     $pago->numero_cheque         = $numero_cheque;
+                     }
+                     $pago->reserva_id            = $reserva->id;
+                     $pago->save();
+
                    }
-                   $pago->reserva_id            = $reserva->id;
-                   $pago->save();
 
                       if($reserva->estado_reserva_id == 5 && $monto == 0){
 
