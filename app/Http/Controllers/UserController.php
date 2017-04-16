@@ -48,10 +48,13 @@ class UserController extends Controller
 
                 })->get();
 
+                $servicios_creados = Servicio::where('propiedad_id', $id)->get();
+
                 $user->tipos_habitaciones                     = count($tipos);
                 $user->propiedad->habitaciones_faltantes      = $numero_habitaciones - $habitaciones_creadas;
                 $user->propiedad->habitaciones_por_configurar = count($habitaciones);
                 $user->propiedad->servicios_por_configurar    = count($servicios);
+                $user->propiedad->servicios_creados           = count($servicios_creados);
 
             }
 
