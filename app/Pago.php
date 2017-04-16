@@ -28,4 +28,10 @@ class Pago extends Model
 
 	}
 
+	public function tipoMoneda(){
+
+		return $this->belongsTo('App\TipoMoneda', 'tipo_moneda_id');
+
+	}
+
 }

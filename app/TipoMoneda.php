@@ -29,6 +29,13 @@ class TipoMoneda extends Model
 
 	}
 
+    public function pagos(){
+
+        return $this->hasMany('App\Pago', 'tipo_moneda_id');
+
+
+    }
+
 	public function propiedades(){
 
             return $this->belongsToMany('App\Propiedad', 'propiedad_moneda')

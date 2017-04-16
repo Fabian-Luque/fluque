@@ -748,6 +748,7 @@ class ReservaController extends Controller
       $tipo_pago = $request->input('tipo_pago');
       $reserva_id = $request->input('reserva_id');
       $numero_cheque = $request->input('numero_cheque');
+      $tipo_moneda_id = $request->input('tipo_moneda_id');
 
 
       $reserva = Reserva::where('id', $request->input('reserva_id'))->first();
@@ -765,6 +766,7 @@ class ReservaController extends Controller
                $pago->numero_operacion      = $numero_operacion;
                $pago->tipo_comprobante_id   = $tipo_comprobante_id;
                $pago->metodo_pago_id        = $metodo_pago;
+               $pago->tipo_moneda_id        = $tipo_moneda_id;
                if($metodo_pago == 4){
                $pago->numero_cheque         = $numero_cheque;
                }
@@ -817,8 +819,9 @@ class ReservaController extends Controller
                        $pago->monto_pago            = $monto_pago;
                        $pago->tipo                  = $tipo_pago;
                        $pago->numero_operacion      = $numero_operacion;
-                       $pago->tipo_comprobante_id  =  $tipo_comprobante_id;
+                       $pago->tipo_comprobante_id   = $tipo_comprobante_id;
                        $pago->metodo_pago_id        = $metodo_pago;
+                       $pago->tipo_moneda_id        = $tipo_moneda_id;
                        if($metodo_pago == 4){
                        $pago->numero_cheque         = $numero_cheque;
                        }
@@ -904,8 +907,9 @@ class ReservaController extends Controller
                    $pago->monto_pago            = $monto_pago;
                    $pago->tipo                  = $tipo_pago;
                    $pago->numero_operacion      = $numero_operacion;
-                   $pago->tipo_comprobante_id  =  $tipo_comprobante_id;
+                   $pago->tipo_comprobante_id   = $tipo_comprobante_id;
                    $pago->metodo_pago_id        = $metodo_pago;
+                   $pago->tipo_moneda_id        = $tipo_moneda_id;
                    if($metodo_pago == 4){
                    $pago->numero_cheque         = $numero_cheque;
                    }
