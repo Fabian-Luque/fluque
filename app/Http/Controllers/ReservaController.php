@@ -2117,6 +2117,26 @@ class ReservaController extends Controller
 
     }
 
+    public function copiaPrecioPagos(){
+
+     $pagos = Pago::all();
+
+     foreach ($pagos as $pago) {
+
+
+        $monto = $pago->monto_pago;  
+        $pago->update(array('monto_equivalente' => $monto));
+
+
+     }
+
+     return "actualizados";
+
+
+
+
+    }
+
 
 
 }
