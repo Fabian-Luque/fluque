@@ -1054,10 +1054,12 @@ class ReservaController extends Controller
         if($request->has('servicio_id') && $request->has('reserva_id')){
 
         $servicios = $request->input('servicio_id');
+        $monto_pago = $request->input('monto_pago');
         $tipo_comprobante_id = $request->input('tipo_comprobante_id');
         $numero_operacion = $request->input('numero_operacion');
         $metodo_pago = $request->input('metodo_pago_id');
         $numero_cheque = $request->input('numero_cheque');
+        $tipo_moneda_id = $request->input('tipo_moneda_id');
 
 
         $reserva_id = $request->input('reserva_id');
@@ -1107,9 +1109,9 @@ class ReservaController extends Controller
         }
 
 
-        $total = $monto_por_pagar - $total_consumos;
+        $total = $monto_por_pagar - $monto_pago;
 
-        if($total_consumos <= $reserva->monto_por_pagar){
+        if($monto_pago <= $reserva->monto_por_pagar){
 
             foreach ($servicios as $servicio) {
             
@@ -1130,40 +1132,42 @@ class ReservaController extends Controller
                 }
 
 
-                if($request->has('numero_operacion') && $request->has('tipo_comprobante_id')){
-
-                $pago                        = new Pago();
-                $pago->monto_pago            = $total_consumos;
-                $pago->tipo                  = "Pago consumos";
-                $pago->numero_operacion      = $numero_operacion;
-                $pago->tipo_comprobante_id   = $tipo_comprobante_id;
-                $pago->metodo_pago_id        = $metodo_pago;
-                if($metodo_pago == 4){
-                $pago->numero_cheque         = $numero_cheque;
-                }
-                $pago->reserva_id            = $reserva->id;
-                $pago->save();
+                if($request->has('monto_pago') && $request->has('monto_equivalente')){
+                    $monto_equivalente = $request->input('monto_equivalente');
 
 
-                }else{
+                    $pago                        = new Pago();
+                    $pago->monto_pago            = $monto_pago;
+                    $pago->monto_equivalente     = $monto_equivalente; 
+                    $pago->tipo                  = "Pago consumos";
+                    $pago->numero_operacion      = $numero_operacion;
+                    $pago->tipo_comprobante_id   = $tipo_comprobante_id;
+                    $pago->metodo_pago_id        = $metodo_pago;
+                    $pago->tipo_moneda_id        = $tipo_moneda_id;
+                    if($metodo_pago == 4){
+                    $pago->numero_cheque         = $numero_cheque;
+                    }
+                    $pago->reserva_id            = $reserva->id;
+                    $pago->save();
+                      
+                    }else{
 
+                    $pago                        = new Pago();
+                    $pago->monto_pago            = $monto_pago;
+                    $pago->monto_equivalente     = $monto_pago; 
+                    $pago->tipo                  = "Pago consumos";
+                    $pago->numero_operacion      = $numero_operacion;
+                    $pago->tipo_comprobante_id   = $tipo_comprobante_id;
+                    $pago->metodo_pago_id        = $metodo_pago;
+                    $pago->tipo_moneda_id        = $tipo_moneda_id;
+                    if($metodo_pago == 4){
+                    $pago->numero_cheque         = $numero_cheque;
+                    }
+                    $pago->reserva_id            = $reserva->id;
+                    $pago->save();
 
-                $pago                        = new Pago();
-                $pago->monto_pago            = $total_consumos;
-                $pago->tipo                  = "Pago consumos";
-                $pago->numero_operacion      = null;
-                $pago->tipo_comprobante_id   = null;
-                $pago->metodo_pago_id        = $metodo_pago;
-                if($metodo_pago == 4){
-                $pago->numero_cheque         = $numero_cheque;
-                }
-                $pago->reserva_id            = $reserva->id;
-                $pago->save();
+                   }
 
-
-
-
-                }
 
                 $retorno = array(
 
