@@ -13,7 +13,7 @@ class AddTipoMonedaIdToReservasTable extends Migration
     public function up()
     {
         Schema::table('reservas', function (Blueprint $table) {
-        $table->integer('tipo_moneda_id')->after('noches')->default(1)->unsigned();
+        $table->integer('tipo_moneda_id')->after('noches')->nullable()->unsigned();
         $table->foreign('tipo_moneda_id')->references('id')->on('tipo_moneda');
         });
     }
