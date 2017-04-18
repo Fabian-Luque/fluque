@@ -2,93 +2,77 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
-use App\Http\Requests;
-use Response;
 use App\Huesped;
+use App\HuespedReserva;
+use App\HuespedReservaServicio;
+use App\PrecioServicio;
 use App\Reserva;
 use App\Servicio;
-use App\HuespedReserva;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\HuespedReservaServicio;
+use Response;
 
 class HuespedController extends Controller
 {
-    
 
+    public function index(Request $request)
+    {
 
+        if ($request->has('rut')) {
 
+            $huesped = Huesped::where('rut', $request->input('rut'))->first();
 
-	public function index(Request $request){
+            if (is_null($huesped)) {
 
+                $data = array(
 
-		
+                    'msj'    => "Huesped no encontrado",
+                    'errors' => true,
 
-		if($request->has('rut')){
+                );
 
-			$huesped = Huesped::where('rut', $request->input('rut'))->first();
+                return Response::json($data, 404);
 
+            } else {
 
-			
-			if(is_null($huesped)){
+                $comentario = $huesped->calificacionPropiedades->last();
 
-				$data = array(
+                $data = array(
+                    'huesped'           => $huesped,
+                    'ultimo_comentario' => $comentario,
 
-					'msj' => "Huesped no encontrado",
-					'errors' => true
+                );
 
+                return $data;
 
-				);
+            }
 
-			return Response::json($data, 404);
+        }
 
+    }
 
-			}else{
+    public function update(Request $request, $id)
+    {
 
-			$comentario = $huesped->calificacionPropiedades->last();
+        $rules = array(
 
-				$data = array(
-					'huesped' 			   => $huesped,
-					'ultimo_comentario'    => $comentario
+            'nombre'   => '',
+            'apellido' => '',
+            'rut'      => '',
+            'email'    => '',
+            'telefono' => '',
+            'pais'     => '',
 
-					);
-
-				return $data;
-
-
-
-			}
-
-		}
-
-
-	}
-
-
-	public function update(Request $request, $id){
-
-
-		$rules = array(
-
-            'nombre'                => '',
-            'apellido'          	=> '',
-            'rut'   				=> '',
-            'email'                 => '',
-            'telefono'   			=> '',
-            'pais'                  => '',
-            
         );
 
-    	$validator = Validator::make($request->all(), $rules);
+        $validator = Validator::make($request->all(), $rules);
 
-
-         if ($validator->fails()) {
+        if ($validator->fails()) {
 
             $data = [
 
                 'errors' => true,
-                'msg' => $validator->messages(),
+                'msg'    => $validator->messages(),
 
             ];
 
@@ -100,11 +84,11 @@ class HuespedController extends Controller
 
             $huesped->update($request->all());
             $huesped->touch();
-            
+
             $data = [
 
                 'errors' => false,
-                'msg' => 'Huesped actualizado satisfactoriamente',
+                'msg'    => 'Huesped actualizado satisfactoriamente',
 
             ];
 
@@ -112,337 +96,257 @@ class HuespedController extends Controller
 
         }
 
+    }
 
-	}
+    public function ingresoHuesped(Request $request)
+    {
 
+        if ($request->has('reserva_id') && $request->has('huespedes')) {
 
-	public function ingresoHuesped(Request $request){
+            $reserva = Reserva::where('id', $request['reserva_id'])->first();
 
-		if($request->has('reserva_id') && $request->has('huespedes')){
-		 
+            $huespedes = $request['huespedes'];
 
-		 $reserva = Reserva::where('id', $request['reserva_id'])->first();
-
-		 
-		 $huespedes = $request['huespedes'];
-
-
-		   if(is_null($reserva)){
-
-			  $retorno = array(
-				'msj' 		=> "Reserva no encontrada",
-				'erros'		=> true);
-
-			  return Response::json($retorno, 404);
-			  
-			}else{
-
-			foreach($huespedes as $huesped){
-
-				$huesped = Huesped::firstOrNew($huesped);
-              
-                $huesped->apellido       = $huesped['apellido'];
-                $huesped->rut            = $huesped['rut'];
-                $huesped->telefono       = $huesped['telefono'];
-                $huesped->pais           = $huesped['pais'];
-                $huesped->save();
-                					
-                $huespedReserva = HuespedReserva::where('huesped_id', $huesped->id)->where('reserva_id', $reserva->id)->first();
-
-                if(is_null($huespedReserva)){
-
-                $reserva->huespedes()->attach($huesped->id);
-                $reserva->update(array('estado_reserva_id' => 3));
-
-
-                }else{
+            if (is_null($reserva)) {
 
                 $retorno = array(
-				'msj' 		=> $huesped->nombre ." ". $huesped->apellido ." ya fue ingresado a la reserva",
-				'erros'		=> true);
+                    'msj'   => "Reserva no encontrada",
+                    'erros' => true);
 
-			    return Response::json($retorno, 400);
+                return Response::json($retorno, 404);
 
+            } else {
+
+                foreach ($huespedes as $huesped) {
+
+                    $huesped = Huesped::firstOrNew($huesped);
+
+                    $huesped->apellido = $huesped['apellido'];
+                    $huesped->rut      = $huesped['rut'];
+                    $huesped->telefono = $huesped['telefono'];
+                    $huesped->pais     = $huesped['pais'];
+                    $huesped->save();
+
+                    $huespedReserva = HuespedReserva::where('huesped_id', $huesped->id)->where('reserva_id', $reserva->id)->first();
+
+                    if (is_null($huespedReserva)) {
+
+                        $reserva->huespedes()->attach($huesped->id);
+                        $reserva->update(array('estado_reserva_id' => 3));
+
+                    } else {
+
+                        $retorno = array(
+                            'msj'   => $huesped->nombre . " " . $huesped->apellido . " ya fue ingresado a la reserva",
+                            'erros' => true);
+
+                        return Response::json($retorno, 400);
+
+                    }
 
                 }
 
+                $retorno = array(
 
+                    'msj'   => "Huespedes ingresados correctamente",
+                    'erros' => false,
+                );
 
-			}
+                return Response::json($retorno, 200);
 
-			$retorno = array(
+            }
 
-				'msj' => "Huespedes ingresados correctamente",
-				'erros' =>false
-			);
+        } else {
 
-			return Response::json($retorno, 200);
+            $retorno = array(
 
-		}
+                'msj'    => "La solicitud esta incompleta",
+                'errors' => true,
+            );
 
+            return Response::json($retorno, 400);
 
+        }
 
-		}else{
+    }
 
-			$retorno = array(
+    public function getHuespedes(Request $request)
+    {
 
-				'msj' 	 => "La solicitud esta incompleta",
-				'errors' =>	true
-			);
+        $id = $request->input('propiedad_id');
 
-			return Response::json($retorno, 400);
+        $fecha = $request->input('fecha_a_evaluar');
 
+        $fecha_a_evaluar = strtotime($fecha);
 
-		}	
+        $reserva_info   = [];
+        $huespedes_info = [];
 
+        $huespedes = Huesped::whereHas('reservas.habitacion', function ($query) use ($id) {
 
-	}
+            $query->where('propiedad_id', $id);
 
+        })->with(['reservas' => function ($q) {
 
+            $q->where('estado_reserva_id', 3)->with('habitacion');}])->get();
 
-	public function getHuespedes(Request $request){
+        foreach ($huespedes as $huesped) {
 
+            $reservas = $huesped->reservas;
 
+            if (count($huesped->reservas) != 0) {
 
-			$id = $request->input('propiedad_id');
+                array_push($huespedes_info, $huesped);
 
-			$fecha = $request->input('fecha_a_evaluar');
+            }
 
-			$fecha_a_evaluar = strtotime($fecha);
+        }
 
-			$reserva_info = [];
-			$huespedes_info = [];
+        return $huespedes_info;
 
+    }
 
+    public function ingresoConsumo(Request $request)
+    {
 
-            $huespedes = Huesped::whereHas('reservas.habitacion', function($query) use($id){
+        if ($request->has('consumo_servicio')) {
 
-                    $query->where('propiedad_id', $id);
+            $consumos = $request->input('consumo_servicio');
 
-					})->with(['reservas' => function ($q) {
+        }
 
-    				$q->where('estado_reserva_id', 3)->with('habitacion');}])->get();
+        foreach ($consumos as $consumo) {
 
+            $reserva_id  = $consumo['reserva_id'];
+            $huesped_id  = $consumo['huesped_id'];
+            $servicio_id = $consumo['servicio_id'];
+            $cantidad    = $consumo['cantidad'];
 
+            $reserva = Reserva::where('id', $reserva_id)->first();
 
-			foreach ($huespedes as $huesped) {
+            $servicio        = Servicio::where('id', $servicio_id)->first();
+            $precio_servicio = PrecioServicio::where('tipo_moneda_id', $reserva->tipo_moneda_id)->where('servicio_id', $servicio->id)->lists('precio_servicio')->first();
 
-				$reservas = $huesped->reservas;
+            $precio_total = $cantidad * $precio_servicio;
 
-					
-				if(count($huesped->reservas) != 0) {
+            $cantidad_disponible = $servicio->cantidad_disponible;
 
-					array_push($huespedes_info, $huesped);
+            if ($cantidad >= 1) {
 
+                if (!is_null($servicio)) {
 
-				}
+                    if ($servicio->categoria_id == 2) {
 
-			}
+                        if ($servicio->cantidad_disponible > 0) {
 
-			return $huespedes_info;
+                            if ($cantidad <= $servicio->cantidad_disponible) {
 
+                                $cantidad_disponible = $cantidad_disponible - $cantidad;
 
+                                $servicio->update(array('cantidad_disponible' => $cantidad_disponible));
 
-	}
+                                $reserva->reservasHuespedes()->attach($huesped_id, ['servicio_id' => $servicio_id, 'cantidad' => $cantidad, 'precio_total' => $precio_total]);
 
+                                $consumo   = $precio_total + $reserva->monto_consumo;
+                                $total     = $precio_total + $reserva->monto_total;
+                                $por_pagar = $precio_total + $reserva->monto_por_pagar;
 
+                                $reserva->update(array('monto_consumo' => $consumo, 'monto_total' => $total, 'monto_por_pagar' => $por_pagar));
 
+                            } else {
 
+                                $data = array(
 
-	public function ingresoConsumo(Request $request){
+                                    'msj'    => " La cantidad ingresada es mayor al stock del producto",
+                                    'errors' => true,
 
+                                );
 
-		if($request->has('consumo_servicio')){
+                                return Response::json($data, 400);
 
-			$consumos = $request->input('consumo_servicio');
+                            }
 
-		}
+                        } else {
 
-		foreach ($consumos as $consumo) {
-				
-		$reserva_id = $consumo['reserva_id'];
-		$huesped_id = $consumo['huesped_id'];
-		$servicio_id = $consumo['servicio_id'];
-		$cantidad = $consumo['cantidad'];
-		$precio_total = $consumo['precio_total'];
+                            $data = array(
 
-		$reserva = Reserva::where('id', $reserva_id)->first();
+                                'msj'    => " El servicio no tiene stock",
+                                'errors' => true,
 
-		$servicio = Servicio::where('id' , $servicio_id)->first();
-		$cantidad_disponible = $servicio->cantidad_disponible;
+                            );
 
+                            return Response::json($data, 400);
 
-			if($cantidad >= 1){
+                        }
 
+                    } elseif ($servicio->categoria_id == 1) {
 
-				if(!is_null($servicio)){
+                        $reserva->reservasHuespedes()->attach($huesped_id, ['servicio_id' => $servicio_id, 'cantidad' => $cantidad, 'precio_total' => $precio_total]);
 
+                        $consumo   = $precio_total + $reserva->monto_consumo;
+                        $total     = $precio_total + $reserva->monto_total;
+                        $por_pagar = $precio_total + $reserva->monto_por_pagar;
 
-			if($servicio->categoria_id == 2){
+                        $reserva->update(array('monto_consumo' => $consumo, 'monto_total' => $total, 'monto_por_pagar' => $por_pagar));
 
+                    }
 
+                } else {
 
-				 if($servicio->cantidad_disponible > 0){
-				 	
+                    $data = array(
 
-				 	if($cantidad <= $servicio->cantidad_disponible){
+                        'msj'    => " No se encuentra servicio",
+                        'errors' => true,
 
-				 	$cantidad_disponible = $cantidad_disponible - $cantidad;
+                    );
 
-				 	$servicio->update(array('cantidad_disponible' => $cantidad_disponible));
+                    return Response::json($data, 404);
 
+                }
+            } else {
 
-					$reserva->reservasHuespedes()->attach($huesped_id, ['servicio_id' => $servicio_id, 'cantidad' => $cantidad , 'precio_total' => $precio_total]);
+                $data = array(
 
+                    'msj'    => " La cantidad ingresada no corresponde",
+                    'errors' => true,
 
-					$consumo =$precio_total + $reserva->monto_consumo;
-					$total = $precio_total + $reserva->monto_total;
-					$por_pagar =$precio_total + $reserva->monto_por_pagar;
+                );
 
+                return Response::json($data, 400);
 
-					$reserva->update(array('monto_consumo' => $consumo, 'monto_total' => $total , 'monto_por_pagar' => $por_pagar));
+            }
 
-					}else{
+        }
 
+        $data = array(
 
-						$data = array(
+            'msj'    => "Consumo ingresado satisfactoriamente",
+            'errors' => false,
+        );
 
-		                    'msj' => " La cantidad ingresada es mayor al stock del producto",
-		                    'errors' => true
+        return Response::json($data, 201);
 
+    }
 
-		                );
+    public function eliminarConsumo($id)
+    {
 
-		                return Response::json($data, 400);
+        $consumo = HuespedReservaServicio::where('id', $id)->first();
 
+        $reserva_id = $consumo->reserva_id;
 
+        $reserva = Reserva::where('id', $reserva_id)->first();
 
+        $monto_consumo   = $reserva->monto_consumo - $consumo->precio_total;
+        $monto_total     = $reserva->monto_total - $consumo->precio_total;
+        $monto_por_pagar = $reserva->monto_por_pagar - $consumo->precio_total;
 
-					}
+        $reserva->update(array('monto_consumo' => $monto_consumo, 'monto_total' => $monto_total, 'monto_por_pagar' => $monto_por_pagar));
 
-				 }else{
+        $consumo->delete();
 
+        return "consumo eliminado";
 
-					 $data = array(
-
-	                    'msj' => " El servicio no tiene stock",
-	                    'errors' => true
-
-
-	                );
-
-	                return Response::json($data, 400);
-
-
-
-				 }
-
-				
-			}elseif($servicio->categoria_id == 1){
-
-
-					$reserva->reservasHuespedes()->attach($huesped_id, ['servicio_id' => $servicio_id, 'cantidad' => $cantidad , 'precio_total' => $precio_total]);
-
-
-					$consumo =$precio_total + $reserva->monto_consumo;
-					$total = $precio_total + $reserva->monto_total;
-					$por_pagar =$precio_total + $reserva->monto_por_pagar;
-
-
-					$reserva->update(array('monto_consumo' => $consumo, 'monto_total' => $total , 'monto_por_pagar' => $por_pagar));
-
-
-
-
-			}
-
-
-
-
-
-
-
-
-				}else{
-
-
-					$data = array(
-
-	                    'msj' => " No se encuentra servicio",
-	                    'errors' => true
-
-
-	                );
-
-	                return Response::json($data, 404);
-
-
-
-
-				}
-			}else{
-
-
-
-
-					$data = array(
-
-	                    'msj' => " La cantidad ingresada no corresponde",
-	                    'errors' => true
-
-
-	                );
-
-	                return Response::json($data, 400);
-
-
-
-			}
-
-
-
-
-
-
-				}
-
-				   $data = array(
-
-                    'msj' => "Consumo ingresado satisfactoriamente",
-                    'errors' =>false
-                   );
-
-                    return Response::json($data, 201);
-
-
-	}
-
-	public function eliminarConsumo($id){
-
-
-	$consumo = HuespedReservaServicio::where('id', $id)->first();
-
-	$reserva_id = $consumo->reserva_id;
-
-	$reserva = Reserva::where('id', $reserva_id)->first();
-
-	$monto_consumo = $reserva->monto_consumo - $consumo->precio_total;
-	$monto_total = $reserva->monto_total - $consumo->precio_total;
-	$monto_por_pagar = $reserva->monto_por_pagar - $consumo->precio_total;
-
-	$reserva->update(array('monto_consumo' => $monto_consumo, 'monto_total' => $monto_total, 'monto_por_pagar' => $monto_por_pagar));
-
-	$consumo->delete();
-
-	return "consumo eliminado";
-
-
-
-
-
-	}	
-
-
-
+    }
 
 }

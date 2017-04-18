@@ -11,7 +11,7 @@ class Reserva extends Model
 	use SoftDeletes;
     protected $table = 'reservas';
 
-	protected $fillable = ['precio_habitacion', 'monto_alojamiento','noches','monto_consumo','monto_total','monto_sugerido','metodo_pago_id','monto_por_pagar', 'ocupacion','tipo_fuente_id',' habitacion_id ' ,'cliente_id','checkin', 'checkout','estado_reserva_id'];
+	protected $fillable = ['precio_habitacion', 'monto_alojamiento','noches','monto_consumo','monto_total','monto_sugerido','metodo_pago_id','monto_por_pagar', 'ocupacion','tipo_fuente_id','habitacion_id' ,'cliente_id','checkin', 'checkout','estado_reserva_id'];
 
 
 
@@ -55,6 +55,12 @@ class Reserva extends Model
 	public function pagos(){
 
 		return $this->hasMany('App\Pago', 'reserva_id');
+
+	}
+
+	public function tipoMoneda(){
+
+		return $this->belongsTo('App\TipoMoneda', 'tipo_moneda_id');
 
 	}
 

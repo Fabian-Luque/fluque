@@ -97,6 +97,28 @@ Route::group(['middleware' => 'cors'], function(){
 
 	Route::get('modifica/precio', 'ReservaController@modificaPrecio');
 
+	Route::get('tipo-moneda', 'HabitacionController@getTipoMoneda');
+
+	Route::post('crear/precio/habitacion', 'HabitacionController@crearPrecio');
+
+	Route::post('crear/precio/servicio', 'ServicioController@crearPrecio');
+
+	Route::get('copia/precio/habitacion', 'HabitacionController@copiaPrecios');
+
+	Route::get('copia/precio/servicio', 'ServicioController@copiaPrecios');
+
+	Route::post('cambiar/habitacion', 'ReservaController@cambiarHabitacion');
+
+	Route::get('clasificacion/moneda', 'PropiedadController@getClasificacionMoneda');
+
+	Route::post('ingreso/moneda/propiedad', 'PropiedadController@ingresoMonedas');
+
+	Route::get('eliminar/moneda/propiedad', 'PropiedadController@eliminarMoneda');
+
+	Route::put('editar/moneda/{id}', 'PropiedadController@editarMoneda');
+
+	Route::get('copia/precio/pagos', 'ReservaController@copiaPrecioPagos');
+
 	Route::resource('user', 'UserController', ['except' => ['create', 'edit','store']]);
 	Route::resource('propiedad', 'PropiedadController', ['except' => ['create', 'edit', 'store']]);
 	Route::resource('habitacion', 'HabitacionController', ['except' => ['create', 'edit']]);

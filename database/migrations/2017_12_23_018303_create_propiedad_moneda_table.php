@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateHuespedPropiedadTable extends Migration
+class CreatePropiedadMonedaTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,16 +12,16 @@ class CreateHuespedPropiedadTable extends Migration
      */
     public function up()
     {
-        Schema::create('huesped_propiedad', function (Blueprint $table) {
+            Schema::create('propiedad_moneda', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('comentario',250)->nullable();
-            $table->integer('calificacion')->unsigned();
-            $table->integer('huesped_id')->unsigned();
-            $table->foreign('huesped_id')->references('id')->on('huespedes');
             $table->integer('propiedad_id')->unsigned();
             $table->foreign('propiedad_id')->references('id')->on('propiedades');
+            $table->integer('clasificacion_moneda_id')->unsigned();
+            $table->foreign('clasificacion_moneda_id')->references('id')->on('clasificacion_moneda');
+            $table->integer('tipo_moneda_id')->unsigned();
+            $table->foreign('tipo_moneda_id')->references('id')->on('tipo_moneda');
             $table->timestamps();
-        });
+            });
     }
 
     /**
@@ -31,6 +31,6 @@ class CreateHuespedPropiedadTable extends Migration
      */
     public function down()
     {
-        Schema::drop('huesped_propiedad');
+            Schema::drop('propiedad_moneda');
     }
 }

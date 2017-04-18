@@ -3,20 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-
 use Illuminate\Http\Request;
-
 use App\Http\Requests;
-
 use Illuminate\Support\Facades\Validator;
-
 use Response;
-
 use App\Servicio;
-
 use App\Propiedad;
-
 use App\Categoria;
+use App\PrecioServicio;
 
 class ServicioController extends Controller
 {
@@ -28,7 +22,7 @@ class ServicioController extends Controller
 		public function index(Request $request){
 
     	  if($request->has('propiedad_id')){
-            return $servicios = Propiedad::where('id', $request->input('propiedad_id'))->with('servicios')->get();
+            return $servicios = Propiedad::where('id', $request->input('propiedad_id'))->with('servicios.precios.TipoMoneda')->with('servicios.categoria')->get();
 
 
         }
@@ -42,7 +36,7 @@ class ServicioController extends Controller
 			$rules = array(
 
 			'nombre' 		      => 'required',
-            'precio'              => 'required|numeric',
+            'precios'             => 'required|array',
             'cantidad_disponible' => 'numeric',
 			'categoria_id'	      => 'required|numeric',
 			'propiedad_id'        => 'required|numeric',
@@ -70,13 +64,26 @@ class ServicioController extends Controller
 
             $servicio                             = new Servicio();
             $servicio->nombre          	          = $request->get('nombre');
-            $servicio->precio                     = $request->get('precio');
             $servicio->cantidad_disponible        = $request->get('cantidad_disponible');
            	$servicio->categoria_id           	  = $request->get('categoria_id');
           	$servicio->propiedad_id               = $request->get('propiedad_id');
    
             $servicio->save();
 
+
+            foreach ($request->get('precios') as $precio) {
+            
+                $precio_servicio = $precio['precio_servicio'];
+                $tipo_moneda_id = $precio['tipo_moneda_id'];
+
+                $precio                           = new PrecioServicio();
+                $precio->precio_servicio          = $precio_servicio;
+                $precio->tipo_moneda_id           = $tipo_moneda_id;
+                $precio->servicio_id              = $servicio->id;
+                $precio->save();
+               
+                
+            }
             
 
 			     $data = [
@@ -99,7 +106,7 @@ class ServicioController extends Controller
 			$rules = array(
 
 			'nombre' 		       => '',
-			'precio'		       => 'numeric',
+			'precios'              => 'array',
             'cantidad_disponible'  => 'numeric',
             'categoria_id'         => 'numeric',
 
@@ -129,6 +136,19 @@ class ServicioController extends Controller
             $servicio->update($request->all());
             $servicio->touch();
 
+            foreach ($request->get('precios') as $precio) {
+                
+                $id = $precio['id'];
+                $precio_servicio = $precio['precio_servicio'];
+                $tipo_moneda     = $precio['tipo_moneda_id'];
+
+                $precio = PrecioServicio::where('id', $id)->first();
+                $precio->update(array('precio_servicio' => $precio_servicio, 'tipo_moneda_id' => $tipo_moneda));
+
+            }
+
+
+
             $data = [
 
                 'errors' => false,
@@ -143,6 +163,38 @@ class ServicioController extends Controller
 
 
 	}  
+
+
+        public function crearPrecio(Request $request){
+
+                $servicio_id  =  $request->input('servicio_id');
+
+                $tipo_moneda_id =  $request->input('tipo_moneda_id');
+
+                $precio_servicio = $request->input('precio_servicio');
+
+                $precio                           = new PrecioServicio();
+                $precio->precio_servicio          = $precio_servicio;
+                $precio->tipo_moneda_id           = $tipo_moneda_id;
+                $precio->servicio_id              = $servicio_id;
+                $precio->save();
+
+                $data = [
+                'errors' => false,
+                'msg' => 'Precio creado satisfactoriamente',
+
+                ];
+
+            return Response::json($data, 201);
+
+
+
+
+
+         }
+
+
+
 
 
 	    public function destroy($id){
@@ -173,6 +225,42 @@ class ServicioController extends Controller
 
 
     }
+
+
+    public function copiaPrecios(){
+
+
+
+         $servicios = Servicio::all();
+
+          foreach ($servicios as $servicio) {
+             
+             $precio_servicio = $servicio->precio;
+             $servicio_id = $servicio->id;
+
+             $precio                           = new PrecioServicio();
+             $precio->precio_servicio          = $precio_servicio;
+             $precio->tipo_moneda_id           = 1;
+             $precio->servicio_id              = $servicio_id;
+             $precio->save();
+
+
+
+          }
+
+             $data = [
+                'errors' => false,
+                'msg' => 'Precios creados satisfactoriamente',
+
+                ];
+
+            return Response::json($data, 201);
+
+
+
+
+         }
+
 
 
 

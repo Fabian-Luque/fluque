@@ -35,7 +35,22 @@ class TipoFuenteTableSeeder extends Seeder
 
     			'nombre' => 'Redes sociales',
 
-    		]
+    		],
+            [
+
+                'nombre' => 'Expedia',
+
+            ],
+            [
+
+                'nombre' => 'Booking.com',
+
+            ],
+            [
+
+                'nombre' => 'Airbnb',
+
+            ]
 
     		]);
     }

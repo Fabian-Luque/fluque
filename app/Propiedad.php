@@ -102,5 +102,25 @@ class Propiedad extends Model
 
     }
 
+    public function tipoMonedas(){
+
+            return $this->belongsToMany('App\TipoMoneda', 'propiedad_moneda')
+            ->withPivot('id','clasificacion_moneda_id')
+            ->withTimestamps();
+
+
+
+    }
+
+    public function clasificacionMonedas(){
+
+            return $this->belongsToMany('App\ClasificacionMoneda', 'propiedad_moneda')
+            ->withPivot('tipo_moneda_id')
+            ->withTimestamps();
+
+
+
+    }
+
 
 }

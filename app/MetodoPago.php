@@ -16,6 +16,12 @@ class MetodoPago extends Model
 
 	}
 
+	public function pagos(){
+
+		return $this->hasMany('App\Pago', 'metodo_pago_id');
+
+	}
+
 
 	public function propiedades(){
 

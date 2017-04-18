@@ -13,6 +13,8 @@ use App\Propiedad;
 use App\Reserva;
 use Carbon\Carbon;
 use App\TipoHabitacion;
+use App\TipoMoneda;
+use App\Precio;
 
 
 
@@ -58,7 +60,7 @@ class HabitacionController extends Controller
 
 
 
-        $habitaciones_propiedad = Habitacion::where('propiedad_id', $propiedad_id)->get();
+        $habitaciones_propiedad = Habitacion::where('propiedad_id', $propiedad_id)->with('precios.TipoMoneda')->get();
 
 
     
@@ -71,7 +73,7 @@ class HabitacionController extends Controller
 
                     $query->where('checkin','<=' ,$fecha)->where('checkout', '>', $fecha);
 
-        })->get();
+        })->with('precios.TipoMoneda')->get();
 
 
            foreach ($habitaciones as $habitacion){
@@ -321,7 +323,7 @@ class HabitacionController extends Controller
     public function index(Request $request){
 
     	  if($request->has('propiedad_id')){
-            $habitaciones = Habitacion::where('propiedad_id', $request->input('propiedad_id'))->with('tipoHabitacion')->with('equipamiento')->get();
+            $habitaciones = Habitacion::where('propiedad_id', $request->input('propiedad_id'))->with('tipoHabitacion')->with('precios.TipoMoneda')->with('equipamiento')->get();
             return $habitaciones;
 
         }
@@ -335,7 +337,6 @@ class HabitacionController extends Controller
 			$rules = array(
 
 			'nombre' 		       => 'required',
-			'precio_base'	       => 'required|numeric',
             'disponibilidad_base'  => 'required|numeric',
 			'piso'			       => 'required|numeric',
 			'propiedad_id'         => 'required|numeric',
@@ -375,7 +376,6 @@ class HabitacionController extends Controller
 
             $habitacion                           = new Habitacion();
             $habitacion->nombre          	      = $request->get('nombre');
-          	$habitacion->precio_base              = $request->get('precio_base');
             $habitacion->disponibilidad_base      = $request->get('disponibilidad_base');
           	$habitacion->piso                     = $request->get('piso');
           	$habitacion->propiedad_id             = $request->get('propiedad_id');
@@ -389,6 +389,22 @@ class HabitacionController extends Controller
             $equipamiento ->frigobar              = $request->get('frigobar');
 			$equipamiento ->habitacion_id		  = $habitacion->id; 
  			$equipamiento->save();
+
+            $hab = Habitacion::where('id', $habitacion->id)->first();
+
+            foreach ($request->get('precios') as $precio) {
+            
+                $precio_habitacion = $precio['precio_habitacion'];
+                $tipo_moneda_id = $precio['tipo_moneda_id'];
+
+                $precio                           = new Precio();
+                $precio->precio_habitacion        = $precio_habitacion;
+                $precio->tipo_moneda_id           = $tipo_moneda_id;
+                $precio->habitacion_id            = $hab->id;
+                $precio->save();
+               
+                
+            }
 
 
 			     $data = [
@@ -429,6 +445,7 @@ class HabitacionController extends Controller
 
             'nombre'                => '',
             'precio_base'           => 'numeric',
+            'precios'               => 'array',
             'disponibilidad_base'   => 'numeric',
             'piso'                  => 'numeric',
             'tipo_habitacion_id'    => 'numeric',
@@ -467,6 +484,24 @@ class HabitacionController extends Controller
             $equipamiento->update($request->all());
             $equipamiento->touch();
 
+
+
+            foreach ($request->get('precios') as $precio) {
+                
+                $id = $precio['id'];
+                $precio_habitacion = $precio['precio_habitacion'];
+                $tipo_moneda       = $precio['tipo_moneda_id'];
+
+                $precio = Precio::where('id', $id)->first();
+                $precio->update(array('precio_habitacion' => $precio_habitacion , 'tipo_moneda_id' => $tipo_moneda));
+
+            }
+
+
+
+
+
+
             $data = [
 
                 'errors' => false,
@@ -479,6 +514,69 @@ class HabitacionController extends Controller
         }
 
     }
+
+
+         public function crearPrecio(Request $request){
+
+                $habitacion_id  =  $request->input('habitacion_id');
+
+                $tipo_moneda_id =  $request->input('tipo_moneda_id');
+
+                $precio_habitacion = $request->input('precio_habitacion');
+
+                $precio                           = new Precio();
+                $precio->precio_habitacion        = $precio_habitacion;
+                $precio->tipo_moneda_id           = $tipo_moneda_id;
+                $precio->habitacion_id            = $habitacion_id;
+                $precio->save();
+
+                $data = [
+                'errors' => false,
+                'msg' => 'Precio creado satisfactoriamente',
+
+                ];
+
+            return Response::json($data, 201);
+
+
+
+
+
+         }
+
+         public function copiaPrecios(){
+
+
+
+          $habitaciones = Habitacion::all();
+
+          foreach ($habitaciones as $habitacion) {
+              
+             $precio_base = $habitacion->precio_base;
+             $habitacion_id = $habitacion->id;
+
+             $precio                           = new Precio();
+             $precio->precio_habitacion        = $precio_base;
+             $precio->tipo_moneda_id           = 1;
+             $precio->habitacion_id            = $habitacion_id;
+             $precio->save();
+
+
+
+          }
+
+             $data = [
+                'errors' => false,
+                'msg' => 'Precios creados satisfactoriamente',
+
+                ];
+
+            return Response::json($data, 201);
+
+
+
+
+         }
 
 
 
@@ -530,6 +628,16 @@ class HabitacionController extends Controller
 
          $tipoHabitacion = TipoHabitacion::all();
             return $tipoHabitacion;
+
+
+        }
+
+        public function getTipoMoneda(){
+
+        $tipoMoneda = TipoMoneda::all();
+
+        return $tipoMoneda;
+
 
 
         }

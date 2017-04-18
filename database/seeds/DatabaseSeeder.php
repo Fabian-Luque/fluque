@@ -19,5 +19,7 @@ class DatabaseSeeder extends Seeder
        $this->call(TipoClienteTableSeeder::class);
        $this->call(TipoComprobanteTableSeeder::class);
        $this->call(CategoriasTableSeeder::class);
+       $this->call(TipoMonedaTableSeeder::class);
+       $this->call(ClasificacionMonedaTableSeeder::class);
     }
 }
