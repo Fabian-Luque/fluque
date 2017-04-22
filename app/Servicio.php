@@ -12,7 +12,7 @@ class Servicio extends Model
 	use SoftDeletes;
     protected $table = 'servicios';
 
-	protected $fillable = ['nombre', 'cantidad_disponible' , 'categoria_id', 'precio'];
+	protected $fillable = ['nombre', 'cantidad_disponible', 'estado_servicio_id', 'categoria_id', 'precio'];
 
 
 	public function propiedad(){

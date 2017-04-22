@@ -36,7 +36,7 @@ class ServicioController extends Controller
 			$rules = array(
 
 			'nombre' 		      => 'required',
-            'precios'             => 'required|array',
+            'precios'             => 'array',
             'cantidad_disponible' => 'numeric',
 			'categoria_id'	      => 'required|numeric',
 			'propiedad_id'        => 'required|numeric',
@@ -61,6 +61,10 @@ class ServicioController extends Controller
 
         } else {
 
+            $propiedad_id = $request->get('propiedad_id');
+            $propiedad = Propiedad::where('id', $propiedad_id)->first();
+           
+
 
             $servicio                             = new Servicio();
             $servicio->nombre          	          = $request->get('nombre');
@@ -83,6 +87,17 @@ class ServicioController extends Controller
                 $precio->save();
                
                 
+            }
+
+            if(count($servicio->precios) == count($propiedad->tipoMonedas)){
+
+                $servicio->update(array('estado_servicio_id' => 1 ));
+
+            }else{
+
+                $servicio->update(array('estado_servicio_id' => 2 ));
+
+
             }
             
 
@@ -130,6 +145,11 @@ class ServicioController extends Controller
 
         } else {
 
+            $propiedad = Propiedad::whereHas('servicios', function($query) use($id){
+
+                    $query->where('id', $id);
+
+            })->first();
 
             $servicio = Servicio::findOrFail($id);
 
@@ -144,6 +164,17 @@ class ServicioController extends Controller
 
                 $precio = PrecioServicio::where('id', $id)->first();
                 $precio->update(array('precio_servicio' => $precio_servicio, 'tipo_moneda_id' => $tipo_moneda));
+
+            }
+
+            if(count($servicio->precios) == count($propiedad->tipoMonedas)){
+
+                $servicio->update(array('estado_servicio_id' => 1 ));
+
+            }else{
+
+                $servicio->update(array('estado_servicio_id' => 2 ));
+
 
             }
 
@@ -169,6 +200,14 @@ class ServicioController extends Controller
 
                 $servicio_id  =  $request->input('servicio_id');
 
+                $propiedad = Propiedad::whereHas('servicios', function($query) use($servicio_id){
+
+                    $query->where('id', $servicio_id);
+
+                })->first();
+
+                $servicio = Servicio::where('id', $servicio_id)->first();
+
                 $tipo_moneda_id =  $request->input('tipo_moneda_id');
 
                 $precio_servicio = $request->input('precio_servicio');
@@ -178,6 +217,17 @@ class ServicioController extends Controller
                 $precio->tipo_moneda_id           = $tipo_moneda_id;
                 $precio->servicio_id              = $servicio_id;
                 $precio->save();
+
+                if(count($servicio->precios) == count($propiedad->tipoMonedas)){
+
+                $servicio->update(array('estado_servicio_id' => 1 ));
+
+                }else{
+
+                $servicio->update(array('estado_servicio_id' => 2 ));
+
+
+                }
 
                 $data = [
                 'errors' => false,
