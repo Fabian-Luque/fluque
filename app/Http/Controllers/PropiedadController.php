@@ -283,6 +283,8 @@ class PropiedadController extends Controller
                             $precio->habitacion_id     = $habitacion_id;
                             $precio->save();
 
+                            $habitacion->update(array('estado_habitacion_id' => 2));
+
                         }
 
                     }
@@ -364,7 +366,7 @@ class PropiedadController extends Controller
             })->get();
 
             foreach ($precios_habitacion as $precio) {
-
+                
                 $precio->delete();
             }
 
@@ -445,7 +447,17 @@ class PropiedadController extends Controller
 
             foreach ($precios_habitacion as $precio) {
 
+                if($tipo_moneda != $tipo_moneda_id){
+
                 $precio->update(array('precio_habitacion' => null, 'tipo_moneda_id' => $tipo_moneda_id));
+
+                $habitacion = $precio->habitacion;
+
+                $habitacion->update(array('estado_habitacion_id' => 2));
+
+
+                }
+
             }
 
             foreach ($precios_servicio as $servicio) {

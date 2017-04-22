@@ -407,6 +407,19 @@ class HabitacionController extends Controller
             }
 
 
+            if(count($habitacion->precios) == count($propiedad->tipoMonedas)){
+
+                $habitacion->update(array('estado_habitacion_id' => 1 ));
+
+            }else{
+
+                $habitacion->update(array('estado_habitacion_id' => 2 ));
+
+
+            }
+            
+
+
 			     $data = [
                 'errors' => false,
                 'msg' => 'Habitacion creado satisfactoriamente',
@@ -471,9 +484,14 @@ class HabitacionController extends Controller
             return Response::json($data, 400);
 
         } else {
+            
+            $propiedad = Propiedad::whereHas('habitaciones', function($query) use($id){
+
+                    $query->where('id', $id);
+
+                })->first();
 
             $habitacion = Habitacion::findOrFail($id);
-
             $habitacion->update($request->all());
             $habitacion->touch();
             
@@ -498,6 +516,18 @@ class HabitacionController extends Controller
             }
 
 
+            if(count($habitacion->precios) == count($propiedad->tipoMonedas)){
+
+                $habitacion->update(array('estado_habitacion_id' => 1 ));
+
+            }else{
+
+                $habitacion->update(array('estado_habitacion_id' => 2 ));
+
+
+            }
+
+
 
 
 
@@ -518,7 +548,15 @@ class HabitacionController extends Controller
 
          public function crearPrecio(Request $request){
 
-                $habitacion_id  =  $request->input('habitacion_id');
+                $habitacion_id = $request->input('habitacion_id');
+
+                $propiedad = Propiedad::whereHas('habitaciones', function($query) use($habitacion_id){
+
+                    $query->where('id', $habitacion_id);
+
+                })->first();
+
+                $habitacion = Habitacion::where('id', $habitacion_id)->first();
 
                 $tipo_moneda_id =  $request->input('tipo_moneda_id');
 
@@ -529,6 +567,16 @@ class HabitacionController extends Controller
                 $precio->tipo_moneda_id           = $tipo_moneda_id;
                 $precio->habitacion_id            = $habitacion_id;
                 $precio->save();
+
+                if(count($habitacion->precios) == count($propiedad->tipoMonedas)){
+                $habitacion->update(array('estado_habitacion_id' => 1 ));
+
+                }else{
+
+                $habitacion->update(array('estado_habitacion_id' => 2 ));
+
+                }
+
 
                 $data = [
                 'errors' => false,
