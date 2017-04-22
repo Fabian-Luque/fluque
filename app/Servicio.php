@@ -34,6 +34,13 @@ class Servicio extends Model
 
 	}
 
+	public function estado(){
+
+		return $this->belongsTo('App\EstadoServicio', 'estado_servicio_id');
+
+
+	}
+
 
 	public function reservas(){
 

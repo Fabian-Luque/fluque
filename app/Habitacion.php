@@ -58,6 +58,12 @@ class Habitacion extends Model
 
 	}
 
+	public function estado(){
+
+		return $this->belongsTo('App\EstadoHabitacion', 'estado_habitacion_id');
+
+
+	}
 	
 
 

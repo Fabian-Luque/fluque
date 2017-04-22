@@ -323,7 +323,7 @@ class HabitacionController extends Controller
     public function index(Request $request){
 
     	  if($request->has('propiedad_id')){
-            $habitaciones = Habitacion::where('propiedad_id', $request->input('propiedad_id'))->with('tipoHabitacion')->with('precios.TipoMoneda')->with('equipamiento')->get();
+            $habitaciones = Habitacion::where('propiedad_id', $request->input('propiedad_id'))->with('estado')->with('tipoHabitacion')->with('precios.TipoMoneda')->with('equipamiento')->get();
             return $habitaciones;
 
         }
