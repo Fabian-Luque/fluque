@@ -12,7 +12,7 @@ class Habitacion extends Model
 
 	protected $table = 'habitaciones';
 
-	protected $fillable = ['nombre', 'precio_base', 'disponibilidad_base', 'piso','tipo_habitacion_id'];
+	protected $fillable = ['nombre', 'precio_base', 'disponibilidad_base', 'piso','estado_habitacion_id','tipo_habitacion_id'];
 
 	public function propiedad(){
 
@@ -58,6 +58,12 @@ class Habitacion extends Model
 
 	}
 
+	public function estado(){
+
+		return $this->belongsTo('App\EstadoHabitacion', 'estado_habitacion_id');
+
+
+	}
 	
 
 
