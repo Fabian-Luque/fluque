@@ -712,7 +712,7 @@ class PropiedadController extends Controller
 
               
 
-                  $data = ['ingresos_totales' => $ingresos_totales_dia, 'reservas_realizadas' => count($reservas), 'ingresos_por_habitacion' => $ingresos_habitacion, 'ingresos_por_servicios' => $ingresos_consumos, 'ingresos_por_metodo_pago' => ['efectivo' => $ingresos_por_efectivo, 'credito' => $ingresos_por_credito, 'debito' => $ingresos_por_debito, 'cheque' => $ingresos_por_cheque, 'tarjeta_credito' => $ingresos_por_tarjeta_credito, 'transferencia' => $ingresos_por_transferencia], 'reservas_por_fuente' => $tipo_fuente, 'ingresos_tipo_cliente' => ['particulares' => $ingresos_por_particulares, 'empresas' => $ingresos_por_empresas ]]; 
+                  $data = ['ingresos_totales' => $ingresos_totales_dia, 'reservas_realizadas' => count($reservas), 'ingresos_por_habitacion' => $ingresos_habitacion, 'ingresos_por_servicios' => $ingresos_consumos, 'ingresos_por_metodo_pago' => [['efectivo' => $ingresos_por_efectivo, 'credito' => $ingresos_por_credito, 'debito' => $ingresos_por_debito, 'cheque' => $ingresos_por_cheque, 'tarjeta_credito' => $ingresos_por_tarjeta_credito, 'transferencia' => $ingresos_por_transferencia]], 'reservas_por_fuente' => [$tipo_fuente], 'ingresos_tipo_cliente' => [['particulares' => $ingresos_por_particulares, 'empresas' => $ingresos_por_empresas ]]]; 
 
                 }//FIN IF
 
