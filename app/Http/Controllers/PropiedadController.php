@@ -702,16 +702,11 @@ class PropiedadController extends Controller
                      $telefono = count($reservas->where('tipo_fuente_id', 3));
                      $email = count($reservas->where('tipo_fuente_id', 4));
                      $redes_sociales = count($reservas->where('tipo_fuente_id', 5));
-                     $expidia = count($reservas->where('tipo_fuente_id', 6));
+                     $expedia = count($reservas->where('tipo_fuente_id', 6));
                      $booking = count($reservas->where('tipo_fuente_id', 7));
                      $airbnb = count($reservas->where('tipo_fuente_id', 8));
 
-                     $tipo_fuente = ['pagina_web' => $pagina_web,'caminando' => $caminando, 'telefono' => $telefono, 'email' => $email, 'redes_sociales' => $redes_sociales, 'expidia' => $expidia, 'booking' => $booking, 'airnbnb' => $airbnb];
 
-
-                    
-
-              
 
                   $data = [ 
                             'ingresos_totales'          => $ingresos_totales_dia,
@@ -733,9 +728,9 @@ class PropiedadController extends Controller
                                                             ['nombre' => 'Pagina web',     'id' => 1, 'cantidad' => $pagina_web],
                                                             ['nombre' => 'Caminando',      'id' => 2, 'cantidad' => $caminando],
                                                             ['nombre' => 'Telefono',       'id' => 3, 'cantidad' => $telefono],
-                                                            ['nombre' => 'Email',          'id' => 4, 'cantidad' => $pagina_web],
+                                                            ['nombre' => 'Email',          'id' => 4, 'cantidad' => $email],
                                                             ['nombre' => 'Redes sociales', 'id' => 5, 'cantidad' => $redes_sociales],
-                                                            ['nombre' => 'Expidia',        'id' => 6, 'cantidad' => $expidia],
+                                                            ['nombre' => 'Expedia',        'id' => 6, 'cantidad' => $expedia],
                                                             ['nombre' => 'Booking',        'id' => 7, 'cantidad' => $booking],
                                                             ['nombre' => 'Airbnb',         'id' => 8, 'cantidad' => $airbnb]
 
