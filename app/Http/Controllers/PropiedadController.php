@@ -515,7 +515,7 @@ class PropiedadController extends Controller
 
 
 
-                   $pagos_particulares = Pago::where('created_at','>=' , $fecha1)->where('created_at', '<' , $fecha2)->whereHas('reserva.habitacion', function($query) use($propiedad_id){
+                    $pagos_particulares = Pago::where('created_at','>=' , $fecha1)->where('created_at', '<' , $fecha2)->whereHas('reserva.habitacion', function($query) use($propiedad_id){
 
                     $query->where('propiedad_id', $propiedad_id);
 
@@ -523,10 +523,11 @@ class PropiedadController extends Controller
 
                     $query->where('tipo_cliente_id', 1);
 
-                    })->get();
+                    })->with('reserva.cliente')->get();
 
 
-                    $pagos_empresas= Pago::where('created_at','>=' , $fecha1)->where('created_at', '<' , $fecha2)->whereHas('reserva.habitacion', function($query) use($propiedad_id){
+
+                   $pagos_empresas= Pago::where('created_at','>=' , $fecha1)->where('created_at', '<' , $fecha2)->whereHas('reserva.habitacion', function($query) use($propiedad_id){
 
                     $query->where('propiedad_id', $propiedad_id);
 
@@ -534,7 +535,8 @@ class PropiedadController extends Controller
 
                     $query->where('tipo_cliente_id', 2);
 
-                    })->get();
+                    })->with('reserva.cliente')->get();
+
 
 
 
@@ -644,7 +646,7 @@ class PropiedadController extends Controller
                               
                               $ingresos_particulares += $pago->monto_equivalente;
 
-
+                            
                           }
 
 
@@ -654,7 +656,6 @@ class PropiedadController extends Controller
                           foreach ($pagos_por_empresas as $pago) {
                               
                               $ingresos_empresas += $pago->monto_equivalente;
-
 
                           }
 
@@ -712,7 +713,42 @@ class PropiedadController extends Controller
 
               
 
-                  $data = ['ingresos_totales' => $ingresos_totales_dia, 'reservas_realizadas' => count($reservas), 'ingresos_por_habitacion' => $ingresos_habitacion, 'ingresos_por_servicios' => $ingresos_consumos, 'ingresos_por_metodo_pago' => [['efectivo' => $ingresos_por_efectivo, 'credito' => $ingresos_por_credito, 'debito' => $ingresos_por_debito, 'cheque' => $ingresos_por_cheque, 'tarjeta_credito' => $ingresos_por_tarjeta_credito, 'transferencia' => $ingresos_por_transferencia]], 'reservas_por_fuente' => [$tipo_fuente], 'ingresos_tipo_cliente' => [['particulares' => $ingresos_por_particulares, 'empresas' => $ingresos_por_empresas ]]]; 
+                  $data = [ 
+                            'ingresos_totales'          => $ingresos_totales_dia,
+                            'reservas_realizadas'       => count($reservas),
+                            'ingresos_por_habitacion'   => $ingresos_habitacion,
+                            'ingresos_por_servicios'    => $ingresos_consumos,
+
+                            'ingresos_por_metodo_pago'  => [
+                                                            ['nombre' => 'Efectivo', 'id' => 1, 'montos' =>$ingresos_por_efectivo],
+                                                            ['nombre' => 'Credito', 'id' => 2,'montos' => $ingresos_por_credito],
+                                                            ['nombre' => 'Debito', 'id' => 3,'montos' => $ingresos_por_debito],
+                                                            ['nombre' => 'Cheque', 'id' => 4,'montos' => $ingresos_por_cheque],
+                                                            ['nombre' => 'Tarjeta credito', 'id' => 5,'montos' => $ingresos_por_tarjeta_credito],
+                                                            ['nombre' => 'Transferencia', 'id' => 6,'montos' => $ingresos_por_transferencia ]
+                                                           ],
+
+                            'reservas_por_fuente'       => [
+
+                                                            ['nombre' => 'Pagina web',     'id' => 1, 'cantidad' => $pagina_web],
+                                                            ['nombre' => 'Caminando',      'id' => 2, 'cantidad' => $caminando],
+                                                            ['nombre' => 'Telefono',       'id' => 3, 'cantidad' => $telefono],
+                                                            ['nombre' => 'Email',          'id' => 4, 'cantidad' => $pagina_web],
+                                                            ['nombre' => 'Redes sociales', 'id' => 5, 'cantidad' => $redes_sociales],
+                                                            ['nombre' => 'Expidia',        'id' => 6, 'cantidad' => $expidia],
+                                                            ['nombre' => 'Booking',        'id' => 7, 'cantidad' => $booking],
+                                                            ['nombre' => 'Airbnb',         'id' => 8, 'cantidad' => $airbnb]
+
+
+
+
+                                                           ],
+                            'ingresos_tipo_cliente'     =>[      
+                                                            ['nombre'=> 'Particular' , 'id'=> 1, 'montos' => $ingresos_por_particulares],
+                                                            ['nombre'=> 'Empresa' , 'id'=> 2, 'montos' => $ingresos_por_empresas]
+                                                          ]
+
+                            ]; 
 
                 }//FIN IF
 
