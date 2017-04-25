@@ -604,6 +604,8 @@ class PropiedadController extends Controller
                             $ingresos_por_consumos += $pago->monto_equivalente;
 
 
+                          }elseif ($pago->tipo == 'Confirmacion de reserva') {
+                            $ingresos_por_habitacion += $pago->monto_equivalente;
                           }
 
                           /*INGRESOS POR METODO PAGO */
