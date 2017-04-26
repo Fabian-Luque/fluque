@@ -592,6 +592,7 @@ class PropiedadController extends Controller
                       $ingresos_empresas = 0;
 
                       foreach ($pagos_tipo_moneda as $pago) {
+
                           $suma_pagos += $pago->monto_equivalente;
 
                           if($pago->tipo == 'Pago habitacion'){
@@ -606,6 +607,77 @@ class PropiedadController extends Controller
 
                           }elseif ($pago->tipo == 'Confirmacion de reserva') {
                             $ingresos_por_habitacion += $pago->monto_equivalente;
+
+                          }elseif($pago->tipo == 'Pago reserva') {
+
+                            $monto_pago = $pago->monto_pago;
+                            $monto_equivalente = $pago->monto_equivalente;
+
+                            $pagos_reserva = $pago->reserva->pagos;
+
+                            if(!is_null($pagos_reserva)){
+                                
+                                    $reserva_monto_alojamiento = $pago->reserva->monto_alojamiento;
+
+                                    $reserva_monto_consumos = $pago->reserva->monto_consumo;
+
+
+                                    $pagos_habitacion_realizados = 0;
+                                    $pagos_consumos_realizados = 0;
+                                    foreach ($pagos_reserva as $pago_reserva) {
+                                            
+                                       if($pago_reserva->tipo == 'Pago habitacion'){
+                                            $pagos_habitacion_realizados += $pago_reserva->monto_pago;
+
+
+                                       }elseif ($pago_reserva->tipo == 'Pago consumos') {
+                                            $pagos_consumos_realizados += $pago_reserva->monto_pago;
+                                       }elseif ($pago_reserva->tipo == 'Confirmacion de reserva') {
+                                            $pagos_habitacion_realizados += $pago_reserva->monto_pago;
+                                       }
+
+                                    }
+
+
+                                    if($pago->reserva->tipo_moneda_id == $pago->tipo_moneda_id){
+
+                                      $monto_pagado_habitacion = $reserva_monto_alojamiento - $pagos_habitacion_realizados;
+                                      $monto_pagado_consumos = $reserva_monto_consumos - $pagos_consumos_realizados;
+
+                                      $ingresos_por_habitacion += $monto_pagado_habitacion;
+                                      $ingresos_por_consumos += $monto_pagado_consumos;
+
+
+
+                                    }else{
+
+
+                                      $monto_pagado_habitacion = $reserva_monto_alojamiento - $pagos_habitacion_realizados;
+                                      $monto_pagado_consumos = $reserva_monto_consumos - $pagos_consumos_realizados;
+
+                                      if($pago->reserva->tipo_moneda_id == 1){
+
+                                          $conversion = round($monto_pago / $monto_equivalente);
+
+                                          $ingresos_por_habitacion += ($monto_pagado_habitacion / $conversion);
+                                          $ingresos_por_consumos += ($monto_pagado_consumos / $conversion);
+                                        
+                                      }elseif ($pago->reserva->tipo_moneda_id == 2) {
+
+                                          $conversion = round($monto_equivalente/$monto_pago);
+
+                                          $ingresos_por_habitacion += ($monto_pagado_habitacion * $conversion);
+                                          $ingresos_por_consumos += ($monto_pagado_consumos * $conversion);
+                                      }
+
+
+
+                                    }
+
+                            }
+
+
+
                           }
 
                           /*INGRESOS POR METODO PAGO */
