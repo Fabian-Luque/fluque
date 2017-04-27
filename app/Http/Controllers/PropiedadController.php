@@ -567,7 +567,6 @@ class PropiedadController extends Controller
 
 
                    foreach ($propiedad->tipoMonedas as $moneda) {
-                     
 
                       $tipo_moneda_id = $moneda->pivot->tipo_moneda_id;
 
@@ -739,17 +738,17 @@ class PropiedadController extends Controller
 
                     
 
-                      $ingresos = ['monto' => $suma_pagos , 'tipo_moneda_id' => $tipo_moneda_id, 'nombre_moneda' => $moneda->nombre]; 
-                      $ingresos_hab = ['monto' => $ingresos_por_habitacion,'tipo_moneda_id' => $tipo_moneda_id, 'nombre_moneda' => $moneda->nombre];
-                      $ingresos_serv = ['monto' => $ingresos_por_consumos,'tipo_moneda_id' => $tipo_moneda_id, 'nombre_moneda' => $moneda->nombre];
-                      $efectivo = ['monto' => $ingresos_efectivo,'tipo_moneda_id' => $tipo_moneda_id, 'nombre_moneda' => $moneda->nombre];
-                      $credito = ['monto' => $ingresos_credito, 'tipo_moneda_id' => $tipo_moneda_id, 'nombre_moneda' => $moneda->nombre];
-                      $debito = ['monto' => $ingresos_debito, 'tipo_moneda_id' => $tipo_moneda_id, 'nombre_moneda' => $moneda->nombre];
-                      $cheque = ['monto' => $ingresos_cheque, 'tipo_moneda_id' => $tipo_moneda_id, 'nombre_moneda' => $moneda->nombre];
-                      $tarjeta_credito = ['monto' => $ingresos_tarjeta_credito, 'tipo_moneda_id' => $tipo_moneda_id, 'nombre_moneda' => $moneda->nombre];
-                      $transferencia = ['monto' => $ingresos_transferencia, 'tipo_moneda_id' => $tipo_moneda_id, 'nombre_moneda' => $moneda->nombre];
-                      $particulares = ['monto' => $ingresos_particulares, 'tipo_moneda_id' => $tipo_moneda_id, 'nombre_moneda' => $moneda->nombre];
-                      $empresas = ['monto' => $ingresos_empresas, 'tipo_moneda_id' => $tipo_moneda_id, 'nombre_moneda' => $moneda->nombre];
+                      $ingresos = ['monto' => $suma_pagos , 'tipo_moneda_id' => $tipo_moneda_id, 'nombre_moneda' => $moneda->nombre, 'cantidad_decimales' => $moneda->cantidad_decimales]; 
+                      $ingresos_hab = ['monto' => $ingresos_por_habitacion,'tipo_moneda_id' => $tipo_moneda_id, 'nombre_moneda' => $moneda->nombre, 'cantidad_decimales' => $moneda->cantidad_decimales];
+                      $ingresos_serv = ['monto' => $ingresos_por_consumos,'tipo_moneda_id' => $tipo_moneda_id, 'nombre_moneda' => $moneda->nombre, 'cantidad_decimales' => $moneda->cantidad_decimales];
+                      $efectivo = ['monto' => $ingresos_efectivo,'tipo_moneda_id' => $tipo_moneda_id, 'nombre_moneda' => $moneda->nombre, 'cantidad_decimales' => $moneda->cantidad_decimales];
+                      $credito = ['monto' => $ingresos_credito, 'tipo_moneda_id' => $tipo_moneda_id, 'nombre_moneda' => $moneda->nombre, 'cantidad_decimales' => $moneda->cantidad_decimales];
+                      $debito = ['monto' => $ingresos_debito, 'tipo_moneda_id' => $tipo_moneda_id, 'nombre_moneda' => $moneda->nombre, 'cantidad_decimales' => $moneda->cantidad_decimales];
+                      $cheque = ['monto' => $ingresos_cheque, 'tipo_moneda_id' => $tipo_moneda_id, 'nombre_moneda' => $moneda->nombre, 'cantidad_decimales' => $moneda->cantidad_decimales];
+                      $tarjeta_credito = ['monto' => $ingresos_tarjeta_credito, 'tipo_moneda_id' => $tipo_moneda_id, 'nombre_moneda' => $moneda->nombre, 'cantidad_decimales' => $moneda->cantidad_decimales];
+                      $transferencia = ['monto' => $ingresos_transferencia, 'tipo_moneda_id' => $tipo_moneda_id, 'nombre_moneda' => $moneda->nombre, 'cantidad_decimales' => $moneda->cantidad_decimales];
+                      $particulares = ['monto' => $ingresos_particulares, 'tipo_moneda_id' => $tipo_moneda_id, 'nombre_moneda' => $moneda->nombre, 'cantidad_decimales' => $moneda->cantidad_decimales];
+                      $empresas = ['monto' => $ingresos_empresas, 'tipo_moneda_id' => $tipo_moneda_id, 'nombre_moneda' => $moneda->nombre, 'cantidad_decimales' => $moneda->cantidad_decimales];
 
 
                       array_push($ingresos_totales_dia, $ingresos);
