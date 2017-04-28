@@ -12,7 +12,7 @@ class Pago extends Model
 
 	public function reserva(){
 
-		return $this->belongsToMany('App\Reserva', 'reserva_id');
+		return $this->belongsTo('App\Reserva', 'reserva_id');
 
 	}
 

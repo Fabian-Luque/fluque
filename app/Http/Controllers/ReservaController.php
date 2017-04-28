@@ -1826,7 +1826,7 @@ class ReservaController extends Controller
 
                     $query->where('propiedad_id', $id);
 
-        })->with('habitacion.tipoHabitacion')->with('cliente','huespedes.servicios','tipoFuente', 'metodoPago','estadoReserva','pagos')->whereBetween('checkin', $fechas)->get();
+        })->with('habitacion.tipoHabitacion')->with('cliente','huespedes.servicios','tipoMoneda','tipoFuente','metodoPago','estadoReserva','pagos')->whereBetween('checkin', $fechas)->get();
 
 
 
@@ -1834,7 +1834,7 @@ class ReservaController extends Controller
 
                     $query->where('propiedad_id', $id);
 
-        })->with('habitacion.tipoHabitacion')->with('cliente','huespedes','tipoFuente', 'metodoPago','estadoReserva')->whereBetween('checkout', $fechas)->get();
+        })->with('habitacion.tipoHabitacion')->with('cliente','huespedes','tipoMoneda','tipoFuente', 'metodoPago','estadoReserva')->whereBetween('checkout', $fechas)->get();
 
 
 
