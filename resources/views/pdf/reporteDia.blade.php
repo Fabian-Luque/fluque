@@ -258,7 +258,7 @@
                @endforeach
             </tr>
             <tr>
-              <td class="data-tabla-detalles borde-derecha"><p>Particular</p></td>
+              <td class="data-tabla-detalles borde-derecha"><p>Empresa</p></td>
                 @foreach($ingresos_empresa as $ingreso)
                   @if($ingreso['tipo_moneda_id'] == 1)
               <td class="data-tabla-detalles borde-derecha"><p>CLP ${{ $ingreso['monto'] }}</p></td>
