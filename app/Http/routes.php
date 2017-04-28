@@ -73,6 +73,8 @@ Route::group(['middleware' => 'cors'], function(){
 	
 	Route::post('pdf', 'PDFController@getPDF');
 
+	Route::post('reporte/diario', 'PDFController@reporteDiario');
+
 	Route::post('ingreso/servicio', 'PropiedadController@ingresoServicio');
 
 	Route::post('ingreso/servicio/cliente', 'ClienteController@ingresoServicio');
