@@ -50,7 +50,6 @@ class PDFController extends Controller
 				foreach($ra->huespedes as $huesped){
 					$huesped->monto_consumo = 0;
 					foreach($huesped->servicios as $servicio){
-					/*	return $servicio;*/
 						$huesped->monto_consumo += $servicio->pivot->precio_total;
 						$consumo += $servicio->pivot->precio_total;
 
@@ -66,7 +65,6 @@ class PDFController extends Controller
 
 		}
 
-		/*return $reservas_pdf;*/
 		
 		if($iva == 1){
 		$neto = round($monto_alojamiento + $consumo); 
@@ -79,7 +77,6 @@ class PDFController extends Controller
 
 		}
 
-		return ['propiedad' => $propiedad,'consumo' => $consumo , 'cliente'=> $cliente ,'reservas_pdf'=> $reservas_pdf, 'neto' => $neto , 'iva' => $iva, 'total' => $total];
 
 		$pdf = PDF::loadView('pdf.vista', ['propiedad' => $propiedad,'consumo' => $consumo , 'cliente'=> $cliente ,'reservas_pdf'=> $reservas_pdf, 'neto' => $neto , 'iva' => $iva, 'total' => $total]);
 
