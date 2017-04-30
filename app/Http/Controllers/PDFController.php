@@ -9,6 +9,8 @@ use PDF;
 use App\Reserva;
 use App\Propiedad;
 use App\Cliente;
+use App\Huesped;
+use App\Habitacion;
 use App\Pago;
 use \Carbon\Carbon;
 use Response;
@@ -17,7 +19,7 @@ class PDFController extends Controller
 {
     
 
-	public function getPDF(Request $request){
+	public function estadoCuenta(Request $request){
 
 		$reservas = $request['reservas'];
 		$propiedad_id = $request->input('propiedad_id');
@@ -78,7 +80,7 @@ class PDFController extends Controller
 		}
 
 
-		$pdf = PDF::loadView('pdf.vista', ['propiedad' => $propiedad,'consumo' => $consumo , 'cliente'=> $cliente ,'reservas_pdf'=> $reservas_pdf, 'neto' => $neto , 'iva' => $iva, 'total' => $total]);
+		$pdf = PDF::loadView('pdf.estado_cuenta', ['propiedad' => $propiedad,'consumo' => $consumo , 'cliente'=> $cliente ,'reservas_pdf'=> $reservas_pdf, 'neto' => $neto , 'iva' => $iva, 'total' => $total]);
 
 		return $pdf->download('archivo.pdf');
 
@@ -87,6 +89,55 @@ class PDFController extends Controller
 
 
 	}
+
+  public function huesped(Request $request)
+  {
+
+        if ($request->has('propiedad_id')) {
+
+          $fecha = Carbon::today()->format('d-m-Y');
+
+            
+          $propiedad_id = $request->input('propiedad_id');
+          $propiedad = Propiedad::where('id', $request->input('propiedad_id'))->first();
+
+          if (!is_null($propiedad)){
+
+            $habitaciones = Habitacion::where('propiedad_id', $propiedad_id)->whereHas('reservas', function($query){
+
+                        $query->where('estado_reserva_id', 3);
+
+              })->with(['reservas' => function ($q){
+
+              $q->where('estado_reserva_id', 3)->with('huespedes');}])->get();
+
+
+              $pdf = PDF::loadView('pdf.huesped', ['propiedad' => [$propiedad], 'fecha' =>  $fecha ,'habitaciones' => $habitaciones]);
+
+              return $pdf->download('archivo.pdf');
+
+
+
+
+
+          }else{
+
+                $retorno = array(
+
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true,
+
+                );
+
+                return Response::json($retorno, 404);
+
+
+          }
+
+        }
+
+
+  } 
 
 
 	public function reporteDiario(Request $request)
@@ -383,7 +434,7 @@ class PDFController extends Controller
                 $ingresos = array($ingresos_hab);
 
 
-                $pdf = PDF::loadView('pdf.reporteDia', ['propiedad' => [$propiedad], 'reservas_realizadas'=> count($reservas), 'fecha' => $fecha1, 'ingresos_habitacion' => $ingresos_habitacion, 'ingresos_consumo' => $ingresos_consumos, 'ingresos_totales' => $ingresos_totales_dia, 'ingresos_efectivo' => $ingresos_por_efectivo, 'ingresos_credito' => $ingresos_por_credito, 'ingresos_debito' => $ingresos_por_debito, 'ingresos_cheque' => $ingresos_por_cheque, 'ingresos_tarjeta_credito' => $ingresos_por_tarjeta_credito, 'ingresos_transferencia' => $ingresos_por_transferencia, 'pagina_web' => $pagina_web, 'caminando' => $caminando, 'telefono' => $telefono, 'email' => $email, 'redes_sociales' => $redes_sociales, 'expedia' => $expedia, 'booking' => $booking, 'airbnb' => $airbnb, 'ingresos_particular' => $ingresos_por_particulares, 'ingresos_empresa' => $ingresos_por_empresas]);
+                $pdf = PDF::loadView('pdf.reporte_diario', ['propiedad' => [$propiedad], 'reservas_realizadas'=> count($reservas), 'fecha' => $fecha1, 'ingresos_habitacion' => $ingresos_habitacion, 'ingresos_consumo' => $ingresos_consumos, 'ingresos_totales' => $ingresos_totales_dia, 'ingresos_efectivo' => $ingresos_por_efectivo, 'ingresos_credito' => $ingresos_por_credito, 'ingresos_debito' => $ingresos_por_debito, 'ingresos_cheque' => $ingresos_por_cheque, 'ingresos_tarjeta_credito' => $ingresos_por_tarjeta_credito, 'ingresos_transferencia' => $ingresos_por_transferencia, 'pagina_web' => $pagina_web, 'caminando' => $caminando, 'telefono' => $telefono, 'email' => $email, 'redes_sociales' => $redes_sociales, 'expedia' => $expedia, 'booking' => $booking, 'airbnb' => $airbnb, 'ingresos_particular' => $ingresos_por_particulares, 'ingresos_empresa' => $ingresos_por_empresas]);
 
 
 				return $pdf->download('archivo.pdf');
