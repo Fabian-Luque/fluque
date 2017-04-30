@@ -71,9 +71,11 @@ Route::group(['middleware' => 'cors'], function(){
 
 	Route::delete('consumo/{id}', 'HuespedController@eliminarConsumo');
 	
-	Route::post('pdf', 'PDFController@getPDF');
+	Route::post('pdf/estado/cuenta', 'PDFController@estadoCuenta');
 
-	Route::post('reporte/diario', 'PDFController@reporteDiario');
+	Route::post('pdf/reporte/diario', 'PDFController@reporteDiario');
+
+	Route::post('pdf/huesped', 'PDFController@huesped');
 
 	Route::post('ingreso/servicio', 'PropiedadController@ingresoServicio');
 
