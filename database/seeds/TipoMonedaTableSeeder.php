@@ -14,11 +14,13 @@ class TipoMonedaTableSeeder extends Seeder
             DB::table('tipo_moneda')->insert([
     		[
     			'nombre' => 'CLP',
+                'cantidad_decimales' => 0,
 
     		],
     		[
 
     			'nombre' => 'USD',
+                'cantidad_decimales' => 2,
 
     		]
 
