@@ -38,10 +38,6 @@ class ReservaController extends Controller
     public function reserva(Request $request)
     {
 
-/*        $reserva = Reserva::all()->last();
-
-        return $reserva->monto_total + 1;*/
-
         $clientes = $request['cliente'];
       
         $habitaciones_info = $request['habitacion_info'];
@@ -752,6 +748,10 @@ class ReservaController extends Controller
       $reserva_id = $pago['reserva_id'];
       $tipo_moneda_id = $pago['tipo_moneda_id'];
 
+      if(isset($pago['monto_equivalente'])){
+      $monto_equivalente = $pago['monto_equivalente'];
+      }
+
       if(isset($pago['numero_cheque'])){
       $numero_cheque = $pago['numero_cheque'];
       }
@@ -768,8 +768,7 @@ class ReservaController extends Controller
                $monto -= $monto_pago;
 
                if(isset($pago['monto_pago']) && isset($pago['monto_equivalente'])){
-               $monto_equivalente = $pago['monto_equivalente'];
-
+  
                $pago                        = new Pago();
                $pago->monto_pago            = $monto_pago;
                $pago->monto_equivalente     = $monto_equivalente; 
@@ -839,7 +838,6 @@ class ReservaController extends Controller
 
            if($tipo_pago == "Pago habitacion"){
 
-
            $pago_habitacion =  Pago::where('reserva_id', $reserva_id)->where('tipo', 'Pago habitacion')->get();
 
            if(empty($pago_habitacion)) {
@@ -859,6 +857,7 @@ class ReservaController extends Controller
             
            }
 
+
               if($total_habitacion_pago != $reserva->monto_alojamiento){
 
         
@@ -866,7 +865,6 @@ class ReservaController extends Controller
 
 
                      if(isset($pago['monto_pago']) && isset($pago['monto_equivalente'])){
-                     $monto_equivalente = $pago['monto_equivalente'];
 
                      $pago                        = new Pago();
                      $pago->monto_pago            = $monto_pago;
@@ -883,7 +881,7 @@ class ReservaController extends Controller
                      $pago->save();
                       
                      }else{
-
+                      
                      $pago                        = new Pago();
                      $pago->monto_pago            = $monto_pago;
                      $pago->monto_equivalente     = $monto_pago; 
@@ -966,8 +964,7 @@ class ReservaController extends Controller
 
 
                      if(isset($pago['monto_pago']) && isset($pago['monto_equivalente'])){
-                     $monto_equivalente = $pago['monto_equivalente'];
-
+                     
                      $pago                        = new Pago();
                      $pago->monto_pago            = $monto_pago;
                      $pago->monto_equivalente     = $monto_equivalente; 
