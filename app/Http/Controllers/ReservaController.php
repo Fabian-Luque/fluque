@@ -747,10 +747,8 @@ class ReservaController extends Controller
       $tipo_pago = $pago['tipo_pago'];
       $reserva_id = $pago['reserva_id'];
       $tipo_moneda_id = $pago['tipo_moneda_id'];
-
-      if(isset($pago['monto_equivalente'])){
       $monto_equivalente = $pago['monto_equivalente'];
-      }
+      
 
       if(isset($pago['numero_cheque'])){
       $numero_cheque = $pago['numero_cheque'];
@@ -767,7 +765,7 @@ class ReservaController extends Controller
                $monto = $reserva->monto_por_pagar;
                $monto -= $monto_pago;
 
-               if(isset($pago['monto_pago']) && isset($pago['monto_equivalente'])){
+               if(isset($pago['monto_pago']) && !is_null($monto_equivalente)){
   
                $pago                        = new Pago();
                $pago->monto_pago            = $monto_pago;
@@ -864,7 +862,7 @@ class ReservaController extends Controller
                 if($monto_pago <= $reserva->monto_por_pagar){
 
 
-                     if(isset($pago['monto_pago']) && isset($pago['monto_equivalente'])){
+                     if(isset($pago['monto_pago']) && !is_null($monto_equivalente)){
 
                      $pago                        = new Pago();
                      $pago->monto_pago            = $monto_pago;
@@ -963,7 +961,7 @@ class ReservaController extends Controller
                   if($monto_consumos <= $reserva->monto_por_pagar){
 
 
-                     if(isset($pago['monto_pago']) && isset($pago['monto_equivalente'])){
+                     if(isset($pago['monto_pago']) && !is_null($monto_equivalente)){
                      
                      $pago                        = new Pago();
                      $pago->monto_pago            = $monto_pago;
