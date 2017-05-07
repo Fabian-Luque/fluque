@@ -788,8 +788,10 @@ class PropiedadController extends Controller
                   $data = [ 
                             'ingresos_totales'          => $ingresos_totales_dia,
                             'reservas_realizadas'       => count($reservas),
+                            'reservas_anuladas'         => $reservas_anuladas,
                             'ingresos_por_habitacion'   => $ingresos_habitacion,
                             'ingresos_por_servicios'    => $ingresos_consumos,
+
 
                             'ingresos_por_metodo_pago'  => [
                                                             ['nombre' => 'Efectivo', 'id' => 1, 'montos' =>$ingresos_por_efectivo],
