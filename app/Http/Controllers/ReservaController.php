@@ -212,6 +212,23 @@ class ReservaController extends Controller
       $hab = Habitacion::where('id' , $habitacion_id)->first();
 
 
+      if ($request->has('estado_reserva_id')) {
+          
+        $estado_reserva = $request->input('estado_reserva_id');
+        $reserva->update(array('estado_reserva_id' => $estado_reserva ));
+
+        $retorno = [
+
+                'errors' => false,
+                'msj' => 'Reserva anulada satisfactoriamente',
+
+                ];
+
+        return Response::json($retorno, 201);
+
+      }
+
+
       if($request->has('fecha_inicio')){
 
           $habitacion_ocupada = [];
@@ -1834,7 +1851,7 @@ class ReservaController extends Controller
 
                     $query->where('propiedad_id', $id);
 
-        })->with('habitacion.tipoHabitacion')->with('cliente','huespedes.servicios','tipoMoneda','tipoFuente','metodoPago','estadoReserva','pagos')->whereBetween('checkin', $fechas)->get();
+        })->with('habitacion.tipoHabitacion')->with('cliente','huespedes.servicios','tipoMoneda','tipoFuente','metodoPago','estadoReserva','pagos')->whereBetween('checkin', $fechas)->where('estado_reserva_id', '!=' , 6 )->get();
 
 
 
@@ -2005,7 +2022,6 @@ class ReservaController extends Controller
 
 
     }   
-
 
 
     public function destroy($id){
