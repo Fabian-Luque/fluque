@@ -781,14 +781,18 @@ class PropiedadController extends Controller
 
                      /*RESERVAS ANULADAS*/
 
-                     $reservas_anuladas = count($reservas->where('estado_reserva_id', 6));
+                    $reservas_anuladas = Reserva::where('updated_at' , '>=', $fecha1)->where('updated_at', '<' , $fecha2)->whereHas('habitacion', function($query) use($propiedad_id){
+
+                    $query->where('propiedad_id', $propiedad_id);
+
+                    })->where('estado_reserva_id', 6)->get();
 
 
 
                   $data = [ 
                             'ingresos_totales'          => $ingresos_totales_dia,
                             'reservas_realizadas'       => count($reservas),
-                            'reservas_anuladas'         => $reservas_anuladas,
+                            'reservas_anuladas'         => count($reservas_anuladas),
                             'ingresos_por_habitacion'   => $ingresos_habitacion,
                             'ingresos_por_servicios'    => $ingresos_consumos,
 
