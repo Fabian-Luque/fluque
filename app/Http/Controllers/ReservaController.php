@@ -117,7 +117,7 @@ class ReservaController extends Controller
 
                 }
 
-                $reserv =  Reserva::where('habitacion_id', $habitacion_info['id'])->where('checkin', $fecha_inicio)->where('checkout', $fecha_fin)->first();
+                $reserv = Reserva::where('habitacion_id', $habitacion_info['id'])->where('checkin', $fecha_inicio)->where('checkout', $fecha_fin)->where('estado_reserva_id', '!=', 6)->first();
 
 
 
@@ -170,7 +170,7 @@ class ReservaController extends Controller
 
                     $retorno = array(
 
-                    'msj'       => "La reserva ya fue creada",
+                    'msj'       => "Error: La reserva ya fué creada",
                     'errors'    => true
 
 

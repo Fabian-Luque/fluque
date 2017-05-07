@@ -779,6 +779,10 @@ class PropiedadController extends Controller
                      $booking = count($reservas->where('tipo_fuente_id', 7));
                      $airbnb = count($reservas->where('tipo_fuente_id', 8));
 
+                     /*RESERVAS ANULADAS*/
+
+                     $reservas_anuladas = count($reservas->where('estado_reserva_id', 6));
+
 
 
                   $data = [ 
