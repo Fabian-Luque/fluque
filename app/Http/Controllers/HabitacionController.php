@@ -60,7 +60,7 @@ class HabitacionController extends Controller
 
             $habitaciones = Habitacion::where('propiedad_id', $request->input('propiedad_id'))->whereHas('reservas', function($query) use($fecha){
 
-                    $query->where('checkin','<=' ,$fecha)->where('checkout', '>', $fecha)->where('estado_reserva_id', '!=' , 6);
+                    $query->where('checkin','<=' ,$fecha)->where('checkout', '>', $fecha)->where('estado_reserva_id', '!=' , 6)->where('estado_reserva_id', '!=' , 7);
 
         })->with('precios.TipoMoneda')->get();
 
