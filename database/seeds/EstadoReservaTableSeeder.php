@@ -42,6 +42,11 @@ class EstadoReservaTableSeeder extends Seeder
 
                 'nombre' => 'Anulada',
 
+            ],
+            [
+
+                'nombre' => 'No show',
+
             ]
 
     		]);
