@@ -1304,6 +1304,12 @@ class ReservaController extends Controller
 
         })->whereBetween('created_at', [$startDate, $endDate])->with('habitacion.tipoHabitacion')->with('huespedes')->with('cliente')->with('estadoReserva')->with('metodoPago')->with('tipoFuente')->get();
 
+        $reservas_no_show = Reserva::whereHas('habitacion', function($query) use($id){
+
+                    $query->where('propiedad_id', $id);
+
+        })->where('checkin', '<' , $fecha_hoy)->whereBetween('estado_reserva_id', [1,2])->get();
+
 
 
         $cantidad_entradas     = count($entradas_hoy);
@@ -1371,6 +1377,7 @@ class ReservaController extends Controller
             'habitaciones_ocupadas' => $cantidad_ocupadas,
             'entradas' => $entradas,
             'salidas'  => $salidas,
+            'reservas_no_show' => $reservas_no_show,
             'cantidad_reservas_dia' => $cantidad_reservas_dia,
             'suma_monto_total' => $suma_monto_total,
             'suma_noches' => $suma_noches,
