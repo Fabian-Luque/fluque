@@ -117,7 +117,7 @@ class ReservaController extends Controller
 
                 }
 
-                $reserv = Reserva::where('habitacion_id', $habitacion_info['id'])->where('checkin', $fecha_inicio)->where('checkout', $fecha_fin)->where('estado_reserva_id', '!=', 6)->first();
+                $reserv = Reserva::where('habitacion_id', $habitacion_info['id'])->where('checkin', $fecha_inicio)->where('checkout', $fecha_fin)->where('estado_reserva_id', '!=', 6)->where('estado_reserva_id', '!=', 7)->first();
 
 
 
