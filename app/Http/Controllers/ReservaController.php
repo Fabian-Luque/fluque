@@ -1308,7 +1308,7 @@ class ReservaController extends Controller
 
                     $query->where('propiedad_id', $id);
 
-        })->where('checkin', '<' , $fecha_hoy)->whereBetween('estado_reserva_id', [1,2])->get();
+        })->where('checkin', '<' , $fecha_hoy)->whereBetween('estado_reserva_id', [1,2])->with('habitacion.tipoHabitacion')->with('cliente')->with('estadoReserva')->get();
 
 
 
