@@ -37,14 +37,14 @@
               <th class="head-tabla-cliente"><p class="align-left">Reservas realizadas</p></th>
               <td class="data-tabla-cliente"><p class="nombre">{{ $reservas_realizadas }}</p></td>
             </tr>
-<!--             <tr>
+            <tr>
               <th class="head-tabla-cliente"><p class="align-left">Reservas canceladas</p></th>
-              <td class="data-tabla-cliente"><p class="nombre">0</p></td>
+              <td class="data-tabla-cliente"><p class="nombre">{{ $reservas_anuladas }}</p></td>
             </tr>
             <tr>
               <th class="head-tabla-cliente"><p class="align-left">No show</p></th>
-              <td class="data-tabla-cliente"><p class="nombre">0</p></td>
-            </tr> -->
+              <td class="data-tabla-cliente"><p class="nombre">{{ $reservas_no_show }}</p></td>
+            </tr>
           </table>
         </div>
        

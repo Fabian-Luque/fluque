@@ -787,12 +787,21 @@ class PropiedadController extends Controller
 
                     })->where('estado_reserva_id', 6)->get();
 
+                    /*RESERVAS NO SHOW*/
+
+                    $reservas_no_show = Reserva::where('updated_at' , '>=', $fecha1)->where('updated_at', '<' , $fecha2)->whereHas('habitacion', function($query) use($propiedad_id){
+
+                    $query->where('propiedad_id', $propiedad_id);
+
+                    })->where('estado_reserva_id', 7)->get();
+
 
 
                   $data = [ 
                             'ingresos_totales'          => $ingresos_totales_dia,
                             'reservas_realizadas'       => count($reservas),
                             'reservas_anuladas'         => count($reservas_anuladas),
+                            'reservas_no_show'          => count($reservas_no_show),
                             'ingresos_por_habitacion'   => $ingresos_habitacion,
                             'ingresos_por_servicios'    => $ingresos_consumos,
 

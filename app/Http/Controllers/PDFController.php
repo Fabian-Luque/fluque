@@ -427,6 +427,25 @@ class PDFController extends Controller
                      $airbnb = count($reservas->where('tipo_fuente_id', 8));
 
 
+                    /*RESERVAS ANULADAS*/
+
+                    $reservas_anuladas = Reserva::where('updated_at' , '>=', $fecha1)->where('updated_at', '<' , $fecha2)->whereHas('habitacion', function($query) use($propiedad_id){
+
+                    $query->where('propiedad_id', $propiedad_id);
+
+                    })->where('estado_reserva_id', 6)->get();
+
+                    /*RESERVAS NO SHOW*/
+
+                    $reservas_no_show = Reserva::where('updated_at' , '>=', $fecha1)->where('updated_at', '<' , $fecha2)->whereHas('habitacion', function($query) use($propiedad_id){
+
+                    $query->where('propiedad_id', $propiedad_id);
+
+                    })->where('estado_reserva_id', 7)->get();
+
+
+
+
 
 
                 }//FIN IF
@@ -434,7 +453,7 @@ class PDFController extends Controller
                 $ingresos = array($ingresos_hab);
 
 
-                $pdf = PDF::loadView('pdf.reporte_diario', ['propiedad' => [$propiedad], 'reservas_realizadas'=> count($reservas), 'fecha' => $fecha1, 'ingresos_habitacion' => $ingresos_habitacion, 'ingresos_consumo' => $ingresos_consumos, 'ingresos_totales' => $ingresos_totales_dia, 'ingresos_efectivo' => $ingresos_por_efectivo, 'ingresos_credito' => $ingresos_por_credito, 'ingresos_debito' => $ingresos_por_debito, 'ingresos_cheque' => $ingresos_por_cheque, 'ingresos_tarjeta_credito' => $ingresos_por_tarjeta_credito, 'ingresos_transferencia' => $ingresos_por_transferencia, 'pagina_web' => $pagina_web, 'caminando' => $caminando, 'telefono' => $telefono, 'email' => $email, 'redes_sociales' => $redes_sociales, 'expedia' => $expedia, 'booking' => $booking, 'airbnb' => $airbnb, 'ingresos_particular' => $ingresos_por_particulares, 'ingresos_empresa' => $ingresos_por_empresas]);
+                $pdf = PDF::loadView('pdf.reporte_diario', ['propiedad' => [$propiedad], 'reservas_realizadas'=> count($reservas),'reservas_anuladas' => count($reservas_anuladas), 'reservas_no_show' => count($reservas_no_show), 'fecha' => $fecha1, 'ingresos_habitacion' => $ingresos_habitacion, 'ingresos_consumo' => $ingresos_consumos, 'ingresos_totales' => $ingresos_totales_dia, 'ingresos_efectivo' => $ingresos_por_efectivo, 'ingresos_credito' => $ingresos_por_credito, 'ingresos_debito' => $ingresos_por_debito, 'ingresos_cheque' => $ingresos_por_cheque, 'ingresos_tarjeta_credito' => $ingresos_por_tarjeta_credito, 'ingresos_transferencia' => $ingresos_por_transferencia, 'pagina_web' => $pagina_web, 'caminando' => $caminando, 'telefono' => $telefono, 'email' => $email, 'redes_sociales' => $redes_sociales, 'expedia' => $expedia, 'booking' => $booking, 'airbnb' => $airbnb, 'ingresos_particular' => $ingresos_por_particulares, 'ingresos_empresa' => $ingresos_por_empresas]);
 
 
 				return $pdf->download('archivo.pdf');
