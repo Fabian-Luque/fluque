@@ -38,7 +38,7 @@
               <td class="data-tabla-cliente"><p class="nombre">{{ $reservas_realizadas }}</p></td>
             </tr>
             <tr>
-              <th class="head-tabla-cliente"><p class="align-left">Reservas canceladas</p></th>
+              <th class="head-tabla-cliente"><p class="align-left">Reservas anuladas</p></th>
               <td class="data-tabla-cliente"><p class="nombre">{{ $reservas_anuladas }}</p></td>
             </tr>
             <tr>
