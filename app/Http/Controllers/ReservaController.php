@@ -1354,13 +1354,10 @@ class ReservaController extends Controller
 
         }
 
-        $suma_monto_total = 0;
+
         $suma_noches = 0;
         foreach ($reservas_dia as $reserva_dia) {
             
-            $monto_total = $reserva_dia->monto_total;
-            $suma_monto_total += $monto_total;
-
             $noches = $reserva_dia->noches;
             $suma_noches += $noches;
 
