@@ -37,6 +37,16 @@ class EstadoReservaTableSeeder extends Seeder
 
                 'nombre' => 'Pendiente',
 
+            ],
+            [
+
+                'nombre' => 'Anulada',
+
+            ],
+            [
+
+                'nombre' => 'No show',
+
             ]
 
     		]);

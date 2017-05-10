@@ -26,17 +26,6 @@ class HabitacionController extends Controller
 
     public function disponibilidad(Request $request){
 
-/*        $rango = [$fecha_inicio, $fecha_fin];
-
-        $habitaciones = Habitacion::where('propiedad_id', $request->input('propiedad_id'))->whereHas('reservas', function($query) use($fecha_inicio,$fecha_fin){
-
-                    $query->Where('checkin', '>' ,$fecha_inicio)->Where('checkin', '>=', $fecha_fin);
-
-        })->get();
-
-
-        return $habitaciones;*/
-
 
         $propiedad_id = $request->input('propiedad_id');
         $fecha_inicio = $request->input('fecha_inicio');
@@ -71,7 +60,7 @@ class HabitacionController extends Controller
 
             $habitaciones = Habitacion::where('propiedad_id', $request->input('propiedad_id'))->whereHas('reservas', function($query) use($fecha){
 
-                    $query->where('checkin','<=' ,$fecha)->where('checkout', '>', $fecha);
+                    $query->where('checkin','<=' ,$fecha)->where('checkout', '>', $fecha)->where('estado_reserva_id', '!=' , 6)->where('estado_reserva_id', '!=' , 7);
 
         })->with('precios.TipoMoneda')->get();
 

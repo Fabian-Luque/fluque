@@ -117,7 +117,7 @@ class ReservaController extends Controller
 
                 }
 
-                $reserv =  Reserva::where('habitacion_id', $habitacion_info['id'])->where('checkin', $fecha_inicio)->where('checkout', $fecha_fin)->first();
+                $reserv = Reserva::where('habitacion_id', $habitacion_info['id'])->where('checkin', $fecha_inicio)->where('checkout', $fecha_fin)->where('estado_reserva_id', '!=', 6)->where('estado_reserva_id', '!=', 7)->first();
 
 
 
@@ -170,7 +170,7 @@ class ReservaController extends Controller
 
                     $retorno = array(
 
-                    'msj'       => "La reserva ya fue creada",
+                    'msj'       => "Error: La reserva ya fué creada",
                     'errors'    => true
 
 
@@ -210,6 +210,23 @@ class ReservaController extends Controller
 
       $habitacion_id = $reserva->habitacion_id;
       $hab = Habitacion::where('id' , $habitacion_id)->first();
+
+
+      if ($request->has('estado_reserva_id')) {
+          
+        $estado_reserva = $request->input('estado_reserva_id');
+        $reserva->update(array('estado_reserva_id' => $estado_reserva ));
+
+        $retorno = [
+
+                'errors' => false,
+                'msj' => 'Reserva anulada satisfactoriamente',
+
+                ];
+
+        return Response::json($retorno, 201);
+
+      }
 
 
       if($request->has('fecha_inicio')){
@@ -1256,28 +1273,25 @@ class ReservaController extends Controller
 
                     $query->where('propiedad_id', $id);
 
-        })->where('checkin', $fecha)->where('estado_reserva_id', '!=', 3 )->with('habitacion.tipoHabitacion')->with('huespedes')->with('cliente')->with('estadoReserva')->get();
-
-        $entradas_hoy = Reserva::whereHas('habitacion', function($query) use($id){
-
-                    $query->where('propiedad_id', $id);})->where('checkin', $fecha)->get();
+        })->where('checkin', $fecha)->whereBetween('estado_reserva_id', [1,2])->with('habitacion.tipoHabitacion')->with('huespedes')->with('cliente')->with('estadoReserva')->get();
 
 
         $salidas = Reserva::whereHas('habitacion', function($query) use($id){
 
                     $query->where('propiedad_id', $id);
 
-        })->where('checkout', $fecha)->where('estado_reserva_id', '!=' , 4)->with('habitacion.tipoHabitacion')->with('huespedes')->with('cliente')->with('estadoReserva')->get();
+        })->where('checkout', $fecha)->where('estado_reserva_id', 3)->with('habitacion.tipoHabitacion')->with('huespedes')->with('cliente')->with('estadoReserva')->get();
 
         $salidas_hoy = Reserva::whereHas('habitacion', function($query) use($id){
 
-                    $query->where('propiedad_id', $id);})->where('checkout', $fecha)->get();
+                    $query->where('propiedad_id', $id);})->where('checkout', $fecha)->whereIn('estado_reserva_id', [3,4,5])->get();
+
 
         $habitaciones_occupadas = Reserva::whereHas('habitacion', function($query) use($id){
 
                     $query->where('propiedad_id', $id);
 
-        })->where('estado_reserva_id', 3)->get();
+        })->where('checkin', '<=', $fecha)->where('checkout', '>=', $fecha)->where('estado_reserva_id', 3)->get();
 
 
 
@@ -1287,9 +1301,15 @@ class ReservaController extends Controller
 
         })->whereBetween('created_at', [$startDate, $endDate])->with('habitacion.tipoHabitacion')->with('huespedes')->with('cliente')->with('estadoReserva')->with('metodoPago')->with('tipoFuente')->get();
 
+        $reservas_no_show = Reserva::whereHas('habitacion', function($query) use($id){
+
+                    $query->where('propiedad_id', $id);
+
+        })->where('checkin', '<' , $fecha_hoy)->whereBetween('estado_reserva_id', [1,2])->with('habitacion.tipoHabitacion')->with('cliente')->with('estadoReserva')->get();
 
 
-        $cantidad_entradas     = count($entradas_hoy);
+
+        $cantidad_entradas     = count($entradas);
         $cantidad_salidas      = count($salidas_hoy); 
         $cantidad_ocupadas     = count($habitaciones_occupadas); 
         $cantidad_reservas_dia = count($reservas_dia);
@@ -1310,11 +1330,11 @@ class ReservaController extends Controller
             
             $fecha = date("Y-m-d", $i);
 
-        $reservas = Reserva::whereHas('habitacion', function($query) use($id){
+       $reservas = Reserva::whereHas('habitacion', function($query) use($id){
 
                     $query->where('propiedad_id', $id);
 
-        })->where('checkin','<=' ,$fecha)->where('checkout', '>', $fecha)->get();
+        })->where('checkin','<=' ,$fecha)->where('checkout', '>', $fecha)->where('estado_reserva_id', '!=', 6)->where('estado_reserva_id', '!=', 7)->get();
 
 
         $porcentaje = count($reservas)*100 / $numero_habitaciones;
@@ -1334,13 +1354,10 @@ class ReservaController extends Controller
 
         }
 
-        $suma_monto_total = 0;
+
         $suma_noches = 0;
         foreach ($reservas_dia as $reserva_dia) {
             
-            $monto_total = $reserva_dia->monto_total;
-            $suma_monto_total += $monto_total;
-
             $noches = $reserva_dia->noches;
             $suma_noches += $noches;
 
@@ -1354,8 +1371,8 @@ class ReservaController extends Controller
             'habitaciones_ocupadas' => $cantidad_ocupadas,
             'entradas' => $entradas,
             'salidas'  => $salidas,
+            'reservas_no_show' => $reservas_no_show,
             'cantidad_reservas_dia' => $cantidad_reservas_dia,
-            'suma_monto_total' => $suma_monto_total,
             'suma_noches' => $suma_noches,
             'porcentaje_ocupacion' => $ocupacion,
             'reservas_dia' => $reservas_dia,
@@ -1834,7 +1851,7 @@ class ReservaController extends Controller
 
                     $query->where('propiedad_id', $id);
 
-        })->with('habitacion.tipoHabitacion')->with('cliente','huespedes.servicios','tipoMoneda','tipoFuente','metodoPago','estadoReserva','pagos')->whereBetween('checkin', $fechas)->get();
+        })->with('habitacion.tipoHabitacion')->with('cliente','huespedes.servicios','tipoMoneda','tipoFuente','metodoPago','estadoReserva','pagos')->whereBetween('checkin', $fechas)->where('estado_reserva_id', '!=' , 6 )->where('estado_reserva_id', '!=' , 7 )->get();
 
 
 
@@ -2005,7 +2022,6 @@ class ReservaController extends Controller
 
 
     }   
-
 
 
     public function destroy($id){
