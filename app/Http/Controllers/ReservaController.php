@@ -1373,7 +1373,6 @@ class ReservaController extends Controller
             'salidas'  => $salidas,
             'reservas_no_show' => $reservas_no_show,
             'cantidad_reservas_dia' => $cantidad_reservas_dia,
-            'suma_monto_total' => $suma_monto_total,
             'suma_noches' => $suma_noches,
             'porcentaje_ocupacion' => $ocupacion,
             'reservas_dia' => $reservas_dia,
