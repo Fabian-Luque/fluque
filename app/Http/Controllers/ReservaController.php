@@ -1330,11 +1330,11 @@ class ReservaController extends Controller
             
             $fecha = date("Y-m-d", $i);
 
-        $reservas = Reserva::whereHas('habitacion', function($query) use($id){
+       $reservas = Reserva::whereHas('habitacion', function($query) use($id){
 
                     $query->where('propiedad_id', $id);
 
-        })->where('checkin','<=' ,$fecha)->where('checkout', '>', $fecha)->get();
+        })->where('checkin','<=' ,$fecha)->where('checkout', '>', $fecha)->where('estado_reserva_id', '!=', 6)->where('estado_reserva_id', '!=', 7)->get();
 
 
         $porcentaje = count($reservas)*100 / $numero_habitaciones;
