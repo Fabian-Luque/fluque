@@ -1291,7 +1291,7 @@ class ReservaController extends Controller
 
                     $query->where('propiedad_id', $id);
 
-        })->where('checkin', '<=', $fecha)->where('checkout', '>=', $fecha)->where('estado_reserva_id', 3)->get();
+        })->where('checkin', '<=', $fecha)->where('checkout', '>', $fecha)->where('estado_reserva_id', 3)->get();
 
 
 
