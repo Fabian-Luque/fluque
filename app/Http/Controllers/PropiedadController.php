@@ -13,6 +13,8 @@ use App\TipoHabitacion;
 use App\TipoPropiedad;
 use App\Pago;
 use App\Reserva;
+use App\Pais;
+use App\Region;
 use Illuminate\Http\Request;
 use Response;
 use Validator;
@@ -884,5 +886,33 @@ class PropiedadController extends Controller
         return $clasificacion;
 
     }
+
+    public function crearPais(Request $request)
+    {
+
+        foreach($request['countries'] as $countrie){
+
+            $country = $countrie['country'];
+
+            $pais             = new Pais();
+            $pais->nombre     = $countrie['country'];
+            $pais->save();
+
+            foreach ($countrie['states'] as $state) {
+                
+                $region             = new Region();
+                $region->nombre     = $state;
+                $region->pais_id    = $pais->id;
+                $region->save();
+
+            }
+
+
+        }
+
+        return "paises creados";
+
+    }
+
 
 }
