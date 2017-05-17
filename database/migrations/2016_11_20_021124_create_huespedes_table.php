@@ -21,7 +21,6 @@ class CreateHuespedesTable extends Migration
         $table->string('rut')->unique();
         $table->string('email');
         $table->integer('telefono');
-        $table->string('pais');
         $table->timestamps();
 
         });

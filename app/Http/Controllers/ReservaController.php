@@ -38,7 +38,7 @@ class ReservaController extends Controller
     public function reserva(Request $request)
     {
 
-        $clientes = $request['cliente'];
+       $clientes = $request['cliente'];
       
         $habitaciones_info = $request['habitacion_info'];
 
@@ -71,7 +71,7 @@ class ReservaController extends Controller
                 $cliente->apellido              = $clientes['apellido'];
                 $cliente->direccion             = $cliente['direccion'];
                 $cliente->ciudad                = $cliente['ciudad'];
-                $cliente->pais                  = $cliente['pais'];
+                $cliente->pais                  = $cliente['pais'];   //eliminar 
                 $cliente->telefono              = $cliente['telefono'];
                 $cliente->email                 = $cliente['email'];
                 $cliente->tipo_cliente_id       = $clientes['tipo_cliente_id'];
@@ -155,7 +155,7 @@ class ReservaController extends Controller
                 $huesped->apellido       = $huesped['apellido'];
                 $huesped->rut            = $huesped['rut'];
                 $huesped->telefono       = $huesped['telefono'];
-                $huesped->pais           = $huesped['pais'];
+                $huesped->pais           = $huesped['pais'];  //eliminar
                 $huesped->save();
 
                 $reserva->huespedes()->attach($huesped->id);

@@ -664,8 +664,10 @@ class ClienteController extends Controller
             'ciudad'				=> '',
             'email'                 => '',
             'telefono'   			=> '',
-            'pais'                  => '',
+            'pais'                  => '',	//eliminar
             'giro'					=> '',
+            'pais_id'               => '',
+            'region_id'             => '',
             
         );
 

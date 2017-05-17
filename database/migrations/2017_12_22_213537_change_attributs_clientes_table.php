@@ -17,7 +17,6 @@ class ChangeAttributsClientesTable extends Migration
             $table->string('email')->nullable()->change();
             $table->string('direccion')->nullable()->change();
             $table->string('ciudad')->nullable()->change();
-            $table->string('pais')->nullable()->change();
             $table->string('telefono')->nullable()->change();
         });
     }

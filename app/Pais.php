@@ -15,4 +15,27 @@ class Pais extends Model
 
 	}
 
+	public function propiedades(){
+
+		return $this->hasMany('App\Propiedad', 'pais_id');
+
+
+	}
+
+	public function clientes(){
+
+		return $this->hasMany('App\Cliente', 'pais_id');
+
+
+	}
+
+	public function huespedes(){
+
+		return $this->hasMany('App\Huesped', 'pais_id');
+
+
+	}
+
+
+
 }

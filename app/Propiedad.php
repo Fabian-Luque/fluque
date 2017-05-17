@@ -10,7 +10,7 @@ class Propiedad extends Model
 	use SoftDeletes;
     protected $table = 'propiedades';
 
-	protected $fillable = [ 'id', 'nombre','tipo', 'numero_habitaciones','region','pais','ciudad','estado','direccion', 'telefono', 'email', 'nombre_responsable', 'descripcion','iva', 'porcentaje_deposito', 'tipo_propiedad_id'];
+	protected $fillable = [ 'id', 'nombre','tipo', 'numero_habitaciones','region','pais','ciudad','estado','direccion', 'telefono', 'email', 'nombre_responsable', 'descripcion','iva', 'porcentaje_deposito', 'pais_id', 'region_id', 'tipo_propiedad_id'];
 
 
 
@@ -21,6 +21,24 @@ class Propiedad extends Model
 
 
     }
+
+    public function pais(){
+
+
+        return $this->belongsTo('App\Pais', 'pais_id'); 
+
+
+    }
+
+    public function region(){
+
+
+        return $this->belongsTo('App\Region', 'region_id'); 
+
+
+    }
+
+
 
     public function habitaciones(){
 

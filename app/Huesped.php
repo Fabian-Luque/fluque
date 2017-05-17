@@ -9,7 +9,7 @@ class Huesped extends Model
     
 	protected $table = 'huespedes';
 
-	protected $fillable = ['nombre', 'apellido', 'rut', 'pais', 'email', 'telefono', 'reserva_id','calificacion_promedio'];
+	protected $fillable = ['nombre', 'apellido', 'rut', 'pais', 'email', 'telefono', 'reserva_id','calificacion_promedio', 'pais_id', 'region_id'];
 
 
 	public function reservas(){
@@ -18,6 +18,22 @@ class Huesped extends Model
 
 
 	}
+
+	public function pais(){
+
+
+        return $this->belongsTo('App\Pais', 'pais_id'); 
+
+
+    }
+
+    public function region(){
+
+
+        return $this->belongsTo('App\Region', 'region_id'); 
+
+
+    }
 
 	public function huespedesReservas(){
 

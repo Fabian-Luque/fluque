@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddCalificacionPromedioToHuespedesTable extends Migration
+class AddPaisIdAndRegionIdToHuespedesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,10 @@ class AddCalificacionPromedioToHuespedesTable extends Migration
     public function up()
     {
         Schema::table('huespedes', function (Blueprint $table) {
-        $table->float('calificacion_promedio',10,1)->after('telefono')->default(0);
+        $table->integer('pais_id')->after('calificacion_promedio')->nullable()->unsigned();
+        $table->foreign('pais_id')->references('id')->on('paises');
+        $table->integer('region_id')->after('pais_id')->nullable()->unsigned();
+        $table->foreign('region_id')->references('id')->on('regiones');
         });
     }
 
@@ -24,8 +27,6 @@ class AddCalificacionPromedioToHuespedesTable extends Migration
      */
     public function down()
     {
-        Schema::table('huespedes', function (Blueprint $table) {
-        $table->dropColumn('calificacion_promedio');
-        });
+        //
     }
 }

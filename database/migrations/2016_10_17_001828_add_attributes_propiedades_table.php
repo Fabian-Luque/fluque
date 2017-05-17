@@ -12,10 +12,7 @@ class AddAttributesPropiedadesTable extends Migration
      */
     public function up()
     {
-             Schema::table('propiedades', function (Blueprint $table) {
-
-            $table->string('pais')->after('numero_habitaciones');
-            $table->string('region')->after('ciudad');
+            Schema::table('propiedades', function (Blueprint $table) {
             $table->string('telefono')->after('direccion');
             $table->string('email')->after('telefono');
             $table->string('nombre_responsable')->after('email');
@@ -35,11 +32,8 @@ class AddAttributesPropiedadesTable extends Migration
     public function down()
     {
 
-             Schema::table('propiedades', function (Blueprint $table) {
+            Schema::table('propiedades', function (Blueprint $table) {
             
-          
-            $table->dropColumn('pais');
-            $table->dropColumn('region');
             $table->dropColumn('telefono');
             $table->dropColumn('email');
             $table->dropColumn('nombre_responsable');

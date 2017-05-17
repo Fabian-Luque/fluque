@@ -12,7 +12,7 @@ class Cliente extends Model
 	use SoftDeletes;
     protected $table = 'clientes';
 
-	protected $fillable = ['nombre', 'apellido','rut', 'direccion','ciudad','pais','telefono', 'email', 'giro', 'tipo_cliente_id','calificacion_promedio'];
+	protected $fillable = ['nombre', 'apellido','rut', 'direccion','ciudad','pais','telefono', 'email', 'giro', 'pais_id', 'region_id', 'tipo_cliente_id'];
 
 
 	public function reservas(){
@@ -21,6 +21,22 @@ class Cliente extends Model
 
 
 	}
+
+    public function pais(){
+
+
+        return $this->belongsTo('App\Pais', 'pais_id'); 
+
+
+    }
+
+    public function region(){
+
+
+        return $this->belongsTo('App\Region', 'region_id'); 
+
+
+    }
 
 	public function tipoCliente(){
 

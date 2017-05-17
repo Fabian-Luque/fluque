@@ -211,9 +211,9 @@ class PropiedadController extends Controller
             'nombre'              => '',
             'tipo_propiedad_id'   => 'numeric',
             'numero_habitaciones' => 'numeric',
-            'pais'                => '',
+            'pais'                => '',        //eliminar
             'ciudad'              => '',
-            'region'              => '',
+            'region'              => '',        //eliminar
             'direccion'           => '',
             'telefono'            => '',
             'email'               => '',
@@ -221,6 +221,8 @@ class PropiedadController extends Controller
             'descripcion'         => '',
             'iva'                 => 'numeric',
             'porcentaje_deposito' => 'numeric',
+            'pais_id'             => 'numeric',
+            'region_id'           => 'numeric',
 
         );
 

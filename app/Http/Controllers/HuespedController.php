@@ -56,12 +56,14 @@ class HuespedController extends Controller
 
         $rules = array(
 
-            'nombre'   => '',
-            'apellido' => '',
-            'rut'      => '',
-            'email'    => '',
-            'telefono' => '',
-            'pais'     => '',
+            'nombre'    => '',
+            'apellido'  => '',
+            'rut'       => '',
+            'email'     => '',
+            'telefono'  => '',
+            'pais'      => '', //eliminar
+            'pais_id'   => '',
+            'region_id' => '',
 
         );
 
