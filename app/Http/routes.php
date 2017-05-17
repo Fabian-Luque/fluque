@@ -127,6 +127,8 @@ Route::group(['middleware' => 'cors'], function(){
 
 	Route::post('crear/pais', 'PropiedadController@crearPais');
 
+	Route::get('paises', 'PropiedadController@getPaises');
+
 	Route::resource('user', 'UserController', ['except' => ['create', 'edit','store']]);
 	Route::resource('propiedad', 'PropiedadController', ['except' => ['create', 'edit', 'store']]);
 	Route::resource('habitacion', 'HabitacionController', ['except' => ['create', 'edit']]);

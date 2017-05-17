@@ -887,6 +887,15 @@ class PropiedadController extends Controller
 
     }
 
+    public function getPaises(){
+
+        $paises = Pais::all();
+
+        return $paises;
+
+
+    }
+
     public function crearPais(Request $request)
     {
 
