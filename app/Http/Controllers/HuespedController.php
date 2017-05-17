@@ -61,7 +61,6 @@ class HuespedController extends Controller
             'rut'       => '',
             'email'     => '',
             'telefono'  => '',
-            'pais'      => '', //eliminar
             'pais_id'   => '',
             'region_id' => '',
 

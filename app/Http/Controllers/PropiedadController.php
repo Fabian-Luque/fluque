@@ -211,9 +211,7 @@ class PropiedadController extends Controller
             'nombre'              => '',
             'tipo_propiedad_id'   => 'numeric',
             'numero_habitaciones' => 'numeric',
-            'pais'                => '',        //eliminar
             'ciudad'              => '',
-            'region'              => '',        //eliminar
             'direccion'           => '',
             'telefono'            => '',
             'email'               => '',
