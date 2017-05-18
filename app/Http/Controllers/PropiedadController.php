@@ -896,6 +896,17 @@ class PropiedadController extends Controller
 
     }
 
+    public function getRegiones(Request $request){
+
+        $pais_id = $request->input('pais_id');
+
+        $regiones = Region::where('pais_id', $pais_id)->get();
+
+        return $regiones;
+
+
+    }
+
     public function crearPais(Request $request)
     {
 
