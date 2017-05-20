@@ -244,7 +244,7 @@ class ReservaController extends Controller
 
               $habitacion = Habitacion::where('id', $habitacion_id)->whereHas('reservas', function($query) use($fecha){
 
-                        $query->where('checkin','<=' ,$fecha)->where('checkout', '>', $fecha);
+                        $query->where('checkin','<=' ,$fecha)->where('checkout', '>', $fecha)->where('estado_reserva_id', '!=', 6)->where('estado_reserva_id', '!=', 7);
 
               })->get();
 
@@ -267,7 +267,7 @@ class ReservaController extends Controller
              if(count($habitacion_ocupada) == 0){
 
                 $noches = ((strtotime($reserva_checkout)-strtotime($fecha_inicio))/86400);
-                $monto_alojamiento = $noches * $hab->precio_base;
+                $monto_alojamiento = $noches * $reserva->precio_habitacion;
                 $monto_total = $monto_alojamiento + $reserva->monto_consumo;
 
                 $pagos_realizados = $reserva->pagos;
@@ -341,7 +341,7 @@ class ReservaController extends Controller
 
                $habitacion = Habitacion::where('id', $habitacion_id)->whereHas('reservas', function($query) use($fecha){
 
-                        $query->where('checkin','<=' ,$fecha)->where('checkout', '>', $fecha);
+                        $query->where('checkin','<=' ,$fecha)->where('checkout', '>', $fecha)->where('estado_reserva_id', '!=', 6)->where('estado_reserva_id', '!=', 7);
 
               })->get();
 
@@ -364,7 +364,7 @@ class ReservaController extends Controller
 
 
                 $noches = ((strtotime($fecha_fin)-strtotime($reserva_checkin))/86400);
-                $monto_alojamiento = $noches * $hab->precio_base;
+                $monto_alojamiento = $noches * $reserva->precio_habitacion;
                 $monto_total = $monto_alojamiento + $reserva->monto_consumo;
 
                 $pagos_realizados = $reserva->pagos;

@@ -20,7 +20,7 @@ class HuespedController extends Controller
 
         if ($request->has('rut')) {
 
-            $huesped = Huesped::where('rut', $request->input('rut'))->first();
+            $huesped = Huesped::where('rut', $request->input('rut'))->with('pais', 'region')->first();
 
             if (is_null($huesped)) {
 
