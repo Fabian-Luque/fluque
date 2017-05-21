@@ -693,7 +693,7 @@ class ReservaController extends Controller
 
 
 
-                })->with('habitacion.tipoHabitacion')->with('pagos')->with('cliente.tipoCliente')->with('huespedes.servicios')->with('tipoMoneda')->with('tipoFuente', 'metodoPago', 'estadoReserva')->get();
+                })->with('habitacion.tipoHabitacion')->with('pagos')->with('cliente.tipoCliente','cliente.pais','cliente.region')->with('huespedes.servicios')->with('tipoMoneda')->with('tipoFuente', 'metodoPago', 'estadoReserva')->get();
 
 
                 foreach ($reservas as $reserva){
@@ -1271,7 +1271,7 @@ class ReservaController extends Controller
 
                     $query->where('propiedad_id', $id);
 
-        })->where('checkin', $fecha)->whereBetween('estado_reserva_id', [1,2])->with('habitacion.tipoHabitacion')->with('huespedes')->with('cliente')->with('estadoReserva')->get();
+        })->where('checkin', $fecha)->whereBetween('estado_reserva_id', [1,2])->with('habitacion.tipoHabitacion')->with('huespedes')->with('cliente.pais', 'cliente.region')->with('estadoReserva')->get();
 
         $entradas_hoy = Reserva::whereHas('habitacion', function($query) use($id){
 
