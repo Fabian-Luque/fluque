@@ -125,7 +125,6 @@ class HuespedController extends Controller
                     $huesped->apellido = $huesped['apellido'];
                     $huesped->rut      = $huesped['rut'];
                     $huesped->telefono = $huesped['telefono'];
-                    $huesped->pais     = $huesped['pais'];
                     $huesped->save();
 
                     $huespedReserva = HuespedReserva::where('huesped_id', $huesped->id)->where('reserva_id', $reserva->id)->first();
