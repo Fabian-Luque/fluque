@@ -19,7 +19,6 @@ class CreateClientesTable extends Migration
         $table->string('rut')->unique();
         $table->string('direccion');
         $table->string('ciudad');
-        $table->string('pais');
         $table->string('telefono');
         $table->string('email');
         $table->string('giro')->nullable();

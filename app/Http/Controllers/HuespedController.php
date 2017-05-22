@@ -20,7 +20,7 @@ class HuespedController extends Controller
 
         if ($request->has('rut')) {
 
-            $huesped = Huesped::where('rut', $request->input('rut'))->first();
+            $huesped = Huesped::where('rut', $request->input('rut'))->with('pais', 'region')->first();
 
             if (is_null($huesped)) {
 
@@ -56,12 +56,13 @@ class HuespedController extends Controller
 
         $rules = array(
 
-            'nombre'   => '',
-            'apellido' => '',
-            'rut'      => '',
-            'email'    => '',
-            'telefono' => '',
-            'pais'     => '',
+            'nombre'    => '',
+            'apellido'  => '',
+            'rut'       => '',
+            'email'     => '',
+            'telefono'  => '',
+            'pais_id'   => '',
+            'region_id' => '',
 
         );
 
@@ -124,7 +125,6 @@ class HuespedController extends Controller
                     $huesped->apellido = $huesped['apellido'];
                     $huesped->rut      = $huesped['rut'];
                     $huesped->telefono = $huesped['telefono'];
-                    $huesped->pais     = $huesped['pais'];
                     $huesped->save();
 
                     $huespedReserva = HuespedReserva::where('huesped_id', $huesped->id)->where('reserva_id', $reserva->id)->first();

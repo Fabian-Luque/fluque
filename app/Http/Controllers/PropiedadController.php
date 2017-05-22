@@ -13,6 +13,8 @@ use App\TipoHabitacion;
 use App\TipoPropiedad;
 use App\Pago;
 use App\Reserva;
+use App\Pais;
+use App\Region;
 use Illuminate\Http\Request;
 use Response;
 use Validator;
@@ -209,9 +211,7 @@ class PropiedadController extends Controller
             'nombre'              => '',
             'tipo_propiedad_id'   => 'numeric',
             'numero_habitaciones' => 'numeric',
-            'pais'                => '',
             'ciudad'              => '',
-            'region'              => '',
             'direccion'           => '',
             'telefono'            => '',
             'email'               => '',
@@ -219,6 +219,8 @@ class PropiedadController extends Controller
             'descripcion'         => '',
             'iva'                 => 'numeric',
             'porcentaje_deposito' => 'numeric',
+            'pais_id'             => 'numeric',
+            'region_id'           => 'numeric',
 
         );
 
@@ -884,5 +886,53 @@ class PropiedadController extends Controller
         return $clasificacion;
 
     }
+
+    public function getPaises(){
+
+        $paises = Pais::all();
+
+        return $paises;
+
+
+    }
+
+    public function getRegiones(Request $request){
+
+        $pais_id = $request->input('pais_id');
+
+        $regiones = Region::where('pais_id', $pais_id)->get();
+
+        return $regiones;
+
+
+    }
+
+    public function crearPais(Request $request)
+    {
+
+        foreach($request['countries'] as $countrie){
+
+            $country = $countrie['country'];
+
+            $pais             = new Pais();
+            $pais->nombre     = $countrie['country'];
+            $pais->save();
+
+            foreach ($countrie['states'] as $state) {
+                
+                $region             = new Region();
+                $region->nombre     = $state;
+                $region->pais_id    = $pais->id;
+                $region->save();
+
+            }
+
+
+        }
+
+        return "paises creados";
+
+    }
+
 
 }

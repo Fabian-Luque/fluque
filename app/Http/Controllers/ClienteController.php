@@ -412,7 +412,7 @@ class ClienteController extends Controller
 
 			}else{
 
-			return $cliente = Cliente::where('rut', $cliente_rut)->first();
+			return $cliente = Cliente::where('rut', $cliente_rut)->with('pais', 'region')->first();
 
 
 
@@ -664,8 +664,9 @@ class ClienteController extends Controller
             'ciudad'				=> '',
             'email'                 => '',
             'telefono'   			=> '',
-            'pais'                  => '',
             'giro'					=> '',
+            'pais_id'               => '',
+            'region_id'             => '',
             
         );
 

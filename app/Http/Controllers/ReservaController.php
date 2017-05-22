@@ -38,7 +38,7 @@ class ReservaController extends Controller
     public function reserva(Request $request)
     {
 
-        $clientes = $request['cliente'];
+       $clientes = $request['cliente'];
       
         $habitaciones_info = $request['habitacion_info'];
 
@@ -71,7 +71,6 @@ class ReservaController extends Controller
                 $cliente->apellido              = $clientes['apellido'];
                 $cliente->direccion             = $cliente['direccion'];
                 $cliente->ciudad                = $cliente['ciudad'];
-                $cliente->pais                  = $cliente['pais'];
                 $cliente->telefono              = $cliente['telefono'];
                 $cliente->email                 = $cliente['email'];
                 $cliente->tipo_cliente_id       = $clientes['tipo_cliente_id'];
@@ -155,7 +154,6 @@ class ReservaController extends Controller
                 $huesped->apellido       = $huesped['apellido'];
                 $huesped->rut            = $huesped['rut'];
                 $huesped->telefono       = $huesped['telefono'];
-                $huesped->pais           = $huesped['pais'];
                 $huesped->save();
 
                 $reserva->huespedes()->attach($huesped->id);
@@ -246,7 +244,7 @@ class ReservaController extends Controller
 
               $habitacion = Habitacion::where('id', $habitacion_id)->whereHas('reservas', function($query) use($fecha){
 
-                        $query->where('checkin','<=' ,$fecha)->where('checkout', '>', $fecha);
+                        $query->where('checkin','<=' ,$fecha)->where('checkout', '>', $fecha)->where('estado_reserva_id', '!=', 6)->where('estado_reserva_id', '!=', 7);
 
               })->get();
 
@@ -269,7 +267,7 @@ class ReservaController extends Controller
              if(count($habitacion_ocupada) == 0){
 
                 $noches = ((strtotime($reserva_checkout)-strtotime($fecha_inicio))/86400);
-                $monto_alojamiento = $noches * $hab->precio_base;
+                $monto_alojamiento = $noches * $reserva->precio_habitacion;
                 $monto_total = $monto_alojamiento + $reserva->monto_consumo;
 
                 $pagos_realizados = $reserva->pagos;
@@ -343,7 +341,7 @@ class ReservaController extends Controller
 
                $habitacion = Habitacion::where('id', $habitacion_id)->whereHas('reservas', function($query) use($fecha){
 
-                        $query->where('checkin','<=' ,$fecha)->where('checkout', '>', $fecha);
+                        $query->where('checkin','<=' ,$fecha)->where('checkout', '>', $fecha)->where('estado_reserva_id', '!=', 6)->where('estado_reserva_id', '!=', 7);
 
               })->get();
 
@@ -366,7 +364,7 @@ class ReservaController extends Controller
 
 
                 $noches = ((strtotime($fecha_fin)-strtotime($reserva_checkin))/86400);
-                $monto_alojamiento = $noches * $hab->precio_base;
+                $monto_alojamiento = $noches * $reserva->precio_habitacion;
                 $monto_total = $monto_alojamiento + $reserva->monto_consumo;
 
                 $pagos_realizados = $reserva->pagos;
@@ -695,7 +693,7 @@ class ReservaController extends Controller
 
 
 
-                })->with('habitacion.tipoHabitacion')->with('pagos')->with('cliente.tipoCliente')->with('huespedes.servicios')->with('tipoMoneda')->with('tipoFuente', 'metodoPago', 'estadoReserva')->get();
+                })->with('habitacion.tipoHabitacion')->with('pagos')->with('cliente.tipoCliente','cliente.pais','cliente.region')->with('huespedes.servicios')->with('tipoMoneda')->with('tipoFuente', 'metodoPago', 'estadoReserva')->get();
 
 
                 foreach ($reservas as $reserva){
@@ -1273,7 +1271,7 @@ class ReservaController extends Controller
 
                     $query->where('propiedad_id', $id);
 
-        })->where('checkin', $fecha)->whereBetween('estado_reserva_id', [1,2])->with('habitacion.tipoHabitacion')->with('huespedes')->with('cliente')->with('estadoReserva')->get();
+        })->where('checkin', $fecha)->whereBetween('estado_reserva_id', [1,2])->with('habitacion.tipoHabitacion')->with('huespedes')->with('cliente.pais', 'cliente.region')->with('estadoReserva')->get();
 
         $entradas_hoy = Reserva::whereHas('habitacion', function($query) use($id){
 
@@ -1977,7 +1975,7 @@ class ReservaController extends Controller
         $q->wherePivot('reserva_id', $id);}])
 
 
-        ->with('habitacion.tipoHabitacion')->with('cliente','tipoMoneda' ,'tipoFuente', 'metodoPago','estadoReserva','pagos.tipoComprobante','pagos.tipoMoneda')->get();
+        ->with('habitacion.tipoHabitacion')->with('cliente.pais','cliente.region','tipoMoneda' ,'tipoFuente', 'metodoPago','estadoReserva','pagos.tipoComprobante','pagos.tipoMoneda')->with('huespedes.pais', 'huespedes.region')->get();
 
             foreach ($reservas as $reserva){
                 foreach ($reserva['huespedes'] as $huesped) {

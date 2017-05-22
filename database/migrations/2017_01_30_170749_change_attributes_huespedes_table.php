@@ -15,7 +15,6 @@ class ChangeAttributesHuespedesTable extends Migration
         Schema::table('huespedes', function(Blueprint $table){
         $table->string('email')->nullable()->change();
         $table->integer('telefono')->nullable()->change();
-        $table->string('pais')->nullable()->change();
         });
     }
 
