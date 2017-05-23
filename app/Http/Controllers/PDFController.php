@@ -43,7 +43,9 @@ class PDFController extends Controller
 		$consumo = 0;
 		foreach($reservas as $id){
 
-		$reserva = Reserva::where('id', $id)->with('cliente.pais', 'cliente.region')->with('habitacion.tipoHabitacion')->with('huespedes.servicios')->get();
+		$reserva = Reserva::where('id', $id)->with('cliente.pais', 'cliente.region')->with('habitacion.tipoHabitacion')->with(['huespedes.servicios' => function ($q) use($id) {
+
+        $q->wherePivot('reserva_id', $id);}])->get();
 
 			foreach ($reserva as $ra) {
 				$monto_alojamiento += $ra->monto_alojamiento;
