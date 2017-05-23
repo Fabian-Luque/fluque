@@ -87,7 +87,7 @@
                     </tr>
                     <tr>
                         <th class="head-tabla-cliente"><p class="align-left">País</p></th>
-                        <td class="data-tabla-cliente"><p class="nombre"></p>{{ $cte->pais->nombre }}<</td>
+                        <td class="data-tabla-cliente"><p class="nombre">{{ $cte->pais->nombre }}</p><</td>
                     </tr>
                     <tr>
                         <th class="head-tabla-cliente"><p class="align-left">Teléfono</p></th>
@@ -159,7 +159,7 @@
                     </tr>
                     <tr>
                         <th class="head-tabla-cliente"><p class="align-left">País</p></th>
-                        <td class="data-tabla-cliente"><p class="nombre"></p>{{ $cte->pais->nombre }}<</td>
+                        <td class="data-tabla-cliente"><p class="nombre">{{ $cte->pais->nombre }}</p><</td>
                     </tr>
                     <tr>
                         <th class="head-tabla-cliente"><p class="align-left">Teléfono</p></th>
