@@ -30,7 +30,7 @@
                 @foreach($cliente as $cte)
 
                     @if($cte->tipo_cliente_id == 1)
-                      @if($cte->pais_id != null)
+                      @if($cte->pais_id == null)
 
                     <tr>
                         <th class="head-tabla-cliente"><p class="align-left">Nombre</p></th>
@@ -54,7 +54,7 @@
                     </tr>
                     <tr>
                         <th class="head-tabla-cliente"><p class="align-left">País</p></th>
-                        <td class="data-tabla-cliente"><p class="nombre">{{ $cte->pais->nombre }}</p></td>
+                        <td class="data-tabla-cliente"><p class="nombre">/p></td>
                     </tr>
                     <tr>
                         <th class="head-tabla-cliente"><p class="align-left">Teléfono</p></th>
@@ -87,7 +87,7 @@
                     </tr>
                     <tr>
                         <th class="head-tabla-cliente"><p class="align-left">País</p></th>
-                        <td class="data-tabla-cliente"><p class="nombre">{{ $cte->pais }}</p></td>
+                        <td class="data-tabla-cliente"><p class="nombre"></p>{{ $cte->pais->nombre }}<</td>
                     </tr>
                     <tr>
                         <th class="head-tabla-cliente"><p class="align-left">Teléfono</p></th>
@@ -100,7 +100,7 @@
                      @endif
 
                     @else
-                      @if($cte->pais_id != null)
+                      @if($cte->pais_id == null)
 
                     <tr>
                         <th class="head-tabla-cliente"><p class="align-left">Razon social</p></th>
@@ -125,7 +125,7 @@
                     </tr>
                     <tr>
                         <th class="head-tabla-cliente"><p class="align-left">País</p></th>
-                        <td class="data-tabla-cliente"><p class="nombre">{{ $cte->pais->nombre }}</p></td>
+                        <td class="data-tabla-cliente"><p class="nombre"></p></td>
                     </tr>
                     <tr>
                         <th class="head-tabla-cliente"><p class="align-left">Teléfono</p></th>
@@ -159,7 +159,7 @@
                     </tr>
                     <tr>
                         <th class="head-tabla-cliente"><p class="align-left">País</p></th>
-                        <td class="data-tabla-cliente"><p class="nombre">{{ $cte->pais }}</p></td>
+                        <td class="data-tabla-cliente"><p class="nombre"></p>{{ $cte->pais->nombre }}<</td>
                     </tr>
                     <tr>
                         <th class="head-tabla-cliente"><p class="align-left">Teléfono</p></th>
