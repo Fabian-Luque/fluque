@@ -28,8 +28,8 @@ class PDFController extends Controller
 
 
 
-		$propiedad = Propiedad::where('id', $propiedad_id)->get();
-		$cliente = Cliente::where('id', $cliente_id)->get();
+		$propiedad = Propiedad::where('id', $propiedad_id)->with('pais', 'region')->get();
+		$cliente = Cliente::where('id', $cliente_id)->with('pais', 'region')->get();
 
 		$propiedad_iva = 0;
 		foreach ($propiedad as $prop) {
@@ -43,9 +43,7 @@ class PDFController extends Controller
 		$consumo = 0;
 		foreach($reservas as $id){
 
-		$reserva = Reserva::where('id', $id)->with('cliente')->with('habitacion.tipoHabitacion')->with(['huespedes.servicios' => function ($q) {
-
-        $q->where('estado', 'Por pagar');}])->get();
+		$reserva = Reserva::where('id', $id)->with('cliente.pais', 'cliente.region')->with('habitacion.tipoHabitacion')->with('huespedes.servicios')->get();
 
 			foreach ($reserva as $ra) {
 				$monto_alojamiento += $ra->monto_alojamiento;
@@ -78,7 +76,6 @@ class PDFController extends Controller
 		$total = round($neto + $iva);
 
 		}
-
 
 		$pdf = PDF::loadView('pdf.estado_cuenta', ['propiedad' => $propiedad,'consumo' => $consumo , 'cliente'=> $cliente ,'reservas_pdf'=> $reservas_pdf, 'neto' => $neto , 'iva' => $iva, 'total' => $total]);
 
