@@ -16,7 +16,7 @@
           <h3>{{$prop->email}}</h3>
           <h3>{{$prop->direccion}}</h3>
           <h3>{{$prop->ciudad}}</h3>
-          <h3>{{$prop->pais}}</h3>
+          <h3>{{$prop->pais->nombre}}</h3>
         @endforeach
         </div>
       </div>
@@ -35,6 +35,10 @@
                         <td class="data-tabla-cliente"><p class="nombre">{{ $cte->nombre }}</p></td>
                     </tr>
                     <tr>
+                        <th class="head-tabla-cliente"><p class="align-left">Apellido</p></th>
+                        <td class="data-tabla-cliente"><p class="nombre">{{ $cte->apellido }}</p></td>
+                    </tr>
+                    <tr>
                         <th class="head-tabla-cliente"><p class="align-left">Rut</p></th>
                         <td class="data-tabla-cliente"><p class="nombre">{{ $cte->rut }}</p></td>
                     </tr>
@@ -48,7 +52,7 @@
                     </tr>
                     <tr>
                         <th class="head-tabla-cliente"><p class="align-left">País</p></th>
-                        <td class="data-tabla-cliente"><p class="nombre">{{ $cte->pais }}</p></td>
+                        <td class="data-tabla-cliente"><p class="nombre">{{ $cte->pais->nombre }}</p></td>
                     </tr>
                     <tr>
                         <th class="head-tabla-cliente"><p class="align-left">Teléfono</p></th>
@@ -83,7 +87,7 @@
                     </tr>
                     <tr>
                         <th class="head-tabla-cliente"><p class="align-left">País</p></th>
-                        <td class="data-tabla-cliente"><p class="nombre">{{ $cte->pais }}</p></td>
+                        <td class="data-tabla-cliente"><p class="nombre">{{ $cte->pais->nombre }}</p></td>
                     </tr>
                     <tr>
                         <th class="head-tabla-cliente"><p class="align-left">Teléfono</p></th>
@@ -174,7 +178,7 @@
           <h3>{{$prop->email}}</h3>
           <h3>{{$prop->direccion}}</h3>
           <h3>{{$prop->ciudad}}</h3>
-          <h3>{{$prop->pais}}</h3>
+          <h3>{{$prop->pais->nombre}}</h3>
         @endforeach
         </div>
       </div>
@@ -182,7 +186,7 @@
       <div class="detalle-consumo">
         <h2 class="titulo">Detalle de consumos</h2>
         @foreach($cliente as $cte)
-        <h3 class="margen">Cliente principal de la reserva: <span>{{ $cte->nombre }}</span></h3>
+        <h3 class="margen">Cliente principal de la reserva: <span>{{ $cte->nombre }} {{ $cte->apellido }}</span></h3>
         @endforeach
 
         <div class="">
@@ -190,13 +194,13 @@
         @foreach($reservas_pdf as $reservas)
           @foreach($reservas as $reserva)
             @foreach($reserva->huespedes as $huesped)
-          <p class="negrita">{{ $huesped->nombre }}</p>
+          <p class="negrita">{{ $huesped->nombre }} {{ $huesped->apellido }}</p>
           <p class="negrita">Habitacion {{ $reserva->habitacion->nombre }} - {{ $reserva->habitacion->tipoHabitacion->nombre }}</p>
 
           <table class="tabla-comsumos margen">
               @foreach($huesped->servicios as $servicio)
             <tr>
-              <td class="data-tabla-detalles borde-derecha"><p class="">{{ $servicio->pivot->created_at }}   -  {{ $servicio->pivot->cantidad }} {{ $servicio->nombre }}</p></td>
+              <td class="data-tabla-detalles borde-derecha"><p class="">{{ $servicio->pivot->created_at->format('Y-m-d') }}   -  {{ $servicio->pivot->cantidad }} {{ $servicio->nombre }}</p></td>
               <td class="data-tabla-detalles-right align-right"><p class="nombre">${{ $servicio->pivot->precio_total }}</p></td>
             </tr>
               @endforeach
