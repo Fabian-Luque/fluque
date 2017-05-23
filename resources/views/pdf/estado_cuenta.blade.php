@@ -30,7 +30,7 @@
                 @foreach($cliente as $cte)
 
                     @if($cte->tipo_cliente_id == 1)
-                      @if($cte->pais != null)
+                      @if($cte->pais_id != null)
 
                     <tr>
                         <th class="head-tabla-cliente"><p class="align-left">Nombre</p></th>
@@ -100,7 +100,7 @@
                      @endif
 
                     @else
-                      @if($cte->pais != null)
+                      @if($cte->pais_id != null)
 
                     <tr>
                         <th class="head-tabla-cliente"><p class="align-left">Razon social</p></th>
