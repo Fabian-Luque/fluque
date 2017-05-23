@@ -100,6 +100,7 @@
                      @endif
 
                     @else
+                      @if($cte->pais != null)
 
                     <tr>
                         <th class="head-tabla-cliente"><p class="align-left">Razon social</p></th>
@@ -134,8 +135,42 @@
                         <th class="head-tabla-cliente"><p class="align-left">Email</p></th>
                         <td class="data-tabla-cliente"><p class="nombre">{{ $cte->email }}</p></td>
                     </tr>
+                      @else
+                      <tr>
+                        <th class="head-tabla-cliente"><p class="align-left">Razon social</p></th>
+                        <td class="data-tabla-cliente"><p class="nombre">{{ $cte->nombre }}</p></td>
+                    </tr>
+                    <tr>
+                        <th class="head-tabla-cliente"><p class="align-left">Rut</p></th>
+                        <td class="data-tabla-cliente"><p class="nombre">{{ $cte->rut }}</p></td>
+                    </tr>
+                    <tr>
+                        <th class="head-tabla-cliente"><p class="align-left">Giro</p></th>
+                        <td class="data-tabla-cliente"><p class="nombre">{{ $cte->giro }}</p></td>
+                    </tr>
 
+                    <tr>
+                        <th class="head-tabla-cliente"><p class="align-left">Dirección</p></th>
+                        <td class="data-tabla-cliente"><p class="nombre">{{ $cte->direccion }}</p></td>
+                    </tr>
+                    <tr>
+                        <th class="head-tabla-cliente"><p class="align-left">Ciudad</p></th>
+                        <td class="data-tabla-cliente"><p class="nombre">{{ $cte->ciudad }}</p></td>
+                    </tr>
+                    <tr>
+                        <th class="head-tabla-cliente"><p class="align-left">País</p></th>
+                        <td class="data-tabla-cliente"><p class="nombre">{{ $cte->pais }}</p></td>
+                    </tr>
+                    <tr>
+                        <th class="head-tabla-cliente"><p class="align-left">Teléfono</p></th>
+                        <td class="data-tabla-cliente"><p class="nombre">{{ $cte->telefono }}</p></td>
+                    </tr>
+                    <tr>
+                        <th class="head-tabla-cliente"><p class="align-left">Email</p></th>
+                        <td class="data-tabla-cliente"><p class="nombre">{{ $cte->email }}</p></td>
+                    </tr>
 
+                      @endif
                     @endif
 
 
