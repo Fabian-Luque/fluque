@@ -190,32 +190,32 @@
             @foreach($reservas as $reserva)
             <tr>
               <td class="data-tabla-detalles borde-derecha"><p class="titulo">Habitacion {{ $reserva->habitacion->nombre }} - {{ $reserva->habitacion->tipoHabitacion->nombre }} - {{ $reserva->ocupacion }} Huéspedes - {{ $reserva->noches }} Noches - Checkin {{ $reserva->checkin }} - Checkout {{ $reserva->checkout }}</p></td>
-              <td class="data-tabla-detalles-right align-right"><p class="nombre">${{ $reserva->monto_alojamiento }}</p></td>
+              <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{ $reserva->monto_alojamiento }}</p></td>
             </tr>
-            @endforeach
 
-          @endforeach
             <tr>
               <td class="data-tabla-detalles borde-derecha"><p class="titulo">Consumos</p></td>
-              <td class="data-tabla-detalles-right align-right"><p class="nombre">${{ $consumo }}</p></td>
+              <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{ $consumo }}</p></td>
             </tr>
             <tr>
               <th class="data-tabla-detalles borde-derecha"><p class="titulo align-right">Subtotal</p></th>
-              <td class="data-tabla-detalles-right align-right"><p class="nombre">${{ $neto }}</p></td>
+              <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{ $neto }}</p></td>
             </tr>
             <tr>
               <th class="data-tabla-detalles borde-derecha"><p class="titulo align-right">IVA</p></th>
-              <td class="data-tabla-detalles-right align-right"><p class="nombre">${{ $iva }}</p></td>
+              <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{ $iva }}</p></td>
             </tr>
             <tr>
               <th class="data-tabla-detalles borde-derecha"><p class="titulo align-right">Total</p></th>
-              <td class="data-tabla-detalles-right align-right"><p class="nombre">${{ $total }}</p></td>
+              <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{ $total }}</p></td>
             </tr>
 
           </table>
         </div>
         <!--  Fin detalles  -->
 
+            @endforeach
+          @endforeach
 
 
 
@@ -273,12 +273,12 @@
               @foreach($huesped->servicios as $servicio)
             <tr>
               <td class="data-tabla-detalles borde-derecha"><p class="">{{ $servicio->pivot->created_at->format('Y-m-d') }}   -  {{ $servicio->pivot->cantidad }} {{ $servicio->nombre }}</p></td>
-              <td class="data-tabla-detalles-right align-right"><p class="nombre">${{ $servicio->pivot->precio_total }}</p></td>
+              <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{ $servicio->pivot->precio_total }}</p></td>
             </tr>
               @endforeach
             <tr>
               <th class="data-tabla-detalles borde-derecha"><p class="titulo align-right">Total</p></th>
-              <td class="data-tabla-detalles-right align-right"><p class="nombre">${{ $huesped->monto_consumo }}</p></td>
+              <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{ $huesped->monto_consumo }}</p></td>
             </tr>
           </table>
             @endforeach
