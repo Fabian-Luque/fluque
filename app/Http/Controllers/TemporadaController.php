@@ -13,6 +13,38 @@ use App\Calendario;
 
 class TemporadaController extends Controller
 {
+
+    public function index(Request $request)
+    {
+
+        if ($request->has('propiedad_id')) {
+            
+            $propiedad = Propiedad::where('id', $request->input('propiedad_id'))->first();
+            if (!is_null($propiedad)) {
+                
+                $temporadas = Temporada::where('propiedad_id', $request->input('propiedad_id'))->get();
+                return $temporadas;
+
+            }else{
+
+                return "no se encuentra propiedad";
+
+            }
+
+
+
+
+        }else{
+
+            return "no se envia propiedad_id";
+
+
+
+        }
+
+
+    }
+
     public function store(Request $request)
     {
 
