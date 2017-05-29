@@ -9,15 +9,16 @@ class Calendario extends Model
     
 	protected $table = 'calendarios';
 
-	protected $fillable = ['disponibilidad' , 'reservas', 'precio', 'fecha', 'habitacion_id'];
+	protected $fillable = ['fecha' , 'temporada_id'];
 
+	public function temporada(){
 
-	public function habitacion(){
-
-		return $this->belongsTo('App\habitacion', 'habitacion_id');
+		return $this->belongsTo('App\Temporada', 'temporada_id');
 
 
 	}
+
+
 
 
 }

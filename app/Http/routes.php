@@ -131,6 +131,13 @@ Route::group(['middleware' => 'cors'], function(){
 
 	Route::get('regiones', 'PropiedadController@getRegiones');
 
+	Route::post('calendario/temporada', 'TemporadaController@calendario');
+
+	Route::post('precio/temporada', 'HabitacionController@temporada');
+
+	Route::get('precio/habitacion', 'HabitacionController@precioHabitacion');
+
+
 
 
 	Route::resource('user', 'UserController', ['except' => ['create', 'edit','store']]);
@@ -140,7 +147,7 @@ Route::group(['middleware' => 'cors'], function(){
 	Route::resource('reserva', 'ReservaController', ['except' => ['create', 'edit']]);
 	Route::resource('cliente', 'ClienteController', ['except' => ['create', 'edit']]);
 	Route::resource('huesped', 'HuespedController', ['except' => ['create', 'edit']]);
-
+	Route::resource('temporada', 'TemporadaController', ['except' => ['create', 'edit']]);
 
 
 });

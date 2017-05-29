@@ -60,6 +60,13 @@ class Propiedad extends Model
 
     }
 
+    public function temporadas(){
+
+        return $this->hasMany('App\Temporada', 'propiedad_id');
+
+
+    }
+
 
     public function calificacionHuespedes(){
 

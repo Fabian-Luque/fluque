@@ -18,9 +18,16 @@ class Precio extends Model
 
 	}
 
-	public function TipoMoneda(){
+	public function TipoMoneda(){			
 
 		return $this->belongsTo('App\TipoMoneda', 'tipo_moneda_id');
+
+
+	}
+
+	public function temporada(){
+
+		return $this->belongsTo('App\Temporada', 'temporada_id');
 
 
 	}

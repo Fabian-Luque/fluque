@@ -36,6 +36,13 @@ class TipoMoneda extends Model
 
     }
 
+    public function preciosTemporada(){
+
+        return $this->hasMany('App\PrecioTemporada', 'tipo_moneda_id');
+
+
+    }
+
 	public function propiedades(){
 
             return $this->belongsToMany('App\Propiedad', 'propiedad_moneda')

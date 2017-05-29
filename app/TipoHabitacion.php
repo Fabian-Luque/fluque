@@ -18,5 +18,12 @@ class TipoHabitacion extends Model
 
 	}
 
+	public function precios(){
+
+		return $this->hasMany('App\PrecioTemporada', 'tipo_habitacion_id');
+
+
+	}
+
 
 }

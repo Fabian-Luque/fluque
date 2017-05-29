@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTemporadasTable extends Migration
+class CreateCalendarioTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,12 +12,11 @@ class CreateTemporadasTable extends Migration
      */
     public function up()
     {
-        Schema::create('temporadas', function (Blueprint $table) {
+        Schema::create('calendarios', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('nombre');
-            $table->string('color');
-            $table->integer('propiedad_id')->unsigned();
-            $table->foreign('propiedad_id')->references('id')->on('propiedades')->onDelete('cascade');
+            $table->date('fecha');
+            $table->integer('temporada_id')->unsigned();
+            $table->foreign('temporada_id')->references('id')->on('temporadas')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -29,6 +28,6 @@ class CreateTemporadasTable extends Migration
      */
     public function down()
     {
-        Schema::drop('temporadas');
+        Schema::drop('calendarios');
     }
 }

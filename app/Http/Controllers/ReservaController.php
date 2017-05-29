@@ -1848,7 +1848,7 @@ class ReservaController extends Controller
 
         })->with(['habitaciones' => function ($q) use($id) {
 
-        $q->where('propiedad_id', $id)->with('tipoHabitacion')->with('precios.TipoMoneda');}])->get();
+        $q->where('propiedad_id', $id)->with('tipoHabitacion');}])->get();
 
 
         $reservas = Reserva::whereHas('habitacion', function($query) use($id){
