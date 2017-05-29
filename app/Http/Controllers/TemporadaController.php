@@ -193,7 +193,7 @@ class TemporadaController extends Controller
         /*$now = Carbon::now();*/
 
         $fechaInicio = '2017-05-01';
-        $fechaFin = '2017-06-01';
+        $fechaFin = '2017-06-02';
 
         /*$comienzo = $now->startOfMonth(); */       //primer dia del mes
        /* $termino = $comienzo->addYears(1);*/         //suma un año a fecha comienzo
@@ -204,11 +204,11 @@ class TemporadaController extends Controller
 
         $propiedad_id = $request->get('propiedad_id');
 
-        $calendario = Calendario::whereHas('temporada', function($query) use($propiedad_id){
+/*        $calendario = Calendario::whereHas('temporada', function($query) use($propiedad_id){
 
             $query->where('propiedad_id', $propiedad_id);
 
-        })->where('fecha', '>=' , $fechaInicio)->where('fecha', '<' , $fechaFin)->get();
+        })->where('fecha', '>=' , $fechaInicio)->where('fecha', '<' , $fechaFin)->get();*/
 
         $auxTemporada = 0;
         $periodos = [];
