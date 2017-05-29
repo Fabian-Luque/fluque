@@ -193,7 +193,7 @@ class TemporadaController extends Controller
         /*$now = Carbon::now();*/
 
         $fechaInicio = '2017-05-01';
-        $fechaFin = '2017-05-31';
+        $fechaFin = '2017-06-01';
 
         /*$comienzo = $now->startOfMonth(); */       //primer dia del mes
        /* $termino = $comienzo->addYears(1);*/         //suma un año a fecha comienzo
