@@ -188,9 +188,9 @@ class TemporadaController extends Controller
     public function getCalendario(Request $request)
     {
         
-        set_time_limit(1000000);
+        /*set_time_limit(1000000);*/
 
-        $now = Carbon::now();
+        /*$now = Carbon::now();*/
 
         $fechaInicio = '2017-05-01';
         $fechaFin = '2017-05-31';
@@ -215,7 +215,7 @@ class TemporadaController extends Controller
         $dias = [];
         $auxFecha = new Carbon($fechaInicio);   
         while ($auxFecha < $fechaFin ) {
-            
+
             $fecha = Calendario::whereHas('temporada', function($query) use($propiedad_id){
 
                 $query->where('propiedad_id', $propiedad_id);
@@ -225,15 +225,19 @@ class TemporadaController extends Controller
             if (!is_null($fecha)) {
 
                 if ($auxTemporada == $fecha->temporada_id) {
-                    $dias = ['dia' => $fecha->fecha];
-                }else{
 
-      
-              
+
+                    $day = ["fecha" => $fecha->fecha];
+                    array_push($dias, $day);
+
+
+
+                }else{
 
                     if ($auxTemporada == 0) {
                         
-                        $dias = ['dia' => $fecha->fecha];
+                    $day = ["fecha" => $fecha->fecha];
+                    array_push($dias, $day);
 
                     }else{
 
@@ -242,44 +246,42 @@ class TemporadaController extends Controller
                      $periodo = ['temporada_id' => $auxTemporada, 'color' => $color_temporada->color, 'dias' => $dias];
 
                      array_push($periodos, $periodo);
+                     
+                     $dias = [];
 
-                     unset($dias);
-
-                     $dias = ['dia' => $fecha->fecha];
+                     $day = ["fecha" => $fecha->fecha];
+                     array_push($dias, $day);
 
                     }
-
-                    //cambio temporada
+                    
                     $auxTemporada = $fecha->temporada_id;
-
                 }
-                
-
-
-
-
 
             }else{
 
                 if ($auxTemporada != 0) {
 
-                $color_temporada = Temporada::where('id', $auxTemporada)->first();
+                    if (count($dias) != 0 ) {
 
-                $periodo = ['temporada_id' => $auxTemporada, 'color' => $color_temporada->color, 'dias' => $dias];
-                array_push($periodos, $periodo);
+                    $color_temporada = Temporada::where('id', $auxTemporada)->first();
 
-                unset($dias);
+                    $periodo = ['temporada_id' => $auxTemporada, 'color' => $color_temporada->color, 'dias' => $dias];
+                    array_push($periodos, $periodo);
+
+
+                    $dias = [];
+                        
+                    }
+
                     
                 }
-
-
             }
 
 
-
-        }
-
         $auxFecha->addDay();
+
+        }// fin while
+
 
         return $periodos;
 
