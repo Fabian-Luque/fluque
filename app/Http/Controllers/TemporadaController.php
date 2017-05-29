@@ -243,7 +243,7 @@ class TemporadaController extends Controller
 
                      $color_temporada = Temporada::where('id', $auxTemporada)->first();
 
-                     $periodo = ['temporada_id' => $auxTemporada, 'color' => $color_temporada->color, 'dias' => $dias];
+                     $periodo = ['temporada_id' => $fecha->temporada_id, 'color' => $color_temporada->color, 'dias' => $dias];
 
                      array_push($periodos, $periodo);
                      
@@ -265,7 +265,7 @@ class TemporadaController extends Controller
 
                     $color_temporada = Temporada::where('id', $auxTemporada)->first();
 
-                    $periodo = ['temporada_id' => $auxTemporada, 'color' => $color_temporada->color, 'dias' => $dias];
+                    $periodo = ['temporada_id' => $fecha->temporada_id, 'color' => $color_temporada->color, 'dias' => $dias];
                     array_push($periodos, $periodo);
 
 
