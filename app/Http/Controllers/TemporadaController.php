@@ -214,7 +214,7 @@ class TemporadaController extends Controller
         $periodos = [];
         $dias = [];
         $auxFecha = new Carbon($fechaInicio);   
-        while ($auxFecha < $fechaFin ) {
+        while ($auxFecha <= $fechaFin ) {
 
             $fecha = Calendario::whereHas('temporada', function($query) use($propiedad_id){
 
