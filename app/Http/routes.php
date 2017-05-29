@@ -137,6 +137,8 @@ Route::group(['middleware' => 'cors'], function(){
 
 	Route::get('precio/habitacion', 'HabitacionController@precioHabitacion');
 
+	Route::get('periodo/calendario', 'TemporadaController@getCalendario');
+
 
 
 
