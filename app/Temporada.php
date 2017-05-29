@@ -8,7 +8,7 @@ class Temporada extends Model
 {
     protected $table = 'temporadas';
 
-	protected $fillable = ['nombre', 'fecha_inicio', 'fecha_fin', 'propiedad_id'];
+	protected $fillable = ['nombre', 'color', 'propiedad_id'];
 
 
 	public function propiedad(){
