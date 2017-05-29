@@ -241,20 +241,31 @@ class TemporadaController extends Controller
 
                     }else{
 
-                     $color_temporada = Temporada::where('id', $auxTemporada)->first();
+                    if (count($dias) != 0) {
+                   
+                         $color_temporada = Temporada::where('id', $auxTemporada)->first();
 
-                     $periodo = ['temporada_id' => $auxTemporada, 'color' => $color_temporada->color, 'dias' => $dias];
+                         $periodo = ['temporada_id' => $auxTemporada, 'color' => $color_temporada->color, 'dias' => $dias];
 
-                     array_push($periodos, $periodo);
-                     
-                     $dias = [];
+                         array_push($periodos, $periodo);
+                         
+                         $dias = [];
 
-                     $day = ["fecha" => $fecha->fecha];
-                     array_push($dias, $day);
+                         $day = ["fecha" => $fecha->fecha];
+                         array_push($dias, $day);
 
+                        }else{
+
+                         $day = ["fecha" => $fecha->fecha];
+                         array_push($dias, $day);
+
+
+
+                        }
                     }
-                    
-                    $auxTemporada = $fecha->temporada_id;
+
+                        
+                        $auxTemporada = $fecha->temporada_id;
                 }
 
             }else{
