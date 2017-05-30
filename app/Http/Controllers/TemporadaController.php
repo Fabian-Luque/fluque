@@ -188,39 +188,31 @@ class TemporadaController extends Controller
     public function getCalendario(Request $request)
     {
         
-        /*set_time_limit(1000000);*/
+        $now = Carbon::now();
 
-        /*$now = Carbon::now();*/
+        $comienzo      = $now->startOfMonth();                 //primer dia del mes
+        $fecha_inicio  = $comienzo->format('Y-m-d');
+                  
+        $termino       = $comienzo->addYears(1);               //suma un año a fecha comienzo
+        $fecha_termino = $termino->format('Y-m-d');
 
-        $fechaInicio = '2017-05-01';
-        $fechaFin = '2017-06-02';
+        $propiedad_id  = $request->get('propiedad_id');
 
-        /*$comienzo = $now->startOfMonth(); */       //primer dia del mes
-       /* $termino = $comienzo->addYears(1);*/         //suma un año a fecha comienzo
 
-/*        $comienzo_mes = $comienzo->format('Y-m-d');
 
-        $termino_mes = $termino->format('Y-m-d');*/
-
-        $propiedad_id = $request->get('propiedad_id');
-
-/*        $calendario = Calendario::whereHas('temporada', function($query) use($propiedad_id){
-
-            $query->where('propiedad_id', $propiedad_id);
-
-        })->where('fecha', '>=' , $fechaInicio)->where('fecha', '<' , $fechaFin)->get();*/
-
-        $auxTemporada = 0;
-        $periodos = [];
-        $dias = [];
-        $auxFecha = new Carbon($fechaInicio);   
-        while ($auxFecha <= $fechaFin ) {
+        $auxTemporada   = 0;
+        $periodos       = [];
+        $dias           = [];
+        $auxInicio      = new Carbon($fecha_inicio);
+        $auxFin         = new Carbon($fecha_termino);  
+        
+        while ($auxInicio <= $auxFin ) {
 
             $fecha = Calendario::whereHas('temporada', function($query) use($propiedad_id){
 
                 $query->where('propiedad_id', $propiedad_id);
 
-            })->where('fecha', $auxFecha)->with('temporada')->first();
+            })->where('fecha', $auxInicio)->with('temporada')->first();
 
             if (!is_null($fecha)) {
 
@@ -289,7 +281,7 @@ class TemporadaController extends Controller
             }
 
 
-        $auxFecha->addDay();
+        $auxInicio->addDay();
 
         }// fin while
 
