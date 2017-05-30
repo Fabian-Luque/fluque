@@ -139,6 +139,8 @@ Route::group(['middleware' => 'cors'], function(){
 
 	Route::get('periodo/calendario', 'TemporadaController@getCalendario');
 
+	Route::post('eliminar/calendario', 'TemporadaController@eliminarCalendario');
+
 
 
 

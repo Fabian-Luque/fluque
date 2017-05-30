@@ -187,131 +187,153 @@ class TemporadaController extends Controller
 
     public function getCalendario(Request $request)
     {
-        
-        $now = Carbon::now();
 
-        $comienzo      = $now->startOfMonth();                 //primer dia del mes
-        $fecha_inicio  = $comienzo->format('Y-m-d');
-                  
-        $termino       = $comienzo->addYears(1);               //suma un año a fecha comienzo
-        $fecha_termino = $termino->format('Y-m-d');
+        if ($request->has('propiedad_id')) {
+                
+        $propiedad = Propiedad::where('id', $request->input('propiedad_id'))->first();
 
-        $propiedad_id  = $request->get('propiedad_id');
+        if (!is_null($propiedad)) {
+            
+            $propiedad_id  = $request->get('propiedad_id');
+            $now = Carbon::now();
 
+            $comienzo      = $now->startOfMonth();                 //primer dia del mes
+            $fecha_inicio  = $comienzo->format('Y-m-d');
+                      
+            $termino       = $comienzo->addYears(1);               //suma un año a fecha comienzo
+            $fecha_termino = $termino->format('Y-m-d');
 
+            $auxTemporada   = 0;
+            $periodos       = [];
+            $dias           = [];
+            $auxInicio      = new Carbon($fecha_inicio);
+            $auxFin         = new Carbon($fecha_termino);  
 
-        $auxTemporada   = 0;
-        $periodos       = [];
-        $dias           = [];
-        $auxInicio      = new Carbon($fecha_inicio);
-        $auxFin         = new Carbon($fecha_termino);  
-        
-        while ($auxInicio <= $auxFin ) {
+            while ($auxInicio <= $auxFin ) {
 
-            $fecha = Calendario::whereHas('temporada', function($query) use($propiedad_id){
+                $fecha = Calendario::whereHas('temporada', function($query) use($propiedad_id){
 
-                $query->where('propiedad_id', $propiedad_id);
+                    $query->where('propiedad_id', $propiedad_id);
 
-            })->where('fecha', $auxInicio)->with('temporada')->first();
+                })->where('fecha', $auxInicio)->with('temporada')->first();
 
-            if (!is_null($fecha)) {
+                if (!is_null($fecha)) {
 
-                if ($auxTemporada == $fecha->temporada_id) {
-
-
-                    $day = ["fecha" => $fecha->fecha];
-                    array_push($dias, $day);
-
+                    if ($auxTemporada == $fecha->temporada_id) {
 
 
-                }else{
-
-                    if ($auxTemporada == 0) {
-                        
-                    $day = ["fecha" => $fecha->fecha];
-                    array_push($dias, $day);
+                        $day = ["fecha" => $fecha->fecha];
+                        array_push($dias, $day);
 
                     }else{
 
-                    if (count($dias) != 0) {
-                   
-                         $color_temporada = Temporada::where('id', $auxTemporada)->first();
-
-                         $periodo = ['temporada_id' => $auxTemporada, 'color' => $color_temporada->color, 'dias' => $dias];
-
-                         array_push($periodos, $periodo);
-                         
-                         $dias = [];
-
-                         $day = ["fecha" => $fecha->fecha];
-                         array_push($dias, $day);
+                        if ($auxTemporada == 0) {
+                            
+                        $day = ["fecha" => $fecha->fecha];
+                        array_push($dias, $day);
 
                         }else{
 
-                         $day = ["fecha" => $fecha->fecha];
-                         array_push($dias, $day);
+                        if (count($dias) != 0) {
+                       
+                             $color_temporada = Temporada::where('id', $auxTemporada)->first();
+
+                             $periodo = ['temporada_id' => $auxTemporada, 'color' => $color_temporada->color, 'dias' => $dias];
+
+                             array_push($periodos, $periodo);
+                             
+                             $dias = [];
+
+                             $day = ["fecha" => $fecha->fecha];
+                             array_push($dias, $day);
+
+                            }else{
+
+                             $day = ["fecha" => $fecha->fecha];
+                             array_push($dias, $day);
 
 
 
+                            }
                         }
+
+                            
+                            $auxTemporada = $fecha->temporada_id;
                     }
 
-                        
-                        $auxTemporada = $fecha->temporada_id;
-                }
+                }else{
 
-            }else{
+                    if ($auxTemporada != 0) {
 
-                if ($auxTemporada != 0) {
+                        if (count($dias) != 0 ) {
 
-                    if (count($dias) != 0 ) {
+                        $color_temporada = Temporada::where('id', $auxTemporada)->first();
 
-                    $color_temporada = Temporada::where('id', $auxTemporada)->first();
-
-                    $periodo = ['temporada_id' => $auxTemporada, 'color' => $color_temporada->color, 'dias' => $dias];
-                    array_push($periodos, $periodo);
+                        $periodo = ['temporada_id' => $auxTemporada, 'color' => $color_temporada->color, 'dias' => $dias];
+                        array_push($periodos, $periodo);
 
 
-                    $dias = [];
+                        $dias = [];
+                            
+                        }
+
                         
                     }
-
-                    
                 }
-            }
+
+                    $auxInicio->addDay();
+
+            }// fin while
+
+                    return $periodos;
+        }else{
+
+            return "no se encuentra propiedad";
+
+        }
 
 
-        $auxInicio->addDay();
 
-        }// fin while
+        }else{
 
-
-        return $periodos;
+            return "no se envia propiedad_id";
 
 
-
-
+        }
+        
     }
 
-
-/*    public function calendario(Request $request){
+    public function eliminarCalendario(Request $request){
 
         if($request->has('fechas') && $request->has('propiedad_id')){
 
+           $propiedad_id = $request->get('propiedad_id');
            $propiedad = Propiedad::where('id', $request->get('propiedad_id'))->first();
 
            if(!is_null($propiedad)){
 
                 foreach ($request['fechas'] as $fecha) {
-                    $calendario                    = new calendario();
-                    $calendario->fecha             = $fecha['fecha'];
-                    $calendario->temporada_id      = $fecha['temporada_id'];
-                    $calendario->save();
+
+                    $fecha_calendario = Calendario::whereHas('temporada', function($query) use($propiedad_id){
+
+                    $query->where('propiedad_id', $propiedad_id);
+
+                    })->where('fecha', $fecha['fecha'])->first();
+
+                   if (!is_null($fecha_calendario)) {
+
+                    $fecha_calendario->delete();
+                       
+                   }else{
+
+                        return "La fecha ". $fecha['fecha']." no existe";
+
+                   }
+
 
                 }
 
-                return "Guardado";
-
+                return "Eliminado";
 
            }else{
 
@@ -328,14 +350,9 @@ class TemporadaController extends Controller
 
         }
 
-    }*/
 
 
-
-
-
-
-
+    }
 
 
 
