@@ -64,7 +64,7 @@ class HabitacionController extends Controller
 
                     $query->where('checkin','<=' ,$fecha)->where('checkout', '>', $fecha)->where('estado_reserva_id', '!=' , 6)->where('estado_reserva_id', '!=' , 7);
 
-        })->with('precios.TipoMoneda')->get();
+            })->with('precios.TipoMoneda')->get();
 
 
            foreach ($habitaciones as $habitacion){
@@ -555,11 +555,7 @@ class HabitacionController extends Controller
                 $habitacion = Habitacion::where('id', $habitacion_id)->where('propiedad_id', $propiedad_id)->first();
 
                 $precios = $habitacion->tipoHabitacion->precios;
-
-                /*$tipo_habitacion_id = $habitacion->tipo_habitacion_id;*/
-
-
-        
+    
 
                 $fechaInicio = new Carbon($request->fecha_inicio);
                 $fechaFin    = new Carbon($request->fecha_fin);
@@ -567,9 +563,6 @@ class HabitacionController extends Controller
                 
                 $cantidad_dias = $fechaFin->diffInDays($fechaInicio);    // diferencia de dias entre fechas 
             
-
-                /*$habitaciones_propiedad = Habitacion::where('propiedad_id', $propiedad_id)->with('precios.TipoMoneda')->get();*/
-
 
                 $suma_clp = 0;
                 $suma_usd = 0;
@@ -584,9 +577,6 @@ class HabitacionController extends Controller
                     $temporada_id = $temporada->id;
 
                     $precios_temporada = $precios->where('temporada_id', $temporada_id);
-
-                    /*$hab = Habitacion::where('id', $habitacion_id)->with(['tipoHabitacion.precios' => function ($q) use($tipo_habitacion_id, $temporada_id) {
-                    $q->where('tipo_habitacion_id', $tipo_habitacion_id)->where('temporada_id', $temporada_id)->with('tipoMoneda');}])->get();*/
 
 
 
