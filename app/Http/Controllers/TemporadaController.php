@@ -328,6 +328,10 @@ class TemporadaController extends Controller
 
 
             $temporada_id = $request->input('temporada_id');
+            $temporada = Temporada::where('id', $temporada_id)->first();
+
+            $propiedad = Propiedad::where('id', $temporada->propiedad_id)->first();
+            $moneda_propiedad = $propiedad->tipoMonedas;
 
             $tipos_habitacion = TipoHabitacion::all();
 
@@ -350,15 +354,23 @@ class TemporadaController extends Controller
             }
 
             foreach ($tipos_habitacion as $value) {
+
              $tp = $value->tipos_moneda;
 
-             foreach ($tp as $moneda) {
-
-
-             }
-
                 if (count($tp) == 0) {
-                    
+
+                    $temporada = (int)$temporada_id;
+
+                    foreach ($moneda_propiedad as $moneda) {
+
+                        
+                        $p = ['id' => $moneda->id, 'nombre' => $moneda->nombre, 'cantidad_decimales' => $moneda->cantidad_decimales, 'precios_temporada' =>  [[ 'precio' => null, 'temporada_id' => $temporada ]]] ;
+
+                         $tp->push($p);
+                    }
+
+
+/*                    
                     $temporada = (int)$temporada_id;
                    
                     $p = ['id' => 1, 'nombre' => 'CLP', 'cantidad_decimales' => 0, 'precios_temporada' =>  [[ 'precio' => null, 'temporada_id' => $temporada ]]] ;
@@ -366,7 +378,7 @@ class TemporadaController extends Controller
 
                     $tp->push($p);
                     $tp->push($p1);
-
+*/
                 }
 
                 
