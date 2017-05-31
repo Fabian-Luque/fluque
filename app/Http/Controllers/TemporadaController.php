@@ -338,9 +338,9 @@ class TemporadaController extends Controller
 
                 $tipo_moneda = TipoMoneda::whereHas('preciosTemporada', function($query) use($temporada_id, $tipo_habitacion_id){
                     
-                    $query->where('temporada_id', $temporada_id)->where('tipo_habitacion_id', $tipo_habitacion_id);})->with(['preciosTemporada' => function ($q) use($temporada_id) {
+                    $query->where('temporada_id', $temporada_id)->where('tipo_habitacion_id', $tipo_habitacion_id);})->with(['preciosTemporada' => function ($q) use($temporada_id, $tipo_habitacion_id) {
 
-                $q->where('temporada_id', $temporada_id);}])->get();
+                $q->where('temporada_id', $temporada_id)->where('tipo_habitacion_id', $tipo_habitacion_id);}])->get();
 
                 
                 $tipo->tipos_moneda = $tipo_moneda;
