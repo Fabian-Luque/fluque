@@ -667,14 +667,29 @@ class HabitacionController extends Controller
             if ($request->has('precios')){
                 
                 foreach ($request['precios'] as $precio) {
-                    
-                    $p                      = new PrecioTemporada();
 
-                    $p->precio              = $precio['precio'];
-                    $p->tipo_habitacion_id  = $precio['tipo_habitacion_id'];
-                    $p->tipo_moneda_id      = $precio['tipo_moneda_id'];
-                    $p->temporada_id        = $precio['temporada_id'];
-                    $p->save();
+                  $precio_tipo_habitacion = PrecioTemporada::where('tipo_habitacion_id', $precio['tipo_habitacion_id'])->where('tipo_moneda_id', $precio['tipo_moneda_id'])->where('temporada_id', $precio['temporada_id'])->first();
+
+                    
+                  if (is_null($precio_tipo_habitacion)) {
+
+                    $precio_temporada                      = new PrecioTemporada;
+
+                    $precio_temporada->precio              = $precio['precio'];
+                    $precio_temporada->tipo_habitacion_id  = $precio['tipo_habitacion_id'];
+                    $precio_temporada->tipo_moneda_id      = $precio['tipo_moneda_id'];
+                    $precio_temporada->temporada_id        = $precio['temporada_id'];
+                    $precio_temporada->save();
+                        
+                  }else{
+
+                    $precio_temporada = $precio['precio'];
+
+                    $precio_tipo_habitacion->update(array('precio'=> $precio_temporada));
+
+
+                  }
+
 
                 }
 

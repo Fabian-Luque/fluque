@@ -353,7 +353,22 @@ class TemporadaController extends Controller
                 
             }
 
+            foreach ($tipos_habitacion as $value) {
+                $tp = $value->tipos_moneda;
+
+                if (count($tp) == 0) {
+                    
+                    $p = ['nombre' => 1];
+                    $tp->push($p);
+
+                }
+
+                
+            }
+
             return $tipos_habitacion;
+
+
            
 
 
