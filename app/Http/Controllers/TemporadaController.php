@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Response;
 use App\TipoHabitacion;
-use App\tipoMoneda;
+use App\TipoMoneda;
 
 class TemporadaController extends Controller
 {
