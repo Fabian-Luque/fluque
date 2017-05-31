@@ -347,7 +347,7 @@ class TemporadaController extends Controller
 
                   
 
-                $tipo->tipo_moneda = $tipo_moneda;
+                $tipo->tipos_moneda = $tipo_moneda;
               
                     /*return $tipo;*/
                 
