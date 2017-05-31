@@ -326,11 +326,8 @@ class TemporadaController extends Controller
     public function getPreciosTemporadas(Request $request)
     {
 
-            /*$propiedad_id = $request->input('propiedad_id');*/
 
             $temporada_id = $request->input('temporada_id');
-
-
 
             $tipos_habitacion = TipoHabitacion::all();
 
@@ -345,8 +342,7 @@ class TemporadaController extends Controller
 
                 $q->where('temporada_id', $temporada_id);}])->get();
 
-                  
-
+                
                 $tipo->tipos_moneda = $tipo_moneda;
               
                     /*return $tipo;*/
@@ -354,12 +350,22 @@ class TemporadaController extends Controller
             }
 
             foreach ($tipos_habitacion as $value) {
-                $tp = $value->tipos_moneda;
+             $tp = $value->tipos_moneda;
+
+             foreach ($tp as $moneda) {
+
+
+             }
 
                 if (count($tp) == 0) {
                     
-                    $p = ['nombre' => 1];
+                    $temporada = (int)$temporada_id;
+                   
+                    $p = ['id' => 1, 'nombre' => 'CLP', 'cantidad_decimales' => 0, 'precios_temporada' =>  [[ 'precio' => null, 'temporada_id' => $temporada ]]] ;
+                    $p1 = ['id' => 2, 'nombre' => 'USD', 'cantidad_decimales' => 2, 'precios_temporada' => [[ 'precio' => null, 'temporada_id' => $temporada ]] ];
+
                     $tp->push($p);
+                    $tp->push($p1);
 
                 }
 
