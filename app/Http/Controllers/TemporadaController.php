@@ -9,6 +9,8 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Response;
+use App\TipoHabitacion;
+use App\tipoMoneda;
 
 class TemporadaController extends Controller
 {
@@ -318,6 +320,42 @@ class TemporadaController extends Controller
             return "solicitud incompleta";
 
         }
+
+    }
+
+    public function getPreciosTemporadas(Request $request)
+    {
+
+            /*$propiedad_id = $request->input('propiedad_id');*/
+
+            $temporada_id = $request->input('temporada_id');
+
+
+
+            $tipos_habitacion = TipoHabitacion::all();
+
+
+            foreach ($tipos_habitacion as $tipo) {
+
+                $tipo_habitacion_id = $tipo->id;
+
+                $tipo_moneda = TipoMoneda::whereHas('preciosTemporada', function($query) use($temporada_id, $tipo_habitacion_id){
+                    
+                    $query->where('temporada_id', $temporada_id)->where('tipo_habitacion_id', $tipo_habitacion_id);})->with(['preciosTemporada' => function ($q) use($temporada_id) {
+
+                $q->where('temporada_id', $temporada_id);}])->get();
+
+                  
+
+                $tipo->tipo_moneda = $tipo_moneda;
+              
+                    /*return $tipo;*/
+                
+            }
+
+            return $tipos_habitacion;
+           
+
 
     }
 

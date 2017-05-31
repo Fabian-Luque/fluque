@@ -141,7 +141,7 @@ Route::group(['middleware' => 'cors'], function(){
 
 	Route::post('eliminar/calendario', 'TemporadaController@eliminarCalendario');
 
-
+	Route::get('temporada/precios', 'TemporadaController@getPreciosTemporadas');
 
 
 	Route::resource('user', 'UserController', ['except' => ['create', 'edit','store']]);

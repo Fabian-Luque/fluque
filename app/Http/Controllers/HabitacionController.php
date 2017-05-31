@@ -549,14 +549,15 @@ class HabitacionController extends Controller
 
                 $propiedad = Propiedad::where('id', $propiedad_id)->first();
             
-                $cantidad_monedas = count($propiedad->tipoMonedas);
+                /*$cantidad_monedas = count($propiedad->tipoMonedas);*/
 
 
                 $habitacion = Habitacion::where('id', $habitacion_id)->where('propiedad_id', $propiedad_id)->first();
-
+                $tipo_habitacion_id = $habitacion->tipo_habitacion_id;
                 $precios = $habitacion->tipoHabitacion->precios;
-    
-
+                
+                if (count($precios) != 0) {
+                        
                 $fechaInicio = new Carbon($request->fecha_inicio);
                 $fechaFin    = new Carbon($request->fecha_fin);
 
@@ -574,37 +575,63 @@ class HabitacionController extends Controller
                     $temporada = Temporada::where('propiedad_id', $propiedad_id)->whereHas('calendarios', function($query) use($auxFecha){
                         $query->where('fecha', $auxFecha);})->first();
 
+                    if (!is_null($temporada)) {
+                        
                     $temporada_id = $temporada->id;
 
-                    $precios_temporada = $precios->where('temporada_id', $temporada_id);
+                    $precios_temporada = $precios->where('temporada_id', $temporada_id)->where('tipo_habitacion_id', $habitacion->tipo_habitacion_id);
+
+                        if (count($precios_temporada) != 0) {
+                        
+                            foreach ($precios_temporada as $precio_temporada) {
+                                if ($precio_temporada->tipo_moneda_id == 1) {
+                                    $suma_clp += $precio_temporada->precio;
+                                }elseif($precio_temporada->tipo_moneda_id == 2){
+                                    $suma_usd += $precio_temporada->precio;
+                                }
+                            }
 
 
+                        }else{
 
-                    foreach ($precios_temporada as $precio_temporada) {
-                        if ($precio_temporada->tipo_moneda_id == 1) {
-                            $suma_clp += $precio_temporada->precio;
-                        }elseif($precio_temporada->tipo_moneda_id == 2){
-                            $suma_usd += $precio_temporada->precio;
+                             return "No hay precio configurado para este tipo de habitacion";
+
                         }
+
+
+                    }else{
+
+                        return "Debe configurar una temporada para la fecha ".$auxFecha;
+
                     }
+
 
 
 
                     $auxFecha->addDay();
 
                 }
+                    
+
+                }else{
+
+                    return "no hay precios";
+
+
+                }
+
 
 
                 foreach ($propiedad->tipoMonedas as $moneda) {
 
                     if ($moneda->nombre == "CLP") {
                         
-                        $promedio_moneda = ['monto' => ($suma_clp/$cantidad_dias), 'tipo_moneda_id' => $moneda->pivot->tipo_moneda_id, 'nombre_moneda' => $moneda->nombre, 'cantidad_decimales' => $moneda->cantidad_decimales];
+                        $promedio_moneda = ['monto' => round($suma_clp/$cantidad_dias), 'tipo_moneda_id' => $moneda->pivot->tipo_moneda_id, 'nombre_moneda' => $moneda->nombre, 'cantidad_decimales' => $moneda->cantidad_decimales];
                         array_push($precio_promedio, $promedio_moneda);
 
                     }elseif($moneda->nombre == "USD"){
 
-                        $promedio_moneda = ['monto' => ($suma_usd/$cantidad_dias), 'tipo_moneda_id' =>  $moneda->pivot->tipo_moneda_id, 'nombre_moneda' => $moneda->nombre, 'cantidad_decimales' => $moneda->cantidad_decimales];
+                        $promedio_moneda = ['monto' => round($suma_usd/$cantidad_dias), 'tipo_moneda_id' =>  $moneda->pivot->tipo_moneda_id, 'nombre_moneda' => $moneda->nombre, 'cantidad_decimales' => $moneda->cantidad_decimales];
                         array_push($precio_promedio, $promedio_moneda);
 
 
