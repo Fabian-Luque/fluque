@@ -15,6 +15,7 @@ use App\Pago;
 use App\Reserva;
 use App\Pais;
 use App\Region;
+use App\PrecioTemporada;
 use Illuminate\Http\Request;
 use Response;
 use Validator;
@@ -352,19 +353,19 @@ class PropiedadController extends Controller
     public function eliminarMoneda(Request $request)
     {
 
-        if ($request->has('id')) {
+        if ($request->has('moneda_id')) {
 
-            $id = $request->input('id');
-
-            $moneda         = PropiedadMoneda::where('id', $id)->first();
+            $moneda_id      = $request->input('moneda_id');
+            $moneda         = PropiedadMoneda::where('id', $moneda_id)->first();
             $tipo_moneda_id = $moneda->tipo_moneda_id;
             $propiedad_id   = $moneda->propiedad_id;
 
-            $precios_habitacion = Precio::where('tipo_moneda_id', $tipo_moneda_id)->whereHas('habitacion', function ($query) use ($propiedad_id) {
+
+            $precios_habitacion = PrecioTemporada::whereHas('temporada', function($query) use($propiedad_id){
 
                 $query->where('propiedad_id', $propiedad_id);
 
-            })->get();
+            })->where('tipo_moneda_id', $tipo_moneda_id)->get();
 
             $precios_servicio = PrecioServicio::where('tipo_moneda_id', $tipo_moneda_id)->whereHas('servicio', function ($query) use ($propiedad_id) {
 

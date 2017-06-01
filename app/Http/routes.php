@@ -117,7 +117,7 @@ Route::group(['middleware' => 'cors'], function(){
 
 	Route::post('ingreso/moneda/propiedad', 'PropiedadController@ingresoMonedas');
 
-	Route::get('eliminar/moneda/propiedad', 'PropiedadController@eliminarMoneda');
+	Route::post('eliminar/moneda/propiedad', 'PropiedadController@eliminarMoneda');
 
 	Route::put('editar/moneda/{id}', 'PropiedadController@editarMoneda');
 
