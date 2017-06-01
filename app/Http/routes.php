@@ -143,6 +143,8 @@ Route::group(['middleware' => 'cors'], function(){
 
 	Route::get('temporada/precios', 'TemporadaController@getPreciosTemporadas');
 
+	Route::post('editar/temporadas', 'TemporadaController@editarTemporadas');
+
 
 	Route::resource('user', 'UserController', ['except' => ['create', 'edit','store']]);
 	Route::resource('propiedad', 'PropiedadController', ['except' => ['create', 'edit', 'store']]);

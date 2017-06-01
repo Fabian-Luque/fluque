@@ -392,6 +392,42 @@ class TemporadaController extends Controller
 
     }
 
+    public function editarTemporadas(Request $request)
+    {
+
+        if ($request->has('temporadas')) {
+        
+           $temporadas = $request['temporadas'];
+
+           foreach ($temporadas as $temporada) {
+               
+                $temp = Temporada::where('id', $temporada['temporada_id'])->first();
+
+                $temp->update(array('color' => $temporada['color']));
+
+
+           }
+
+           return "Temporadas actualizadas";
+
+        }else{
+
+
+            return "no se envia temporadas";
+
+        }
+
+
+
+
+
+
+
+
+
+
+    }
+
 
     public function destroy($id){
 
