@@ -353,13 +353,35 @@ class TemporadaController extends Controller
                 
             }
 
+            /*return $tipos_habitacion;*/
+
             foreach ($tipos_habitacion as $value) {
 
-             $tp = $value->tipos_moneda;
+                $tp = $value->tipos_moneda;
 
-                if (count($tp) == 0) {
+                if (count($tp) != 0 && count($tp) < count($moneda_propiedad)) {
 
                     $temporada = (int)$temporada_id;
+
+
+                    foreach ($tp as $aux) {
+                       
+
+
+                        foreach ($moneda_propiedad as $moneda) {
+
+                            if ($aux->nombre != $moneda->nombre) {
+
+                            $p = ['id' => $moneda->id, 'nombre' => $moneda->nombre, 'cantidad_decimales' => $moneda->cantidad_decimales, 'precios_temporada' =>  [[ 'precio' => null, 'temporada_id' => $temporada ]]] ;
+                                    
+                             $tp->push($p);
+                                }    
+
+
+                        }
+                    }
+
+                }else{
 
                     foreach ($moneda_propiedad as $moneda) {
 
@@ -370,15 +392,7 @@ class TemporadaController extends Controller
                     }
 
 
-/*                    
-                    $temporada = (int)$temporada_id;
-                   
-                    $p = ['id' => 1, 'nombre' => 'CLP', 'cantidad_decimales' => 0, 'precios_temporada' =>  [[ 'precio' => null, 'temporada_id' => $temporada ]]] ;
-                    $p1 = ['id' => 2, 'nombre' => 'USD', 'cantidad_decimales' => 2, 'precios_temporada' => [[ 'precio' => null, 'temporada_id' => $temporada ]] ];
 
-                    $tp->push($p);
-                    $tp->push($p1);
-*/
                 }
 
                 
