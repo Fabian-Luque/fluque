@@ -277,23 +277,7 @@ class PropiedadController extends Controller
 
                     $propiedad->clasificacionMonedas()->attach($clasificacion_moneda, ['tipo_moneda_id' => $tipo_moneda]);
 
-                    if ($cantidad_habitaciones > 0) {
 
-                        foreach ($propiedad->habitaciones as $habitacion) {
-
-                            $habitacion_id = $habitacion->id;
-
-                            $precio                    = new Precio();
-                            $precio->precio_habitacion = null;
-                            $precio->tipo_moneda_id    = $tipo_moneda;
-                            $precio->habitacion_id     = $habitacion_id;
-                            $precio->save();
-
-                            $habitacion->update(array('estado_habitacion_id' => 2));
-
-                        }
-
-                    }
 
                     if ($cantidad_servicios > 0) {
 
