@@ -359,15 +359,13 @@ class TemporadaController extends Controller
 
                 $tp = $value->tipos_moneda;
 
-                if (count($tp) != 0 && count($tp) < count($moneda_propiedad)) {
+                if (count($tp) != 0 && count($tp) <= count($moneda_propiedad)) {
 
                     $temporada = (int)$temporada_id;
 
 
                     foreach ($tp as $aux) {
                        
-
-
                         foreach ($moneda_propiedad as $moneda) {
 
                             if ($aux->nombre != $moneda->nombre) {
