@@ -386,7 +386,7 @@ class HabitacionController extends Controller
 
             //////////////////////////eliminar arreglo de precios que se envia en habitaicon/////////////////
 
-            foreach ($request->get('precios') as $precio) {
+/*            foreach ($request->get('precios') as $precio) {
             
                 $precio_habitacion = $precio['precio_habitacion'];
                 $tipo_moneda_id = $precio['tipo_moneda_id'];
@@ -410,7 +410,7 @@ class HabitacionController extends Controller
                 $habitacion->update(array('estado_habitacion_id' => 2 ));
 
 
-            }
+            }*/
             
         ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -452,7 +452,7 @@ class HabitacionController extends Controller
 
             'nombre'                => '',
             'precio_base'           => 'numeric',
-            'precios'               => 'array',
+           /* 'precios'               => 'array',*/
             'disponibilidad_base'   => 'numeric',
             'piso'                  => 'numeric',
             'tipo_habitacion_id'    => 'numeric',
@@ -498,7 +498,7 @@ class HabitacionController extends Controller
 
 
 
-            foreach ($request->get('precios') as $precio) {
+/*            foreach ($request->get('precios') as $precio) {
                 
                 $id = $precio['id'];
                 $precio_habitacion = $precio['precio_habitacion'];
@@ -519,7 +519,7 @@ class HabitacionController extends Controller
                 $habitacion->update(array('estado_habitacion_id' => 2 ));
 
 
-            }
+            }*/
 
 
 
