@@ -326,33 +326,6 @@ return $habitaciones_tipo;
 
                 $hab = Habitacion::where('id', $habitacion->id)->first();
 
-                //////////////////////////eliminar arreglo de precios que se envia en habitaicon/////////////////
-
-/*            foreach ($request->get('precios') as $precio) {
-
-$precio_habitacion = $precio['precio_habitacion'];
-$tipo_moneda_id = $precio['tipo_moneda_id'];
-
-$precio                           = new Precio();
-$precio->precio_habitacion        = $precio_habitacion;
-$precio->tipo_moneda_id           = $tipo_moneda_id;
-$precio->habitacion_id            = $hab->id;
-$precio->save();
-
-}
-
-if(count($habitacion->precios) == count($propiedad->tipoMonedas)){
-
-$habitacion->update(array('estado_habitacion_id' => 1 ));
-
-}else{
-
-$habitacion->update(array('estado_habitacion_id' => 2 ));
-
-}*/
-
-                ////////////////////////////////////////////////////////////////////////////////////////////////////
-
                 $data = [
                     'errors' => false,
                     'msg'    => 'Habitacion creado satisfactoriamente',
@@ -425,27 +398,6 @@ $habitacion->update(array('estado_habitacion_id' => 2 ));
             $equipamiento->update($request->all());
             $equipamiento->touch();
 
-/*            foreach ($request->get('precios') as $precio) {
-
-$id = $precio['id'];
-$precio_habitacion = $precio['precio_habitacion'];
-$tipo_moneda       = $precio['tipo_moneda_id'];
-
-$precio = Precio::where('id', $id)->first();
-$precio->update(array('precio_habitacion' => $precio_habitacion , 'tipo_moneda_id' => $tipo_moneda));
-
-}
-
-if(count($habitacion->precios) == count($propiedad->tipoMonedas)){
-
-$habitacion->update(array('estado_habitacion_id' => 1 ));
-
-}else{
-
-$habitacion->update(array('estado_habitacion_id' => 2 ));
-
-}*/
-
             $data = [
 
                 'errors' => false,
@@ -497,8 +449,6 @@ $habitacion->update(array('estado_habitacion_id' => 2 ));
 
                     if (count($precios_temporada) == count($propiedad_monedas)) {
 
-                        /*if (count($precios_temporada) != 0) {*/
-
                         foreach ($propiedad_monedas as $moneda) {
                             $tipo_moneda = $moneda->id;
 
@@ -514,11 +464,6 @@ $habitacion->update(array('estado_habitacion_id' => 2 ));
                             }
                         }
 
-/*                        }else{
-
-return "No hay precio configurado para este tipo de habitacion en temporada " . $temporada->nombre;
-
-}*/
                     } else {
 
                         $data = array(
@@ -548,8 +493,6 @@ return "No hay precio configurado para este tipo de habitacion en temporada " . 
                 $auxFecha->addDay();
 
             }
-
-            /*return $auxPrecio;*/
 
             foreach ($propiedad_monedas as $moneda) {
 
@@ -619,11 +562,25 @@ return "No hay precio configurado para este tipo de habitacion en temporada " . 
 
             }
 
-            return "precio guardados";
+            $data = array(
+
+                'msj'    => "Precios guardados",
+                'errors' => false,
+
+            );
+
+            return Response::json($data, 201);
 
         } else {
 
-            return "no se envia precios";
+            $data = array(
+
+                'msj'    => "No se envia precios",
+                'errors' => true,
+
+            );
+
+            return Response::json($data, 400);
 
         }
 

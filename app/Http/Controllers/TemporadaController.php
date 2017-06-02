@@ -28,13 +28,27 @@ class TemporadaController extends Controller
 
             } else {
 
-                return "no se encuentra propiedad";
+                $data = [
+                    'errors' => true,
+                    'msg'    => 'No se encuentra propiedad',
+
+                ];
+
+                return Response::json($data, 404);
 
             }
 
         } else {
 
-            return "no se envia propiedad_id";
+
+
+            $data = [
+                    'errors' => true,
+                    'msg'    => 'No se envia propiedad_id',
+
+                ];
+
+                return Response::json($data, 400);
 
         }
 
@@ -152,17 +166,35 @@ class TemporadaController extends Controller
 
                 }
 
-                return "Guardado";
+                $data = [
+                'errors' => false,
+                'msg'    => 'Guardado',
+            ];
+            return Response::json($data, 201);
 
             } else {
 
-                return "propiedad no existe";
+
+                $data = [
+                    'errors' => true,
+                    'msg'    => 'No se encuentra propiedad',
+
+                ];
+
+                return Response::json($data, 404);
 
             }
 
         } else {
 
-            return "solicitud incompleta";
+
+            $data = [
+                    'errors' => true,
+                    'msg'    => 'Solicitud incompleta',
+
+                ];
+
+                return Response::json($data, 400);
 
         }
 
@@ -265,13 +297,25 @@ class TemporadaController extends Controller
                 return $periodos;
             } else {
 
-                return "no se encuentra propiedad";
+                $data = [
+                    'errors' => true,
+                    'msg'    => 'No se encuentra propiedad',
+
+                ];
+
+                return Response::json($data, 404);
 
             }
 
         } else {
 
-            return "no se envia propiedad_id";
+            $data = [
+                    'errors' => true,
+                    'msg'    => 'Solicitud incompleta',
+
+                ];
+
+                return Response::json($data, 400);
 
         }
 
@@ -307,17 +351,37 @@ class TemporadaController extends Controller
 
                 }
 
-                return "Eliminado";
+                $data = [
+
+                'errors' => false,
+                'msg' => 'Eliminado',
+
+                ];
+
+                return Response::json($data, 202);
+
 
             } else {
 
-                return "propiedad no existe";
+                $data = [
+                    'errors' => true,
+                    'msg'    => 'No se encuentra propiedad',
+
+                ];
+
+                return Response::json($data, 404);
 
             }
 
         } else {
 
-            return "solicitud incompleta";
+            $data = [
+                    'errors' => true,
+                    'msg'    => 'Solicitud incompleta',
+
+                ];
+
+                return Response::json($data, 400);
 
         }
 
@@ -407,11 +471,25 @@ class TemporadaController extends Controller
 
             }
 
-            return "Temporadas actualizadas";
+
+            $data = [
+
+                'errors' => false,
+                'msg'    => 'Actualizadao',
+
+            ];
+
+            return Response::json($data, 201);
 
         } else {
 
-            return "no se envia temporadas";
+            $data = [
+                    'errors' => true,
+                    'msg'    => 'Solicitud incompleta',
+
+                ];
+
+                return Response::json($data, 400);
 
         }
 
