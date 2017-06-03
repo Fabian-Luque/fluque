@@ -913,11 +913,11 @@ class ReservaController extends Controller
 
                       if($reserva->estado_reserva_id == 5 && $monto == 0){
 
-                        $reserva->update(array('monto_por_pagar' => $monto, 'metodo_pago_id' => $metodo_pago, 'estado_reserva_id' => 4));
+                        $reserva->update(array('monto_por_pagar' => $monto, 'estado_reserva_id' => 4));
 
                       }else{
 
-                        $reserva->update(array('monto_por_pagar' => $monto, 'metodo_pago_id' => $metodo_pago));
+                        $reserva->update(array('monto_por_pagar' => $monto));
 
                       }
 
