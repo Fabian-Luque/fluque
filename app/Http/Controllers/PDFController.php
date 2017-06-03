@@ -99,7 +99,7 @@ class PDFController extends Controller
 
             
           $propiedad_id = $request->input('propiedad_id');
-          $propiedad = Propiedad::where('id', $request->input('propiedad_id'))->first();
+          $propiedad = Propiedad::where('id', $request->input('propiedad_id'))->with('pais')->first();
 
           if (!is_null($propiedad)){
 
@@ -110,7 +110,6 @@ class PDFController extends Controller
               })->with(['reservas' => function ($q){
 
               $q->where('estado_reserva_id', 3)->with('huespedes');}])->get();
-
 
               $pdf = PDF::loadView('pdf.huesped', ['propiedad' => [$propiedad], 'fecha' =>  $fecha ,'habitaciones' => $habitaciones]);
 

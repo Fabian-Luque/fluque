@@ -16,7 +16,7 @@
           <h3>{{$prop->email}}</h3>
           <h3>{{$prop->direccion}}</h3>
           <h3>{{$prop->ciudad}}</h3>
-          <h3>{{$prop->pais}}</h3>
+          <h3>{{$prop->pais->nombre}}</h3>
         @endforeach
         </div>
       </div>
