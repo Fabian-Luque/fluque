@@ -97,6 +97,8 @@ class PDFController extends Controller
 
           $fecha = Carbon::today()->format('d-m-Y');
 
+          $fecha_actual = Carbon::today()->format('Y-m-d');
+
             
           $propiedad_id = $request->input('propiedad_id');
           $propiedad = Propiedad::where('id', $request->input('propiedad_id'))->with('pais')->first();
@@ -107,16 +109,13 @@ class PDFController extends Controller
 
                         $query->where('estado_reserva_id', 3);
 
-              })->with(['reservas' => function ($q){
+              })->with(['reservas' => function ($q) use($fecha_actual){
 
-              $q->where('estado_reserva_id', 3)->with('huespedes');}])->get();
+              $q->where('estado_reserva_id', 3)->where('checkin', '<=', $fecha_actual)->where('checkout', '>', $fecha_actual)->with('huespedes');}])->get();
 
               $pdf = PDF::loadView('pdf.huesped', ['propiedad' => [$propiedad], 'fecha' =>  $fecha ,'habitaciones' => $habitaciones]);
 
               return $pdf->download('archivo.pdf');
-
-
-
 
 
           }else{
