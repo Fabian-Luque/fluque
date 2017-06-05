@@ -144,7 +144,7 @@ class PDFController extends Controller
 		    if($request->has('propiedad_id')){
 
             $propiedad_id = $request->input('propiedad_id');
-            $propiedad = Propiedad::where('id', $request->input('propiedad_id'))->first();
+            $propiedad = Propiedad::where('id', $request->input('propiedad_id'))->with('pais')->first();
 
             if(!is_null($propiedad)){
 
