@@ -505,7 +505,7 @@ return $habitaciones_tipo;
     public function precioHabitacion(Request $request)
     {
 
-        if ($request->has('fecha_inicio') && $request->has('fecha_fin') && $request->has('habitacion_id') && $request->has('propiedad_id')) {
+        if ($request->has('fecha_fin') && $request->has('fecha_inicio') && $request->has('habitacion_id') && $request->has('propiedad_id')) {
 
             $habitacion_id = $request->input('habitacion_id');
             $propiedad_id  = $request->input('propiedad_id');
