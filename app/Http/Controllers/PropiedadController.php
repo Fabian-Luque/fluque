@@ -15,6 +15,7 @@ use App\Pago;
 use App\Reserva;
 use App\Pais;
 use App\Region;
+use App\Huesped;
 use App\PrecioTemporada;
 use Illuminate\Http\Request;
 use Response;
@@ -23,6 +24,483 @@ use \Carbon\Carbon;
 
 class PropiedadController extends Controller
 {
+
+        public function reportesMensual(Request $request){
+
+
+
+
+            $enUTC = Carbon::now();
+
+            $enChile = $enUTC->tz('America/Santiago');
+
+            $timestamp = '2017-06-08 00:00:00';
+
+            $pais = 'Africa/Tunis';
+
+            $fechaParaQuery = Carbon::createFromFormat('Y-m-d H:i:s', $timestamp, $pais)->tz('UTC');
+
+            $fecha_fin = $fechaParaQuery->addDay();
+
+
+
+
+
+
+
+
+            if($request->has('fecha_inicio') && $request->has('fecha_fin')){
+
+                    $inicio       = new Carbon($request->input('fecha_inicio'));
+                    $fin          = new Carbon($request->input('fecha_fin'));
+
+                    $fechaFin     = $fin->addDay();
+
+                    $fecha_inicio = date("Y-m-d h:i:s",  strtotime( $inicio.'+4 hours'));
+                    $fecha_fin    = date("Y-m-d h:i:s",  strtotime( $fechaFin.'+4 hours'));
+                
+
+            }elseif ($request->has('fecha_inicio')) {
+                
+                    $inicio       = new Carbon($request->input('fecha_inicio'));
+                    $fecha_inicio = date("Y-m-d h:i:s",  strtotime( $inicio.'+4 hours'));
+
+                    $fechaFin     = $inicio->addDay();
+                    $fecha_fin    = date("Y-m-d h:i:s",  strtotime( $fechaFin.'+4 hours'));
+
+            }
+
+
+                    $propiedad_id = $request->input('propiedad_id');
+                    $propiedad = Propiedad::where('id', $request->input('propiedad_id'))->first();
+
+
+
+                    
+                    $pagos = Pago::where('created_at','>=' , $fecha_inicio)->where('created_at', '<' , $fecha_fin)->whereHas('reserva.habitacion', function($query) use($propiedad_id){
+
+                    $query->where('propiedad_id', $propiedad_id);
+
+                    })->get();
+
+
+
+
+                    $pagos_particulares = Pago::where('created_at','>=' , $fecha_inicio)->where('created_at', '<' , $fecha_fin)->whereHas('reserva.habitacion', function($query) use($propiedad_id){
+
+                    $query->where('propiedad_id', $propiedad_id);
+
+                    })->whereHas('reserva.cliente', function($query){
+
+                    $query->where('tipo_cliente_id', 1);
+
+                    })->with('reserva.cliente')->get();
+
+
+
+                    $pagos_empresas= Pago::where('created_at','>=' , $fecha_inicio)->where('created_at', '<' , $fecha_fin)->whereHas('reserva.habitacion', function($query) use($propiedad_id){
+
+                    $query->where('propiedad_id', $propiedad_id);
+
+                    })->whereHas('reserva.cliente', function($query){
+
+                    $query->where('tipo_cliente_id', 2);
+
+                    })->with('reserva.cliente')->get();
+
+
+
+                    $reservas = Reserva::where('created_at' , '>=', $fecha_inicio)->where('created_at', '<' , $fecha_fin)->whereHas('habitacion', function($query) use($propiedad_id){
+
+                    $query->where('propiedad_id', $propiedad_id);
+
+                    })->with('huespedes')->get();
+
+
+                /* INGRESOS TOTALES DEL DIA  */
+
+                   $ingresos_totales_dia = [];
+                   $ingresos_habitacion = [];
+                   $ingresos_consumos = [];
+                   $ingresos_por_efectivo = [];
+                   $ingresos_por_credito = [];
+                   $ingresos_por_debito = [];
+                   $ingresos_por_cheque = [];
+                   $ingresos_por_tarjeta_credito = [];
+                   $ingresos_por_transferencia = [];
+                   $ingresos_por_particulares = [];
+                   $ingresos_por_empresas = [];
+
+
+
+                   foreach ($propiedad->tipoMonedas as $moneda) {
+
+                      $tipo_moneda_id = $moneda->pivot->tipo_moneda_id;
+
+                      $pagos_tipo_moneda = $pagos->where('tipo_moneda_id', $tipo_moneda_id);
+
+                      $pagos_por_particulares = $pagos_particulares->where('tipo_moneda_id', $tipo_moneda_id);
+
+                      $pagos_por_empresas = $pagos_empresas->where('tipo_moneda_id', $tipo_moneda_id);
+
+
+
+                      $suma_pagos = 0;
+                      $ingresos_por_habitacion = 0;
+                      $ingresos_por_consumos = 0;
+                      $ingresos_efectivo = 0;
+                      $ingresos_credito = 0;
+                      $ingresos_debito = 0;
+                      $ingresos_cheque = 0;
+                      $ingresos_tarjeta_credito = 0;
+                      $ingresos_transferencia = 0;
+                      $ingresos_particulares = 0;
+                      $ingresos_empresas = 0;
+
+                      foreach ($pagos_tipo_moneda as $pago) {
+
+                          $suma_pagos += $pago->monto_equivalente;
+
+                          if($pago->tipo == 'Pago habitacion'){
+
+                            $ingresos_por_habitacion += $pago->monto_equivalente;
+
+
+                          }elseif($pago->tipo == 'Pago consumos'){
+
+                            $ingresos_por_consumos += $pago->monto_equivalente;
+
+
+                          }elseif ($pago->tipo == 'Confirmacion de reserva') {
+                            $ingresos_por_habitacion += $pago->monto_equivalente;
+
+                          }/*elseif($pago->tipo == 'Pago reserva') {
+
+                            $monto_pago = $pago->monto_pago;
+                            $monto_equivalente = $pago->monto_equivalente;
+
+                            $pagos_reserva = $pago->reserva->pagos;
+
+                            if(!is_null($pagos_reserva)){
+                                
+                                    $reserva_monto_alojamiento = $pago->reserva->monto_alojamiento;
+
+                                    $reserva_monto_consumos = $pago->reserva->monto_consumo;
+
+
+                                    $pagos_habitacion_realizados = 0;
+                                    $pagos_consumos_realizados = 0;
+                                    foreach ($pagos_reserva as $pago_reserva) {
+                                            
+                                       if($pago_reserva->tipo == 'Pago habitacion'){
+                                            $pagos_habitacion_realizados += $pago_reserva->monto_pago;
+
+
+                                       }elseif ($pago_reserva->tipo == 'Pago consumos') {
+                                            $pagos_consumos_realizados += $pago_reserva->monto_pago;
+                                       }elseif ($pago_reserva->tipo == 'Confirmacion de reserva') {
+                                            $pagos_habitacion_realizados += $pago_reserva->monto_pago;
+                                       }
+
+                                    }
+
+
+                                    if($pago->reserva->tipo_moneda_id == $pago->tipo_moneda_id){
+
+                                      $monto_pagado_habitacion = $reserva_monto_alojamiento - $pagos_habitacion_realizados;
+                                      $monto_pagado_consumos = $reserva_monto_consumos - $pagos_consumos_realizados;
+
+                                      $ingresos_por_habitacion += $monto_pagado_habitacion;
+                                      $ingresos_por_consumos += $monto_pagado_consumos;
+
+
+
+                                    }else{
+
+
+                                      $monto_pagado_habitacion = $reserva_monto_alojamiento - $pagos_habitacion_realizados;
+                                      $monto_pagado_consumos = $reserva_monto_consumos - $pagos_consumos_realizados;
+
+                                      if($pago->reserva->tipo_moneda_id == 1){
+
+                                          $conversion = round($monto_pago / $monto_equivalente);
+
+                                          $ingresos_por_habitacion += ($monto_pagado_habitacion / $conversion);
+                                          $ingresos_por_consumos += ($monto_pagado_consumos / $conversion);
+                                        
+                                      }elseif ($pago->reserva->tipo_moneda_id == 2) {
+
+                                          $conversion = round($monto_equivalente/$monto_pago);
+
+                                          $ingresos_por_habitacion += ($monto_pagado_habitacion * $conversion);
+                                          $ingresos_por_consumos += ($monto_pagado_consumos * $conversion);
+                                      }
+
+
+
+                                    }
+
+                            }
+
+
+
+                          }*/
+
+                          /*INGRESOS POR METODO PAGO */
+
+
+                          if($pago->metodo_pago_id == 1){
+
+                            $ingresos_efectivo += $pago->monto_equivalente;
+
+                          }elseif($pago->metodo_pago_id == 2){
+                            $ingresos_credito += $pago->monto_equivalente;
+
+
+                          }elseif($pago->metodo_pago_id == 3) {
+
+                            $ingresos_debito += $pago->monto_equivalente;
+
+                          }elseif($pago->metodo_pago_id == 4) {
+                            $ingresos_cheque += $pago->monto_equivalente;
+
+                          }elseif($pago->metodo_pago_id == 5) {
+
+                            $ingresos_tarjeta_credito += $pago->monto_equivalente;
+                          }elseif($pago->metodo_pago_id == 6) {
+
+                            $ingresos_transferencia += $pago->monto_equivalente;
+                          }
+
+
+
+
+                      }
+
+                          /*INGRESOS POR TIPO DE CLIENTE*/
+                      
+
+                          /* CLIENTE PARTICULAR*/
+
+                          foreach ($pagos_por_particulares as $pago) {
+                              
+                              $ingresos_particulares += $pago->monto_equivalente;
+
+                            
+                          }
+
+
+                          
+                            /* CLIENTE EMPRESA*/
+
+                          foreach ($pagos_por_empresas as $pago) {
+                              
+                              $ingresos_empresas += $pago->monto_equivalente;
+
+                          }
+
+
+
+
+
+                    
+
+                      $ingresos = ['monto' => $suma_pagos , 'tipo_moneda_id' => $tipo_moneda_id, 'nombre_moneda' => $moneda->nombre, 'cantidad_decimales' => $moneda->cantidad_decimales]; 
+                      $ingresos_hab = ['monto' => $ingresos_por_habitacion,'tipo_moneda_id' => $tipo_moneda_id, 'nombre_moneda' => $moneda->nombre, 'cantidad_decimales' => $moneda->cantidad_decimales];
+                      $ingresos_serv = ['monto' => $ingresos_por_consumos,'tipo_moneda_id' => $tipo_moneda_id, 'nombre_moneda' => $moneda->nombre, 'cantidad_decimales' => $moneda->cantidad_decimales];
+                      $efectivo = ['monto' => $ingresos_efectivo,'tipo_moneda_id' => $tipo_moneda_id, 'nombre_moneda' => $moneda->nombre, 'cantidad_decimales' => $moneda->cantidad_decimales];
+                      $credito = ['monto' => $ingresos_credito, 'tipo_moneda_id' => $tipo_moneda_id, 'nombre_moneda' => $moneda->nombre, 'cantidad_decimales' => $moneda->cantidad_decimales];
+                      $debito = ['monto' => $ingresos_debito, 'tipo_moneda_id' => $tipo_moneda_id, 'nombre_moneda' => $moneda->nombre, 'cantidad_decimales' => $moneda->cantidad_decimales];
+                      $cheque = ['monto' => $ingresos_cheque, 'tipo_moneda_id' => $tipo_moneda_id, 'nombre_moneda' => $moneda->nombre, 'cantidad_decimales' => $moneda->cantidad_decimales];
+                      $tarjeta_credito = ['monto' => $ingresos_tarjeta_credito, 'tipo_moneda_id' => $tipo_moneda_id, 'nombre_moneda' => $moneda->nombre, 'cantidad_decimales' => $moneda->cantidad_decimales];
+                      $transferencia = ['monto' => $ingresos_transferencia, 'tipo_moneda_id' => $tipo_moneda_id, 'nombre_moneda' => $moneda->nombre, 'cantidad_decimales' => $moneda->cantidad_decimales];
+                      $particulares = ['monto' => $ingresos_particulares, 'tipo_moneda_id' => $tipo_moneda_id, 'nombre_moneda' => $moneda->nombre, 'cantidad_decimales' => $moneda->cantidad_decimales];
+                      $empresas = ['monto' => $ingresos_empresas, 'tipo_moneda_id' => $tipo_moneda_id, 'nombre_moneda' => $moneda->nombre, 'cantidad_decimales' => $moneda->cantidad_decimales];
+
+
+                      array_push($ingresos_totales_dia, $ingresos);
+                      array_push($ingresos_habitacion, $ingresos_hab);
+                      array_push($ingresos_consumos, $ingresos_serv);
+                      array_push($ingresos_por_efectivo, $efectivo);
+                      array_push($ingresos_por_credito, $credito);
+                      array_push($ingresos_por_debito, $debito);
+                      array_push($ingresos_por_cheque, $cheque);
+                      array_push($ingresos_por_tarjeta_credito, $tarjeta_credito);
+                      array_push($ingresos_por_transferencia, $transferencia);
+                      array_push($ingresos_por_particulares, $particulares);
+                      array_push($ingresos_por_empresas, $empresas);
+
+                      
+                }
+
+
+
+                    /*RESERVAS POR TIPO DE FUENTE */
+
+                     $pagina_web = count($reservas->where('tipo_fuente_id', 1));
+                     $caminando = count($reservas->where('tipo_fuente_id', 2));
+                     $telefono = count($reservas->where('tipo_fuente_id', 3));
+                     $email = count($reservas->where('tipo_fuente_id', 4));
+                     $redes_sociales = count($reservas->where('tipo_fuente_id', 5));
+                     $expedia = count($reservas->where('tipo_fuente_id', 6));
+                     $booking = count($reservas->where('tipo_fuente_id', 7));
+                     $airbnb = count($reservas->where('tipo_fuente_id', 8));
+
+                     /*RESERVAS ANULADAS*/
+
+                    $reservas_anuladas = Reserva::where('updated_at' , '>=', $fecha_inicio)->where('updated_at', '<' , $fecha_fin)->whereHas('habitacion', function($query) use($propiedad_id){
+
+                    $query->where('propiedad_id', $propiedad_id);
+
+                    })->where('estado_reserva_id', 6)->get();
+
+                    /*RESERVAS NO SHOW*/
+
+                    $reservas_no_show = Reserva::where('updated_at' , '>=', $fecha_inicio)->where('updated_at', '<' , $fecha_fin)->whereHas('habitacion', function($query) use($propiedad_id){
+
+                    $query->where('propiedad_id', $propiedad_id);
+
+                    })->where('estado_reserva_id', 7)->get();
+
+
+                    /*PAISES*/
+
+
+                   $paises = Pais::where(function ($query) use ($propiedad_id, $fecha_inicio, $fecha_fin) {
+                        $query->whereHas('huespedes.reservas.habitacion', function ($query) use ($propiedad_id) {
+                            $query->where('propiedad_id', $propiedad_id);
+                        });
+                        $query->WhereHas('huespedes.reservas', function ($query) use ($fecha_inicio, $fecha_fin) {
+                            $query->where('reservas.created_at' , '>=', $fecha_inicio)->where('reservas.created_at', '<' , $fecha_fin);
+                        });
+                        
+                    })->where('id', '!=', $propiedad->pais_id )->get();
+
+                   $residientes_extranjero = [];
+                   
+                   foreach ($paises as $pais) {
+                       
+                        $huespedes = 0;
+                        $noches    = 0;
+                        foreach ($reservas as $reserva) {
+                            foreach ($reserva->huespedes as $huesped) {
+                                if ($pais->id == $huesped->pais_id) {
+                                    $huespedes++;
+                                    $noches += $reserva->noches;
+
+                                }
+
+                            }
+
+                        }
+                        
+                        $extranjeros = [ 'nombre' => $pais->nombre, 'llegadas' => $huespedes, 'pernoctacion' => ($huespedes * $noches)];
+                        array_push($residientes_extranjero, $extranjeros);
+
+                   }
+
+
+                 /* REGIONES*/
+
+
+                    $regiones = Region::where('pais_id', $propiedad->pais_id)->get();
+
+                    $residentes_pais_propiedad = [];
+
+                    foreach ($regiones as $region) {
+                        
+                        $huespedes = 0;
+                        $noches    = 0;
+                        foreach ($reservas as $reserva) {
+                            foreach ($reserva->huespedes as $huesped) {
+                                if ($region->id == $huesped->region_id) {
+                                    $huespedes++;
+                                    $noches += $reserva->noches;
+
+                                }
+
+                            }
+
+                        }
+                        
+                        $residentes_pais = [ 'nombre' => $region->nombre, 'llegadas' => $huespedes, 'pernoctacion' => ($huespedes * $noches)];
+                        array_push($residentes_pais_propiedad, $residentes_pais);
+
+
+                    }
+
+
+
+
+                  $data = [ 
+                            'ingresos_totales'          => $ingresos_totales_dia,
+                            'reservas_realizadas'       => count($reservas),
+                            'reservas_anuladas'         => count($reservas_anuladas),
+                            'reservas_no_show'          => count($reservas_no_show),
+                            'ingresos_por_habitacion'   => $ingresos_habitacion,
+                            'ingresos_por_servicios'    => $ingresos_consumos,
+
+
+                            'ingresos_por_metodo_pago'  => [
+                                                            ['nombre' => 'Efectivo', 'id' => 1, 'montos' =>$ingresos_por_efectivo],
+                                                            ['nombre' => 'Credito', 'id' => 2,'montos' => $ingresos_por_credito],
+                                                            ['nombre' => 'Debito', 'id' => 3,'montos' => $ingresos_por_debito],
+                                                            ['nombre' => 'Cheque', 'id' => 4,'montos' => $ingresos_por_cheque],
+                                                            ['nombre' => 'Tarjeta credito', 'id' => 5,'montos' => $ingresos_por_tarjeta_credito],
+                                                            ['nombre' => 'Transferencia', 'id' => 6,'montos' => $ingresos_por_transferencia ]
+                                                           ],
+
+                            'reservas_por_fuente'       => [
+
+                                                            ['nombre' => 'Pagina web',     'id' => 1, 'cantidad' => $pagina_web],
+                                                            ['nombre' => 'Caminando',      'id' => 2, 'cantidad' => $caminando],
+                                                            ['nombre' => 'Telefono',       'id' => 3, 'cantidad' => $telefono],
+                                                            ['nombre' => 'Email',          'id' => 4, 'cantidad' => $email],
+                                                            ['nombre' => 'Redes sociales', 'id' => 5, 'cantidad' => $redes_sociales],
+                                                            ['nombre' => 'Expedia',        'id' => 6, 'cantidad' => $expedia],
+                                                            ['nombre' => 'Booking',        'id' => 7, 'cantidad' => $booking],
+                                                            ['nombre' => 'Airbnb',         'id' => 8, 'cantidad' => $airbnb]
+
+
+
+
+                                                           ],
+                            'ingresos_tipo_cliente'     =>[      
+                                                            ['nombre'=> 'Particular' , 'id'=> 1, 'montos' => $ingresos_por_particulares],
+                                                            ['nombre'=> 'Empresa' , 'id'=> 2, 'montos' => $ingresos_por_empresas]
+                                                          ],
+
+                            'residentes_extranjeros'    =>[
+
+                                                            ['paises' => $residientes_extranjero]
+                                                           ],
+
+                            'residentes_locales'    =>[
+
+                                                            ['regiones' => $residentes_pais_propiedad]
+                                                           ]               
+
+                            ]; 
+
+
+
+
+                return $data;
+
+
+
+
+
+
+
+
+
+
+
+    } //fin metodo reportesMensual
+
+
+
 
     public function ingresoServicio(Request $request)
     {
