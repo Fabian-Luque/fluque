@@ -49,9 +49,8 @@ class PropiedadController extends Controller
 
             }else{
 
-            $fecha_fin = $fecha_inicio->addDay();
+            $fecha_fin    = Carbon::createFromFormat('Y-m-d H:i:s', $inicio, $pais)->tz('UTC')->addDay();
 
-                
             }
 
 
@@ -63,33 +62,16 @@ class PropiedadController extends Controller
                     })->get();
 
 
-
-
-                    $pagos_particulares = Pago::where('created_at','>=' , $fecha_inicio)->where('created_at', '<' , $fecha_fin)->whereHas('reserva.habitacion', function($query) use($propiedad_id){
+                    $reservas_creadas = Reserva::where('created_at' , '>=', $fecha_inicio)->where('created_at', '<' , $fecha_fin)->whereHas('habitacion', function($query) use($propiedad_id){
 
                     $query->where('propiedad_id', $propiedad_id);
 
-                    })->whereHas('reserva.cliente', function($query){
+                    })->get();
 
-                    $query->where('tipo_cliente_id', 1);
+                    $auxInicio = $inicio->format('Y-m-d');
+                    $auxFin    = $fecha_fin->format('Y-m-d');
 
-                    })->with('reserva.cliente')->get();
-
-
-
-                    $pagos_empresas= Pago::where('created_at','>=' , $fecha_inicio)->where('created_at', '<' , $fecha_fin)->whereHas('reserva.habitacion', function($query) use($propiedad_id){
-
-                    $query->where('propiedad_id', $propiedad_id);
-
-                    })->whereHas('reserva.cliente', function($query){
-
-                    $query->where('tipo_cliente_id', 2);
-
-                    })->with('reserva.cliente')->get();
-
-
-
-                    $reservas = Reserva::where('created_at' , '>=', $fecha_inicio)->where('created_at', '<' , $fecha_fin)->whereHas('habitacion', function($query) use($propiedad_id){
+                    $reservas = Reserva::where('checkin' , '>=', $auxInicio)->where('checkin', '<' , $auxFin)->whereHas('habitacion', function($query) use($propiedad_id){
 
                     $query->where('propiedad_id', $propiedad_id);
 
@@ -107,12 +89,6 @@ class PropiedadController extends Controller
                       $tipo_moneda_id = $moneda->pivot->tipo_moneda_id;
 
                       $pagos_tipo_moneda = $pagos->where('tipo_moneda_id', $tipo_moneda_id);
-
-                      $pagos_por_particulares = $pagos_particulares->where('tipo_moneda_id', $tipo_moneda_id);
-
-                      $pagos_por_empresas = $pagos_empresas->where('tipo_moneda_id', $tipo_moneda_id);
-
-
 
                       $suma_pagos = 0;
                       $ingresos_por_habitacion = 0;
@@ -174,12 +150,12 @@ class PropiedadController extends Controller
 
                     /*PAISES*/
 
-                   $paises = Pais::where(function ($query) use ($propiedad_id, $fecha_inicio, $fecha_fin) {
+                    $paises = Pais::where(function ($query) use ($propiedad_id, $auxInicio, $auxFin) {
                         $query->whereHas('huespedes.reservas.habitacion', function ($query) use ($propiedad_id) {
                             $query->where('propiedad_id', $propiedad_id);
                         });
-                        $query->WhereHas('huespedes.reservas', function ($query) use ($fecha_inicio, $fecha_fin) {
-                            $query->where('reservas.created_at' , '>=', $fecha_inicio)->where('reservas.created_at', '<' , $fecha_fin);
+                        $query->WhereHas('huespedes.reservas', function ($query) use ($auxInicio, $auxFin) {
+                            $query->where('reservas.checkin', '>=' ,$auxInicio)->where('reservas.checkin', '<' , $auxFin);
                         });
                         
                     })->where('id', '!=', $propiedad->pais_id )->get();
@@ -242,7 +218,7 @@ class PropiedadController extends Controller
 
                   $data = [ 
                             'ingresos_totales'          => $ingresos_totales_dia,
-                            'reservas_realizadas'       => count($reservas),
+                            'reservas_realizadas'       => count($reservas_creadas),
                             'reservas_anuladas'         => count($reservas_anuladas),
                             'reservas_no_show'          => count($reservas_no_show),
                             'ingresos_por_habitacion'   => $ingresos_habitacion,
@@ -254,14 +230,6 @@ class PropiedadController extends Controller
 
 
                 return $data;
-
-
-
-
-
-
-
-
 
 
 
