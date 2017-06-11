@@ -147,6 +147,10 @@ Route::group(['middleware' => 'cors'], function(){
 
 	Route::get('reporte/mensual', 'PropiedadController@reportesMensual');
 
+	Route::post('crear/zona/horaria', 'PropiedadController@crearZona');
+
+	Route::get('zonas/horarias', 'PropiedadController@getZonasHorarias');
+
 
 	Route::resource('user', 'UserController', ['except' => ['create', 'edit','store']]);
 	Route::resource('propiedad', 'PropiedadController', ['except' => ['create', 'edit', 'store']]);
