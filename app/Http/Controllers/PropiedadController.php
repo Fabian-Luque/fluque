@@ -214,6 +214,38 @@ class PropiedadController extends Controller
                     }
 
 
+                    /*GRAFICO*/
+
+                   $cantidad_noches      = $fecha_inicio->diffInDays($fecha_fin); 
+
+
+                   $auxFecha_inicio  = new Carbon($auxInicio);
+                   $auxFecha_fin     = new Carbon($auxFin);
+                   $suma             = 0;
+                    while ($auxFecha_inicio < $auxFecha_fin) {
+   
+                        $fecha = $auxFecha_inicio->format('Y-m-d');
+
+                        foreach ($reservas as $reserva) {
+                            
+                            if ($reserva->checkin <= $fecha && $reserva->checkout > $fecha) {
+                                    
+                                $suma++;
+
+                            }
+
+
+                        }
+
+
+                     $auxFecha_inicio->addDay();
+                    }
+                    
+                    $cantidad_habitaciones = count($propiedad->habitaciones);
+                    $total_noches = $cantidad_habitaciones * $cantidad_noches;
+
+                    $grafico = [['nombre' => 'Ocupado','valor' => $suma],['nombre' => 'Disponible', 'valor' => ($total_noches - $suma)]];
+
 
                   $data = [ 
                             'ingresos_totales'          => $ingresos_totales_dia,
@@ -222,7 +254,8 @@ class PropiedadController extends Controller
                             'reservas_no_show'          => count($reservas_no_show),
                             'ingresos_por_habitacion'   => $ingresos_habitacion,
                             'ingresos_por_servicios'    => $ingresos_consumos,
-                            'residentes'                => [['nombre' => 'Locales' , 'regiones' => $residentes_pais_propiedad], ['nombre' => 'Extranjeros' , 'paises' => $residentes_extranjero]]
+                            'residentes'                => [['nombre' => 'Locales' , 'regiones' => $residentes_pais_propiedad], ['nombre' => 'Extranjeros' , 'paises' => $residentes_extranjero]],
+                            'grafico'                   => $grafico
                                     
                             ]; 
 
