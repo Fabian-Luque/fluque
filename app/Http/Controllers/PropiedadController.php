@@ -26,7 +26,7 @@ use \Carbon\Carbon;
 class PropiedadController extends Controller
 {
 
-        public function reportesMensual(Request $request){
+        public function reportes(Request $request){
 
 
 
@@ -150,7 +150,7 @@ class PropiedadController extends Controller
 
                     /*PAISES*/
 
-                    $paises = Pais::where(function ($query) use ($propiedad_id, $auxInicio, $auxFin) {
+                   $paises = Pais::where(function ($query) use ($propiedad_id, $auxInicio, $auxFin) {
                         $query->whereHas('huespedes.reservas.habitacion', function ($query) use ($propiedad_id) {
                             $query->where('propiedad_id', $propiedad_id);
                         });
@@ -160,7 +160,7 @@ class PropiedadController extends Controller
                         
                     })->where('id', '!=', $propiedad->pais_id )->get();
 
-                   $residientes_extranjero = [];
+                   $residentes_extranjero = [];
                    
                    foreach ($paises as $pais) {
                        
@@ -179,7 +179,7 @@ class PropiedadController extends Controller
                         }
                         
                         $extranjeros = [ 'nombre' => $pais->nombre, 'llegadas' => $huespedes, 'pernoctacion' => ($huespedes * $noches)];
-                        array_push($residientes_extranjero, $extranjeros);
+                        array_push($residentes_extranjero, $extranjeros);
 
                    }
 
@@ -215,7 +215,6 @@ class PropiedadController extends Controller
 
 
 
-
                   $data = [ 
                             'ingresos_totales'          => $ingresos_totales_dia,
                             'reservas_realizadas'       => count($reservas_creadas),
@@ -223,9 +222,8 @@ class PropiedadController extends Controller
                             'reservas_no_show'          => count($reservas_no_show),
                             'ingresos_por_habitacion'   => $ingresos_habitacion,
                             'ingresos_por_servicios'    => $ingresos_consumos,
-                            'residentes_extranjeros'    => [['paises' => $residientes_extranjero]],
-                            'residentes_locales'        => [['regiones' => $residentes_pais_propiedad]]               
-
+                            'residentes'                => [['nombre' => 'Locales' , 'regiones' => $residentes_pais_propiedad], ['nombre' => 'Extranjeros' , 'paises' => $residentes_extranjero]]
+                                    
                             ]; 
 
 
@@ -690,7 +688,7 @@ class PropiedadController extends Controller
 
     }
 
-    public function reportes(Request $request)
+    public function reportesDiario(Request $request)
     {
 
         if($request->has('propiedad_id')){

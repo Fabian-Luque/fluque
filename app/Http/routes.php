@@ -123,7 +123,7 @@ Route::group(['middleware' => 'cors'], function(){
 
 	Route::get('copia/precio/pagos', 'ReservaController@copiaPrecioPagos');
 
-	Route::get('reportes', 'PropiedadController@reportes');
+	/*Route::get('reporte', 'PropiedadController@reportesDiario');*/
 
 	Route::post('crear/pais', 'PropiedadController@crearPais');
 
@@ -145,7 +145,7 @@ Route::group(['middleware' => 'cors'], function(){
 
 	Route::post('editar/temporadas', 'TemporadaController@editarTemporadas');
 
-	Route::get('reporte/mensual', 'PropiedadController@reportesMensual');
+	Route::get('reportes', 'PropiedadController@reportes');
 
 	Route::post('crear/zona/horaria', 'PropiedadController@crearZona');
 
