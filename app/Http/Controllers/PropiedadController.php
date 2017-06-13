@@ -87,22 +87,6 @@ class PropiedadController extends Controller
                     ->get();
 
 
-                    $paises = Pais::where(function ($query) use ($propiedad_id, $auxInicio, $auxFin) {
-                        $query->whereHas('huespedes.reservas.habitacion', function ($query) use ($propiedad_id) {
-                            $query->where('propiedad_id', $propiedad_id);
-                        });
-                        $query->WhereHas('huespedes.reservas', function ($query) use ($auxInicio, $auxFin) {
-                            $query->where('reservas.checkin', '>=' ,$auxInicio)->where('reservas.checkin', '<' , $auxFin);
-                        });
-                        $query->orWhereHas('huespedes.reservas', function ($query) use ($auxInicio, $auxFin) {
-                            $query->where('reservas.checkin', '<=' ,$auxInicio)->where('reservas.checkout', '>' , $auxInicio);
-                        });
-
-                        
-                    })->where('id', '!=', $propiedad->pais_id )->get();
-
-
-
                 /* INGRESOS TOTALES DEL DIA  */
 
                    $ingresos_totales_dia = [];
