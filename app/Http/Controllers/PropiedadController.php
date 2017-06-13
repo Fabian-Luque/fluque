@@ -269,7 +269,6 @@ class PropiedadController extends Controller
                    $auxFecha_fin     = new Carbon($auxFin);
                    $suma             = 0;
                     while ($auxFecha_inicio < $auxFecha_fin) {
-                        echo "hola";
                         $fecha = $auxFecha_inicio->format('Y-m-d');
 
                         foreach ($reservas as $reserva) {
