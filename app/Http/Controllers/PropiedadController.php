@@ -72,7 +72,7 @@ class PropiedadController extends Controller
                     $auxFin    = $fecha_fin->format('Y-m-d');
 
 
-                    $reservas = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
+                    return $reservas = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
                         $query->where('propiedad_id', $propiedad_id);
                     })
                     ->where(function($query) use ($auxInicio,$auxFin){
@@ -83,6 +83,9 @@ class PropiedadController extends Controller
                         $query->where('checkin', '<=', $auxInicio);
                         $query->where('checkout', '>',  $auxInicio);
                     })
+                    ->where('estado_reserva_id' , '!=' , 1)
+                    ->where('estado_reserva_id' , '!=' , 6)
+                    ->where('estado_reserva_id' , '!=' , 7)
                     ->with('huespedes')
                     ->get();
 
