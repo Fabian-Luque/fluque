@@ -83,9 +83,6 @@ class PropiedadController extends Controller
                         $query->where('checkin', '<=', $auxInicio);
                         $query->where('checkout', '>',  $auxInicio);
                     })
-                    ->where('estado_reserva_id' , '!=' , 1)
-                    ->where('estado_reserva_id' , '!=' , 6)
-                    ->where('estado_reserva_id' , '!=' , 7)
                     ->with('huespedes')
                     ->get();
 
@@ -246,7 +243,11 @@ class PropiedadController extends Controller
                             
                             if ($reserva->checkin <= $fecha && $reserva->checkout > $fecha) {
                                     
-                                $suma++;
+                                if ($reserva->estado_reserva_id == 3 || $reserva->estado_reserva_id == 4 || $reserva->estado_reserva_id == 5) {
+                                    
+                                    $suma++;
+                                }
+
 
                             }
 
