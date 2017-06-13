@@ -159,10 +159,11 @@ class PropiedadController extends Controller
 
                     /*PAISES*/
 
-                    $paises = Pais::where(function ($query) use ($propiedad_id, $auxInicio, $auxFin) {
-                        $query->whereHas('huespedes.reservas.habitacion', function ($query) use ($propiedad_id) {
+
+                    $paises = Pais::whereHas('huespedes.reservas.habitacion', function ($query) use ($propiedad_id) {
                             $query->where('propiedad_id', $propiedad_id);
-                        });
+                        })->where(function ($query) use ($propiedad_id, $auxInicio, $auxFin) {
+
                         $query->WhereHas('huespedes.reservas', function ($query) use ($auxInicio, $auxFin) {
                             $query->where('reservas.checkin', '>=' ,$auxInicio)->where('reservas.checkin', '<' , $auxFin);
                         });
