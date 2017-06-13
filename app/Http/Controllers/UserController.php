@@ -94,12 +94,12 @@ class UserController extends Controller
 
         } else {
 
-            $usuario           = new User();
-            $usuario->name     = $request->get('name');
-            $usuario->email    = $request->get('email');
-            $usuario->password = bcrypt($request->get('password'));
-            /*$usuario->password             = $request->get('password');*/
-            $usuario->phone = $request->get('phone');
+            $usuario                       = new User();
+            $usuario->name                 = $request->get('name');
+            $usuario->email                = $request->get('email');
+            /*$usuario->password           = bcrypt($request->get('password'));*/
+            $usuario->password             = $request->get('password');
+            $usuario->phone                = $request->get('phone');
 
             $usuario->save();
 
@@ -131,10 +131,10 @@ class UserController extends Controller
 
         $rules = array(
 
-            'name'     => 'required',
-            'email'    => 'email|required',
+            'name'     => '',
+            'email'    => 'email',
             'password' => 'min:6',
-            'phone'    => 'required',
+            'phone'    => '',
 
         );
 
