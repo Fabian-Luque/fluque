@@ -194,16 +194,21 @@ class PropiedadController extends Controller
                     $paises = [];
                     foreach ($reservas as $reserva) {
                         foreach ($reserva['huespedes'] as $huesped) {
-                                $pais = $huesped->pais;
-                                $pais_id = $huesped->pais->id;
-                                $propiead_pais_id = $propiedad->pais->id;
 
-                                if ($pais_id != $propiead_pais_id ) {
-                                    if ($huesped->pais != null && !in_array($pais, $paises) ) {
-                                        array_push($paises, $pais);
+                                $pais = $huesped->pais;
+                                if (!is_null($pais)) {
+                                    $pais_id = $huesped->pais->id;
+                                    $propiead_pais_id = $propiedad->pais->id;
+                                    
+                                    if ($pais_id != $propiead_pais_id ) {
+                                        if ($huesped->pais != null && !in_array($pais, $paises) ) {
+                                            array_push($paises, $pais);
+                                        }
+                                        
                                     }
                                     
                                 }
+
 
 
                         }       
