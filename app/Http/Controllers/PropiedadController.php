@@ -71,26 +71,9 @@ class PropiedadController extends Controller
                     $auxInicio = $inicio->format('Y-m-d');
                     $auxFin    = $fecha_fin->format('Y-m-d');
 
-
-/*                    $paises = Pais::whereHas('huespedes.reservas.habitacion', function ($query) use ($propiedad_id) {
-                            $query->where('propiedad_id', $propiedad_id);
-                        })->where(function ($query) use ($propiedad_id, $auxInicio, $auxFin) {
-
-                        $query->WhereHas('huespedes.reservas', function ($query) use ($auxInicio, $auxFin) {
-                            $query->where('reservas.checkin', '>=' ,$auxInicio)->where('reservas.checkin', '<' , $auxFin);
-                        });
-                        $query->orWhereHas('huespedes.reservas', function ($query) use ($auxInicio, $auxFin) {
-                            $query->where('reservas.checkin', '<=' ,$auxInicio)->where('reservas.checkout', '>' , $auxInicio);
-                        });
-
-                        
-                    })->where('id', '!=', $propiedad->pais_id )->get();*/
-
-
                     $reservas = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
                         $query->where('propiedad_id', $propiedad_id);
                     })->where(function ($query) use ($auxInicio, $auxFin) {
-
                         $query->where(function ($query) use ($auxInicio, $auxFin) {
                                 $query->where('checkin', '>=', $auxInicio);
                                 $query->where('checkin', '<',  $auxFin);
@@ -102,21 +85,6 @@ class PropiedadController extends Controller
 
                         
                     })->with('huespedes.pais')->get();
-
-
-/*                    $reservas = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
-                        $query->where('propiedad_id', $propiedad_id);
-                    })
-                    ->where(function($query) use ($auxInicio,$auxFin){
-                        $query->where('checkin', '>=', $auxInicio);
-                        $query->where('checkin', '<',  $auxFin);
-                    })
-                    ->orWhere(function($query) use ($auxInicio,$auxFin){
-                        $query->where('checkin', '<=', $auxInicio);
-                        $query->where('checkout', '>',  $auxInicio);
-                    })
-                    ->with('huespedes')
-                    ->get();*/
 
 
                 /* INGRESOS TOTALES DEL DIA  */
@@ -215,19 +183,6 @@ class PropiedadController extends Controller
 
                     }
 
-
-/*                    $paises = Pais::whereHas('huespedes.reservas.habitacion', function ($query) use ($propiedad_id) {
-                            $query->where('propiedad_id', $propiedad_id);
-                        })->where(function ($query) use ($propiedad_id, $auxInicio, $auxFin) {
-
-                        $query->WhereHas('huespedes.reservas', function ($query) use ($auxInicio, $auxFin) {
-                            $query->where('reservas.checkin', '>=' ,$auxInicio)->where('reservas.checkin', '<' , $auxFin);
-                        });
-                        $query->orWhereHas('huespedes.reservas', function ($query) use ($auxInicio, $auxFin) {
-                            $query->where('reservas.checkin', '<=' ,$auxInicio)->where('reservas.checkout', '>' , $auxInicio);
-                        });
-
-                    })->where('id', '!=', $propiedad->pais_id )->get();*/
 
                    $residentes_extranjero = [];
                    
