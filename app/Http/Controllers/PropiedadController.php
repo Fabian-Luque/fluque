@@ -101,7 +101,7 @@ class PropiedadController extends Controller
                         });
 
                         
-                    })->with('huespedes')->get();
+                    })->with('huespedes.pais')->get();
 
 
 /*                    $reservas = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
@@ -191,8 +191,17 @@ class PropiedadController extends Controller
 
                     /*PAISES*/
 
+                    $paises = [];
+                    foreach ($reservas as $reserva) {
+                        foreach ($reserva['huespedes'] as $huesped) {
+                                $pais = $huesped->pais;
+                        }       array_push($paises, $pais);
 
-                    $paises = Pais::whereHas('huespedes.reservas.habitacion', function ($query) use ($propiedad_id) {
+                    }
+
+
+
+/*                    $paises = Pais::whereHas('huespedes.reservas.habitacion', function ($query) use ($propiedad_id) {
                             $query->where('propiedad_id', $propiedad_id);
                         })->where(function ($query) use ($propiedad_id, $auxInicio, $auxFin) {
 
@@ -203,8 +212,7 @@ class PropiedadController extends Controller
                             $query->where('reservas.checkin', '<=' ,$auxInicio)->where('reservas.checkout', '>' , $auxInicio);
                         });
 
-                        
-                    })->where('id', '!=', $propiedad->pais_id )->get();
+                    })->where('id', '!=', $propiedad->pais_id )->get();*/
 
                    $residentes_extranjero = [];
                    
