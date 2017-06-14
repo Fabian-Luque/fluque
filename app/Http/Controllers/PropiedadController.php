@@ -246,7 +246,7 @@ class PropiedadController extends Controller
 
                         }
                         
-                        $extranjeros = [ 'nombre' => $pais->nombre, 'llegadas' => $huespedes, 'pernoctacion' => ($huespedes * $noches)];
+                        $extranjeros = [ 'nombre' => $pais->nombre, 'llegadas' => $huespedes, 'pernoctacion' => $noches];
                         array_push($residentes_extranjero, $extranjeros);
 
                    }
@@ -275,7 +275,7 @@ class PropiedadController extends Controller
 
                         }
                         
-                        $residentes_pais = [ 'nombre' => $region->nombre, 'llegadas' => $huespedes, 'pernoctacion' => ($huespedes * $noches)];
+                        $residentes_pais = [ 'nombre' => $region->nombre, 'llegadas' => $huespedes, 'pernoctacion' => $noches];
                         array_push($residentes_pais_propiedad, $residentes_pais);
 
 
