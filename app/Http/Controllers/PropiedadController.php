@@ -195,10 +195,20 @@ class PropiedadController extends Controller
                     foreach ($reservas as $reserva) {
                         foreach ($reserva['huespedes'] as $huesped) {
                                 $pais = $huesped->pais;
-                        }       array_push($paises, $pais);
+                                $pais_id = $huesped->pais->id;
+                                $propiead_pais_id = $propiedad->pais->id;
+
+                                if ($pais_id != $propiead_pais_id ) {
+                                    if ($huesped->pais != null && !in_array($pais, $paises) ) {
+                                        array_push($paises, $pais);
+                                    }
+                                    
+                                }
+
+
+                        }       
 
                     }
-
 
 
 /*                    $paises = Pais::whereHas('huespedes.reservas.habitacion', function ($query) use ($propiedad_id) {
@@ -217,7 +227,6 @@ class PropiedadController extends Controller
                    $residentes_extranjero = [];
                    
                    foreach ($paises as $pais) {
-                       
                         $huespedes = 0;
                         $noches    = 0;
                         foreach ($reservas as $reserva) {
