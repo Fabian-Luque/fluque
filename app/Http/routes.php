@@ -13,28 +13,18 @@ use Illuminate\Http\Response as HttpResponse;
 */
 
 
-Route::post('/signin', 'ApiAuthController@signin');
 
-Route::group(['middleware' => ['jwt.auth'], 'prefix' => 'v1'], function () {
+
+
+Route::group(['middleware' => ['jwt.auth']], function () {
+Route::post('/signin', 'ApiAuthController@signin');
 
 
 	Route::get('tipo-fuente', 'ReservaController@getTipoFuente');
-
-
-/*	Route::get('/restricted', function () {
-       try {
-           JWTAuth::parseToken()->toUser();
-       } catch (Exception $e) {
-           return Response::json(['error' => $e->getMessage()], HttpResponse::HTTP_UNAUTHORIZED);
-       }
-
-       return ['data' => 'This has come from a dedicated API subdomain with restricted access.'];
-   });*/
+	Route::get('tipo-comprobante', 'ReservaController@getTipoComprobante');
 
 
 });
-
-
 
 
 Route::auth();
@@ -47,17 +37,23 @@ Route::get('/', function () {
     return view('welcome');
   });
 
+
+
+
+Route::post('registro', 'UserController@store');
+
 Route::group(['middleware' => 'cors'], function(){
 
-	Route::post('registro', 'UserController@store');
 	
-	Route::post('/auth_login', 'ApiAuthController@userAuth');
+	/*Route::post('/auth_login', 'ApiAuthController@userAuth');*/
 
 	Route::post('reserva/habitacion', 'ReservaController@reserva');
 
 	Route::get('reserva/propiedad', 'ReservaController@getReservas');
 
 	/*Route::get('tipo-fuente', 'ReservaController@getTipoFuente');*/
+
+	/*Route::get('tipo-comprobante', 'ReservaController@getTipoComprobante');*/
 
 	Route::get('metodo-pago', 'ReservaController@getMetodoPago');
 
@@ -107,7 +103,6 @@ Route::group(['middleware' => 'cors'], function(){
 
 	Route::get('cliente/empresa', 'ClienteController@getClientes');
 
-	Route::get('tipo-comprobante', 'ReservaController@getTipoComprobante');
 
 	Route::post('pago/consumo', 'ReservaController@pagoConsumo');
 
@@ -147,7 +142,7 @@ Route::group(['middleware' => 'cors'], function(){
 
 	Route::get('copia/precio/pagos', 'ReservaController@copiaPrecioPagos');
 
-	/*Route::get('reporte', 'PropiedadController@reportesDiario');*/
+	Route::get('reporte', 'PropiedadController@reportesDiario');
 
 	Route::post('crear/pais', 'PropiedadController@crearPais');
 

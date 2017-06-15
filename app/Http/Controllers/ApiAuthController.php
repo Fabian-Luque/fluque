@@ -24,7 +24,7 @@ class ApiAuthController extends Controller
         if (!$token = JWTAuth::attempt($credentials)) {
             $data = [
                 'errors' => true,
-                'msg'    => 'Usuario o contraseña erroneos',
+                'msg'    => 'Usuario o contraseña incorrecta',
             ];
             return Response::json($data, HttpResponse::HTTP_FORBIDDEN);
         }
