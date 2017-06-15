@@ -393,7 +393,7 @@ class PDFController extends Controller
 
                     $fechas = ['inicio' => $inicio_fecha, 'fin' => $fin_fecha];
 
-                  $pdf = PDF::loadView('pdf.reporte_diario', ['propiedad' => [$propiedad], 'fechas' => $fechas ,'reservas_realizadas'=> count($reservas),'reservas_anuladas' => count($reservas_anuladas), 'reservas_no_show' => count($reservas_no_show), 'ingresos_habitacion' => $ingresos_habitacion, 'ingresos_consumo' => $ingresos_consumos, 'ingresos_totales' => $ingresos_totales_dia, 'residentes_locales' => $residentes_pais_propiedad, 'residentes_extranjero' => $residentes_extranjero, 'ocupado' => $suma , 'disponible' => ($total_noches - $suma)]);
+                  $pdf = PDF::loadView('pdf.reporte_diario', ['propiedad' => [$propiedad], 'fechas' => $fechas ,'reservas_realizadas'=> count($reservas_creadas),'reservas_anuladas' => count($reservas_anuladas), 'reservas_no_show' => count($reservas_no_show), 'ingresos_habitacion' => $ingresos_habitacion, 'ingresos_consumo' => $ingresos_consumos, 'ingresos_totales' => $ingresos_totales_dia, 'residentes_locales' => $residentes_pais_propiedad, 'residentes_extranjero' => $residentes_extranjero, 'ocupado' => $suma , 'disponible' => ($total_noches - $suma)]);
 
 
 				return $pdf->download('archivo.pdf');
