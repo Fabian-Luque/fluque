@@ -23,13 +23,23 @@
       </div>
 
       <div class="estado-cuenta" style="margin-top: 20px;">
-        <h2 class="titulo">Resumen del día {{ $fecha }}</h2>
 
 
+      
+
+        @if($fechas['inicio'] == $fechas['fin'])
 
 
+          <h2 class="titulo">Resumen del día {{ $fechas['inicio'] }}</h2>
 
-        
+
+        @else
+
+          <h2 class="titulo">Resumen comprendido entre el {{ $fechas['inicio'] }} y {{ $fechas['fin'] }}</h2>
+
+        @endif
+
+
 
         <div class="detalles" style="margin:20px 0px;">
           <table class="tabla-detalles">
@@ -47,7 +57,7 @@
             </tr>
           </table>
         </div>
-       
+
 
 
         <div class="titulo" style="text-align:left;">
@@ -65,7 +75,7 @@
                   @else
               <td class="data-tabla-detalles borde-derecha"><p>USD ${{ $ingreso['monto'] }}</p></td>
                   @endif
-     
+
                @endforeach
 
             </tr>
@@ -93,123 +103,30 @@
           </table>
         </div>
 
-
+<!-- INICIO TABLA DE OCUPACION -->
 
         <div class="titulo" style="text-align:left;">
-          <h3 class="">Ingreso por tipo de pago</h3>
+          <h3 class="">Ocupación</h3>
         </div>
 
         <div class="detalles" style="margin:20px 0px;">
           <table class="tabla-detalles">
             <tr>
-              <td class="data-tabla-detalles borde-derecha"><p>Efectivo</p></td>
-                @foreach($ingresos_efectivo as $ingreso)
-                  @if($ingreso['tipo_moneda_id'] == 1)
-              <td class="data-tabla-detalles borde-derecha"><p>CLP ${{ $ingreso['monto'] }}</p></td>
-                  @else
-              <td class="data-tabla-detalles borde-derecha"><p>USD ${{ $ingreso['monto'] }}</p></td>
-                  @endif
-               @endforeach
+              <td class="data-tabla-detalles borde-derecha"><p>Ocupado</p></td>
+
+              <td class="data-tabla-detalles borde-derecha"><p>{{ $ocupado }}</p></td>
+
             </tr>
             <tr>
-              <td class="data-tabla-detalles borde-derecha"><p>Credito</p></td>
-                @foreach($ingresos_credito as $ingreso)
-                  @if($ingreso['tipo_moneda_id'] == 1)
-              <td class="data-tabla-detalles borde-derecha"><p>CLP ${{ $ingreso['monto'] }}</p></td>
-                  @else
-              <td class="data-tabla-detalles borde-derecha"><p>USD ${{ $ingreso['monto'] }}</p></td>
-                  @endif
-               @endforeach
-            </tr>
-            <tr>
-              <td class="data-tabla-detalles borde-derecha"><p>Debito</p></td>
-                @foreach($ingresos_debito as $ingreso)
-                  @if($ingreso['tipo_moneda_id'] == 1)
-              <td class="data-tabla-detalles borde-derecha"><p>CLP ${{ $ingreso['monto'] }}</p></td>
-                  @else
-              <td class="data-tabla-detalles borde-derecha"><p>USD ${{ $ingreso['monto'] }}</p></td>
-                  @endif
-               @endforeach
-            </tr>
-            <tr>
-              <td class="data-tabla-detalles borde-derecha"><p>Cheque</p></td>
-                @foreach($ingresos_cheque as $ingreso)
-                  @if($ingreso['tipo_moneda_id'] == 1)
-              <td class="data-tabla-detalles borde-derecha"><p>CLP ${{ $ingreso['monto'] }}</p></td>
-                  @else
-              <td class="data-tabla-detalles borde-derecha"><p>USD ${{ $ingreso['monto'] }}</p></td>
-                  @endif
-               @endforeach
-            </tr>
-            <tr>
-              <td class="data-tabla-detalles borde-derecha"><p>Tarjeta de crédito</p></td>
-                @foreach($ingresos_tarjeta_credito as $ingreso)
-                  @if($ingreso['tipo_moneda_id'] == 1)
-              <td class="data-tabla-detalles borde-derecha"><p>CLP ${{ $ingreso['monto'] }}</p></td>
-                  @else
-              <td class="data-tabla-detalles borde-derecha"><p>USD ${{ $ingreso['monto'] }}</p></td>
-                  @endif
-               @endforeach
-            </tr>
-            <tr>
-              <td class="data-tabla-detalles borde-derecha"><p>Transferencia</p></td>
-                @foreach($ingresos_transferencia as $ingreso)
-                  @if($ingreso['tipo_moneda_id'] == 1)
-              <td class="data-tabla-detalles borde-derecha"><p>CLP ${{ $ingreso['monto'] }}</p></td>
-                  @else
-              <td class="data-tabla-detalles borde-derecha"><p>USD ${{ $ingreso['monto'] }}</p></td>
-                  @endif
-               @endforeach
+              <td class="data-tabla-detalles borde-derecha"><p>Disponible</p></td>
+
+              <td class="data-tabla-detalles borde-derecha"><p>{{ $disponible }}</p></td>
+
             </tr>
           </table>
         </div>
 
-
-
-
-        <div class="titulo" style="text-align:left;">
-          <h3 class="">Reservas por tipo de fuente</h3>
-        </div>
-
-        <div class="detalles" style="margin:20px 0px;">
-          <table class="tabla-detalles">
-            <tr>
-              <td class="data-tabla-detalles borde-derecha"><p>Página web</p></td>
-              <td class="data-tabla-detalles borde-derecha"><p>{{ $pagina_web }}</p></td>
-            </tr>
-            <tr>
-              <td class="data-tabla-detalles borde-derecha"><p>Email</p></td>
-              <td class="data-tabla-detalles borde-derecha"><p>{{ $email }}</p></td>
-            </tr>
-            <tr>
-              <td class="data-tabla-detalles borde-derecha"><p>Redes sociales</p></td>
-              <td class="data-tabla-detalles borde-derecha"><p>{{ $redes_sociales }}</p></td>
-            </tr>
-            <tr>
-              <td class="data-tabla-detalles borde-derecha"><p>Caminando</p></td>
-              <td class="data-tabla-detalles borde-derecha"><p>{{ $caminando }}</p></td>
-            </tr>
-            <tr>
-              <td class="data-tabla-detalles borde-derecha"><p>Telefono</p></td>
-              <td class="data-tabla-detalles borde-derecha"><p>{{ $telefono }}</p></td>
-            </tr>
-            <tr>
-              <td class="data-tabla-detalles borde-derecha"><p>Expedia</p></td>
-              <td class="data-tabla-detalles borde-derecha"><p>{{ $expedia }}</p></td>
-            </tr>
-            <tr>
-              <td class="data-tabla-detalles borde-derecha"><p>Booking.com</p></td>
-              <td class="data-tabla-detalles borde-derecha"><p>{{ $booking }}</p></td>
-            </tr>
-            <tr>
-              <td class="data-tabla-detalles borde-derecha"><p>Airbnb</p></td>
-              <td class="data-tabla-detalles borde-derecha"><p>{{ $airbnb }}</p></td>
-            </tr>
-          </table>
-        </div>
-
-
-
+<!-- FIN TABLA DE OCUPACION -->
 
 
 
@@ -241,39 +158,82 @@
     <div class="contenedor">
       <div class="estado-cuenta" style="margin-top: 20px;">
 
-        <div class="titulo" style="text-align:left;">
-          <h3 class="">Ingreso por tipo de cliente</h3>
-        </div>
+        <!-- INICIO TABLA HUESPEDES LOCALES -->
 
-        <div class="detalles" style="margin:20px 0px;">
-          <table class="tabla-detalles">
-            <tr>
-              <td class="data-tabla-detalles borde-derecha"><p>Particular</p></td>
-                @foreach($ingresos_particular as $ingreso)
-                  @if($ingreso['tipo_moneda_id'] == 1)
-              <td class="data-tabla-detalles borde-derecha"><p>CLP ${{ $ingreso['monto'] }}</p></td>
-                  @else
-              <td class="data-tabla-detalles borde-derecha"><p>USD ${{ $ingreso['monto'] }}</p></td>
-                  @endif
-               @endforeach
-            </tr>
-            <tr>
-              <td class="data-tabla-detalles borde-derecha"><p>Empresa</p></td>
-                @foreach($ingresos_empresa as $ingreso)
-                  @if($ingreso['tipo_moneda_id'] == 1)
-              <td class="data-tabla-detalles borde-derecha"><p>CLP ${{ $ingreso['monto'] }}</p></td>
-                  @else
-              <td class="data-tabla-detalles borde-derecha"><p>USD ${{ $ingreso['monto'] }}</p></td>
-                  @endif
-               @endforeach
-            </tr>
-<!--             <tr>
-              <td class="data-tabla-detalles borde-derecha"><p>Gente de paso diario</p></td>
-              <td class="data-tabla-detalles borde-derecha"><p>CLP 0</p></td>
-              <td class="data-tabla-detalles borde-derecha"><p>USD 0.00</p></td>
-            </tr> -->
-          </table>
-        </div>
+                <div class="titulo" style="text-align:left;">
+                  <h3 class="">Huéspedes locales</h3>
+                </div>
+
+                <div class="detalles" style="margin:20px 0px;">
+                  <table class="tabla-detalles">
+                    <tr>
+                      <th class="data-tabla-detalles borde-derecha" style="width:300px;"><p>Región</p></th>
+                      <th class="data-tabla-detalles borde-derecha"><p>Llegadas</p></th>
+                      <th class="data-tabla-detalles borde-derecha"><p>Pernoctación</p></th>
+                    </tr>
+
+                    @foreach($residentes_locales as $local)
+                    <tr>
+                      <td class="data-tabla-detalles borde-derecha"><p>{{ $local['nombre'] }}</p></td>
+                      <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $local['llegadas'] }}</p></td>
+                      <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $local['pernoctacion'] }}</p></td>
+                    </tr>
+                    @endforeach
+
+
+                  </table>
+                </div>
+
+        <!-- FIN TABLA HUESPEDES LOCALES -->
+
+
+      </div>
+      <!--  Fin estado-cuenta  -->
+    </div>
+    <!-- Fin contenedor -->
+
+
+    <div class="footer">
+      <p>Documento generado con Jarvis Frontdesk</p>
+    </div>
+
+
+    <div class="page-break"></div>
+
+
+
+
+
+
+    <div class="contenedor">
+      <div class="estado-cuenta" style="margin-top: 20px;">
+
+        <!-- INICIO TABLA HUESPEDES EXTRANJEROS -->
+
+                <div class="titulo" style="text-align:left;">
+                  <h3 class="">Huéspedes extranjeros</h3>
+                </div>
+
+                <div class="detalles" style="margin:20px 0px;">
+                  <table class="tabla-detalles">
+                    <tr>
+                      <th class="data-tabla-detalles borde-derecha" style="width:300px;"><p>País</p></th>
+                      <th class="data-tabla-detalles borde-derecha"><p>Llegadas</p></th>
+                      <th class="data-tabla-detalles borde-derecha"><p>Pernoctación</p></th>
+                    </tr>
+
+                    @foreach($residentes_extranjero as $pais)
+                    <tr>
+                      <td class="data-tabla-detalles borde-derecha"><p>{{ $pais['nombre'] }}</p></td>
+                      <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pais['llegadas'] }}</p></td>
+                      <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pais['pernoctacion'] }}</p></td>
+                    </tr>
+                    @endforeach
+
+                  </table>
+                </div>
+
+        <!-- FIN TABLA HUESPEDES EXTRANJEROS -->
 
 
       </div>

@@ -73,7 +73,7 @@ Route::group(['middleware' => 'cors'], function(){
 	
 	Route::post('pdf/estado/cuenta', 'PDFController@estadoCuenta');
 
-	Route::post('pdf/reporte/diario', 'PDFController@reporteDiario');
+	Route::post('pdf/reporte', 'PDFController@reporte');
 
 	Route::post('pdf/huesped', 'PDFController@huesped');
 
@@ -123,7 +123,7 @@ Route::group(['middleware' => 'cors'], function(){
 
 	Route::get('copia/precio/pagos', 'ReservaController@copiaPrecioPagos');
 
-	Route::get('reportes', 'PropiedadController@reportes');
+	/*Route::get('reporte', 'PropiedadController@reportesDiario');*/
 
 	Route::post('crear/pais', 'PropiedadController@crearPais');
 
@@ -144,6 +144,12 @@ Route::group(['middleware' => 'cors'], function(){
 	Route::get('temporada/precios', 'TemporadaController@getPreciosTemporadas');
 
 	Route::post('editar/temporadas', 'TemporadaController@editarTemporadas');
+
+	Route::get('reportes', 'PropiedadController@reportes');
+
+	Route::post('crear/zona/horaria', 'PropiedadController@crearZona');
+
+	Route::get('zonas/horarias', 'PropiedadController@getZonasHorarias');
 
 
 	Route::resource('user', 'UserController', ['except' => ['create', 'edit','store']]);

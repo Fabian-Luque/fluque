@@ -15,7 +15,9 @@ use App\Pago;
 use App\Reserva;
 use App\Pais;
 use App\Region;
+use App\Huesped;
 use App\PrecioTemporada;
+use App\ZonaHoraria;
 use Illuminate\Http\Request;
 use Response;
 use Validator;
@@ -23,6 +25,275 @@ use \Carbon\Carbon;
 
 class PropiedadController extends Controller
 {
+
+        public function reportes(Request $request){
+
+
+
+
+            $propiedad_id = $request->input('propiedad_id');
+            $propiedad = Propiedad::where('id', $request->input('propiedad_id'))->first();
+
+            $inicio       = new Carbon($request->input('fecha_inicio'));
+            $zona_horaria = ZonaHoraria::where('id', $propiedad->zona_horaria_id)->first();
+            $pais         = $zona_horaria->nombre;
+            $fecha_inicio = Carbon::createFromFormat('Y-m-d H:i:s', $inicio, $pais)->tz('UTC');
+
+
+            if ($request->has('fecha_fin')) {
+            
+            $fin          = new Carbon($request->input('fecha_fin'));
+            $fechaFin     = $fin->addDay();
+            $fecha_fin    = Carbon::createFromFormat('Y-m-d H:i:s', $fechaFin, $pais)->tz('UTC');
+
+
+            }else{
+
+            $fecha_fin    = Carbon::createFromFormat('Y-m-d H:i:s', $inicio, $pais)->tz('UTC')->addDay();
+
+            }
+
+
+                    
+                    $pagos = Pago::where('created_at','>=' , $fecha_inicio)->where('created_at', '<' , $fecha_fin)->whereHas('reserva.habitacion', function($query) use($propiedad_id){
+
+                    $query->where('propiedad_id', $propiedad_id);
+
+                    })->get();
+
+
+                    $reservas_creadas = Reserva::where('created_at' , '>=', $fecha_inicio)->where('created_at', '<' , $fecha_fin)->whereHas('habitacion', function($query) use($propiedad_id){
+
+                    $query->where('propiedad_id', $propiedad_id);
+
+                    })->get();
+
+                    $auxInicio = $inicio->format('Y-m-d');
+                    $auxFin    = $fecha_fin->format('Y-m-d');
+
+                    $reservas = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
+                        $query->where('propiedad_id', $propiedad_id);
+                    })->where(function ($query) use ($auxInicio, $auxFin) {
+                        $query->where(function ($query) use ($auxInicio, $auxFin) {
+                                $query->where('checkin', '>=', $auxInicio);
+                                $query->where('checkin', '<',  $auxFin);
+                        });
+                        $query->orWhere(function($query) use ($auxInicio,$auxFin){
+                                $query->where('checkin', '<=', $auxInicio);
+                                $query->where('checkout', '>',  $auxInicio);
+                        });
+
+                        
+                    })->with('huespedes.pais')->get();
+
+
+                /* INGRESOS TOTALES DEL DIA  */
+
+                   $ingresos_totales_dia = [];
+                   $ingresos_habitacion = [];
+                   $ingresos_consumos = [];
+
+                   foreach ($propiedad->tipoMonedas as $moneda) {
+
+                      $tipo_moneda_id = $moneda->pivot->tipo_moneda_id;
+
+                      $pagos_tipo_moneda = $pagos->where('tipo_moneda_id', $tipo_moneda_id);
+
+                      $suma_pagos = 0;
+                      $ingresos_por_habitacion = 0;
+                      $ingresos_por_consumos = 0;
+
+                      foreach ($pagos_tipo_moneda as $pago) {
+
+                          $suma_pagos += $pago->monto_equivalente;
+
+                          if($pago->tipo == 'Pago habitacion'){
+
+                            $ingresos_por_habitacion += $pago->monto_equivalente;
+
+
+                          }elseif($pago->tipo == 'Pago consumos'){
+
+                            $ingresos_por_consumos += $pago->monto_equivalente;
+
+
+                          }elseif ($pago->tipo == 'Confirmacion de reserva') {
+                            $ingresos_por_habitacion += $pago->monto_equivalente;
+
+                          }
+
+                      }
+
+    
+
+                      $ingresos = ['monto' => $suma_pagos , 'tipo_moneda_id' => $tipo_moneda_id, 'nombre_moneda' => $moneda->nombre, 'cantidad_decimales' => $moneda->cantidad_decimales]; 
+                      $ingresos_hab = ['monto' => $ingresos_por_habitacion,'tipo_moneda_id' => $tipo_moneda_id, 'nombre_moneda' => $moneda->nombre, 'cantidad_decimales' => $moneda->cantidad_decimales];
+                      $ingresos_serv = ['monto' => $ingresos_por_consumos,'tipo_moneda_id' => $tipo_moneda_id, 'nombre_moneda' => $moneda->nombre, 'cantidad_decimales' => $moneda->cantidad_decimales];
+
+
+                      array_push($ingresos_totales_dia, $ingresos);
+                      array_push($ingresos_habitacion, $ingresos_hab);
+                      array_push($ingresos_consumos, $ingresos_serv);
+
+
+                      
+                }
+
+
+                     /*RESERVAS ANULADAS*/
+
+                    $reservas_anuladas = Reserva::where('updated_at' , '>=', $fecha_inicio)->where('updated_at', '<' , $fecha_fin)->whereHas('habitacion', function($query) use($propiedad_id){
+
+                    $query->where('propiedad_id', $propiedad_id);
+
+                    })->where('estado_reserva_id', 6)->get();
+
+                    /*RESERVAS NO SHOW*/
+
+                    $reservas_no_show = Reserva::where('updated_at' , '>=', $fecha_inicio)->where('updated_at', '<' , $fecha_fin)->whereHas('habitacion', function($query) use($propiedad_id){
+
+                    $query->where('propiedad_id', $propiedad_id);
+
+                    })->where('estado_reserva_id', 7)->get();
+
+
+                    /*PAISES*/
+
+                    $paises = [];
+                    foreach ($reservas as $reserva) {
+                        foreach ($reserva['huespedes'] as $huesped) {
+
+                                $pais = $huesped->pais;
+                                if (!is_null($pais)) {
+                                    $pais_id = $huesped->pais->id;
+                                    $propiead_pais_id = $propiedad->pais->id;
+                                    
+                                    if ($pais_id != $propiead_pais_id ) {
+                                        if ($huesped->pais != null && !in_array($pais, $paises) ) {
+                                            array_push($paises, $pais);
+                                        }
+                                        
+                                    }
+                                    
+                                }
+
+
+
+                        }       
+
+                    }
+
+
+                   $residentes_extranjero = [];
+                   
+                   foreach ($paises as $pais) {
+                        $huespedes = 0;
+                        $noches    = 0;
+                        foreach ($reservas as $reserva) {
+                            foreach ($reserva->huespedes as $huesped) {
+                                if ($pais->id == $huesped->pais_id) {
+                                    $huespedes++;
+                                    $noches += $reserva->noches;
+
+                                }
+
+                            }
+
+                        }
+                        
+                        $extranjeros = [ 'nombre' => $pais->nombre, 'llegadas' => $huespedes, 'pernoctacion' => $noches];
+                        array_push($residentes_extranjero, $extranjeros);
+
+                   }
+
+
+                 /* REGIONES*/
+
+
+                    $regiones = Region::where('pais_id', $propiedad->pais_id)->get();
+
+                    $residentes_pais_propiedad = [];
+
+                    foreach ($regiones as $region) {
+                        
+                        $huespedes = 0;
+                        $noches    = 0;
+                        foreach ($reservas as $reserva) {
+                            foreach ($reserva->huespedes as $huesped) {
+                                if ($region->id == $huesped->region_id) {
+                                    $huespedes++;
+                                    $noches += $reserva->noches;
+
+                                }
+
+                            }
+
+                        }
+                        
+                        $residentes_pais = [ 'nombre' => $region->nombre, 'llegadas' => $huespedes, 'pernoctacion' => $noches];
+                        array_push($residentes_pais_propiedad, $residentes_pais);
+
+
+                    }
+
+
+                    /*GRAFICO*/
+
+                   $cantidad_noches  = $fecha_inicio->diffInDays($fecha_fin); 
+
+
+                   $auxFecha_inicio  = new Carbon($auxInicio);
+                   $auxFecha_fin     = new Carbon($auxFin);
+                   $suma             = 0;
+                    while ($auxFecha_inicio < $auxFecha_fin) {
+                        $fecha = $auxFecha_inicio->format('Y-m-d');
+
+                        foreach ($reservas as $reserva) {
+                            
+                            if ($reserva->checkin <= $fecha && $reserva->checkout > $fecha) {
+                                    
+                                if ($reserva->estado_reserva_id == 3 || $reserva->estado_reserva_id == 4 || $reserva->estado_reserva_id == 5) {
+                                    
+                                    $suma++;
+                                }
+
+
+                            }
+
+
+                        }
+
+
+                     $auxFecha_inicio->addDay();
+                    }
+                    
+                    $cantidad_habitaciones = count($propiedad->habitaciones);
+                    $total_noches = $cantidad_habitaciones * $cantidad_noches;
+
+                    $grafico = [['nombre' => 'Ocupado','valor' => $suma],['nombre' => 'Disponible', 'valor' => ($total_noches - $suma)]];
+
+
+                  $data = [ 
+                            'ingresos_totales'          => $ingresos_totales_dia,
+                            'reservas_realizadas'       => count($reservas_creadas),
+                            'reservas_anuladas'         => count($reservas_anuladas),
+                            'reservas_no_show'          => count($reservas_no_show),
+                            'ingresos_por_habitacion'   => $ingresos_habitacion,
+                            'ingresos_por_servicios'    => $ingresos_consumos,
+                            'residentes'                => [['nombre' => 'Locales' , 'regiones' => $residentes_pais_propiedad], ['nombre' => 'Extranjeros' , 'paises' => $residentes_extranjero]],
+                            'grafico'                   => $grafico
+                                    
+                            ]; 
+
+
+                return $data;
+
+
+
+    } //fin metodo reportesMensual
+
+
+
 
     public function ingresoServicio(Request $request)
     {
@@ -222,6 +493,7 @@ class PropiedadController extends Controller
             'porcentaje_deposito' => 'numeric',
             'pais_id'             => 'numeric',
             'region_id'           => 'numeric',
+            'zona_horaria_id'     => 'numeric',
 
         );
 
@@ -475,7 +747,7 @@ class PropiedadController extends Controller
 
     }
 
-    public function reportes(Request $request)
+    public function reportesDiario(Request $request)
     {
 
         if($request->has('propiedad_id')){
@@ -892,6 +1164,16 @@ class PropiedadController extends Controller
 
     }
 
+    public function getZonasHorarias()
+    {
+
+        $zonas = ZonaHoraria::all();
+
+        return $zonas;
+
+
+    }
+
     public function crearPais(Request $request)
     {
 
@@ -916,6 +1198,25 @@ class PropiedadController extends Controller
         }
 
         return "paises creados";
+
+    }
+
+    public function crearZona(Request $request)
+    {
+
+
+        foreach ($request['zonas_horarias'] as $zona) {
+
+            $zona_horaria               = new ZonaHoraria();
+            $zona_horaria->nombre       = $zona;
+            $zona_horaria->save();
+
+
+        }
+
+        return "zonas horarias creadas";
+
+
 
     }
 
