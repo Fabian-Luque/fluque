@@ -28,7 +28,9 @@ class ApiAuthController extends Controller
             ];
             return Response::json($data, HttpResponse::HTTP_FORBIDDEN);
         }
-        return Response::json(compact('token'), 201);
+
+          $user_id = $user->id; 
+        return Response::json(compact('token', 'user_id'), 201);
     }
 
 
