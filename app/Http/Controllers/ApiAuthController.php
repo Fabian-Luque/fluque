@@ -3,17 +3,39 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
 use App\Http\Requests;
-
 use Tymon\JWTAuth\Facades\JWTAuth;
-
 use App\User;
-
+use Illuminate\Http\Response as HttpResponse;
+use Response;
 use DB;
 
 class ApiAuthController extends Controller
 {
+
+
+
+
+	public function signin(Request $request)
+    {
+        $credentials = $request->only('email', 'password');
+
+        $user = User::where('email', $credentials['email'])->first();
+        if (!$token = JWTAuth::attempt($credentials)) {
+            $data = [
+                'errors' => true,
+                'msg'    => 'Usuario o contraseña erroneos',
+            ];
+            return Response::json($data, HttpResponse::HTTP_FORBIDDEN);
+        }
+        return Response::json(compact('token'), 201);
+    }
+
+
+
+
+
+
     
 
 
@@ -51,6 +73,8 @@ class ApiAuthController extends Controller
 
 
 		}
+
+
 
 
 

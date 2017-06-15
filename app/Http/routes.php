@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Http\Response as HttpResponse;
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -10,6 +11,29 @@
 | and give it the controller to call when that URI is requested.
 |
 */
+
+
+Route::post('/signin', 'ApiAuthController@signin');
+
+Route::group(['middleware' => ['jwt.auth'], 'prefix' => 'v1'], function () {
+
+
+	Route::get('tipo-fuente', 'ReservaController@getTipoFuente');
+
+
+/*	Route::get('/restricted', function () {
+       try {
+           JWTAuth::parseToken()->toUser();
+       } catch (Exception $e) {
+           return Response::json(['error' => $e->getMessage()], HttpResponse::HTTP_UNAUTHORIZED);
+       }
+
+       return ['data' => 'This has come from a dedicated API subdomain with restricted access.'];
+   });*/
+
+
+});
+
 
 
 
@@ -33,7 +57,7 @@ Route::group(['middleware' => 'cors'], function(){
 
 	Route::get('reserva/propiedad', 'ReservaController@getReservas');
 
-	Route::get('tipo-fuente', 'ReservaController@getTipoFuente');
+	/*Route::get('tipo-fuente', 'ReservaController@getTipoFuente');*/
 
 	Route::get('metodo-pago', 'ReservaController@getMetodoPago');
 
