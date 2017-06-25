@@ -160,6 +160,7 @@ Route::group(['middleware' => 'cors'], function(){
 	Route::resource('cliente', 'ClienteController', ['except' => ['create', 'edit']]);
 	Route::resource('huesped', 'HuespedController', ['except' => ['create', 'edit']]);
 	Route::resource('temporada', 'TemporadaController', ['except' => ['create', 'edit']]);
+	Route::resource('tipo/habitacion', 'TipoHabitacionController', ['except' => ['create', 'edit']]);
 
 
 });

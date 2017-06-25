@@ -22,7 +22,7 @@ class CreateHabitacionesTable extends Migration
         $table->integer('piso');
         $table->integer('propiedad_id')->unsigned();
         $table->foreign('propiedad_id')->references('id')->on('propiedades');
-        $table->integer('tipo_habitacion_id')->unsigned();
+        $table->integer('tipo_habitacion_id')->unsigned()->nullable();
         $table->foreign('tipo_habitacion_id')->references('id')->on('tipo_habitacion');
         $table->timestamps();
         $table->softDeletes();
