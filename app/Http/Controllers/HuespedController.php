@@ -8,6 +8,7 @@ use App\HuespedReservaServicio;
 use App\PrecioServicio;
 use App\Reserva;
 use App\Servicio;
+use App\Propiedad;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Response;
@@ -172,38 +173,46 @@ class HuespedController extends Controller
 
     public function getHuespedes(Request $request)
     {
-
-        $id = $request->input('propiedad_id');
-
-        $fecha = $request->input('fecha_a_evaluar');
-
-        $fecha_a_evaluar = strtotime($fecha);
-
-        $reserva_info   = [];
-        $huespedes_info = [];
-
-        $huespedes = Huesped::whereHas('reservas.habitacion', function ($query) use ($id) {
-
-            $query->where('propiedad_id', $id);
-
-        })->with(['reservas' => function ($q) {
-
-            $q->where('estado_reserva_id', 3)->with('habitacion');}])->get();
-
-        foreach ($huespedes as $huesped) {
-
-            $reservas = $huesped->reservas;
-
-            if (count($huesped->reservas) != 0) {
-
-                array_push($huespedes_info, $huesped);
-
+        if ($request->has('propiedad_id')) {
+            $propiedad_id = $request->input('propiedad_id');
+            $propiedad    = Propiedad::where('id', $propiedad_id)->first();
+            if (is_null($propiedad)) {
+                $retorno = array(
+                    'msj'    => "Propiedad no encontrado",
+                    'errors' => true);
+                return Response::json($retorno, 404);
             }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia propiedad_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+        
+        $huespedes = Huesped::whereHas('reservas.habitacion', function ($query) use ($propiedad_id) {
+            $query->where('propiedad_id', $propiedad_id);
+        })->with('reservas.habitacion')->get();
 
+        $huespedes_info = [];
+        foreach ($huespedes as $huesped) {
+            foreach ($huesped['reservas'] as $reserva) {
+                if ($reserva->habitacion->propiedad_id == $propiedad_id) {
+                    $huesp['id']                      = $huesped->id;
+                    $huesp['nombre']                  = $huesped->nombre;
+                    $huesp['apellido']                = $huesped->apellido;
+                    $huesp['email']                   = $huesped->email;
+                    $huesp['telefono']                = $huesped->telefono;
+                    $huesp['calificacion_promedio']   = $huesped->calificacion_promedio;
+                    $huesp['pais_id']                 = $huesped->pais_id;
+                    $huesp['region_id']               = $huesped->region_id;
+                    $huesp['reserva']                 = $reserva;
+                }
+            }
+        array_push($huespedes_info, $huesp);
+            
         }
 
-        return $huespedes_info;
-
+       return $huespedes_info;
     }
 
     public function ingresoConsumo(Request $request)
