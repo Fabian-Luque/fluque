@@ -31,20 +31,21 @@ class PropiedadController extends Controller
 
 
 
-            $propiedad_id = $request->input('propiedad_id');
-            $propiedad = Propiedad::where('id', $request->input('propiedad_id'))->first();
+            $propiedad_id    = $request->input('propiedad_id');
+            $propiedad       = Propiedad::where('id', $request->input('propiedad_id'))->first();
 
-            $inicio       = new Carbon($request->input('fecha_inicio'));
-            $zona_horaria = ZonaHoraria::where('id', $propiedad->zona_horaria_id)->first();
-            $pais         = $zona_horaria->nombre;
-            $fecha_inicio = Carbon::createFromFormat('Y-m-d H:i:s', $inicio, $pais)->tz('UTC');
+            $getInicio       = new Carbon($request->input('fecha_inicio'));
+            $inicio          = $getInicio->startOfDay();
+            $zona_horaria    = ZonaHoraria::where('id', $propiedad->zona_horaria_id)->first();
+            $pais            = $zona_horaria->nombre;
+            $fecha_inicio    = Carbon::createFromFormat('Y-m-d H:i:s', $inicio, $pais)->tz('UTC');
 
 
             if ($request->has('fecha_fin')) {
             
-            $fin          = new Carbon($request->input('fecha_fin'));
-            $fechaFin     = $fin->addDay();
-            $fecha_fin    = Carbon::createFromFormat('Y-m-d H:i:s', $fechaFin, $pais)->tz('UTC');
+            $fin             = new Carbon($request->input('fecha_fin'));
+            $fechaFin        = $fin->addDay();
+            $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $fechaFin, $pais)->tz('UTC');
 
 
             }else{
