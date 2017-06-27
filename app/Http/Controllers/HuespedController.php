@@ -16,39 +16,42 @@ use Response;
 class HuespedController extends Controller
 {
 
+    /**
+     * BUSQUEDA DE HUESPED POR RUT 
+     *
+     * @author ALLEN
+     *
+     * @param  Request          $request (RUT)
+     * @return Response::json
+     */
     public function index(Request $request)
     {
-
         if ($request->has('rut')) {
-
-            $huesped = Huesped::where('rut', $request->input('rut'))->with('pais', 'region')->first();
-
+            $huesped_id    = $request->input('rut');
+            $huesped       = Huesped::where('rut', $huesped_id)->with('pais', 'region')->first();
             if (is_null($huesped)) {
-
                 $data = array(
-
                     'msj'    => "Huesped no encontrado",
                     'errors' => true,
-
                 );
-
                 return Response::json($data, 404);
-
-            } else {
-
-                $comentario = $huesped->calificacionPropiedades->last();
-
-                $data = array(
-                    'huesped'           => $huesped,
-                    'ultimo_comentario' => $comentario,
-
-                );
-
-                return $data;
-
             }
-
+        } else {
+            $data = array(
+                'msj'    => "No se envia rut",
+                'errors' => true);
+            return Response::json($data, 400);
         }
+        
+        $comentario = $huesped->calificacionPropiedades->last();
+
+        $data = array(
+            'huesped'           => $huesped,
+            'ultimo_comentario' => $comentario,
+
+        );
+
+        return $data;
 
     }
 
@@ -100,77 +103,69 @@ class HuespedController extends Controller
 
     }
 
+    /**
+     * INGRESAR HUESPEDES A UNA RESERVA PARA CHECKIN 
+     *
+     * @author ALLEN
+     *
+     * @param  Request          $request (reserva_id, huespedes)
+     * @return Response::json
+     */
     public function ingresoHuesped(Request $request)
     {
-
         if ($request->has('reserva_id') && $request->has('huespedes')) {
-
-            $reserva = Reserva::where('id', $request['reserva_id'])->first();
-
+            $reserva_id = $request->input('reserva_id'); 
+            $reserva    = Reserva::where('id', $reserva_id)->first();
             $huespedes = $request['huespedes'];
-
             if (is_null($reserva)) {
-
                 $retorno = array(
                     'msj'   => "Reserva no encontrada",
-                    'erros' => true);
-
+                    'errors' => true);
                 return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "La solicitud esta incompleta",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+        
+        foreach ($huespedes as $huesped) {
+            $huesped           = Huesped::firstOrNew($huesped);
+            $huesped->apellido = $huesped['apellido'];
+            $huesped->rut      = $huesped['rut'];
+            $huesped->telefono = $huesped['telefono'];
+            $huesped->save();
+
+            $huespedReserva = HuespedReserva::where('huesped_id', $huesped->id)->where('reserva_id', $reserva->id)->first();
+
+            if (is_null($huespedReserva)) {
+                $reserva->huespedes()->attach($huesped->id);
+                $reserva->update(array('estado_reserva_id' => 3));
 
             } else {
-
-                foreach ($huespedes as $huesped) {
-
-                    $huesped = Huesped::firstOrNew($huesped);
-
-                    $huesped->apellido = $huesped['apellido'];
-                    $huesped->rut      = $huesped['rut'];
-                    $huesped->telefono = $huesped['telefono'];
-                    $huesped->save();
-
-                    $huespedReserva = HuespedReserva::where('huesped_id', $huesped->id)->where('reserva_id', $reserva->id)->first();
-
-                    if (is_null($huespedReserva)) {
-
-                        $reserva->huespedes()->attach($huesped->id);
-                        $reserva->update(array('estado_reserva_id' => 3));
-
-                    } else {
-
-                        $retorno = array(
-                            'msj'   => $huesped->nombre . " " . $huesped->apellido . " ya fue ingresado a la reserva",
-                            'erros' => true);
-
-                        return Response::json($retorno, 400);
-
-                    }
-
-                }
-
                 $retorno = array(
-
-                    'msj'   => "Huespedes ingresados correctamente",
-                    'erros' => false,
-                );
-
-                return Response::json($retorno, 200);
-
+                    'msj'   => $huesped->nombre . " " . $huesped->apellido . " ya fue ingresado a la reserva",
+                    'errors' => true);
+                return Response::json($retorno, 400);
             }
-
-        } else {
-
-            $retorno = array(
-
-                'msj'    => "La solicitud esta incompleta",
-                'errors' => true,
-            );
-
-            return Response::json($retorno, 400);
-
         }
+
+        $retorno = array(
+            'msj'   => "Huespedes ingresados correctamente",
+            'errors' => false);
+        return Response::json($retorno, 200);
 
     }
 
+    /**
+     * OBTENER HUESPEDES DE LAS RESERVAS EN CURSO DE UNA PROPIEDAD PARA ASIGNAR CONSUMOS
+     *
+     * @author ALLEN
+     *
+     * @param  Request          $request (propiedad_id)
+     * @return Response::json
+     */
     public function getHuespedes(Request $request)
     {
         if ($request->has('propiedad_id')) {

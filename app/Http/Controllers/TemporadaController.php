@@ -17,41 +17,24 @@ class TemporadaController extends Controller
 
     public function index(Request $request)
     {
-
         if ($request->has('propiedad_id')) {
-
-            $propiedad = Propiedad::where('id', $request->input('propiedad_id'))->first();
-            if (!is_null($propiedad)) {
-
-                $temporadas = Temporada::where('propiedad_id', $request->input('propiedad_id'))->get();
-                return $temporadas;
-
-            } else {
-
-                $data = [
-                    'errors' => true,
-                    'msg'    => 'No se encuentra propiedad',
-
-                ];
-
-                return Response::json($data, 404);
-
+            $propiedad_id   = $request->input('propiedad_id');
+            $propiedad      = Propiedad::where('id', $propiedad_id->first();
+            if (is_null($propiedad)) {
+                $retorno  = array(
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
             }
-
         } else {
-
-
-
-            $data = [
-                    'errors' => true,
-                    'msg'    => 'No se envia propiedad_id',
-
-                ];
-
-                return Response::json($data, 400);
-
+            $retorno = array(
+                'msj'    => "No se envia propiedad_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
         }
 
+        $temporadas = Temporada::where('propiedad_id', $propiedad_id->get();
+        return $temporadas;
     }
 
     public function store(Request $request)

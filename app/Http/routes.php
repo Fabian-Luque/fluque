@@ -14,7 +14,7 @@ use Illuminate\Http\Response as HttpResponse;
 
 
 
-
+/*
 Route::group(['as' => 'api.jarvis.'], function(){
 
   Route::post('registro', 'UserController@store');
@@ -62,7 +62,6 @@ Route::group(['as' => 'api.jarvis.'], function(){
 	Route::post('crear/precio/habitacion', 'HabitacionController@crearPrecio');
 	Route::post('crear/precio/servicio', 'ServicioController@crearPrecio');
 	Route::get('copia/precio/habitacion', 'HabitacionController@copiaPrecios');
-	Route::get('copia/precio/servicio', 'ServicioController@copiaPrecios');
 	Route::post('cambiar/habitacion', 'ReservaController@cambiarHabitacion');
 	Route::get('clasificacion/moneda', 'PropiedadController@getClasificacionMoneda');
 	Route::post('ingreso/moneda/propiedad', 'PropiedadController@ingresoMonedas');
@@ -99,10 +98,7 @@ Route::group(['as' => 'api.jarvis.'], function(){
 
 });
 
-
-
-
-
+*/
 
 
 Route::auth();
@@ -119,7 +115,7 @@ Route::get('/', function () {
 
 
 
-/*Route::group(['middleware' => 'cors'], function(){
+Route::group(['middleware' => 'cors'], function(){
 
 	
 	Route::post('/auth_login', 'ApiAuthController@userAuth');
@@ -180,7 +176,6 @@ Route::get('/', function () {
 
 	Route::get('cliente/empresa', 'ClienteController@getClientes');
 
-
 	Route::post('pago/consumo', 'ReservaController@pagoConsumo');
 
 	Route::post('venta', 'ReservaController@ventas');
@@ -204,8 +199,6 @@ Route::get('/', function () {
 	Route::post('crear/precio/servicio', 'ServicioController@crearPrecio');
 
 	Route::get('copia/precio/habitacion', 'HabitacionController@copiaPrecios');
-
-	Route::get('copia/precio/servicio', 'ServicioController@copiaPrecios');
 
 	Route::post('cambiar/habitacion', 'ReservaController@cambiarHabitacion');
 
@@ -260,7 +253,7 @@ Route::get('/', function () {
 
 
 });
-*/
+
 
 
 
