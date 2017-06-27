@@ -207,10 +207,10 @@ class HuespedController extends Controller
                         $huesp['pais_id']                 = $huesped->pais_id;
                         $huesp['region_id']               = $huesped->region_id;
                         $huesp['reserva']                 = $reserva;
+                 array_push($huespedes_info, $huesp);
                     }
                 }
             }
-        array_push($huespedes_info, $huesp);
             
         }
 
