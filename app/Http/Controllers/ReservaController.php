@@ -603,11 +603,6 @@ class ReservaController extends Controller
     }
 
 
-
-
-
-    
-
     public function index(Request $request)
     {
         if ($request->has('fecha_inicio') && $request->has('fecha_fin') && $request->has('propiedad_id')) {
@@ -669,86 +664,42 @@ class ReservaController extends Controller
     }
 
 
+  public function getReservas(Request $request)
+  {
+    if($request->has('propiedad_id')){
+      $id        = $request->input('propiedad_id');
+      $propiedad = Propiedad::where('id', $id)->first();
+      if(is_null($propiedad)){
+        $retorno = array(
+           'msj'    => "Propiedad no encontrada",
+           'errors' => true);
+        return Response::json($retorno, 404);
+      }
+    }else{
+      $retorno = array(
+          'msj'    => "No se envia propiedad_id",
+          'errors' => true);
+      return Response::json($retorno, 400);
+    }
+    
+    $reservas = Reserva::whereHas('habitacion', function($query) use($id){
+      $query->where('propiedad_id', $id);
+    })->with('habitacion.tipoHabitacion')->with('pagos')->with('cliente.tipoCliente','cliente.pais','cliente.region')->with('huespedes.servicios')->with('tipoMoneda')->with('tipoFuente', 'metodoPago', 'estadoReserva')->get();
 
-
-
-    public function getReservas(Request $request){
-
-
-
-
-              if($request->has('propiedad_id')){
-
-
-                $id = $request->input('propiedad_id');
-
-                $propiedad = Propiedad::where('id', $id)->first();
-
-                if(!is_null($propiedad)){
-
-                    
-                $reservas = Reserva::whereHas('habitacion', function($query) use($id){
-
-                    $query->where('propiedad_id', $id);
-
-
-
-                })->with('habitacion.tipoHabitacion')->with('pagos')->with('cliente.tipoCliente','cliente.pais','cliente.region')->with('huespedes.servicios')->with('tipoMoneda')->with('tipoFuente', 'metodoPago', 'estadoReserva')->get();
-
-
-                foreach ($reservas as $reserva){
-                    
-                    foreach ($reserva['huespedes'] as $huesped) {
-                        $huesped->consumo_total = 0;
-                        foreach ($huesped['servicios'] as $servicio) {
-                            $huesped->consumo_total += $servicio->pivot->precio_total;
-
-                        }
-                    }
-
-                }
-
-                $data = ['reservas' => $reservas,];
-
-                return $data;
-
-
-                }else{
-
-
-                $data = array(
-
-                    'msj' => " No se encuentra propiedad",
-                    'errors' => true
-
-
-                );
-
-                return Response::json($data, 404);
-
-
-
-
-                }
-
-
-
-                }else{
-
-                    $retorno = array(
-
-                    'msj'       => "No se envia id propiedad",
-                    'errors'    => true
-
-
-                    );
-
-                     return Response::json($retorno, 400);
+    foreach ($reservas as $reserva){
+      foreach ($reserva['huespedes'] as $huesped) {
+        $huesped->consumo_total = 0;
+        foreach ($huesped['servicios'] as $servicio) {
+          $huesped->consumo_total += $servicio->pivot->precio_total;
 
         }
-
-        
+      }
     }
+
+    $data = ['reservas' => $reservas,];
+
+    return $data;      
+  }
 
     public function pagoReserva(Request $request){
 
@@ -1389,445 +1340,6 @@ class ReservaController extends Controller
     }
 
 
-
-    public function ventas(Request $request){
-
-
-      if($request->has('propiedad_id') && $request->has('fecha_inicio') && $request->has('fecha_fin') && $request->has('dias')){
-
-        $propiedad_id = $request->input('propiedad_id');
-        $fecha_inicio = $request->input('fecha_inicio');
-        $fecha_fin = $request->input('fecha_fin');
-        $dias = $request->input('dias');
-        $rango = [$fecha_inicio, $fecha_fin];
-
-        $propiedad = Propiedad::where('id', $propiedad_id)->first();
-
-        $total_reservas = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
-
-            $query->where('propiedad_id', $propiedad_id);
-
-        })->whereBetween('checkin' , $rango)->where('estado_reserva_id' , 4)->get();
-
-        $fechaInicio=strtotime($fecha_inicio);
-        $fechaFin=strtotime($fecha_fin);
-        $numero_habitaciones = $propiedad->numero_habitaciones;
-        
-        $mes = $dias * $numero_habitaciones;
-        $suma_ocupacion = 0;
-
-
-
-        for($i=$fechaInicio; $i<=$fechaFin; $i+=86400){
-            
-        $fecha = date("Y-m-d", $i);
-      
-
-        $reservas = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
-
-                    $query->where('propiedad_id', $propiedad_id);
-
-        })->where('checkin','<=' ,$fecha)->where('checkout', '>', $fecha)->where('estado_reserva_id' , 4)->get();
-
-        $reservas_dia = count($reservas);
-
-        $suma_ocupacion += $reservas_dia;
-
-        }
-
-        $ocupacion = ($suma_ocupacion * 100) / $mes;
-
-        $ventas_totales = 0;
-        foreach($total_reservas as $reserva){
-
-          $ventas_totales += $reserva->monto_total;
-
-
-        }
-
-        /*ingreso por tipo de cliente */
-
-        $ingreso_empresa = 0;
-        $ingreso_particular = 0;
-
-        $reserva_empresa = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
-
-            $query->where('propiedad_id', $propiedad_id);
-
-        })->whereHas('cliente', function($query){
-
-            $query->where('tipo_cliente_id', 2);
-
-        })->whereBetween('checkin' , $rango)->where('estado_reserva_id' , 4)->get();
-
-
-        foreach($reserva_empresa as $reserva){
-
-          $ingreso_empresa += $reserva->monto_total;
-
-
-
-        }
-
-        $reserva_particular = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
-
-            $query->where('propiedad_id', $propiedad_id);
-
-        })->whereHas('cliente', function($query){
-
-            $query->where('tipo_cliente_id', 1);
-
-        })->whereBetween('checkin' , $rango)->where('estado_reserva_id' , 4)->get();
-
-
-        foreach($reserva_particular as $reserva){
-
-          $ingreso_particular += $reserva->monto_total;
-
-
-
-        }
-
-
-        /*ingresos por tipo de fuente*/
-        $ingreso_por_web = 0;
-        $ingreso_por_telefono = 0;
-        $ingreso_caminando = 0;
-        $ingreso_por_email = 0;
-        $ingreso_por_redes = 0;
-
-        $reservas_web = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
-
-            $query->where('propiedad_id', $propiedad_id);
-
-        })->whereBetween('checkin' , $rango)->where('estado_reserva_id' , 4)->where('tipo_fuente_id' , 1)->get();
-
-        foreach($reservas_web as $reserva){
-
-          $ingreso_por_web += $reserva->monto_total;
-
-
-        }
-
-        $reservas_caminando = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
-
-            $query->where('propiedad_id', $propiedad_id);
-
-        })->whereBetween('checkin' , $rango)->where('estado_reserva_id' , 4)->where('tipo_fuente_id' , 2)->get();
-
-        foreach($reservas_caminando as $reserva){
-
-          $ingreso_caminando += $reserva->monto_total;
-
-        }
-
-        $reservas_telefono = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
-
-            $query->where('propiedad_id', $propiedad_id);
-
-        })->whereBetween('checkin' , $rango)->where('estado_reserva_id' , 4)->where('tipo_fuente_id' , 3)->get();
-
-        foreach($reservas_telefono as $reserva){
-
-          $ingreso_por_telefono += $reserva->monto_total;
-
-
-        }
-
-
-
-        $reservas_email = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
-
-            $query->where('propiedad_id', $propiedad_id);
-
-        })->whereBetween('checkin' , $rango)->where('estado_reserva_id' , 4)->where('tipo_fuente_id' , 4)->get();
-
-        foreach($reservas_email as $reserva){
-
-          $ingreso_por_email += $reserva->monto_total;
-
-
-        }
-
-        $reservas_sociales = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
-
-            $query->where('propiedad_id', $propiedad_id);
-
-        })->whereBetween('checkin' , $rango)->where('estado_reserva_id' , 4)->where('tipo_fuente_id' , 5)->get();
-
-        foreach($reservas_sociales as $reserva){
-
-          $ingreso_por_redes += $reserva->monto_total;
-
-
-        }
-
-
-        /*ingresos por tipo de pago*/
-
-        $ingreso_efectivo = 0;
-        $ingreso_credito = 0;
-        $ingreso_debito = 0;
-        $ingreso_cheque = 0;
-
-        $reservas_efectivo = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
-
-            $query->where('propiedad_id', $propiedad_id);
-
-        })->whereBetween('checkin' , $rango)->where('estado_reserva_id' , 4)->where('metodo_pago_id', 1)->get();
-
-        foreach($reservas_efectivo as $reserva){
-
-          $ingreso_efectivo += $reserva->monto_total;
-
-
-        }
-
-        $reservas_credito = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
-
-            $query->where('propiedad_id', $propiedad_id);
-
-        })->whereBetween('checkin' , $rango)->where('estado_reserva_id' , 4)->where('metodo_pago_id', 2)->get();
-
-        foreach($reservas_credito as $reserva){
-
-          $ingreso_credito += $reserva->monto_total;
-
-
-        }
-
-        $reservas_debito = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
-
-            $query->where('propiedad_id', $propiedad_id);
-
-        })->whereBetween('checkin' , $rango)->where('estado_reserva_id' , 4)->where('metodo_pago_id', 3)->get();
-
-        foreach($reservas_debito as $reserva){
-
-          $ingreso_debito += $reserva->monto_total;
-
-
-        }
-
-        $reservas_cheque = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
-
-            $query->where('propiedad_id', $propiedad_id);
-
-        })->whereBetween('checkin' , $rango)->where('estado_reserva_id' , 4)->where('metodo_pago_id', 4)->get();
-
-        foreach($reservas_cheque as $reserva){
-
-          $ingreso_cheque += $reserva->monto_total;
-
-
-        }
-
-
-        /*grafico, ingreso por tipo de cliente, particular y empresa*/
-
-        $subs_empresa = [];
-        $subs_particular = [];
-        $grafico_empresa_particular = [];
-
-        if($ventas_totales == 0){
-
-          $porcentaje_ingreso_empresas = 0;
-          $porcentaje_ingreso_particulares = 0;
-
-
-        }else{
-
-        
-        $porcentaje_ingreso_empresas = round(($ingreso_empresa * 100) / $ventas_totales);
-
-        $porcentaje_ingreso_particulares = round(($ingreso_particular * 100) / $ventas_totales);
-
-
-        $clientes_empresa = Cliente::whereHas('reservas.habitacion', function($query) use($propiedad_id){
-
-              $query->where('propiedad_id', $propiedad_id);
-
-
-        })->whereHas('reservas', function($query) use($rango){
-
-              $query->whereBetween('checkin' , $rango)->where('estado_reserva_id' , 4);
-
-
-        })->where('tipo_cliente_id', 2)->with(['reservas' => function ($q) use($rango) {
-
-        $q->whereBetween('checkin', $rango)->where('estado_reserva_id', 4);}])->get();
-
-
-        foreach($clientes_empresa as $cliente) {
-          
-          $total_cliente_empresa = 0; 
-          foreach ($cliente->reservas as $reserva) {
-              $total_cliente_empresa += $reserva->monto_total;
-
-          }
-          
-          $empresa_porcentaje = round(($total_cliente_empresa * 100) / $ventas_totales, 2);
-
-          $sub = [
-
-            'type'      =>$cliente->nombre,
-            'percent'   =>$empresa_porcentaje,
-
-
-
-          ];
-
-          array_push($subs_empresa, $sub);
-
-
-
-        }
-
-          $grafico1 = [
-
-                'type'    => "Empresas",
-                'percent' => $porcentaje_ingreso_empresas,
-                'color'   => null,
-                'subs'    => $subs_empresa,
-
-
-          ];
-
-
-
-          array_push($grafico_empresa_particular, $grafico1);
-
-
-/*        $clientes_particular = Cliente::whereHas('reservas.habitacion', function($query) use($propiedad_id){
-
-              $query->where('propiedad_id', $propiedad_id);
-
-
-        })->whereHas('reservas', function($query) use($rango){
-
-              $query->whereBetween('checkin' , $rango)->where('estado_reserva_id' , 4);
-
-
-        })->where('tipo_cliente_id', 1)->with(['reservas' => function ($q) use($rango) {
-
-        $q->whereBetween('checkin', $rango)->where('estado_reserva_id', 4);}])->get();*/
-
-
-          $sub2 = [
-
-            'type'      =>'Particulares',
-            'percent'   =>$porcentaje_ingreso_particulares,
-
-
-
-          ];
-
-          array_push($subs_particular, $sub2);
-
-
-          $grafico2 = [
-
-                'type'    => "Particulares",
-                'percent' => $porcentaje_ingreso_particulares,
-                'color'   => null,
-                'subs'    => $subs_particular,
-
-
-          ];
-
-          array_push($grafico_empresa_particular, $grafico2);
-
-
-      }
-
- ////////////////////////*grafico de servicios vedidos*//////////////////////////////////////////////////////////////////////////7
-
-           $cantidad_servicio_vendido = [];
-           $servicios = Servicio::whereHas('propiedad', function($query) use($propiedad_id){
-
-              $query->where('id', $propiedad_id);
-
-           })->with(['reservas' => function ($q) use($rango) {
-
-              $q->whereBetween('checkin', $rango)->where('estado_reserva_id' , 4);
-
-           }])->get();
-
-
-           foreach($servicios as $servicio){
-
-              $consumos = 0;
-              $precio_total = 0;
-              foreach ($servicio['reservas'] as $reserva) {
-                    $consumos += $reserva->pivot->cantidad;
-                    $precio_total += $reserva->pivot->precio_total;
-
-              }
-
-                
-              $ventas_servicios = [
-
-              'monto'      =>$precio_total,
-              'servicio'   =>$servicio->nombre,
-              'consumos'   =>$consumos,
-              'color'      =>null,
-
-
-
-              ];
-
-             array_push($cantidad_servicio_vendido, $ventas_servicios);
-
-
-
-
-           }
-
-
-            $data = array(
-
-            'total_reservas'          => count($total_reservas),
-            'ocupacion'               => round($ocupacion),
-            'ventas_totales'          => round($ventas_totales),
-            'ingreso_empresas'        => round($ingreso_empresa),
-            'ingreso_particulares'    => round($ingreso_particular),
-            'reservas_web'            => $ingreso_por_web,
-            'reservas_caminando'      => $ingreso_caminando,
-            'reservas_telefono'       => $ingreso_por_telefono,
-            'reservas_email'          => $ingreso_por_email,
-            'reservas_redes_sociales' => $ingreso_por_redes,
-            'reservas_efectivo'       => $ingreso_efectivo,
-            'reservas_credito'        => $ingreso_credito,
-            'reservas_debito'         => $ingreso_debito,
-            'reservas_cheque'         => $ingreso_cheque,
-            'types'                   => $grafico_empresa_particular,
-            'types2'                  => $cantidad_servicio_vendido,
-            );
-
-            return $data;
-
-
-      }else{
-
-
-            $retorno = array(
-
-                'msj'    => "La solicitud esta incompleta",
-                'errors' => true
-            );
-
-            return Response::json($retorno, 400);
-
-
-      }
-
-
-
-
-
-    }
-
-
     public function calendario(Request $request){
 
 
@@ -2049,53 +1561,34 @@ class ReservaController extends Controller
 
 
 
-    public function getTipoFuente(){
-
+    public function getTipoFuente()
+    {
         $TipoFuente = TipoFuente::all();
-            return $TipoFuente;
-
-
+        
+        return $TipoFuente;
     }
 
-    public function getMetodoPago(){
-
-      
-
+    public function getMetodoPago()
+    {
         $MetodoPago = MetodoPago::all();
 
-
-
         $respuesta = [
-
         'Metodo_pago' => $MetodoPago,
-
         ];
 
-
         return $respuesta;
-
-
     }
 
 
-    public function getEstadoReserva(){
-
-      
-
+    public function getEstadoReserva()
+    {
         $EstadoReserva = EstadoReserva::all();
 
-
-
         $respuesta = [
-
         'Estado_reserva' => $EstadoReserva,
-
         ];
 
-
         return $respuesta;
-
-
     }
 
 
@@ -2116,55 +1609,6 @@ class ReservaController extends Controller
 
 
     }
-
-
-    public function modificaPrecio(){
-
-
-        $reservas = Reserva::all();
-
-        foreach ($reservas as $reserva) {
-          
-          $monto_alojamiento = $reserva->monto_alojamiento;
-
-          $noches = $reserva->noches;
-
-          $precio_habitacion = $monto_alojamiento / $noches;
-
-          $reserva->update(array('precio_habitacion' => $precio_habitacion));
-
-
-
-        }
-
-
-        return "precios habitaciones actualizados";
-
-
-
-
-    }
-
-    public function copiaPrecioPagos(){
-
-     $pagos = Pago::all();
-
-     foreach ($pagos as $pago) {
-
-
-        $monto = $pago->monto_pago;  
-        $pago->update(array('monto_equivalente' => $monto));
-
-
-     }
-
-     return "actualizados";
-
-
-
-
-    }
-
 
 
 }

@@ -51,13 +51,11 @@ Route::group(['as' => 'api.jarvis.'], function(){
 	Route::post('ingreso/servicio/cliente', 'ClienteController@ingresoServicio');
 	Route::get('cliente/empresa', 'ClienteController@getClientes');
 	Route::post('pago/consumo', 'ReservaController@pagoConsumo');
-	Route::post('venta', 'ReservaController@ventas');
 	Route::get('cliente/email', 'ClienteController@getCliente');
 	Route::get('buscar/email', 'ClienteController@buscarEmail');
 	Route::get('buscar/rut', 'ClienteController@buscarRut');
 	Route::get('disponibilidad', 'HabitacionController@disponibilidad');
 	Route::get('editar/reserva', 'ReservaController@editarReserva');
-	Route::get('modifica/precio', 'ReservaController@modificaPrecio');
 	Route::get('tipo-moneda', 'HabitacionController@getTipoMoneda');
 	Route::post('crear/precio/habitacion', 'HabitacionController@crearPrecio');
 	Route::post('crear/precio/servicio', 'ServicioController@crearPrecio');
@@ -68,7 +66,6 @@ Route::group(['as' => 'api.jarvis.'], function(){
 	Route::post('ingreso/moneda/propiedad', 'PropiedadController@ingresoMonedas');
 	Route::post('eliminar/moneda/propiedad', 'PropiedadController@eliminarMoneda');
 	Route::put('editar/moneda/{id}', 'PropiedadController@editarMoneda');
-	Route::get('copia/precio/pagos', 'ReservaController@copiaPrecioPagos');
 	Route::get('reporte', 'PropiedadController@reportesDiario');
 	Route::post('crear/pais', 'PropiedadController@crearPais');
 	Route::get('paises', 'PropiedadController@getPaises');
@@ -183,8 +180,6 @@ Route::group(['middleware' => 'cors'], function(){
 
 	Route::post('pago/consumo', 'ReservaController@pagoConsumo');
 
-	Route::post('venta', 'ReservaController@ventas');
-
 	Route::get('cliente/email', 'ClienteController@getCliente');
 
 	Route::get('buscar/email', 'ClienteController@buscarEmail');
@@ -194,8 +189,6 @@ Route::group(['middleware' => 'cors'], function(){
 	Route::get('disponibilidad', 'HabitacionController@disponibilidad');
 
 	Route::get('editar/reserva', 'ReservaController@editarReserva');
-
-	Route::get('modifica/precio', 'ReservaController@modificaPrecio');
 
 	Route::get('tipo-moneda', 'HabitacionController@getTipoMoneda');
 
