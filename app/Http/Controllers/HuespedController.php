@@ -196,19 +196,21 @@ class HuespedController extends Controller
         $huespedes_info = [];
         foreach ($huespedes as $huesped) {
             foreach ($huesped['reservas'] as $reserva) {
-                if ($reserva->habitacion->propiedad_id == $propiedad_id) {
-                    $huesp['id']                      = $huesped->id;
-                    $huesp['nombre']                  = $huesped->nombre;
-                    $huesp['apellido']                = $huesped->apellido;
-                    $huesp['email']                   = $huesped->email;
-                    $huesp['telefono']                = $huesped->telefono;
-                    $huesp['calificacion_promedio']   = $huesped->calificacion_promedio;
-                    $huesp['pais_id']                 = $huesped->pais_id;
-                    $huesp['region_id']               = $huesped->region_id;
-                    $huesp['reserva']                 = $reserva;
+                if ($reserva->estado_reserva_id == 3) {
+                    if ($reserva->habitacion->propiedad_id == $propiedad_id) {
+                        $huesp['id']                      = $huesped->id;
+                        $huesp['nombre']                  = $huesped->nombre;
+                        $huesp['apellido']                = $huesped->apellido;
+                        $huesp['email']                   = $huesped->email;
+                        $huesp['telefono']                = $huesped->telefono;
+                        $huesp['calificacion_promedio']   = $huesped->calificacion_promedio;
+                        $huesp['pais_id']                 = $huesped->pais_id;
+                        $huesp['region_id']               = $huesped->region_id;
+                        $huesp['reserva']                 = $reserva;
+                 array_push($huespedes_info, $huesp);
+                    }
                 }
             }
-        array_push($huespedes_info, $huesp);
             
         }
 
