@@ -14,7 +14,7 @@ use Illuminate\Http\Response as HttpResponse;
 
 
 
-/*
+
 Route::group(['as' => 'api.jarvis.'], function(){
 
   Route::post('registro', 'UserController@store');
@@ -98,7 +98,7 @@ Route::group(['as' => 'api.jarvis.'], function(){
 
 });
 
-*/
+
 
 
 Route::auth();
@@ -114,7 +114,7 @@ Route::get('/', function () {
 
 
 
-
+/*
 Route::group(['middleware' => 'cors'], function(){
 
 	
@@ -253,7 +253,7 @@ Route::group(['middleware' => 'cors'], function(){
 
 
 });
-
+*/
 
 
 
