@@ -34,4 +34,10 @@ class Pago extends Model
 
 	}
 
+	public function servicios(){
+
+		return $this->hasMany('App\HuespedReservaServicio', 'pago_id');
+
+	}
+
 }

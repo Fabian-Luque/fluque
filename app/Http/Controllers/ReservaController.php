@@ -32,13 +32,10 @@ class ReservaController extends Controller
 
     $rules = array(
 
-      'monto_pago'               => '',
-      'monto_equivalente'        => '',
-      'tipo'                     => '',
       'numero_cheque'            => '',
       'numero_operacion'         => '',
-      'tipo_moneda_id'           => '',
       'tipo_comprobante_id'      => '',
+      'metodo_pago_id'           => '',
       'created_at'               => 'date',
     );
 
@@ -61,6 +58,8 @@ class ReservaController extends Controller
       $pago                       = Pago::findOrFail($id);
       $pago->numero_operacion     = $request->input('numero_operacion');
       $pago->tipo_comprobante_id  = $request->input('tipo_comprobante_id');
+      $pago->numero_cheque        = $request->input('numero_cheque');
+      $pago->metodo_pago_id       = $request->input('metodo_pago_id');
       $pago->created_at           = $getFecha;
       $pago->touch();
 
@@ -78,20 +77,36 @@ class ReservaController extends Controller
   public function eliminarPago($id)
   {
     $pago = Pago::findOrFail($id);
+    $reserva_id = $pago->reserva_id;
+    $reserva = Reserva::where('id', $reserva_id)->first();
     if ($pago->tipo == 'Pago habitacion') {
-        $reserva_id = $pago->reserva_id;
-        $reserva = Reserva::where('id', $reserva_id)->first();
-        $monto_por_pagar = $reserva->monto_por_pagar + $pago->monto_pago;
-        $reserva->update(array('monto_por_pagar' => $monto_por_pagar));
+      $monto_por_pagar = $reserva->monto_por_pagar + $pago->monto_pago;
+      $reserva->update(array('monto_por_pagar' => $monto_por_pagar));
+    }
+    if ($pago->tipo == 'Pago consumos') {
+      $servicios = $pago->servicios;
+      if (count($servicios) == 0) {
+        $retorno = array(
+            'errors' => true,
+            'msj'    => " No autorizado"
+        );
+          return Response::json($retorno, 400);
+      }
+
+      $monto_por_pagar = $reserva->monto_por_pagar + $pago->monto_pago;
+      $reserva->update(array('monto_por_pagar' => $monto_por_pagar));
+      foreach ($servicios as $servicio) {
+        $servicio->update(array('estado' => 'Por pagar'));
+      }
     }
     $pago->delete();
 
-    $data = [
+    $retorno = [
         'errors' => false,
-        'msg'    => 'Pago eliminado satisfactoriamente',
+        'msj'    => 'Pago eliminado satisfactoriamente',
     ];
 
-    return Response::json($data, 202);
+    return Response::json($retorno, 202);
 
   }
 
@@ -1210,7 +1225,7 @@ class ReservaController extends Controller
             foreach ($servicios as $servicio) {
             
                $consumo =  HuespedReservaServicio::where('id', $servicio)->first();
-               $consumo->update(array('estado' => 'Pagado'));
+               $consumo->update(array('estado' => 'Pagado', 'pago_id' => $pago->id));
 
 
             }
