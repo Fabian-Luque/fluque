@@ -26,6 +26,78 @@ use Validator;
 class ReservaController extends Controller
 {
 
+
+  public function editarPAgo(Request $request, $id)
+  {
+
+    $rules = array(
+
+      'monto_pago'               => '',
+      'monto_equivalente'        => '',
+      'tipo'                     => '',
+      'numero_cheque'            => '',
+      'numero_operacion'         => '',
+      'tipo_moneda_id'           => '',
+      'tipo_comprobante_id'      => '',
+      'created_at'               => 'date',
+    );
+
+    $validator = Validator::make($request->all(), $rules);
+
+    if ($validator->fails()) {
+
+      $data = [
+      'errors' => true,
+      'msg'    => $validator->messages(),
+      ];
+
+      return Response::json($data, 400);
+
+    } else {
+      if($request->has('created_at')){
+        $getFecha = new Carbon($request->input('created_at'));
+      }
+
+      $pago                       = Pago::findOrFail($id);
+      $pago->numero_operacion     = $request->input('numero_operacion');
+      $pago->tipo_comprobante_id  = $request->input('tipo_comprobante_id');
+      $pago->created_at           = $getFecha;
+      $pago->touch();
+
+      $data = [
+      'errors' => false,
+      'msg'    => 'Pago actualizado satisfactoriamente',
+      ];
+
+      return Response::json($data, 201);
+
+    }
+  }
+
+
+  public function eliminarPago($id)
+  {
+    $pago = Pago::findOrFail($id);
+    if ($pago->tipo == 'Pago habitacion') {
+        $reserva_id = $pago->reserva_id;
+        $reserva = Reserva::where('id', $reserva_id)->first();
+        $monto_por_pagar = $reserva->monto_por_pagar + $pago->monto_pago;
+        $reserva->update(array('monto_por_pagar' => $monto_por_pagar));
+    }
+    $pago->delete();
+
+    $data = [
+        'errors' => false,
+        'msg'    => 'Pago eliminado satisfactoriamente',
+    ];
+
+    return Response::json($data, 202);
+
+  }
+
+
+
+
     /**
      * realizar reservas para un cliente, de una o mas habitaciones
      *
@@ -1087,13 +1159,6 @@ class ReservaController extends Controller
 
         if($monto_pago <= $reserva->monto_por_pagar){
 
-            foreach ($servicios as $servicio) {
-            
-               $consumo =  HuespedReservaServicio::where('id', $servicio)->first();
-               $consumo->update(array('estado' => 'Pagado'));
-
-
-            }
 
                 if($reserva->estado_reserva_id == 5 && $total == 0){
 
@@ -1142,6 +1207,13 @@ class ReservaController extends Controller
 
                    }
 
+            foreach ($servicios as $servicio) {
+            
+               $consumo =  HuespedReservaServicio::where('id', $servicio)->first();
+               $consumo->update(array('estado' => 'Pagado'));
+
+
+            }
 
                 $retorno = array(
 

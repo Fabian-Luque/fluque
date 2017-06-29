@@ -59,8 +59,6 @@ Route::group(['as' => 'api.jarvis.'], function(){
 	Route::get('tipo-moneda', 'HabitacionController@getTipoMoneda');
 	Route::post('crear/precio/habitacion', 'HabitacionController@crearPrecio');
 	Route::post('crear/precio/servicio', 'ServicioController@crearPrecio');
-	Route::get('copia/precio/habitacion', 'HabitacionController@copiaPrecios');
-	Route::get('copia/precio/servicio', 'ServicioController@copiaPrecios');
 	Route::post('cambiar/habitacion', 'ReservaController@cambiarHabitacion');
 	Route::get('clasificacion/moneda', 'PropiedadController@getClasificacionMoneda');
 	Route::post('ingreso/moneda/propiedad', 'PropiedadController@ingresoMonedas');
@@ -177,7 +175,6 @@ Route::group(['middleware' => 'cors'], function(){
 
 	Route::get('cliente/empresa', 'ClienteController@getClientes');
 
-
 	Route::post('pago/consumo', 'ReservaController@pagoConsumo');
 
 	Route::get('cliente/email', 'ClienteController@getCliente');
@@ -196,10 +193,6 @@ Route::group(['middleware' => 'cors'], function(){
 
 	Route::post('crear/precio/servicio', 'ServicioController@crearPrecio');
 
-	Route::get('copia/precio/habitacion', 'HabitacionController@copiaPrecios');
-
-	Route::get('copia/precio/servicio', 'ServicioController@copiaPrecios');
-
 	Route::post('cambiar/habitacion', 'ReservaController@cambiarHabitacion');
 
 	Route::get('clasificacion/moneda', 'PropiedadController@getClasificacionMoneda');
@@ -209,8 +202,6 @@ Route::group(['middleware' => 'cors'], function(){
 	Route::post('eliminar/moneda/propiedad', 'PropiedadController@eliminarMoneda');
 
 	Route::put('editar/moneda/{id}', 'PropiedadController@editarMoneda');
-
-	Route::get('copia/precio/pagos', 'ReservaController@copiaPrecioPagos');
 
 	Route::get('reporte', 'PropiedadController@reportesDiario');
 
@@ -239,6 +230,10 @@ Route::group(['middleware' => 'cors'], function(){
 	Route::post('crear/zona/horaria', 'PropiedadController@crearZona');
 
 	Route::get('zonas/horarias', 'PropiedadController@getZonasHorarias');
+
+	Route::put('editar/pago/{id}', 'ReservaController@editarPago');
+
+	Route::delete('pago/{id}', 'ReservaController@eliminarPago');
 
 
 	Route::resource('user', 'UserController', ['except' => ['create', 'edit','store']]);

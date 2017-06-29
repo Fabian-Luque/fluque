@@ -244,9 +244,6 @@ class ServicioController extends Controller
          }
 
 
-
-
-
 	    public function destroy($id){
 
         $servicio = Servicio::findOrFail($id);
@@ -272,50 +269,7 @@ class ServicioController extends Controller
 
         return $categorias;
 
-
-
     }
-
-
-    public function copiaPrecios(){
-
-
-
-         $servicios = Servicio::all();
-
-          foreach ($servicios as $servicio) {
-             
-             $precio_servicio = $servicio->precio;
-             $servicio_id = $servicio->id;
-
-             $precio                           = new PrecioServicio();
-             $precio->precio_servicio          = $precio_servicio;
-             $precio->tipo_moneda_id           = 1;
-             $precio->servicio_id              = $servicio_id;
-             $precio->save();
-
-
-
-          }
-
-             $data = [
-                'errors' => false,
-                'msg' => 'Precios creados satisfactoriamente',
-
-                ];
-
-            return Response::json($data, 201);
-
-
-
-
-         }
-
-
-
-
-
-
 
 
 }
