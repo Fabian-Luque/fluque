@@ -8,9 +8,11 @@ use App\Propiedad;
 use App\Servicio;
 use App\TipoHabitacion;
 use App\User;
+use App\ZonaHoraria;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Response;
+use JWTAuth;
 
 class UserController extends Controller
 {

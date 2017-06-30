@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Response as HttpResponse;
+
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -114,9 +115,7 @@ Route::get('/', function () {
 
 
 
-
-/*
-Route::group(['middleware' => 'cors'], function(){
+/*Route::group(['middleware' => 'cors'], function(){
 
 	
 	Route::post('/auth_login', 'ApiAuthController@userAuth');
@@ -249,8 +248,8 @@ Route::group(['middleware' => 'cors'], function(){
 
 
 });
-*/
 
+*/
 
 
 

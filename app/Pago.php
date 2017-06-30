@@ -3,6 +3,9 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\ZonaHoraria;
+use JWTAuth;
+use \Carbon\Carbon;
 
 class Pago extends Model
 {
@@ -39,5 +42,14 @@ class Pago extends Model
 		return $this->hasMany('App\HuespedReservaServicio', 'pago_id');
 
 	}
+
+	public function getCreatedAtAttribute($value)
+    {
+        $user 			 = JWTAuth::parseToken()->toUser();
+        $propiedad 		 = $user->propiedad;
+        $zona_horaria    = ZonaHoraria::where('id', $propiedad->zona_horaria_id)->first();
+        $pais            = $zona_horaria->nombre;
+        return Carbon::parse($value)->timezone($pais)->format('Y-m-d H:i:s');
+    }   
 
 }
