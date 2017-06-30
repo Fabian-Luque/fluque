@@ -1575,7 +1575,7 @@ class ReservaController extends Controller
         $q->wherePivot('reserva_id', $id);}])
 
 
-        ->with('habitacion.tipoHabitacion')->with('cliente.pais','cliente.region','tipoMoneda' ,'tipoFuente', 'metodoPago','estadoReserva','pagos.tipoComprobante','pagos.tipoMoneda')->with('huespedes.pais', 'huespedes.region')->get();
+        ->with('habitacion.tipoHabitacion')->with('cliente.pais','cliente.region','tipoMoneda' ,'tipoFuente', 'metodoPago','estadoReserva','pagos.tipoComprobante','pagos.tipoMoneda', 'pagos.metodoPago')->with('huespedes.pais', 'huespedes.region')->get();
 
             foreach ($reservas as $reserva){
                 foreach ($reserva['huespedes'] as $huesped) {
