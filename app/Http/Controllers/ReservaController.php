@@ -36,7 +36,7 @@ class ReservaController extends Controller
       'numero_operacion'         => '',
       'tipo_comprobante_id'      => '',
       'metodo_pago_id'           => '',
-      'created_at'               => 'date',
+      'fecha'                    => 'date',
     );
 
     $validator = Validator::make($request->all(), $rules);
@@ -51,8 +51,8 @@ class ReservaController extends Controller
       return Response::json($data, 400);
 
     } else {
-      if($request->has('created_at')){
-        $getFecha = new Carbon($request->input('created_at'));
+      if($request->has('fecha')){
+        $getFecha = new Carbon($request->input('fecha'));
       }
 
       $pago                       = Pago::findOrFail($id);
