@@ -231,6 +231,7 @@ class ReservaController extends Controller
                 $reserva->tipo_moneda_id        = $tipo_moneda_id;
                 $reserva->estado_reserva_id     = $request['estado_reserva_id'];
                 $reserva->noches                = $request['noches'];
+                $reserva->observacion           = $request['observacion'];
                 $reserva->save();
 
             if(!empty($huespedes)){
