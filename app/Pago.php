@@ -3,12 +3,15 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\ZonaHoraria;
+use JWTAuth;
+use \Carbon\Carbon;
 
 class Pago extends Model
 {
     protected $table = 'pagos';
 
-    protected $fillable = ['monto_pago','monto_equivalente','tipo','numero_operacion','tipo_moneda_id','tipo_comprobante_id','reserva_id'];
+    protected $fillable = ['monto_pago','monto_equivalente','tipo','numero_operacion','tipo_moneda_id','tipo_comprobante_id','reserva_id', 'created_at'];
 
 	public function reserva(){
 
@@ -33,5 +36,20 @@ class Pago extends Model
 		return $this->belongsTo('App\TipoMoneda', 'tipo_moneda_id');
 
 	}
+
+	public function servicios(){
+
+		return $this->hasMany('App\HuespedReservaServicio', 'pago_id');
+
+	}
+
+	public function getCreatedAtAttribute($value)
+    {
+        $user 			 = JWTAuth::parseToken()->toUser();
+        $propiedad 		 = $user->propiedad;
+        $zona_horaria    = ZonaHoraria::where('id', $propiedad->zona_horaria_id)->first();
+        $pais            = $zona_horaria->nombre;
+        return Carbon::parse($value)->timezone($pais)->format('Y-m-d H:i:s');
+    }   
 
 }

@@ -4,6 +4,9 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\ZonaHoraria;
+use JWTAuth;
+use \Carbon\Carbon;
 
 class Reserva extends Model
 {
@@ -11,8 +14,7 @@ class Reserva extends Model
 	use SoftDeletes;
     protected $table = 'reservas';
 
-	protected $fillable = ['precio_habitacion', 'monto_alojamiento','noches','monto_consumo','monto_total','monto_sugerido','metodo_pago_id','monto_por_pagar', 'ocupacion','tipo_fuente_id','habitacion_id' ,'cliente_id','checkin', 'checkout','estado_reserva_id'];
-
+	protected $fillable = ['precio_habitacion','monto_alojamiento','noches','observacion','monto_consumo','monto_total','monto_sugerido','metodo_pago_id','monto_por_pagar','ocupacion','tipo_fuente_id','habitacion_id','cliente_id','checkin','checkout','estado_reserva_id'];
 
 
 	public function habitacion(){
@@ -81,5 +83,14 @@ class Reserva extends Model
 				
 
 	}
+
+	public function getCreatedAtAttribute($value)
+    {
+        $user 			 = JWTAuth::parseToken()->toUser();
+        $propiedad 		 = $user->propiedad;
+        $zona_horaria    = ZonaHoraria::where('id', $propiedad->zona_horaria_id)->first();
+        $pais            = $zona_horaria->nombre;
+        return Carbon::parse($value)->timezone($pais)->format('Y-m-d H:i:s');
+    }   
 
 }
