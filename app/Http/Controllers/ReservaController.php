@@ -903,7 +903,7 @@ class ReservaController extends Controller
                       foreach ($consumos as $consumo){
                         $monto_consumos += $consumo->precio_total;
                               
-                      $consumo->update(array('estado' => 'Pagado'));
+                     /* $consumo->update(array('estado' => 'Pagado'));*/
 
                      }
 
@@ -945,6 +945,12 @@ class ReservaController extends Controller
                      $pago->save();
 
                    }
+
+                    foreach ($consumos as $consumo){
+ 
+                      $consumo->update(array('estado' => 'Pagado', 'pago_id' => $pago->id));
+
+                    }
 
                       if($reserva->estado_reserva_id == 5 && $monto == 0){
 
