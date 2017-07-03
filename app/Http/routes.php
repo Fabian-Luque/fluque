@@ -114,10 +114,11 @@ Route::get('/', function () {
   });
 
 
-/*
-Route::group(['middleware' => 'cors'], function(){
 
-	
+
+/*Route::group(['middleware' => 'cors'], function(){
+
+
 	Route::post('/auth_login', 'ApiAuthController@userAuth');
 
 	Route::post('reserva/habitacion', 'ReservaController@reserva');
@@ -247,7 +248,7 @@ Route::group(['middleware' => 'cors'], function(){
 	Route::resource('temporada', 'TemporadaController', ['except' => ['create', 'edit']]);
 
 
-});
+});*/
 
 
 */

@@ -154,28 +154,41 @@ class ReservaController extends Controller
 
             }else{
 
-                $cliente                        = new Cliente();
-                $cliente->nombre                = $clientes['nombre'];
-                $cliente->apellido              = $clientes['apellido'];
-                $cliente->direccion             = $clientes['direccion'];
-                $cliente->ciudad                = $clientes['ciudad'];
-                $cliente->telefono              = $clientes['telefono'];
-                if($request->has('cliente.email')){
-                $cliente->email                 = $clientes['email'];
+                $cliente                         = new Cliente();
+
+                $cliente->nombre                 = $clientes['nombre'];
+                $cliente->apellido               = $clientes['apellido'];
+                if($request->has('cliente.direccion')){
+                $cliente->direccion              = $clientes['direccion'];
                 }else{
-                $cliente->email                 = null;
+                $cliente->direccion              = null;
+                }
+                if($request->has('cliente.ciudad')){
+                $cliente->ciudad                 = $clientes['ciudad'];
+                }else{
+                $cliente->ciudad                 = null;
+                }
+                if($request->has('cliente.telefono')){
+                $cliente->telefono               = $clientes['telefono'];
+                }else{
+                $cliente->telefono               = null;
+                }
+                if($request->has('cliente.email')){
+                $cliente->email                  = $clientes['email'];
+                }else{
+                $cliente->email                  = null;
                 }
                 if($request->has('cliente.pais_id')) {
-                $cliente->pais_id               = $clientes['pais_id'];
+                $cliente->pais_id                = $clientes['pais_id'];
                 }else{
-                $cliente->pais_id               = null;
+                $cliente->pais_id                = null;
                 }
                 if($request->has('cliente.region_id')) {
-                $cliente->region_id             = $clientes['region_id'];
+                $cliente->region_id              = $clientes['region_id'];
                 }else{
-                $cliente->region_id             = null;
+                $cliente->region_id              = null;
                 }
-                $cliente->tipo_cliente_id       = $clientes['tipo_cliente_id'];
+                $cliente->tipo_cliente_id        = $clientes['tipo_cliente_id'];
                 $cliente->save();
 
 
