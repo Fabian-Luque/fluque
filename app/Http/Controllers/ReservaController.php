@@ -157,10 +157,24 @@ class ReservaController extends Controller
                 $cliente                        = new Cliente();
                 $cliente->nombre                = $clientes['nombre'];
                 $cliente->apellido              = $clientes['apellido'];
-                $cliente->direccion             = $cliente['direccion'];
-                $cliente->ciudad                = $cliente['ciudad'];
-                $cliente->telefono              = $cliente['telefono'];
-                $cliente->email                 = $cliente['email'];
+                $cliente->direccion             = $clientes['direccion'];
+                $cliente->ciudad                = $clientes['ciudad'];
+                $cliente->telefono              = $clientes['telefono'];
+                if($request->has('cliente.email')){
+                $cliente->email                 = $clientes['email'];
+                }else{
+                $cliente->email                 = null;
+                }
+                if($request->has('cliente.pais_id')) {
+                $cliente->pais_id               = $clientes['pais_id'];
+                }else{
+                $cliente->pais_id               = null;
+                }
+                if($request->has('cliente.region_id')) {
+                $cliente->region_id             = $clientes['region_id'];
+                }else{
+                $cliente->region_id             = null;
+                }
                 $cliente->tipo_cliente_id       = $clientes['tipo_cliente_id'];
                 $cliente->save();
 

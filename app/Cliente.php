@@ -12,7 +12,7 @@ class Cliente extends Model
 	use SoftDeletes;
     protected $table = 'clientes';
 
-	protected $fillable = ['nombre', 'apellido','rut', 'direccion','ciudad','pais','telefono', 'email', 'giro', 'pais_id', 'region_id', 'tipo_cliente_id'];
+	protected $fillable = ['nombre', 'apellido','rut', 'direccion','ciudad','telefono', 'email', 'giro', 'pais_id', 'region_id', 'tipo_cliente_id'];
 
 
 	public function reservas(){
