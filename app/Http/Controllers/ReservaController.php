@@ -155,11 +155,26 @@ class ReservaController extends Controller
             }else{
 
                 $cliente                        = new Cliente();
-                $cliente->nombre                = $clientes['nombre'];
-                $cliente->apellido              = $clientes['apellido'];
+
+                $cliente->nombre                 = $clientes['nombre'];
+                $cliente->apellido               = $clientes['apellido'];
+                if ($request->has('cliente.direccion')) {
                 $cliente->direccion             = $clientes['direccion'];
+                } else {
+                $cliente->direccion             = null;
+                }
+                if ($request->has('cliente.ciudad')) {
                 $cliente->ciudad                = $clientes['ciudad'];
+                } else {
+                $cliente->ciudad                 = null;
+                }
+                if ($request->has('cliente.telefono')) {
                 $cliente->telefono              = $clientes['telefono'];
+                  
+                } else {
+                $cliente->telefono              = null;
+                }
+                
                 if($request->has('cliente.email')){
                 $cliente->email                 = $clientes['email'];
                 }else{

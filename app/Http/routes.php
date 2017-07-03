@@ -247,8 +247,8 @@ Route::get('/', function () {
 	Route::resource('temporada', 'TemporadaController', ['except' => ['create', 'edit']]);
 
 
-});
-*/
+});*/
+
 
 
 
