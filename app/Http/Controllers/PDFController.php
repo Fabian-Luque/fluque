@@ -125,15 +125,16 @@ class PDFController extends Controller
 
     
     if($iva == 1){
-    $neto = round($monto_alojamiento); 
+    $neto = $monto_alojamiento; 
     $iva = round(($neto * $propiedad_iva) / 100);
     $total = round($neto + $iva);
     }elseif($iva == 0){
-    $neto = round($monto_alojamiento); 
+    $neto = $monto_alojamiento; 
     $iva = round(($neto * 0) / 100);
     $total = round($neto + $iva);
 
     }
+    
 
     $pdf = PDF::loadView('pdf.checkin', ['propiedad' => $propiedad, 'cliente'=> $cliente ,'reservas_pdf'=> $reservas_pdf, 'neto' => $neto , 'iva' => $iva, 'total' => $total]);
 
