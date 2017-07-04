@@ -243,17 +243,6 @@
     <div class="page-break"></div>
 
     <div class="contenedor">
-      <div class="encabezado black">
-        <div class="propiedad-info">
-        @foreach($propiedad as $prop)
-          <h2>{{$prop->nombre}}</h2>
-          <h3>{{$prop->email}}</h3>
-          <h3>{{$prop->direccion}}</h3>
-          <h3>{{$prop->ciudad}}</h3>
-          <h3>{{$prop->pais->nombre}}</h3>
-        @endforeach
-        </div>
-      </div>
 
       <div class="detalle-consumo">
         <h2 class="titulo">Detalle de consumos</h2>
@@ -272,7 +261,7 @@
           <table class="tabla-comsumos margen">
               @foreach($huesped->servicios as $servicio)
             <tr>
-              <td class="data-tabla-detalles borde-derecha"><p class="">{{ $servicio->pivot->created_at->format('Y-m-d') }}   -  {{ $servicio->pivot->cantidad }} {{ $servicio->nombre }}</p></td>
+              <td class="data-tabla-detalles borde-derecha"><p class="">{{ $servicio->pivot->created_at->format('d-m-Y') }}   -  {{ $servicio->pivot->cantidad }} {{ $servicio->nombre }}</p></td>
               <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{ $servicio->pivot->precio_total }}</p></td>
             </tr>
               @endforeach
@@ -292,6 +281,45 @@
 
 
     </div>
+
+    <div class="page-break"></div>
+
+    <div class="contenedor">
+      <div class="estado-cuenta" style="margin-top: 20px;">
+
+                <div class="titulo" style="text-align:left;">
+                  <h3 class="">Detalle de pagos</h3>
+                </div>
+
+                <div class="detalles" style="margin:20px 0px;">
+                  <table class="tabla-detalles">
+                    <tr>
+                      <th class="data-tabla-detalles borde-derecha" style="width:150px;"><p>Tipo de pago</p></th>
+                      <th class="data-tabla-detalles borde-derecha"><p>Fecha</p></th>
+                      <th class="data-tabla-detalles borde-derecha"><p>Método de pago</p></th>
+                      <th class="data-tabla-detalles borde-derecha"><p>Tipo de comprobante</p></th>
+                      <th class="data-tabla-detalles borde-derecha"><p>Nº de operación</p></th>
+                      <th class="data-tabla-detalles borde-derecha"><p>Monto</p></th>
+                    </tr>
+
+                @foreach($reservas_pdf as $reservas)
+                    @foreach($reservas as $reserva)
+                     @foreach($reserva->pagos as $pago)
+                    <tr>
+                      <td class="data-tabla-detalles borde-derecha"><p>{{ $pago->tipo }}</p></td>
+                      <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->created_at }}</p></td>
+                      <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->metodoPago->nombre }} {{$pago->numero_cheque }}</p></td>
+                      <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->tipoComprobante->nombre }}</p></td>
+                      <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->numero_operacion }}</p></td>
+                      <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->tipoMoneda->nombre }} {{$pago->monto_equivalente }}</p></td>
+                    </tr>
+                     @endforeach
+                    @endforeach
+                @endforeach
+
+
+                  </table>
+                </div>
 
     <div class="footer">
       <p>Documento generado con Jarvis Frontdesk</p>

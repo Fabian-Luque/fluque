@@ -45,7 +45,7 @@ class PDFController extends Controller
 		$consumo = 0;
 		foreach($reservas as $id){
 
-		$reserva = Reserva::where('id', $id)->with('cliente.pais', 'cliente.region')->with('tipoMoneda')->with('habitacion.tipoHabitacion')->with(['huespedes.servicios' => function ($q) use($id) {
+		$reserva = Reserva::where('id', $id)->with('cliente.pais', 'cliente.region')->with('tipoMoneda')->with('habitacion.tipoHabitacion')->with('pagos.tipoMoneda', 'pagos.metodoPago', 'pagos.tipoComprobante')->with(['huespedes.servicios' => function ($q) use($id) {
 
         $q->wherePivot('reserva_id', $id);}])->get();
 
@@ -81,7 +81,7 @@ class PDFController extends Controller
 
 		}
 
-
+    /*return $reservas_pdf;*/
 		$pdf = PDF::loadView('pdf.estado_cuenta', ['propiedad' => $propiedad,'consumo' => $consumo , 'cliente'=> $cliente ,'reservas_pdf'=> $reservas_pdf, 'neto' => $neto , 'iva' => $iva, 'total' => $total]);
 
 		return $pdf->download('archivo.pdf');
