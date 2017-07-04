@@ -183,11 +183,11 @@
             <h3 class="">Detalles de las reservas/estadías</h3>
           </div>
 
-          <table class="tabla-detalles">
-
           @foreach($reservas_pdf as $reservas)
 
             @foreach($reservas as $reserva)
+          <table class="tabla-detalles">
+
             <tr>
               <td class="data-tabla-detalles borde-derecha"><p class="titulo">Habitacion {{ $reserva->habitacion->nombre }} - {{ $reserva->habitacion->tipoHabitacion->nombre }} - {{ $reserva->ocupacion }} Huéspedes - {{ $reserva->noches }} Noches - Checkin {{ $reserva->checkin->format('d-m-Y') }} - Checkout {{ $reserva->checkout->format('d-m-Y') }}</p></td>
               <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{ $reserva->monto_alojamiento }}</p></td>
@@ -211,11 +211,11 @@
             </tr>
 
           </table>
+            @endforeach
+          @endforeach
         </div>
         <!--  Fin detalles  -->
 
-            @endforeach
-          @endforeach
 
 
 
