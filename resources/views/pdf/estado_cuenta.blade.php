@@ -308,9 +308,23 @@
                     <tr>
                       <td class="data-tabla-detalles borde-derecha"><p>{{ $pago->tipo }}</p></td>
                       <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->created_at }}</p></td>
+                      @if($pago->numero_cheque == null)
+                      <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->metodoPago->nombre }}</p></td>
+                      @else
                       <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->metodoPago->nombre }} {{$pago->numero_cheque }}</p></td>
+                      @endif
+
+                      @if($pago->tipoComprobante == null)
+                      <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p></p></td>
+                      @else
                       <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->tipoComprobante->nombre }}</p></td>
+                      @endif
+
+                      @if($pago->numero_operacion == null)
+                      <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p></p></td>
+                      @else
                       <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->numero_operacion }}</p></td>
+                      @endif
                       <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->tipoMoneda->nombre }} {{$pago->monto_equivalente }}</p></td>
                     </tr>
                      @endforeach
