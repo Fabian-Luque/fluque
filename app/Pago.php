@@ -51,7 +51,7 @@ class Pago extends Model
         $propiedad 		 = $user->propiedad;
         $zona_horaria    = ZonaHoraria::where('id', $propiedad->zona_horaria_id)->first();
         $pais            = $zona_horaria->nombre;
-        return Carbon::parse($value)->timezone($pais)->format('d-m-Y');
+        return Carbon::parse($value)->timezone($pais)->format('Y-m-d H:i:s');
     }   
 
 }
