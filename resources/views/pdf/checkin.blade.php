@@ -22,7 +22,7 @@
       </div>
 
       <div class="estado-cuenta">
-        <h2 class="titulo">Estado de cuenta</h2>
+        <h2 class="titulo">Check in</h2>
 
         <div class="cliente">
                 <table class="tabla-cliente">
@@ -232,11 +232,6 @@
         <p class="firma">Firma Autorizada Recepción</p>
       </div>
     </div>
-
-    <div class="footer">
-      <p>Documento generado con Jarvis Frontdesk</p>
-    </div>
-
 
   </body>
 </html>
