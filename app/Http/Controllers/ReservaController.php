@@ -91,7 +91,7 @@ class ReservaController extends Controller
             'errors' => true,
             'msj'    => " No autorizado"
         );
-          return Response::json($retorno, 400);
+        return Response::json($retorno, 400);
       }
 
       $monto_por_pagar = $reserva->monto_por_pagar + $pago->monto_pago;
@@ -338,13 +338,16 @@ class ReservaController extends Controller
 
     if ($request->has('estado_reserva_id')) {
       $estado_reserva = $request->input('estado_reserva_id');
+      if ($estado_reserva == 6) {
+        $observacion  = $request->input('observacion');
+        $reserva->update(array('estado_reserva_id' => $estado_reserva, 'observacion' => $observacion));
+      }
       $reserva->update(array('estado_reserva_id' => $estado_reserva ));
 
       $retorno = [
           'errors' => false,
           'msj'    => 'Reserva anulada satisfactoriamente',
       ];
-
       return Response::json($retorno, 201);
       }
 
