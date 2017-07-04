@@ -45,9 +45,17 @@ class PDFController extends Controller
 		$consumo = 0;
 		foreach($reservas as $id){
 
-		$reserva = Reserva::where('id', $id)->with('cliente.pais', 'cliente.region')->with('tipoMoneda')->with('habitacion.tipoHabitacion')->with('pagos.tipoMoneda', 'pagos.metodoPago', 'pagos.tipoComprobante')->with(['huespedes.servicios' => function ($q) use($id) {
+		$reserva = Reserva::where('id', $id)->where('cliente_id', $cliente_id)->with('cliente.pais', 'cliente.region')->with('tipoMoneda')->with('habitacion.tipoHabitacion')->with('pagos.tipoMoneda', 'pagos.metodoPago', 'pagos.tipoComprobante')->with(['huespedes.servicios' => function ($q) use($id) {
 
         $q->wherePivot('reserva_id', $id);}])->get();
+
+    if (count($reserva) == 0) {
+      $retorno = array(
+            'errors' => true,
+            'msj'    => " Las reservas no pertenecen al mismo cliente"
+      );
+      return Response::json($retorno, 400);
+    }
 
 			foreach ($reserva as $ra) {
 				$monto_alojamiento += $ra->monto_alojamiento;
@@ -112,11 +120,19 @@ class PDFController extends Controller
     $monto_alojamiento = 0;
     foreach($reservas as $id){
 
-    $reserva = Reserva::where('id', $id)->with('cliente.pais', 'cliente.region')->with('tipoMoneda')->with('habitacion.tipoHabitacion')->get();
+    $reserva = Reserva::where('id', $id)->where('cliente_id', $cliente_id)->with('cliente.pais', 'cliente.region')->with('tipoMoneda')->with('habitacion.tipoHabitacion')->get();
 
-      foreach ($reserva as $ra) {
+    if (count($reserva) == 0) {
+      $retorno = array(
+            'errors' => true,
+            'msj'    => " Las reservas no pertenecen al mismo cliente"
+        );
+      return Response::json($retorno, 400);
+    }
+
+    foreach ($reserva as $ra) {
         $monto_alojamiento += $ra->monto_alojamiento;
-      }
+    }
 
     array_push($reservas_pdf, $reserva);
 
