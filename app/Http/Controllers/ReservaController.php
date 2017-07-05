@@ -313,192 +313,192 @@ class ReservaController extends Controller
 
 
 
-  public function editarReserva(Request $request)
-  {
-    if ($request->has('reserva_id')) {
-      $reserva_id = $request->input('reserva_id');
-      $reserva    = Reserva::where('id', $reserva_id)->first();
-      if (is_null($reserva)) {
-        $retorno = array(
-            'msj'    => "Reserva no encontrada",
-            'errors' => true);
-        return Response::json($retorno, 404);
-      }
-    } else {
-      $retorno = array(
-          'msj'    => "No se envia reserva_id",
-          'errors' => true);
-      return Response::json($retorno, 400);
-    }
-    
-    $reserva_checkout = $reserva->checkout;
-    $reserva_checkin  = $reserva->checkin;
-    $habitacion_id    = $reserva->habitacion_id;
-    $hab              = Habitacion::where('id' , $habitacion_id)->first();
-
-    if ($request->has('estado_reserva_id')) {
-      $estado_reserva = $request->input('estado_reserva_id');
-      if ($estado_reserva == 6) {
-        $observacion  = $request->input('observacion');
-        $reserva->update(array('estado_reserva_id' => $estado_reserva, 'observacion' => $observacion));
-      }
-      $reserva->update(array('estado_reserva_id' => $estado_reserva ));
-
-      $retorno = [
-          'errors' => false,
-          'msj'    => 'Reserva anulada satisfactoriamente',
-      ];
-      return Response::json($retorno, 201);
-      }
-
-    if($request->has('fecha_inicio')){
-      $habitacion_ocupada = [];
-      $fecha_inicio       = $request->input('fecha_inicio');
-
-      if($reserva_checkout > $fecha_inicio){
-        $fechaInicio=strtotime($fecha_inicio);
-        $fechaFin=strtotime($reserva_checkin);
-
-        for($i=$fechaInicio; $i<$fechaFin; $i+=86400){
-          $fecha      = date("Y-m-d", $i);
-          $habitacion = Habitacion::where('id', $habitacion_id)->whereHas('reservas', function($query) use($fecha){
-            $query->where('checkin','<=' ,$fecha)->where('checkout', '>', $fecha)->where('estado_reserva_id', '!=', 6)->where('estado_reserva_id', '!=', 7);
-          })->get();
-
-          if(count($habitacion) != 0){
-            if(!in_array($habitacion, $habitacion_ocupada)){
-              array_push($habitacion_ocupada, $habitacion);
-                
-             }
+    public function editarReserva(Request $request)
+    {
+        if ($request->has('reserva_id')) {
+          $reserva_id = $request->input('reserva_id');
+          $reserva    = Reserva::where('id', $reserva_id)->first();
+          if (is_null($reserva)) {
+            $retorno = array(
+                'msj'    => "Reserva no encontrada",
+                'errors' => true);
+            return Response::json($retorno, 404);
           }
-        } //fin for
-
-        if(count($habitacion_ocupada) == 0){
-          $noches            = ((strtotime($reserva_checkout)-strtotime($fecha_inicio))/86400);
-          $monto_alojamiento = $noches * $reserva->precio_habitacion;
-          $monto_total       = $monto_alojamiento + $reserva->monto_consumo;
-
-          $pagos_realizados  = $reserva->pagos;
-          $monto_pagado      = 0;
-          foreach($pagos_realizados as $pago){
-            $monto_pagado += $pago->monto_pago;
-          }
-
-          $monto_por_pagar = $monto_total - $monto_pagado;
-          $reserva->update(array('monto_alojamiento' => $monto_alojamiento , 'monto_total' => $monto_total , 'monto_por_pagar' => $monto_por_pagar , 'checkin' => $fecha_inicio, 'noches' => $noches));
-
-        }else{
+        } else {
           $retorno = array(
-              'msj'    => "Seleccionar otra fecha de checkin, la habitacion ya esta reservada",
-              'errors' => true
-          );
+              'msj'    => "No se envia reserva_id",
+              'errors' => true);
           return Response::json($retorno, 400);
         }
+        
+        $reserva_checkout = $reserva->checkout;
+        $reserva_checkin  = $reserva->checkin;
+        $habitacion_id    = $reserva->habitacion_id;
+        $hab              = Habitacion::where('id' , $habitacion_id)->first();
 
-      } else {
-        $retorno = array(
-            'msj'    => "Las fechas no corresponden",
-            'errors' => true
-        );
-        return Response::json($retorno, 400);
-      }
-    }
+        if ($request->has('estado_reserva_id')) {
+          $estado_reserva = $request->input('estado_reserva_id');
+          if ($estado_reserva == 6) {
+            $observacion  = $request->input('observacion');
+            $reserva->update(array('estado_reserva_id' => $estado_reserva, 'observacion' => $observacion));
+          }
+          $reserva->update(array('estado_reserva_id' => $estado_reserva ));
 
-    if($request->has('fecha_fin')){    
-      $fecha_fin          = $request->input('fecha_fin');
-      $reserva_checkout   = $reserva->checkout;
-      $reserva_checkin    = $reserva->checkin;
-      $habitacion_ocupada = [];
+          $retorno = [
+              'errors' => false,
+              'msj'    => 'Reserva anulada satisfactoriamente',
+          ];
+          return Response::json($retorno, 201);
+          }
 
-      if($reserva_checkin < $fecha_fin){
-        $fechaInicio =strtotime($reserva_checkout)+86400;
-        $fechaFin    =strtotime($fecha_fin);
+        if($request->has('fecha_inicio')){
+          $habitacion_ocupada = [];
+          $fecha_inicio       = $request->input('fecha_inicio');
 
-        for($i=$fechaInicio; $i<=$fechaFin; $i+=86400){
-          $fecha      = date("Y-m-d", $i);
-          $habitacion = Habitacion::where('id', $habitacion_id)->whereHas('reservas', function($query) use($fecha){
-            $query->where('checkin','<=' ,$fecha)->where('checkout', '>', $fecha)->where('estado_reserva_id', '!=', 6)->where('estado_reserva_id', '!=', 7);
-          })->get();
+          if($reserva_checkout > $fecha_inicio){
+            $fechaInicio=strtotime($fecha_inicio);
+            $fechaFin=strtotime($reserva_checkin);
 
-          if(count($habitacion) != 0) {
-            if(!in_array($habitacion, $habitacion_ocupada)){
-              array_push($habitacion_ocupada, $habitacion);
+            for($i=$fechaInicio; $i<$fechaFin; $i+=86400){
+              $fecha      = date("Y-m-d", $i);
+              $habitacion = Habitacion::where('id', $habitacion_id)->whereHas('reservas', function($query) use($fecha){
+                $query->where('checkin','<=' ,$fecha)->where('checkout', '>', $fecha)->where('estado_reserva_id', '!=', 6)->where('estado_reserva_id', '!=', 7);
+              })->get();
+
+              if(count($habitacion) != 0){
+                if(!in_array($habitacion, $habitacion_ocupada)){
+                  array_push($habitacion_ocupada, $habitacion);
+                    
+                 }
+              }
+            } //fin for
+
+            if(count($habitacion_ocupada) == 0){
+              $noches            = ((strtotime($reserva_checkout)-strtotime($fecha_inicio))/86400);
+              $monto_alojamiento = $noches * $reserva->precio_habitacion;
+              $monto_total       = $monto_alojamiento + $reserva->monto_consumo;
+
+              $pagos_realizados  = $reserva->pagos;
+              $monto_pagado      = 0;
+              foreach($pagos_realizados as $pago){
+                $monto_pagado += $pago->monto_pago;
+              }
+
+              $monto_por_pagar = $monto_total - $monto_pagado;
+              $reserva->update(array('monto_alojamiento' => $monto_alojamiento , 'monto_total' => $monto_total , 'monto_por_pagar' => $monto_por_pagar , 'checkin' => $fecha_inicio, 'noches' => $noches));
+
+            }else{
+              $retorno = array(
+                  'msj'    => "Seleccionar otra fecha de checkin, la habitacion ya esta reservada",
+                  'errors' => true
+              );
+              return Response::json($retorno, 400);
             }
+
+          } else {
+            $retorno = array(
+                'msj'    => "Las fechas no corresponden",
+                'errors' => true
+            );
+            return Response::json($retorno, 400);
           }
         }
 
-        if(count($habitacion_ocupada) == 0){
-          $noches            = ((strtotime($fecha_fin)-strtotime($reserva_checkin))/86400);
-          $monto_alojamiento = $noches * $reserva->precio_habitacion;
+        if($request->has('fecha_fin')){    
+          $fecha_fin          = $request->input('fecha_fin');
+          $reserva_checkout   = $reserva->checkout;
+          $reserva_checkin    = $reserva->checkin;
+          $habitacion_ocupada = [];
+
+          if($reserva_checkin < $fecha_fin){
+            $fechaInicio =strtotime($reserva_checkout)+86400;
+            $fechaFin    =strtotime($fecha_fin);
+
+            for($i=$fechaInicio; $i<=$fechaFin; $i+=86400){
+              $fecha      = date("Y-m-d", $i);
+              $habitacion = Habitacion::where('id', $habitacion_id)->whereHas('reservas', function($query) use($fecha){
+                $query->where('checkin','<=' ,$fecha)->where('checkout', '>', $fecha)->where('estado_reserva_id', '!=', 6)->where('estado_reserva_id', '!=', 7);
+              })->get();
+
+              if(count($habitacion) != 0) {
+                if(!in_array($habitacion, $habitacion_ocupada)){
+                  array_push($habitacion_ocupada, $habitacion);
+                }
+              }
+            }
+
+            if(count($habitacion_ocupada) == 0){
+              $noches            = ((strtotime($fecha_fin)-strtotime($reserva_checkin))/86400);
+              $monto_alojamiento = $noches * $reserva->precio_habitacion;
+              $monto_total       = $monto_alojamiento + $reserva->monto_consumo;
+              $pagos_realizados  = $reserva->pagos;
+              $monto_pagado      = 0;
+              foreach($pagos_realizados as $pago){
+                $monto_pagado += $pago->monto_pago;
+              }
+
+              $monto_por_pagar = $monto_total - $monto_pagado;
+              $reserva->update(array('monto_alojamiento' => $monto_alojamiento , 'monto_total' => $monto_total , 'monto_por_pagar' => $monto_por_pagar , 'checkout' => $fecha_fin, 'noches' => $noches));
+
+            }else{
+              $retorno = array(
+                  'msj'    => "Seleccionar otra fecha de checkout, la habitacion ya esta reservada",
+                  'errors' => true
+              );
+              return Response::json($retorno, 400);
+            }
+
+          }else{
+            $retorno = [
+              'errors' => false,
+              'msj'    => 'Las fechas no corresponden',
+            ];
+            return Response::json($retorno, 201);
+          }
+        }
+
+        if($request->has('precio_habitacion')){
+          $precio_habitacion = $request->input('precio_habitacion');
+          $noches            = ((strtotime($reserva_checkout)-strtotime($reserva_checkin))/86400);
+          $monto_alojamiento = $noches * $precio_habitacion;
           $monto_total       = $monto_alojamiento + $reserva->monto_consumo;
           $pagos_realizados  = $reserva->pagos;
           $monto_pagado      = 0;
-          foreach($pagos_realizados as $pago){
-            $monto_pagado += $pago->monto_pago;
+            foreach($pagos_realizados as $pago){
+              $monto_pagado += $pago->monto_pago;
+            }
+
+            $monto_por_pagar = $monto_total - $monto_pagado;
+            $reserva->update(array('precio_habitacion' => $precio_habitacion ,'monto_alojamiento' => $monto_alojamiento , 'monto_total' => $monto_total , 'monto_por_pagar' => $monto_por_pagar));
           }
 
-          $monto_por_pagar = $monto_total - $monto_pagado;
-          $reserva->update(array('monto_alojamiento' => $monto_alojamiento , 'monto_total' => $monto_total , 'monto_por_pagar' => $monto_por_pagar , 'checkout' => $fecha_fin, 'noches' => $noches));
 
-        }else{
-          $retorno = array(
-              'msj'    => "Seleccionar otra fecha de checkout, la habitacion ya esta reservada",
+        if($request->has('ocupacion')){
+          $ocupacion           = $request->input('ocupacion');
+          $disponibilidad_base = $hab->disponibilidad_base;
+          if($ocupacion <= $disponibilidad_base){
+            $reserva->update(array('ocupacion' => $ocupacion));
+          }else{
+            $retorno = array(
+              'msj'    => "El valor supera la disponibilidad de la habitación",
               'errors' => true
-          );
-          return Response::json($retorno, 400);
+            );
+            return Response::json($retorno, 400);
+          }
         }
 
-      }else{
+        if($request->has('observacion')){
+          $observacion = $request->input('observacion');
+          $reserva->update(array('observacion' => $observacion));
+        }
+
         $retorno = [
           'errors' => false,
-          'msj'    => 'Las fechas no corresponden',
+          'msj'    => 'Reserva actualizada satisfactoriamente',
         ];
         return Response::json($retorno, 201);
-      }
+
     }
-
-    if($request->has('precio_habitacion')){
-      $precio_habitacion = $request->input('precio_habitacion');
-      $noches            = ((strtotime($reserva_checkout)-strtotime($reserva_checkin))/86400);
-      $monto_alojamiento = $noches * $precio_habitacion;
-      $monto_total       = $monto_alojamiento + $reserva->monto_consumo;
-      $pagos_realizados  = $reserva->pagos;
-      $monto_pagado      = 0;
-        foreach($pagos_realizados as $pago){
-          $monto_pagado += $pago->monto_pago;
-        }
-
-        $monto_por_pagar = $monto_total - $monto_pagado;
-        $reserva->update(array('precio_habitacion' => $precio_habitacion ,'monto_alojamiento' => $monto_alojamiento , 'monto_total' => $monto_total , 'monto_por_pagar' => $monto_por_pagar));
-      }
-
-
-    if($request->has('ocupacion')){
-      $ocupacion           = $request->input('ocupacion');
-      $disponibilidad_base = $hab->disponibilidad_base;
-      if($ocupacion <= $disponibilidad_base){
-        $reserva->update(array('ocupacion' => $ocupacion));
-      }else{
-        $retorno = array(
-          'msj'    => "El valor supera la disponibilidad de la habitación",
-          'errors' => true
-        );
-        return Response::json($retorno, 400);
-      }
-    }
-
-    if($request->has('observacion')){
-      $observacion = $request->input('observacion');
-      $reserva->update(array('observacion' => $observacion));
-    }
-
-    $retorno = [
-      'errors' => false,
-      'msj'    => 'Reserva actualizada satisfactoriamente',
-    ];
-    return Response::json($retorno, 201);
-
-  }
 
 
 
