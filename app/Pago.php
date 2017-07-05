@@ -13,6 +13,8 @@ class Pago extends Model
 
     protected $fillable = ['monto_pago','monto_equivalente','tipo','numero_operacion','tipo_moneda_id','tipo_comprobante_id','reserva_id', 'created_at'];
 
+    protected $dates = ['created_at'];
+
 	public function reserva(){
 
 		return $this->belongsTo('App\Reserva', 'reserva_id');

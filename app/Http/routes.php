@@ -48,6 +48,7 @@ Route::group(['as' => 'api.jarvis.'], function(){
 	Route::post('pdf/estado/cuenta', 'PDFController@estadoCuenta');
 	Route::post('pdf/reporte', 'PDFController@reporte');
 	Route::post('pdf/huesped', 'PDFController@huesped');
+	Route::post('pdf/checkin', 'PDFController@checkin');
 	Route::post('ingreso/servicio', 'PropiedadController@ingresoServicio');
 	Route::post('ingreso/servicio/cliente', 'ClienteController@ingresoServicio');
 	Route::get('cliente/empresa', 'ClienteController@getClientes');
@@ -115,8 +116,9 @@ Route::get('/', function () {
 
 
 
+/*
+Route::group(['middleware' => 'cors'], function(){
 
-/*Route::group(['middleware' => 'cors'], function(){
 
 
 	Route::post('/auth_login', 'ApiAuthController@userAuth');
@@ -248,8 +250,8 @@ Route::get('/', function () {
 	Route::resource('temporada', 'TemporadaController', ['except' => ['create', 'edit']]);
 
 
-});*/
-
+});
+*/
 
 
 /*Route::group(['middleware' => 'auth'], function(){

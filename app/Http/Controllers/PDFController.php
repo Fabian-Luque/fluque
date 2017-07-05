@@ -45,9 +45,17 @@ class PDFController extends Controller
 		$consumo = 0;
 		foreach($reservas as $id){
 
-		$reserva = Reserva::where('id', $id)->with('cliente.pais', 'cliente.region')->with('tipoMoneda')->with('habitacion.tipoHabitacion')->with(['huespedes.servicios' => function ($q) use($id) {
+		$reserva = Reserva::where('id', $id)->where('cliente_id', $cliente_id)->with('cliente.pais', 'cliente.region')->with('tipoMoneda')->with('habitacion.tipoHabitacion')->with('pagos.tipoMoneda', 'pagos.metodoPago', 'pagos.tipoComprobante')->with(['huespedes.servicios' => function ($q) use($id) {
 
         $q->wherePivot('reserva_id', $id);}])->get();
+
+    if (count($reserva) == 0) {
+      $retorno = array(
+            'errors' => true,
+            'msj'    => " Las reservas no pertenecen al mismo cliente"
+      );
+      return Response::json($retorno, 400);
+    }
 
 			foreach ($reserva as $ra) {
 				$monto_alojamiento += $ra->monto_alojamiento;
@@ -81,7 +89,6 @@ class PDFController extends Controller
 
 		}
 
-
 		$pdf = PDF::loadView('pdf.estado_cuenta', ['propiedad' => $propiedad,'consumo' => $consumo , 'cliente'=> $cliente ,'reservas_pdf'=> $reservas_pdf, 'neto' => $neto , 'iva' => $iva, 'total' => $total]);
 
 		return $pdf->download('archivo.pdf');
@@ -91,6 +98,67 @@ class PDFController extends Controller
 
 
 	}
+
+  public function checkin(Request $request)
+  {
+    $reservas = $request['reservas'];
+    $propiedad_id = $request->input('propiedad_id');
+    $cliente_id = $request->input('cliente_id');
+    $iva = $request->input('iva');
+
+    $propiedad = Propiedad::where('id', $propiedad_id)->with('pais', 'region')->get();
+    $cliente = Cliente::where('id', $cliente_id)->with('pais', 'region')->get();
+
+    $propiedad_iva = 0;
+    foreach ($propiedad as $prop) {
+      
+      $propiedad_iva = $prop->iva;
+
+    }
+
+    $reservas_pdf = [];
+    $monto_alojamiento = 0;
+    foreach($reservas as $id){
+
+    $reserva = Reserva::where('id', $id)->where('cliente_id', $cliente_id)->with('cliente.pais', 'cliente.region')->with('tipoMoneda')->with('habitacion.tipoHabitacion')->get();
+
+    if (count($reserva) == 0) {
+      $retorno = array(
+            'errors' => true,
+            'msj'    => " Las reservas no pertenecen al mismo cliente"
+        );
+      return Response::json($retorno, 400);
+    }
+
+    foreach ($reserva as $ra) {
+        $monto_alojamiento += $ra->monto_alojamiento;
+    }
+
+    array_push($reservas_pdf, $reserva);
+
+
+    }
+
+    
+    if($iva == 1){
+    $neto = $monto_alojamiento; 
+    $iva = round(($neto * $propiedad_iva) / 100);
+    $total = round($neto + $iva);
+    }elseif($iva == 0){
+    $neto = $monto_alojamiento; 
+    $iva = round(($neto * 0) / 100);
+    $total = round($neto + $iva);
+
+    }
+    
+
+    $pdf = PDF::loadView('pdf.checkin', ['propiedad' => $propiedad, 'cliente'=> $cliente ,'reservas_pdf'=> $reservas_pdf, 'neto' => $neto , 'iva' => $iva, 'total' => $total]);
+
+    return $pdf->download('archivo.pdf');
+
+
+
+  }
 
   public function huesped(Request $request)
   {

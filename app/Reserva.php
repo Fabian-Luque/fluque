@@ -16,6 +16,8 @@ class Reserva extends Model
 
 	protected $fillable = ['precio_habitacion','monto_alojamiento','noches','observacion','monto_consumo','monto_total','monto_sugerido','metodo_pago_id','monto_por_pagar','ocupacion','tipo_fuente_id','habitacion_id','cliente_id','checkin','checkout','estado_reserva_id'];
 
+	protected $dates = ['checkin', 'checkout'];
+
 
 	public function habitacion(){
 
