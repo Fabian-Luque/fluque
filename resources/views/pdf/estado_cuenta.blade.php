@@ -337,10 +337,5 @@
                   </table>
                 </div>
 
-    <div class="footer">
-      <p>Documento generado con Jarvis Frontdesk</p>
-    </div>
-
-
   </body>
 </html>
