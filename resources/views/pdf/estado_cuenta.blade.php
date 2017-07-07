@@ -189,7 +189,7 @@
             @foreach($reservas as $reserva)
 
             <tr>
-              <td class="data-tabla-detalles borde-derecha"><p class="titulo">Habitacion {{ $reserva->habitacion->nombre }} - {{ $reserva->habitacion->tipoHabitacion->nombre }} - {{ $reserva->ocupacion }} Huéspedes - {{ $reserva->noches }} Noches - Checkin {{ $reserva->checkin->format('d-m-Y') }} - Checkout {{ $reserva->checkout->format('d-m-Y') }}</p></td>
+              <td class="data-tabla-detalles borde-derecha"><p class="titulo">Nº {{ $reserva->numero_reserva }} - Habitacion {{ $reserva->habitacion->nombre }} - {{ $reserva->habitacion->tipoHabitacion->nombre }} - {{ $reserva->ocupacion }} Huéspedes - {{ $reserva->noches }} Noches - Checkin {{ $reserva->checkin->format('d-m-Y') }} - Checkout {{ $reserva->checkout->format('d-m-Y') }}</p></td>
               <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{ $reserva->monto_alojamiento }}</p></td>
             </tr>
             @endforeach
@@ -294,7 +294,8 @@
                 <div class="detalles" style="margin:20px 0px;">
                   <table class="tabla-detalles">
                     <tr>
-                      <th class="data-tabla-detalles borde-derecha" style="width:150px;"><p>Tipo de pago</p></th>
+                     <th class="data-tabla-detalles borde-derecha"><p>Nº Reserva</p></th>
+                      <th class="data-tabla-detalles borde-derecha"><p>Tipo de pago</p></th>
                       <th class="data-tabla-detalles borde-derecha"><p>Fecha</p></th>
                       <th class="data-tabla-detalles borde-derecha"><p>Método de pago</p></th>
                       <th class="data-tabla-detalles borde-derecha"><p>Tipo de comprobante</p></th>
@@ -306,6 +307,7 @@
                     @foreach($reservas as $reserva)
                      @foreach($reserva->pagos as $pago)
                     <tr>
+                      <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $reserva->numero_reserva }}</p></td>
                       <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->tipo }}</p></td>
                       <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->created_at }}</p></td>
                       @if($pago->numero_cheque == null)
@@ -325,7 +327,7 @@
                       @else
                       <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->numero_operacion }}</p></td>
                       @endif
-                      <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->tipoMoneda->nombre }} {{$pago->monto_equivalente }}</p></td>
+                      <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->tipoMoneda->nombre }} ${{$pago->monto_equivalente }}</p></td>
                     </tr>
                      @endforeach
                     @endforeach
