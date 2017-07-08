@@ -361,7 +361,9 @@ class PropiedadController extends Controller
         $data['fecha']     = $auxFecha_inicio;
         $data['ingresos']  = $auxMoneda;
         $data['pagos']     = $auxPagos;
-        array_push($fechas_pagos, $data);
+        if (count($auxPagos) != 0) {
+            array_push($fechas_pagos, $data);
+        }
         $data = [];
         $auxInicio->addDay();
         }
