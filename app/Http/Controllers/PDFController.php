@@ -142,11 +142,11 @@ class PDFController extends Controller
 
         $fechas_pagos = [];
         while ($auxInicio < $auxFin) {
-            $auxFecha_inicio = $auxInicio->format('Y-m-d');
+            $auxFecha_inicio = $auxInicio->format('d/m/Y');
             $auxPagos = [];
             foreach ($pagos as $pago) {
                 $created_at     = new Carbon($pago->created_at);
-                $auxCreated_at  = $created_at->format('Y-m-d');
+                $auxCreated_at  = $created_at->format('d/m/Y');
                 if ($auxCreated_at == $auxFecha_inicio ) {
                     array_push($auxPagos, $pago);
                 }
