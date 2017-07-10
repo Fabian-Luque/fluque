@@ -53,6 +53,12 @@
                         </tr>
         		@endforeach
                       
+                        <tr style="text-align:center;">
+                          <td class="data-tabla-detalles borde-derecha"><p>Total</p></td>
+                    @foreach($ingresos_totales as $total)
+                          <td class="data-tabla-detalles borde-derecha"><p>{{ $total['nombre_moneda'] }} ${{ $total['monto'] }}</p></td>
+                    @endforeach
+                        </tr>
 
                       </table>
                     </div>

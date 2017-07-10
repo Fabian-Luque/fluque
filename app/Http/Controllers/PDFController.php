@@ -179,9 +179,28 @@ class PDFController extends Controller
         $auxInicio->addDay();
         }
 
+        $ingresos_totales = [];
+        foreach ($propiedad->tipoMonedas as $moneda) {
+            /*return $moneda->nombre;*/
+            $suma_ingreso = 0;
+            foreach ($fechas_pagos as $pago) {
+                /*return $pago;*/
+                foreach ($pago['ingresos'] as $ingreso) {
+                    /*return $ingreso['nombre_moneda'];*/
+                    if ($moneda->nombre == $ingreso['nombre_moneda']) {
+                        $suma_ingreso += $ingreso['monto'];
+                    }
+                }
+            }
+            $sumaIngreso['nombre_moneda']       = $moneda->nombre;
+            $sumaIngreso['monto']               = $suma_ingreso;
+            $sumaIngreso['tipo_moneda_id']      = $moneda->pivot->tipo_moneda_id;
+            $sumaIngreso['cantidad_decimales']  = $moneda->cantidad_decimales;
+            array_push($ingresos_totales, $sumaIngreso);
+        }
+
         $fecha_fin = $fecha_fin->subDay();
-       /*return  ['fechas_pagos' => $fechas_pagos];*/
-        $pdf = PDF::loadView('pdf.pagos', ['propiedad' => [$propiedad], 'pagos' => $fechas_pagos, 'fecha_inicio' => $fecha_inicio, 'fecha_fin' => $fecha_fin]);
+        $pdf = PDF::loadView('pdf.pagos', ['propiedad' => [$propiedad], 'pagos' => $fechas_pagos, 'fecha_inicio' => $fecha_inicio, 'fecha_fin' => $fecha_fin, 'ingresos_totales' => $ingresos_totales ]);
 
         return $pdf->download('archivo.pdf');
 
