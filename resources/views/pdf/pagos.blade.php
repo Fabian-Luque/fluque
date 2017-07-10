@@ -38,8 +38,11 @@
                       	
                         <tr>
                           <th class="data-tabla-detalles borde-derecha"><p>Fecha</p></th>
-                          <th class="data-tabla-detalles borde-derecha"><p>CLP</p></th>
-                          <th class="data-tabla-detalles borde-derecha"><p>USD</p></th>
+                @foreach($propiedad as $prop)
+                	@foreach($prop['tipoMonedas'] as $moneda)
+                          <th class="data-tabla-detalles borde-derecha"><p>{{ $moneda->nombre }}</p></th>
+                    @endforeach
+                @endforeach
                         </tr>
         		@foreach($pagos as $pago)
                         <tr style="text-align:center;">
