@@ -69,6 +69,8 @@
         </div>
         <!-- Fin contenedor -->
       </div>
+    </div>
+      
 
 
     <div class="footer">
