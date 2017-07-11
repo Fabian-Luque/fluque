@@ -94,118 +94,224 @@ class PDFController extends Controller
 		return $pdf->download('archivo.pdf');
 
 
-
-
-
 	}
 
-  public function checkin(Request $request)
-  {
-    $reservas = $request['reservas'];
-    $propiedad_id = $request->input('propiedad_id');
-    $cliente_id = $request->input('cliente_id');
-    $iva = $request->input('iva');
-
-    $propiedad = Propiedad::where('id', $propiedad_id)->with('pais', 'region')->get();
-    $cliente = Cliente::where('id', $cliente_id)->with('pais', 'region')->get();
-
-    $propiedad_iva = 0;
-    foreach ($propiedad as $prop) {
-      
-      $propiedad_iva = $prop->iva;
-
-    }
-
-    $reservas_pdf = [];
-    $monto_alojamiento = 0;
-    foreach($reservas as $id){
-
-    $reserva = Reserva::where('id', $id)->where('cliente_id', $cliente_id)->with('cliente.pais', 'cliente.region')->with('tipoMoneda')->with('habitacion.tipoHabitacion')->get();
-
-    if (count($reserva) == 0) {
-      $retorno = array(
-            'errors' => true,
-            'msj'    => " Las reservas no pertenecen al mismo cliente"
-        );
-      return Response::json($retorno, 400);
-    }
-
-    foreach ($reserva as $ra) {
-        $monto_alojamiento += $ra->monto_alojamiento;
-    }
-
-    array_push($reservas_pdf, $reserva);
-
-
-    }
-
-    
-    if($iva == 1){
-    $neto = $monto_alojamiento; 
-    $iva = round(($neto * $propiedad_iva) / 100);
-    $total = round($neto + $iva);
-    }elseif($iva == 0){
-    $neto = $monto_alojamiento; 
-    $iva = round(($neto * 0) / 100);
-    $total = round($neto + $iva);
-
-    }
-    
-
-    $pdf = PDF::loadView('pdf.checkin', ['propiedad' => $propiedad, 'cliente'=> $cliente ,'reservas_pdf'=> $reservas_pdf, 'neto' => $neto , 'iva' => $iva, 'total' => $total]);
-
-    return $pdf->download('archivo.pdf');
-
-
-
-  }
-
-  public function huesped(Request $request)
-  {
-
+   public function pagos(Request $request)
+   {
         if ($request->has('propiedad_id')) {
+            $propiedad_id = $request->input('propiedad_id');
+            $propiedad    = Propiedad::where('id', $propiedad_id)->with('tipoMonedas')->first();
+            if (is_null($propiedad)) {
+            $retorno = array(
+                'msj'    => "Propiedad no encontrada",
+                'errors' => true);
+            return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia propiedad_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+        
+        if ($request->has('fecha_inicio')) {
+            $getInicio       = new Carbon($request->input('fecha_inicio'));
+            $inicio          = $getInicio->startOfDay();
+            $zona_horaria    = ZonaHoraria::where('id', $propiedad->zona_horaria_id)->first();
+            $pais            = $zona_horaria->nombre;
+            $fecha_inicio    = Carbon::createFromFormat('Y-m-d H:i:s', $inicio, $pais)->tz('UTC');
+        }
 
-          $fecha = Carbon::today()->format('d-m-Y');
+        if ($request->has('fecha_fin')) {
+            $fin             = new Carbon($request->input('fecha_fin'));
+            $fechaFin        = $fin->addDay();
+            $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $fechaFin, $pais)->tz('UTC');
+        } else {
+            $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $inicio, $pais)->tz('UTC')->addDay();
+        }
 
-          $fecha_actual = Carbon::today()->format('Y-m-d');
+        $pagos = Pago::where('created_at','>=' , $fecha_inicio)->where('created_at', '<' , $fecha_fin)
+            ->whereHas('reserva.habitacion', function($query) use($propiedad_id){
+                $query->where('propiedad_id', $propiedad_id);
+        })->with('tipoComprobante', 'metodoPago', 'tipoMoneda')->with('reserva')->get();
 
-            
-          $propiedad_id = $request->input('propiedad_id');
-          $propiedad = Propiedad::where('id', $request->input('propiedad_id'))->with('pais')->first();
+        $moneda_propiedad = $propiedad->tipoMonedas;
+        $auxInicio      = new Carbon($inicio);
+        $auxFecha_fin   = new Carbon($fecha_fin);
+        $auxFin         = $auxFecha_fin->startOfDay();
 
-          if (!is_null($propiedad)){
+        $fechas_pagos = [];
+        while ($auxInicio < $auxFin) {
+            $auxFecha_inicio = $auxInicio->format('d/m/Y');
+            $auxPagos = [];
+            foreach ($pagos as $pago) {
+                $created_at     = new Carbon($pago->created_at);
+                $auxCreated_at  = $created_at->format('d/m/Y');
+                if ($auxCreated_at == $auxFecha_inicio ) {
+                    array_push($auxPagos, $pago);
+                }
+            }
 
-            $habitaciones = Habitacion::where('propiedad_id', $propiedad_id)->whereHas('reservas', function($query){
+            $auxMoneda = [];
+            foreach ($moneda_propiedad as $moneda) {
+                $moneda_id = $moneda->id;
+                $suma_pago = 0;
+                foreach ($auxPagos as $pago) {
+                    $tipo_moneda_pago = $pago->tipo_moneda_id;
+                    if ($moneda_id == $tipo_moneda_pago) {
+                        $suma_pago += $pago->monto_equivalente;
+                    }
+                }
+                $ingreso['nombre_moneda']       = $moneda->nombre;
+                $ingreso['monto']               = $suma_pago;
+                $ingreso['tipo_moneda_id']      = $moneda->pivot->tipo_moneda_id;
+                $ingreso['cantidad_decimales']  = $moneda->cantidad_decimales;
+                array_push($auxMoneda, $ingreso);
+            }
 
-                        $query->where('estado_reserva_id', 3);
+        $data['fecha']     = $auxFecha_inicio;
+        $data['ingresos']  = $auxMoneda;
+        $data['pagos']     = $auxPagos;
+        if (count($auxPagos) != 0) {
+            array_push($fechas_pagos, $data);
+        }
+        $data = [];
+        $auxInicio->addDay();
+        }
 
-              })->with(['reservas' => function ($q) use($fecha_actual){
+        $ingresos_totales = [];
+        foreach ($propiedad->tipoMonedas as $moneda) {
+            /*return $moneda->nombre;*/
+            $suma_ingreso = 0;
+            foreach ($fechas_pagos as $pago) {
+                /*return $pago;*/
+                foreach ($pago['ingresos'] as $ingreso) {
+                    /*return $ingreso['nombre_moneda'];*/
+                    if ($moneda->nombre == $ingreso['nombre_moneda']) {
+                        $suma_ingreso += $ingreso['monto'];
+                    }
+                }
+            }
+            $sumaIngreso['nombre_moneda']       = $moneda->nombre;
+            $sumaIngreso['monto']               = $suma_ingreso;
+            $sumaIngreso['tipo_moneda_id']      = $moneda->pivot->tipo_moneda_id;
+            $sumaIngreso['cantidad_decimales']  = $moneda->cantidad_decimales;
+            array_push($ingresos_totales, $sumaIngreso);
+        }
 
-              $q->where('estado_reserva_id', 3)->where('checkin', '<=', $fecha_actual)->where('checkout', '>', $fecha_actual)->with('huespedes');}])->get();
+        $fecha_fin = $fecha_fin->subDay();
+        $pdf = PDF::loadView('pdf.pagos', ['propiedad' => [$propiedad], 'pagos' => $fechas_pagos, 'fecha_inicio' => $fecha_inicio, 'fecha_fin' => $fecha_fin, 'ingresos_totales' => $ingresos_totales ]);
 
-              $pdf = PDF::loadView('pdf.huesped', ['propiedad' => [$propiedad], 'fecha' =>  $fecha ,'habitaciones' => $habitaciones]);
+        return $pdf->download('archivo.pdf');
 
-              return $pdf->download('archivo.pdf');
+    }
 
+    public function checkin(Request $request)
+    {
+        $reservas = $request['reservas'];
+        $propiedad_id = $request->input('propiedad_id');
+        $cliente_id = $request->input('cliente_id');
+        $iva = $request->input('iva');
 
-          }else{
+        $propiedad = Propiedad::where('id', $propiedad_id)->with('pais', 'region')->get();
+        $cliente = Cliente::where('id', $cliente_id)->with('pais', 'region')->get();
 
-                $retorno = array(
-
-                    'msj'    => "Propiedad no encontrada",
-                    'errors' => true,
-
-                );
-
-                return Response::json($retorno, 404);
-
-
-          }
+        $propiedad_iva = 0;
+        foreach ($propiedad as $prop) {
+          
+          $propiedad_iva = $prop->iva;
 
         }
 
+        $reservas_pdf = [];
+        $monto_alojamiento = 0;
+        foreach($reservas as $id){
 
-  } 
+        $reserva = Reserva::where('id', $id)->where('cliente_id', $cliente_id)->with('cliente.pais', 'cliente.region')->with('tipoMoneda')->with('habitacion.tipoHabitacion')->get();
+
+        if (count($reserva) == 0) {
+          $retorno = array(
+                'errors' => true,
+                'msj'    => " Las reservas no pertenecen al mismo cliente"
+            );
+          return Response::json($retorno, 400);
+        }
+
+        foreach ($reserva as $ra) {
+            $monto_alojamiento += $ra->monto_alojamiento;
+        }
+
+        array_push($reservas_pdf, $reserva);
+
+
+        }
+
+        
+        if($iva == 1){
+        $neto = $monto_alojamiento; 
+        $iva = round(($neto * $propiedad_iva) / 100);
+        $total = round($neto + $iva);
+        }elseif($iva == 0){
+        $neto = $monto_alojamiento; 
+        $iva = round(($neto * 0) / 100);
+        $total = round($neto + $iva);
+
+        }
+        
+        return ['propiedad' => $propiedad, 'cliente'=> $cliente ,'reservas_pdf'=> $reservas_pdf, 'neto' => $neto , 'iva' => $iva, 'total' => $total];
+
+        $pdf = PDF::loadView('pdf.checkin', ['propiedad' => $propiedad, 'cliente'=> $cliente ,'reservas_pdf'=> $reservas_pdf, 'neto' => $neto , 'iva' => $iva, 'total' => $total]);
+
+        return $pdf->download('archivo.pdf');
+
+
+
+      }
+
+      public function huesped(Request $request)
+      {
+
+            if ($request->has('propiedad_id')) {
+
+              $fecha = Carbon::today()->format('d-m-Y');
+
+              $fecha_actual = Carbon::today()->format('Y-m-d');
+
+                
+              $propiedad_id = $request->input('propiedad_id');
+              $propiedad = Propiedad::where('id', $request->input('propiedad_id'))->with('pais')->first();
+
+              if (!is_null($propiedad)){
+
+                $habitaciones = Habitacion::where('propiedad_id', $propiedad_id)->whereHas('reservas', function($query){
+
+                            $query->where('estado_reserva_id', 3);
+
+                  })->with(['reservas' => function ($q) use($fecha_actual){
+
+                  $q->where('estado_reserva_id', 3)->where('checkin', '<=', $fecha_actual)->where('checkout', '>', $fecha_actual)->with('huespedes');}])->get();
+
+                  $pdf = PDF::loadView('pdf.huesped', ['propiedad' => [$propiedad], 'fecha' =>  $fecha ,'habitaciones' => $habitaciones]);
+
+                  return $pdf->download('archivo.pdf');
+
+
+              }else{
+
+                    $retorno = array(
+
+                        'msj'    => "Propiedad no encontrada",
+                        'errors' => true,
+
+                    );
+
+                    return Response::json($retorno, 404);
+
+
+              }
+
+        }
+    } 
 
 
 	public function reporte(Request $request)

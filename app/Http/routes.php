@@ -49,6 +49,7 @@ Route::group(['as' => 'api.jarvis.'], function(){
 	Route::post('pdf/reporte', 'PDFController@reporte');
 	Route::post('pdf/huesped', 'PDFController@huesped');
 	Route::post('pdf/checkin', 'PDFController@checkin');
+	Route::post('pdf/pagos', 'PDFController@pagos');
 	Route::post('ingreso/servicio', 'PropiedadController@ingresoServicio');
 	Route::post('ingreso/servicio/cliente', 'ClienteController@ingresoServicio');
 	Route::get('cliente/empresa', 'ClienteController@getClientes');
@@ -78,6 +79,7 @@ Route::group(['as' => 'api.jarvis.'], function(){
 	Route::get('temporada/precios', 'TemporadaController@getPreciosTemporadas');
 	Route::post('editar/temporadas', 'TemporadaController@editarTemporadas');
 	Route::get('reportes', 'PropiedadController@reportes');
+	Route::get('reportes/pago', 'PropiedadController@pagos');
 	Route::post('crear/zona/horaria', 'PropiedadController@crearZona');
 	Route::get('zonas/horarias', 'PropiedadController@getZonasHorarias');
 	Route::put('pago/{id}', 'ReservaController@editarPago');

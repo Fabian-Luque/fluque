@@ -101,6 +101,9 @@ class ReservaController extends Controller
       }
     }
     $pago->delete();
+    if ($reserva->estado_reserva_id == 4) {
+       $reserva->update(array('estado_reserva_id' => 5));
+    }
 
     $retorno = [
         'errors' => false,
@@ -876,6 +879,10 @@ class ReservaController extends Controller
                      $pago->save();
 
                    }
+
+                      if ($reserva->estado_reserva_id == 1 ) {
+                        $reserva->update(array('estado_reserva_id' => $monto, 'estado_reserva_id' => 2));
+                      }
 
                       if($reserva->estado_reserva_id == 5 && $monto == 0){
 
