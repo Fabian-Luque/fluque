@@ -26,53 +26,85 @@ use Validator;
 
 class ReservaController extends Controller
 {
+    public function filtro(Request $request, Reserva $reserva)
+    {
+        if ($request->has('propiedad_id')) {
+            $propiedad_id = $request->input('propiedad_id');
+            $propiedad    = Propiedad::where('id', $propiedad_id)->first();
+            if (is_null($propiedad)) {
+                $retorno = array(
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia propiedad_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        $reserva = $reserva->newQuery();
+        
+        if ($request->has('cliente_id')) {
+            $reserva->where('cliente_id', $request->input('cliente_id'));
+        }
+
+        if ($request->has('estado_reserva_id')) {
+            $reserva->where('estado_reserva_id', $request->input('estado_reserva_id'));
+        }
 
 
-  public function editarPAgo(Request $request, $id)
-  {
-
-    $rules = array(
-
-      'numero_cheque'            => '',
-      'numero_operacion'         => '',
-      'tipo_comprobante_id'      => '',
-      'metodo_pago_id'           => '',
-      'fecha'                    => 'date',
-    );
-
-    $validator = Validator::make($request->all(), $rules);
-
-    if ($validator->fails()) {
-
-      $data = [
-      'errors' => true,
-      'msg'    => $validator->messages(),
-      ];
-
-      return Response::json($data, 400);
-
-    } else {
-      if($request->has('fecha')){
-        $getFecha = new Carbon($request->input('fecha'));
-      }
-
-      $pago                       = Pago::findOrFail($id);
-      $pago->numero_operacion     = $request->input('numero_operacion');
-      $pago->tipo_comprobante_id  = $request->input('tipo_comprobante_id');
-      $pago->numero_cheque        = $request->input('numero_cheque');
-      $pago->metodo_pago_id       = $request->input('metodo_pago_id');
-      $pago->created_at           = $getFecha;
-      $pago->touch();
-
-      $data = [
-      'errors' => false,
-      'msg'    => 'Pago actualizado satisfactoriamente',
-      ];
-
-      return Response::json($data, 201);
+        return $reserva->get();
 
     }
-  }
+
+
+
+    public function editarPAgo(Request $request, $id)
+    {
+        $rules = array(
+
+          'numero_cheque'            => '',
+          'numero_operacion'         => '',
+          'tipo_comprobante_id'      => '',
+          'metodo_pago_id'           => '',
+          'fecha'                    => 'date',
+        );
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+
+          $data = [
+          'errors' => true,
+          'msg'    => $validator->messages(),
+          ];
+
+          return Response::json($data, 400);
+
+        } else {
+          if($request->has('fecha')){
+            $getFecha = new Carbon($request->input('fecha'));
+          }
+
+          $pago                       = Pago::findOrFail($id);
+          $pago->numero_operacion     = $request->input('numero_operacion');
+          $pago->tipo_comprobante_id  = $request->input('tipo_comprobante_id');
+          $pago->numero_cheque        = $request->input('numero_cheque');
+          $pago->metodo_pago_id       = $request->input('metodo_pago_id');
+          $pago->created_at           = $getFecha;
+          $pago->touch();
+
+          $data = [
+          'errors' => false,
+          'msg'    => 'Pago actualizado satisfactoriamente',
+          ];
+
+          return Response::json($data, 201);
+
+        }
+    }
 
 
   public function eliminarPago($id)
@@ -702,7 +734,7 @@ class ReservaController extends Controller
     
     $reservas = Reserva::whereHas('habitacion', function($query) use($id){
       $query->where('propiedad_id', $id);
-    })->with('habitacion.tipoHabitacion')->with('pagos')->with('cliente.tipoCliente','cliente.pais','cliente.region')->with('huespedes.servicios')->with('tipoMoneda')->with('tipoFuente', 'metodoPago', 'estadoReserva')->get();
+    })->with('habitacion.tipoHabitacion')->with('pagos')->with('cliente.tipoCliente','cliente.pais','cliente.region')->with('huespedes.servicios')->with('tipoMoneda')->with('tipoFuente', 'metodoPago', 'estadoReserva')->take(50)->get();
 
     foreach ($reservas as $reserva){
       foreach ($reserva['huespedes'] as $huesped) {
