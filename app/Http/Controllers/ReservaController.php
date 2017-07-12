@@ -50,49 +50,109 @@ class ReservaController extends Controller
             $fecha_inicio = $request->input('fecha_inicio');
             $fecha_fin    = $request->input('fecha_fin');
 
-            $reserva->whereBetween('checkin', [$fecha_inicio, $fecha_fin])
+            $reserva->whereHas('habitacion', function($query) use($propiedad_id){
+                $query->where('propiedad_id', $propiedad_id);
+            })->where(function ($query) use ($fecha_inicio, $fecha_fin) {
+                $query->where(function ($query) use ($fecha_inicio, $fecha_fin) {
+                    $query->whereBetween('checkin', [$fecha_inicio, $fecha_fin])
                     ->orWhere(function ($query) use($fecha_inicio, $fecha_fin){
                         $query->whereBetween('checkout', [$fecha_inicio, $fecha_fin]);
+                    
                     });
+            });
+
+            });
+
         }
         
         if ($request->has('nombre')) {
             $nombre = $request->input('nombre');
-            $reserva->whereHas('cliente', function ($query) use ($nombre) {
-                $query->where('nombre', $nombre);
+
+            $reserva->whereHas('habitacion', function($query) use($propiedad_id){
+                $query->where('propiedad_id', $propiedad_id);
+            })->where(function ($query) use ($nombre) {
+                $query->where(function ($query) use ($nombre) {
+                    $query->whereHas('cliente', function ($query) use ($nombre) {
+                    $query->where('nombre', $nombre);
+                    });
             });
+
+            });
+
         }
 
         if ($request->has('apellido')) {
             $apellido = $request->input('apellido');
-            $reserva->whereHas('cliente', function ($query) use ($apellido) {
-                $query->where('apellido', $apellido);
+
+            $reserva->whereHas('habitacion', function($query) use($propiedad_id){
+                $query->where('propiedad_id', $propiedad_id);
+            })->where(function ($query) use ($apellido) {
+                $query->where(function ($query) use ($apellido) {
+                    $query->whereHas('cliente', function ($query) use ($apellido) {
+                    $query->where('apellido', $apellido);
+                    });
+                
             });
+
+            });
+
         }
 
         if ($request->has('rut')) {
             $rut = $request->input('rut');
-            $reserva->whereHas('cliente', function ($query) use ($rut) {
-                $query->where('rut', $rut);
+
+            $reserva->whereHas('habitacion', function($query) use($propiedad_id){
+                $query->where('propiedad_id', $propiedad_id);
+            })->where(function ($query) use ($rut) {
+                $query->where(function ($query) use ($rut) {
+                    $query->whereHas('cliente', function ($query) use ($rut) {
+                    $query->where('rut', $rut);
+                    });
             });
+            });
+
         }
 
         if ($request->has('numero_reserva')) {
-            $reserva->where('numero_reserva', $request->input('numero_reserva'));
+            $numero_reserva = $request->input('numero_reserva');
+
+            $reserva->whereHas('habitacion', function($query) use($propiedad_id){
+                $query->where('propiedad_id', $propiedad_id);
+            })->where(function ($query) use ($numero_reserva) {
+                $query->where(function ($query) use ($numero_reserva) {
+                    $query->where('numero_reserva', $numero_reserva);
+            });
+            });
         }
 
         if ($request->has('estado_reserva_id')) {
             $estado_reserva = $request->get('estado_reserva_id');
-            $reserva->whereIn('estado_reserva_id', $estado_reserva);
+
+            $reserva->whereHas('habitacion', function($query) use($propiedad_id){
+                $query->where('propiedad_id', $propiedad_id);
+            })->where(function ($query) use ($estado_reserva) {
+                $query->where(function ($query) use ($estado_reserva) {
+                    $query->whereIn('estado_reserva_id', $estado_reserva);
+            });
+            });
+
         }
 
         if ($request->has('tipo_fuente_id')) {
             $tipo_fuente = $request->get('tipo_fuente_id');
-            $reserva->whereIn('tipo_fuente_id', $tipo_fuente);
+
+            $reserva->whereHas('habitacion', function($query) use($propiedad_id){
+                $query->where('propiedad_id', $propiedad_id);
+            })->where(function ($query) use ($tipo_fuente) {
+                $query->where(function ($query) use ($tipo_fuente) {
+                    $query->whereIn('tipo_fuente_id', $tipo_fuente);
+            });
+            });
+
         }
 
 
-        return $reserva->get();
+        return $reserva->with('habitacion.tipoHabitacion')->with('cliente.tipoCliente')->with('huespedes')->with('tipoMoneda')->with('tipoFuente', 'estadoReserva')->get();
 
     }
 
