@@ -84,7 +84,7 @@ Route::group(['as' => 'api.jarvis.'], function(){
 	Route::get('zonas/horarias', 'PropiedadController@getZonasHorarias');
 	Route::put('pago/{id}', 'ReservaController@editarPago');
 	Route::delete('pago/{id}', 'ReservaController@eliminarPago');
-	Route::get('reserva/busqueda', 'ReservaController@filtro');
+	Route::post('reserva/busqueda', 'ReservaController@filtroReservas');
 
 	Route::resource('user', 'UserController', ['except' => ['create', 'edit','store']]);
 	Route::resource('propiedad', 'PropiedadController', ['except' => ['create', 'edit', 'store']]);
@@ -110,13 +110,13 @@ Route::group(['as' => 'api.jarvis.'], function(){
 Route::auth();
 
 
-/*Route::get('users', 'UserController@index');*/
 
 
 Route::get('/', function () {
     return view('welcome');
   });
 
+/*Route::get('users', 'UserController@index');*/
 
 
 /*

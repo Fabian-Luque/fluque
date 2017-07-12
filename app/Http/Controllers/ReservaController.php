@@ -26,7 +26,7 @@ use Validator;
 
 class ReservaController extends Controller
 {
-    public function filtro(Request $request, Reserva $reserva)
+    public function filtroReservas(Request $request, Reserva $reserva)
     {
         if ($request->has('propiedad_id')) {
             $propiedad_id = $request->input('propiedad_id');
@@ -50,15 +50,45 @@ class ReservaController extends Controller
             $fecha_inicio = $request->input('fecha_inicio');
             $fecha_fin    = $request->input('fecha_fin');
 
-            $reserva->whereBetween('checkin', [$fecha_fin, $fecha_fin]);
+            $reserva->whereBetween('checkin', [$fecha_inicio, $fecha_fin])
+                    ->orWhere(function ($query) use($fecha_inicio, $fecha_fin){
+                        $query->whereBetween('checkout', [$fecha_inicio, $fecha_fin]);
+                    });
         }
         
-        if ($request->has('cliente_id')) {
-            $reserva->where('cliente_id', $request->input('cliente_id'));
+        if ($request->has('nombre')) {
+            $nombre = $request->input('nombre');
+            $reserva->whereHas('cliente', function ($query) use ($nombre) {
+                $query->where('nombre', $nombre);
+            });
+        }
+
+        if ($request->has('apellido')) {
+            $apellido = $request->input('apellido');
+            $reserva->whereHas('cliente', function ($query) use ($apellido) {
+                $query->where('apellido', $apellido);
+            });
+        }
+
+        if ($request->has('rut')) {
+            $rut = $request->input('rut');
+            $reserva->whereHas('cliente', function ($query) use ($rut) {
+                $query->where('rut', $rut);
+            });
+        }
+
+        if ($request->has('numero_reserva')) {
+            $reserva->where('numero_reserva', $request->input('numero_reserva'));
         }
 
         if ($request->has('estado_reserva_id')) {
-            $reserva->where('estado_reserva_id', $request->input('estado_reserva_id'));
+            $estado_reserva = $request->get('estado_reserva_id');
+            $reserva->whereIn('estado_reserva_id', $estado_reserva);
+        }
+
+        if ($request->has('tipo_fuente_id')) {
+            $tipo_fuente = $request->get('tipo_fuente_id');
+            $reserva->whereIn('tipo_fuente_id', $tipo_fuente);
         }
 
 
