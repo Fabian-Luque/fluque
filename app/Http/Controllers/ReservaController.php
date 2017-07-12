@@ -741,7 +741,7 @@ class ReservaController extends Controller
     
     $reservas = Reserva::whereHas('habitacion', function($query) use($id){
       $query->where('propiedad_id', $id);
-    })->with('habitacion.tipoHabitacion')->with('pagos')->with('cliente.tipoCliente','cliente.pais','cliente.region')->with('huespedes.servicios')->with('tipoMoneda')->with('tipoFuente', 'metodoPago', 'estadoReserva')->orderBy('id', 'desc')->take(2)->get();
+    })->with('habitacion.tipoHabitacion')->with('pagos')->with('cliente.tipoCliente','cliente.pais','cliente.region')->with('huespedes.servicios')->with('tipoMoneda')->with('tipoFuente', 'metodoPago', 'estadoReserva')->orderBy('id', 'desc')->take(50)->get();
 
     foreach ($reservas as $reserva){
       foreach ($reserva['huespedes'] as $huesped) {
