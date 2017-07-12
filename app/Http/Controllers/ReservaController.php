@@ -45,6 +45,13 @@ class ReservaController extends Controller
         }
 
         $reserva = $reserva->newQuery();
+
+        if ($request->has('fecha_inicio') && $request->has('fecha_fin')) {
+            $fecha_inicio = $request->input('fecha_inicio');
+            $fecha_fin    = $request->input('fecha_fin');
+
+            $reserva->whereBetween('checkin', [$fecha_fin, $fecha_fin]);
+        }
         
         if ($request->has('cliente_id')) {
             $reserva->where('cliente_id', $request->input('cliente_id'));
@@ -734,7 +741,7 @@ class ReservaController extends Controller
     
     $reservas = Reserva::whereHas('habitacion', function($query) use($id){
       $query->where('propiedad_id', $id);
-    })->with('habitacion.tipoHabitacion')->with('pagos')->with('cliente.tipoCliente','cliente.pais','cliente.region')->with('huespedes.servicios')->with('tipoMoneda')->with('tipoFuente', 'metodoPago', 'estadoReserva')->take(50)->get();
+    })->with('habitacion.tipoHabitacion')->with('pagos')->with('cliente.tipoCliente','cliente.pais','cliente.region')->with('huespedes.servicios')->with('tipoMoneda')->with('tipoFuente', 'metodoPago', 'estadoReserva')->orderBy('id', 'desc')->take(2)->get();
 
     foreach ($reservas as $reserva){
       foreach ($reserva['huespedes'] as $huesped) {
