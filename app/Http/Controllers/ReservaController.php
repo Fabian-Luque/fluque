@@ -57,7 +57,6 @@ class ReservaController extends Controller
                     $query->whereBetween('checkin', [$fecha_inicio, $fecha_fin])
                     ->orWhere(function ($query) use($fecha_inicio, $fecha_fin){
                         $query->whereBetween('checkout', [$fecha_inicio, $fecha_fin]);
-                    
                     });
             });
 
@@ -76,7 +75,6 @@ class ReservaController extends Controller
                     $query->where('nombre', $nombre);
                     });
             });
-
             });
 
         }
@@ -93,7 +91,6 @@ class ReservaController extends Controller
                     });
                 
             });
-
             });
 
         }
@@ -150,7 +147,6 @@ class ReservaController extends Controller
             });
 
         }
-
 
         return $reserva->with('habitacion.tipoHabitacion')->with('cliente.tipoCliente')->with('huespedes')->with('tipoMoneda')->with('tipoFuente', 'estadoReserva')->get();
 
