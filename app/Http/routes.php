@@ -94,6 +94,7 @@ Route::group(['as' => 'api.jarvis.'], function(){
 	Route::resource('cliente', 'ClienteController', ['except' => ['create', 'edit']]);
 	Route::resource('huesped', 'HuespedController', ['except' => ['create', 'edit']]);
 	Route::resource('temporada', 'TemporadaController', ['except' => ['create', 'edit']]);
+	Route::resource('tipo/habitacion', 'TipoHabitacionController', ['except' => ['create', 'edit']]);
 
 });
 
@@ -195,11 +196,6 @@ Route::group(['middleware' => 'cors'], function(){
 
 	Route::post('crear/precio/servicio', 'ServicioController@crearPrecio');
 
-<<<<<<< HEAD
-	Route::get('copia/precio/habitacion', 'HabitacionController@copiaPrecios');
-
-=======
->>>>>>> 5e753299a2205a4b909ed317709f4d6bc3655811
 	Route::post('cambiar/habitacion', 'ReservaController@cambiarHabitacion');
 
 	Route::get('clasificacion/moneda', 'PropiedadController@getClasificacionMoneda');

@@ -19,7 +19,7 @@ class TemporadaController extends Controller
     {
         if ($request->has('propiedad_id')) {
             $propiedad_id   = $request->input('propiedad_id');
-            $propiedad      = Propiedad::where('id', $propiedad_id->first();
+            $propiedad      = Propiedad::where('id', $propiedad_id)->first();
             if (is_null($propiedad)) {
                 $retorno  = array(
                     'msj'    => "Propiedad no encontrada",
@@ -33,7 +33,7 @@ class TemporadaController extends Controller
             return Response::json($retorno, 400);
         }
 
-        $temporadas = Temporada::where('propiedad_id', $propiedad_id->get();
+        $temporadas = Temporada::where('propiedad_id', $propiedad_id)->get();
         return $temporadas;
     }
 
