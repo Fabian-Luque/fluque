@@ -4,6 +4,9 @@ namespace App;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use \Carbon\Carbon;
+use App\ZonaHoraria;
+use JWTAuth;
 
 class User extends Authenticatable
 {
@@ -34,7 +37,8 @@ class User extends Authenticatable
 
     }
 
-    public function setPasswordAttribute($value){
+    public function setPasswordAttribute($value)
+    {
 
         if(!empty($value))
         {
@@ -43,9 +47,16 @@ class User extends Authenticatable
     
         }
 
-
-
     }
+
+/*    public function getCreatedAtAttribute($value)
+    {
+        $user = JWTAuth::parseToken()->toUser();
+        $propiedad = $user->propiedad;
+        $zona_horaria    = ZonaHoraria::where('id', $propiedad->zona_horaria_id)->first();
+        $pais            = $zona_horaria->nombre;
+        return Carbon::parse($value)->timezone($pais)->format('Y-m-d H:i:s');
+    }   */
 
 
 

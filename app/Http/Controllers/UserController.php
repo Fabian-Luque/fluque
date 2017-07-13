@@ -8,9 +8,11 @@ use App\Propiedad;
 use App\Servicio;
 use App\TipoHabitacion;
 use App\User;
+use App\ZonaHoraria;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Response;
+use JWTAuth;
 
 class UserController extends Controller
 {
@@ -94,12 +96,14 @@ class UserController extends Controller
 
         } else {
 
-            $usuario                        = new User();
-            $usuario->name                  = $request->get('name');
-            $usuario->email                 = $request->get('email');
-            /*$usuario->password            = bcrypt($request->get('password'));*/
-            $usuario->password              = $request->get('password');
-            $usuario->phone                 = $request->get('phone');
+
+            $usuario                       = new User();
+            $usuario->name                 = $request->get('name');
+            $usuario->email                = $request->get('email');
+            /*$usuario->password           = bcrypt($request->get('password'));*/
+            $usuario->password             = $request->get('password');
+            $usuario->phone                = $request->get('phone');
+
 
             $usuario->save();
 

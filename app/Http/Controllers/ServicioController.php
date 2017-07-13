@@ -199,7 +199,6 @@ class ServicioController extends Controller
     }
 
 
-
 	public function destroy($id)
     {
         $servicio = Servicio::findOrFail($id);
@@ -218,6 +217,7 @@ class ServicioController extends Controller
     {
         $categorias = Categoria::all();
         return $categorias;
+
     }
 
 

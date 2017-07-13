@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Response as HttpResponse;
+
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -47,27 +48,25 @@ Route::group(['as' => 'api.jarvis.'], function(){
 	Route::post('pdf/estado/cuenta', 'PDFController@estadoCuenta');
 	Route::post('pdf/reporte', 'PDFController@reporte');
 	Route::post('pdf/huesped', 'PDFController@huesped');
+	Route::post('pdf/checkin', 'PDFController@checkin');
+	Route::post('pdf/pagos', 'PDFController@pagos');
 	Route::post('ingreso/servicio', 'PropiedadController@ingresoServicio');
 	Route::post('ingreso/servicio/cliente', 'ClienteController@ingresoServicio');
 	Route::get('cliente/empresa', 'ClienteController@getClientes');
 	Route::post('pago/consumo', 'ReservaController@pagoConsumo');
-	Route::post('venta', 'ReservaController@ventas');
 	Route::get('cliente/email', 'ClienteController@getCliente');
 	Route::get('buscar/email', 'ClienteController@buscarEmail');
 	Route::get('buscar/rut', 'ClienteController@buscarRut');
 	Route::get('disponibilidad', 'HabitacionController@disponibilidad');
 	Route::get('editar/reserva', 'ReservaController@editarReserva');
-	Route::get('modifica/precio', 'ReservaController@modificaPrecio');
 	Route::get('tipo-moneda', 'HabitacionController@getTipoMoneda');
 	Route::post('crear/precio/habitacion', 'HabitacionController@crearPrecio');
 	Route::post('crear/precio/servicio', 'ServicioController@crearPrecio');
-	Route::get('copia/precio/habitacion', 'HabitacionController@copiaPrecios');
 	Route::post('cambiar/habitacion', 'ReservaController@cambiarHabitacion');
 	Route::get('clasificacion/moneda', 'PropiedadController@getClasificacionMoneda');
 	Route::post('ingreso/moneda/propiedad', 'PropiedadController@ingresoMonedas');
 	Route::post('eliminar/moneda/propiedad', 'PropiedadController@eliminarMoneda');
 	Route::put('editar/moneda/{id}', 'PropiedadController@editarMoneda');
-	Route::get('copia/precio/pagos', 'ReservaController@copiaPrecioPagos');
 	Route::get('reporte', 'PropiedadController@reportesDiario');
 	Route::post('crear/pais', 'PropiedadController@crearPais');
 	Route::get('paises', 'PropiedadController@getPaises');
@@ -80,8 +79,12 @@ Route::group(['as' => 'api.jarvis.'], function(){
 	Route::get('temporada/precios', 'TemporadaController@getPreciosTemporadas');
 	Route::post('editar/temporadas', 'TemporadaController@editarTemporadas');
 	Route::get('reportes', 'PropiedadController@reportes');
+	Route::get('reportes/pago', 'PropiedadController@pagos');
 	Route::post('crear/zona/horaria', 'PropiedadController@crearZona');
 	Route::get('zonas/horarias', 'PropiedadController@getZonasHorarias');
+	Route::put('pago/{id}', 'ReservaController@editarPago');
+	Route::delete('pago/{id}', 'ReservaController@eliminarPago');
+	Route::post('reserva/busqueda', 'ReservaController@filtroReservas');
 
 	Route::resource('user', 'UserController', ['except' => ['create', 'edit','store']]);
 	Route::resource('propiedad', 'PropiedadController', ['except' => ['create', 'edit', 'store']]);
@@ -104,20 +107,18 @@ Route::group(['as' => 'api.jarvis.'], function(){
 Route::auth();
 
 
-/*Route::get('users', 'UserController@index');*/
 
 
 Route::get('/', function () {
     return view('welcome');
   });
 
-
+/*Route::get('users', 'UserController@index');*/
 
 
 /*
 Route::group(['middleware' => 'cors'], function(){
 
-	
 	Route::post('/auth_login', 'ApiAuthController@userAuth');
 
 	Route::post('reserva/habitacion', 'ReservaController@reserva');
@@ -178,8 +179,6 @@ Route::group(['middleware' => 'cors'], function(){
 
 	Route::post('pago/consumo', 'ReservaController@pagoConsumo');
 
-	Route::post('venta', 'ReservaController@ventas');
-
 	Route::get('cliente/email', 'ClienteController@getCliente');
 
 	Route::get('buscar/email', 'ClienteController@buscarEmail');
@@ -190,16 +189,17 @@ Route::group(['middleware' => 'cors'], function(){
 
 	Route::get('editar/reserva', 'ReservaController@editarReserva');
 
-	Route::get('modifica/precio', 'ReservaController@modificaPrecio');
-
 	Route::get('tipo-moneda', 'HabitacionController@getTipoMoneda');
 
 	Route::post('crear/precio/habitacion', 'HabitacionController@crearPrecio');
 
 	Route::post('crear/precio/servicio', 'ServicioController@crearPrecio');
 
+<<<<<<< HEAD
 	Route::get('copia/precio/habitacion', 'HabitacionController@copiaPrecios');
 
+=======
+>>>>>>> 5e753299a2205a4b909ed317709f4d6bc3655811
 	Route::post('cambiar/habitacion', 'ReservaController@cambiarHabitacion');
 
 	Route::get('clasificacion/moneda', 'PropiedadController@getClasificacionMoneda');
@@ -209,8 +209,6 @@ Route::group(['middleware' => 'cors'], function(){
 	Route::post('eliminar/moneda/propiedad', 'PropiedadController@eliminarMoneda');
 
 	Route::put('editar/moneda/{id}', 'PropiedadController@editarMoneda');
-
-	Route::get('copia/precio/pagos', 'ReservaController@copiaPrecioPagos');
 
 	Route::get('reporte', 'PropiedadController@reportesDiario');
 
@@ -240,6 +238,10 @@ Route::group(['middleware' => 'cors'], function(){
 
 	Route::get('zonas/horarias', 'PropiedadController@getZonasHorarias');
 
+	Route::put('pago/{id}', 'ReservaController@editarPago');
+
+	Route::delete('pago/{id}', 'ReservaController@eliminarPago');
+
 
 	Route::resource('user', 'UserController', ['except' => ['create', 'edit','store']]);
 	Route::resource('propiedad', 'PropiedadController', ['except' => ['create', 'edit', 'store']]);
@@ -254,8 +256,6 @@ Route::group(['middleware' => 'cors'], function(){
 
 });
 */
-
-
 
 
 /*Route::group(['middleware' => 'auth'], function(){

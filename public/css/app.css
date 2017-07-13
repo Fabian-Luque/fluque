@@ -1,10 +1,11 @@
-* {
-  margin: 0px;
-  padding: 0px;
-}
 
 body {
   font-family: sans-serif;
+}
+
+body * {
+  margin: 0px;
+  padding: 0px;
 }
 
 .page-break {
@@ -39,7 +40,7 @@ p {
 
 .head-tabla-cliente {
   width: 130px;
-  background: #212121;
+  background: #4f4f4f;
   color: white;
   padding:5px 10px;
 }
@@ -153,3 +154,8 @@ span {
 .negrita {
   font-weight: bold;
 }
+
+tr, td div, th div{
+  page-break-inside: avoid;
+
+} 

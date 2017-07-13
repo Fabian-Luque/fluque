@@ -668,33 +668,6 @@ return $habitaciones_tipo;
 
     }
 
-    public function copiaPrecios()
-    {
-
-        $habitaciones = Habitacion::all();
-
-        foreach ($habitaciones as $habitacion) {
-
-            $precio_base   = $habitacion->precio_base;
-            $habitacion_id = $habitacion->id;
-
-            $precio                    = new Precio();
-            $precio->precio_habitacion = $precio_base;
-            $precio->tipo_moneda_id    = 1;
-            $precio->habitacion_id     = $habitacion_id;
-            $precio->save();
-
-        }
-
-        $data = [
-            'errors' => false,
-            'msg'    => 'Precios creados satisfactoriamente',
-
-        ];
-
-        return Response::json($data, 201);
-
-    }
 
     public function destroy($id)
     {
