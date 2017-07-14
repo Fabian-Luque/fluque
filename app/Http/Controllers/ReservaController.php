@@ -26,53 +26,178 @@ use Validator;
 
 class ReservaController extends Controller
 {
+    public function filtroReservas(Request $request, Reserva $reserva)
+    {
+        if ($request->has('propiedad_id')) {
+            $propiedad_id = $request->input('propiedad_id');
+            $propiedad    = Propiedad::where('id', $propiedad_id)->first();
+            if (is_null($propiedad)) {
+                $retorno = array(
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia propiedad_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
 
+        $reserva = $reserva->newQuery();
 
-  public function editarPAgo(Request $request, $id)
-  {
+        if ($request->has('fecha_inicio') && $request->has('fecha_fin')) {
+            $fecha_inicio = $request->input('fecha_inicio');
+            $fecha_fin    = $request->input('fecha_fin');
 
-    $rules = array(
+            $reserva->whereHas('habitacion', function($query) use($propiedad_id){
+                $query->where('propiedad_id', $propiedad_id);
+            })->where(function ($query) use ($fecha_inicio, $fecha_fin) {
+                $query->where(function ($query) use ($fecha_inicio, $fecha_fin) {
+                    $query->whereBetween('checkin', [$fecha_inicio, $fecha_fin])
+                    ->orWhere(function ($query) use($fecha_inicio, $fecha_fin){
+                        $query->whereBetween('checkout', [$fecha_inicio, $fecha_fin]);
+                    });
+            });
 
-      'numero_cheque'            => '',
-      'numero_operacion'         => '',
-      'tipo_comprobante_id'      => '',
-      'metodo_pago_id'           => '',
-      'fecha'                    => 'date',
-    );
+            });
 
-    $validator = Validator::make($request->all(), $rules);
+        }
+        
+        if ($request->has('nombre')) {
+            $nombre = $request->input('nombre');
 
-    if ($validator->fails()) {
+            $reserva->whereHas('habitacion', function($query) use($propiedad_id){
+                $query->where('propiedad_id', $propiedad_id);
+            })->where(function ($query) use ($nombre) {
+                $query->where(function ($query) use ($nombre) {
+                    $query->whereHas('cliente', function ($query) use ($nombre) {
+                    $query->where('nombre', $nombre);
+                    });
+            });
+            });
 
-      $data = [
-      'errors' => true,
-      'msg'    => $validator->messages(),
-      ];
+        }
 
-      return Response::json($data, 400);
+        if ($request->has('apellido')) {
+            $apellido = $request->input('apellido');
 
-    } else {
-      if($request->has('fecha')){
-        $getFecha = new Carbon($request->input('fecha'));
-      }
+            $reserva->whereHas('habitacion', function($query) use($propiedad_id){
+                $query->where('propiedad_id', $propiedad_id);
+            })->where(function ($query) use ($apellido) {
+                $query->where(function ($query) use ($apellido) {
+                    $query->whereHas('cliente', function ($query) use ($apellido) {
+                    $query->where('apellido', $apellido);
+                    });
+                
+            });
+            });
 
-      $pago                       = Pago::findOrFail($id);
-      $pago->numero_operacion     = $request->input('numero_operacion');
-      $pago->tipo_comprobante_id  = $request->input('tipo_comprobante_id');
-      $pago->numero_cheque        = $request->input('numero_cheque');
-      $pago->metodo_pago_id       = $request->input('metodo_pago_id');
-      $pago->created_at           = $getFecha;
-      $pago->touch();
+        }
 
-      $data = [
-      'errors' => false,
-      'msg'    => 'Pago actualizado satisfactoriamente',
-      ];
+        if ($request->has('rut')) {
+            $rut = $request->input('rut');
 
-      return Response::json($data, 201);
+            $reserva->whereHas('habitacion', function($query) use($propiedad_id){
+                $query->where('propiedad_id', $propiedad_id);
+            })->where(function ($query) use ($rut) {
+                $query->where(function ($query) use ($rut) {
+                    $query->whereHas('cliente', function ($query) use ($rut) {
+                    $query->where('rut', $rut);
+                    });
+            });
+            });
+
+        }
+
+        if ($request->has('numero_reserva')) {
+            $numero_reserva = $request->input('numero_reserva');
+
+            $reserva->whereHas('habitacion', function($query) use($propiedad_id){
+                $query->where('propiedad_id', $propiedad_id);
+            })->where(function ($query) use ($numero_reserva) {
+                $query->where(function ($query) use ($numero_reserva) {
+                    $query->where('numero_reserva', $numero_reserva);
+            });
+            });
+        }
+
+        if ($request->has('estado_reserva_id')) {
+            $estado_reserva = $request->get('estado_reserva_id');
+
+            $reserva->whereHas('habitacion', function($query) use($propiedad_id){
+                $query->where('propiedad_id', $propiedad_id);
+            })->where(function ($query) use ($estado_reserva) {
+                $query->where(function ($query) use ($estado_reserva) {
+                    $query->whereIn('estado_reserva_id', $estado_reserva);
+            });
+            });
+
+        }
+
+        if ($request->has('tipo_fuente_id')) {
+            $tipo_fuente = $request->get('tipo_fuente_id');
+
+            $reserva->whereHas('habitacion', function($query) use($propiedad_id){
+                $query->where('propiedad_id', $propiedad_id);
+            })->where(function ($query) use ($tipo_fuente) {
+                $query->where(function ($query) use ($tipo_fuente) {
+                    $query->whereIn('tipo_fuente_id', $tipo_fuente);
+            });
+            });
+
+        }
+
+        return $reserva->with('habitacion.tipoHabitacion')->with('cliente.tipoCliente')->with('huespedes')->with('tipoMoneda')->with('tipoFuente', 'estadoReserva')->get();
 
     }
-  }
+
+
+
+    public function editarPAgo(Request $request, $id)
+    {
+        $rules = array(
+
+          'numero_cheque'            => '',
+          'numero_operacion'         => '',
+          'tipo_comprobante_id'      => '',
+          'metodo_pago_id'           => '',
+          'fecha'                    => 'date',
+        );
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+
+          $data = [
+          'errors' => true,
+          'msg'    => $validator->messages(),
+          ];
+
+          return Response::json($data, 400);
+
+        } else {
+          if($request->has('fecha')){
+            $getFecha = new Carbon($request->input('fecha'));
+          }
+
+          $pago                       = Pago::findOrFail($id);
+          $pago->numero_operacion     = $request->input('numero_operacion');
+          $pago->tipo_comprobante_id  = $request->input('tipo_comprobante_id');
+          $pago->numero_cheque        = $request->input('numero_cheque');
+          $pago->metodo_pago_id       = $request->input('metodo_pago_id');
+          $pago->created_at           = $getFecha;
+          $pago->touch();
+
+          $data = [
+          'errors' => false,
+          'msg'    => 'Pago actualizado satisfactoriamente',
+          ];
+
+          return Response::json($data, 201);
+
+        }
+    }
 
 
   public function eliminarPago($id)
@@ -702,7 +827,7 @@ class ReservaController extends Controller
     
     $reservas = Reserva::whereHas('habitacion', function($query) use($id){
       $query->where('propiedad_id', $id);
-    })->with('habitacion.tipoHabitacion')->with('pagos')->with('cliente.tipoCliente','cliente.pais','cliente.region')->with('huespedes.servicios')->with('tipoMoneda')->with('tipoFuente', 'metodoPago', 'estadoReserva')->get();
+    })->with('habitacion.tipoHabitacion')->with('pagos')->with('cliente.tipoCliente','cliente.pais','cliente.region')->with('huespedes.servicios')->with('tipoMoneda')->with('tipoFuente', 'metodoPago', 'estadoReserva')->orderBy('id', 'desc')->take(50)->get();
 
     foreach ($reservas as $reserva){
       foreach ($reserva['huespedes'] as $huesped) {
