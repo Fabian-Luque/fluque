@@ -1356,26 +1356,65 @@ class ReservaController extends Controller
 
 
 
-    public function panel(Request $request){
+    public function panel(Request $request)
+    {
+        if ($request->has('propiedad_id')) {
+            $id = $request->input('propiedad_id');
+            $propiedad    = Propiedad::where('id', $id)->first();
+            if (is_null($propiedad)) {
+                $retorno = array(
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia propiedad_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
 
 
         $startDate = Carbon::today()->startOfDay();
         $endDate = Carbon::today()->endOfDay();
 
 
-        $id = $request->input('propiedad_id');
         $fecha = $request->input('fecha_actual');
         $fecha_inicio = $request->input('fecha_inicio');
         $fecha_fin = $request->input('fecha_fin');
 
-        $fecha_hoy = Carbon::today();
+        $fecha_hoy = new Carbon($fecha);
 
 
+        $reservas_hoy = Reserva::whereHas('habitacion', function($query) use($id){
+
+                    $query->where('propiedad_id', $id);
+
+        })->where('checkin', '<=' , $fecha)->where('checkout', '>=', $fecha)->with('habitacion.tipoHabitacion')->with('huespedes')->with('cliente.pais', 'cliente.region')->with('estadoReserva')->get();
+
+        $entradas   = 0;
+        $salidas    = 0;
+        foreach ($reservas_hoy as $reserva) {
+            if ($reserva->checkin == $fecha_hoy ) {
+                $entradas++;
+            }
+
+            
+        }
+
+
+
+
+
+
+/*
         $entradas = Reserva::whereHas('habitacion', function($query) use($id){
 
                     $query->where('propiedad_id', $id);
 
         })->where('checkin', $fecha)->whereBetween('estado_reserva_id', [1,2])->with('habitacion.tipoHabitacion')->with('huespedes')->with('cliente.pais', 'cliente.region')->with('estadoReserva')->get();
+
 
         $entradas_hoy = Reserva::whereHas('habitacion', function($query) use($id){
 
@@ -1384,15 +1423,18 @@ class ReservaController extends Controller
         })->where('checkin', $fecha)->whereIn('estado_reserva_id', [1,2,3])->get();
 
 
+
         $salidas = Reserva::whereHas('habitacion', function($query) use($id){
 
                     $query->where('propiedad_id', $id);
 
         })->where('checkout', $fecha)->where('estado_reserva_id', 3)->with('habitacion.tipoHabitacion')->with('huespedes')->with('cliente')->with('estadoReserva')->get();
 
+
         $salidas_hoy = Reserva::whereHas('habitacion', function($query) use($id){
 
                     $query->where('propiedad_id', $id);})->where('checkout', $fecha)->whereIn('estado_reserva_id', [3,4,5])->get();
+
 
 
         $habitaciones_occupadas = Reserva::whereHas('habitacion', function($query) use($id){
@@ -1400,6 +1442,7 @@ class ReservaController extends Controller
                     $query->where('propiedad_id', $id);
 
         })->where('checkin', '<=', $fecha)->where('checkout', '>', $fecha)->where('estado_reserva_id', 3)->get();
+
 
 
 
@@ -1413,7 +1456,7 @@ class ReservaController extends Controller
 
                     $query->where('propiedad_id', $id);
 
-        })->where('checkin', '<' , $fecha_hoy)->whereBetween('estado_reserva_id', [1,2])->with('habitacion.tipoHabitacion')->with('cliente')->with('estadoReserva')->get();
+        })->where('checkin', '<' , $fecha_hoy)->whereBetween('estado_reserva_id', [1,2])->with('habitacion.tipoHabitacion')->with('cliente')->with('estadoReserva')->get();*/
 
 
 
