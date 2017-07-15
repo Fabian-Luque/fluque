@@ -1571,8 +1571,8 @@ class ReservaController extends Controller
 
         $data = array(
 
-            'cantidad_entradas'     => $entradas_hoy,
-            'cantidad_salidas'      => $salidas_hoy,
+            'cantidad_entradas'     => $entradas,
+            'cantidad_salidas'      => $salidas,
             'habitaciones_ocupadas' => $habitaciones_ocupadas,
             'entradas'              => $entradas_hoy,
             'salidas'               => $salidas_hoy,
