@@ -68,7 +68,11 @@ class HabitacionController extends Controller
                 foreach ($habitaciones_propiedad as $hab) {
 
                     $tipo_habitacion = $hab->tipoHabitacion;
-                    array_push($tipo_habitacion_propiedad,$tipo_habitacion);
+                    if (!in_array($tipo_habitacion, $tipo_habitacion_propiedad)) {
+
+                        array_push($tipo_habitacion_propiedad,$tipo_habitacion);
+
+                    }
 
                     if (!in_array($hab, $habitaciones_ocupadas)) {
 
@@ -77,7 +81,6 @@ class HabitacionController extends Controller
                     }
 
                 }
-
 
                 foreach ($habitaciones_disponibles as $habitacion) {
                     
