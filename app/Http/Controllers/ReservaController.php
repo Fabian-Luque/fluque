@@ -1393,16 +1393,27 @@ class ReservaController extends Controller
 
         })->where('checkin', '<=' , $fecha)->where('checkout', '>=', $fecha)->with('habitacion.tipoHabitacion')->with('huespedes')->with('cliente.pais', 'cliente.region')->with('estadoReserva')->get();
 
-        $entradas   = 0;
-        $salidas    = 0;
+        $entradas       = 0;
+        $salidas        = 0;
+        $entradas_hoy   = [];
+        $salidas_hoy    = [];
         foreach ($reservas_hoy as $reserva) {
             if ($reserva->checkin == $fecha_hoy ) {
+                if ($reserva->estado_reserva_id == 1 || $reserva->estado_reserva_id == 2 ) {
+                    array_push($entradas_hoy, $reserva);
+                } 
                 $entradas++;
             }
 
-            
-        }
+            if ($reserva->checkout == $fecha_hoy) {
+                if ($reserva->estado_reserva_id == 3 || $reserva->estado_reserva_id == 4 || $reserva->estado_reserva_id == 5 ) {
+                    array_push($salidas_hoy, $reserva);
+                } 
+                $salidas++;
+            }
 
+        }
+        return $salidas_hoy;
 
 
 
