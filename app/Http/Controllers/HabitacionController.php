@@ -52,7 +52,7 @@ class HabitacionController extends Controller
 
                         $query->where('checkin', '<=', $fecha)->where('checkout', '>', $fecha)->where('estado_reserva_id', '!=', 6)->where('estado_reserva_id', '!=', 7);
 
-                    })->get();
+                    })->with('tipoHabitacion')->get();
 
                     foreach ($habitaciones as $habitacion) {
 
@@ -79,6 +79,7 @@ class HabitacionController extends Controller
                         array_push($habitaciones_disponibles, $hab);
 
                     }
+
 
                 }
 
