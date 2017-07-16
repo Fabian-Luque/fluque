@@ -28,7 +28,6 @@ class HabitacionController extends Controller
 
         $propiedad = Propiedad::where('id', $propiedad_id)->first();
 
-
         if (!is_null($propiedad)) {
 
             $propiedad_monedas = $propiedad->tipoMonedas; // monedas propiedad
@@ -43,7 +42,7 @@ class HabitacionController extends Controller
                 $habitaciones_ocupadas    = [];
                 $habitaciones_disponibles = [];
 
-                $habitaciones_propiedad = Habitacion::where('propiedad_id', $propiedad_id)->get();
+                $habitaciones_propiedad = Habitacion::where('propiedad_id', $propiedad_id)->with('tipoHabitacion')->get();
 
                 for ($i = $fechaInicio; $i < $fechaFin; $i += 86400) {
 
@@ -53,7 +52,7 @@ class HabitacionController extends Controller
 
                         $query->where('checkin', '<=', $fecha)->where('checkout', '>', $fecha)->where('estado_reserva_id', '!=', 6)->where('estado_reserva_id', '!=', 7);
 
-                    })->get();
+                    })->with('tipoHabitacion')->get();
 
                     foreach ($habitaciones as $habitacion) {
 
@@ -65,8 +64,15 @@ class HabitacionController extends Controller
                     }
                 }
 
-
+                $tipo_habitacion_propiedad = [];
                 foreach ($habitaciones_propiedad as $hab) {
+
+                    $tipo_habitacion = $hab->tipoHabitacion;
+                    if (!in_array($tipo_habitacion, $tipo_habitacion_propiedad)) {
+
+                        array_push($tipo_habitacion_propiedad,$tipo_habitacion);
+
+                    }
 
                     if (!in_array($hab, $habitaciones_ocupadas)) {
 
@@ -74,11 +80,8 @@ class HabitacionController extends Controller
 
                     }
 
+
                 }
-
-                /*return $habitaciones_disponibles;*/
-
-
 
                 foreach ($habitaciones_disponibles as $habitacion) {
                     
@@ -115,24 +118,15 @@ class HabitacionController extends Controller
 
                                 }
 
-
-
                             }
                         }
-
-
-
-                    }else{
-
-
-
 
                     }
 
                     $auxFecha->addDay();
                     }
 
-                   /* return $auxPrecio;*/
+
 
                     foreach ($propiedad_monedas as $moneda) {
 
@@ -163,73 +157,32 @@ class HabitacionController extends Controller
 
 
 
-
                 }
 
-                /*return $habitaciones_disponibles;*/
 
-                $habitacion_individual   = [];
-                $habitacion_doble        = [];
-                $habitacion_triple       = [];
-                $habitacion_cuadruple    = [];
-                $habitacion_quintuple    = [];
-                $habitacion_matrimonial  = [];
-                $habitacion_suite        = [];
-                $habitacion_presidencial = [];
+                $habitaciones_tipo = [];
+                foreach ($tipo_habitacion_propiedad as $tipo) {
+                    
+                    $habitaciones = [];
+                    foreach ($habitaciones_disponibles as $habitacion) {
+                        
+                        if ($tipo->id == $habitacion->tipo_habitacion_id) {
+                            
+                                array_push($habitaciones, $habitacion);
 
-                foreach ($habitaciones_disponibles as $habitacion) {
+                        }
 
-                    if ($habitacion->tipo_habitacion_id == 1) {
-
-                        array_push($habitacion_individual, $habitacion);
-
-                    } elseif ($habitacion->tipo_habitacion_id == 2) {
-
-                        array_push($habitacion_doble, $habitacion);
-
-                    } elseif ($habitacion->tipo_habitacion_id == 3) {
-
-                        array_push($habitacion_triple, $habitacion);
-
-                    } elseif ($habitacion->tipo_habitacion_id == 4) {
-
-                        array_push($habitacion_cuadruple, $habitacion);
-
-                    } elseif ($habitacion->tipo_habitacion_id == 5) {
-
-                        array_push($habitacion_quintuple, $habitacion);
-
-                    } elseif ($habitacion->tipo_habitacion_id == 6) {
-
-                        array_push($habitacion_matrimonial, $habitacion);
-
-                    } elseif ($habitacion->tipo_habitacion_id == 7) {
-
-                        array_push($habitacion_suite, $habitacion);
-
-                    } elseif ($habitacion->tipo_habitacion_id == 8) {
-
-                        array_push($habitacion_presidencial, $habitacion);
                     }
+                    $auxTipo = ['id' => $tipo->id, 'nombre' => $tipo->nombre, 'habitaciones' => $habitaciones];
+                    
+                    array_push($habitaciones_tipo, $auxTipo);
+                    
 
                 }
 
-                $habitaciones_tipo = array(
-                    'tipos' => [
-                        ['id' => 1, 'nombre' => 'individual', 'habitaciones' => $habitacion_individual],
-                        ['id' => 2, 'nombre' => 'doble', 'habitaciones' => $habitacion_doble],
-                        ['id' => 3, 'nombre' => 'triple', 'habitaciones' => $habitacion_triple],
-                        ['id' => 4, 'nombre' => 'cuadruple', 'habitaciones' => $habitacion_cuadruple],
-                        ['id' => 5, 'nombre' => 'quintuple', 'habitaciones' => $habitacion_quintuple],
-                        ['id' => 6, 'nombre' => 'matrimonial', 'habitaciones' => $habitacion_matrimonial],
-                        ['id' => 7, 'nombre' => 'suite', 'habitaciones' => $habitacion_suite],
-                        ['id' => 8, 'nombre' => 'presidencial', 'habitaciones' => $habitacion_presidencial],
+                $data = ['tipos' => $habitaciones_tipo];
 
-                    ],
-
-                );
-
-                return $habitaciones_tipo;
+                return $data;
 
             } else {
 

@@ -603,7 +603,7 @@ class ReservaController extends Controller
 
         if($request->has('ocupacion')){
           $ocupacion           = $request->input('ocupacion');
-          $disponibilidad_base = $hab->disponibilidad_base;
+          $disponibilidad_base = $hab->tipoHabitacion->capacidad;
           if($ocupacion <= $disponibilidad_base){
             $reserva->update(array('ocupacion' => $ocupacion));
           }else{
@@ -1356,9 +1356,8 @@ class ReservaController extends Controller
 
 
 
-    public function panel(Request $request){
-
-
+    public function panel(Request $request)
+    {
         $startDate = Carbon::today()->startOfDay();
         $endDate = Carbon::today()->endOfDay();
 
