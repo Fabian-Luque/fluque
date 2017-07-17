@@ -1380,7 +1380,7 @@ class ReservaController extends Controller
             $fecha_fin    = $request->input('fecha_fin');
         } else {
             $retorno = array(
-                'msj'    => "No se envia fechas",
+                'msj'    => "Solicitud incompleta",
                 'errors' => true);
             return Response::json($retorno, 400);
         }
