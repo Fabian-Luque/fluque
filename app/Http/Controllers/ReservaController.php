@@ -1404,15 +1404,15 @@ class ReservaController extends Controller
             if ($reserva->checkin == $fecha_hoy ) {
                 if ($reserva->estado_reserva_id == 1 || $reserva->estado_reserva_id == 2 ) {
                     array_push($entradas_hoy, $reserva);
-                } 
                 $entradas++;
+                } 
             }
 
             if ($reserva->checkout == $fecha_hoy) {
                 if ($reserva->estado_reserva_id == 3 || $reserva->estado_reserva_id == 4 || $reserva->estado_reserva_id == 5 ) {
                     array_push($salidas_hoy, $reserva);
-                } 
                 $salidas++;
+                } 
             }
 
             if ($reserva->estado_reserva_id == 3) {
