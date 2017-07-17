@@ -1416,7 +1416,9 @@ class ReservaController extends Controller
             }
 
             if ($reserva->estado_reserva_id == 3) {
+                if ($reserva->checkout > $fecha_hoy) {
                 $habitaciones_ocupadas++;
+                }
             }
         }
 
