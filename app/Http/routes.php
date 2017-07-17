@@ -94,15 +94,13 @@ Route::group(['as' => 'api.jarvis.'], function(){
 	Route::resource('cliente', 'ClienteController', ['except' => ['create', 'edit']]);
 	Route::resource('huesped', 'HuespedController', ['except' => ['create', 'edit']]);
 	Route::resource('temporada', 'TemporadaController', ['except' => ['create', 'edit']]);
+	Route::resource('tipo/habitacion', 'TipoHabitacionController', ['except' => ['create', 'edit']]);
 
 });
 
 
 
 });
-
-
-
 
 
 
@@ -121,8 +119,6 @@ Route::get('/', function () {
 
 /*
 Route::group(['middleware' => 'cors'], function(){
-
-
 
 	Route::post('/auth_login', 'ApiAuthController@userAuth');
 
@@ -251,6 +247,7 @@ Route::group(['middleware' => 'cors'], function(){
 	Route::resource('cliente', 'ClienteController', ['except' => ['create', 'edit']]);
 	Route::resource('huesped', 'HuespedController', ['except' => ['create', 'edit']]);
 	Route::resource('temporada', 'TemporadaController', ['except' => ['create', 'edit']]);
+	Route::resource('tipo/habitacion', 'TipoHabitacionController', ['except' => ['create', 'edit']]);
 
 
 });

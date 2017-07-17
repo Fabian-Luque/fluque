@@ -38,6 +38,15 @@ class Propiedad extends Model
 
     }
 
+    public function tipos_habitaciones(){
+
+        return $this->hasMany('App\TipoHabitacion', 'propiedad_id');
+
+
+    }
+
+
+
     public function zonaHoraria(){
 
 
