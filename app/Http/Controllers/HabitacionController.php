@@ -318,7 +318,6 @@ return $habitaciones_tipo;
         $rules = array(
 
             'nombre'              => 'required',
-            /*'disponibilidad_base' => 'required|numeric',*/
             'piso'                => 'required|numeric',
             'propiedad_id'        => 'required|numeric',
             'tipo_habitacion_id'  => 'required|numeric',
@@ -346,11 +345,11 @@ return $habitaciones_tipo;
 
             $propiedad_id          = $request->get('propiedad_id');
             $propiedad             = Propiedad::where('id', $propiedad_id)->first();
-/*            $cantidad_habitaciones = $propiedad->numero_habitaciones;
+            $cantidad_habitaciones = $propiedad->numero_habitaciones;
 
             $habitaciones_ingresadas = $propiedad->habitaciones->count();
 
-            if ($cantidad_habitaciones > $habitaciones_ingresadas) {*/
+            if ($cantidad_habitaciones > $habitaciones_ingresadas) {
 
                 $habitacion                      = new Habitacion();
                 $habitacion->nombre              = $request->get('nombre');
@@ -378,7 +377,7 @@ return $habitaciones_tipo;
 
                 return Response::json($data, 201);
 
-/*            } else {
+            } else {
 
                 $data = [
                     'errors' => true,
@@ -388,7 +387,7 @@ return $habitaciones_tipo;
 
                 return Response::json($data, 400);
 
-            }*/
+            }
 
         }
 
