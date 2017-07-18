@@ -1408,11 +1408,11 @@ class ReservaController extends Controller
                 $entradas++;
             }
 
-            if ($reserva->checkout == $fecha_hoy) {
+            if ($reserva->checkout == $fecha_hoy && $reserva->estado_reserva_id !=1 && $reserva->estado_reserva_id !=2 && $reserva->estado_reserva_id !=6 && $reserva->estado_reserva_id !=7) {
                 if ($reserva->estado_reserva_id == 3) {
                     array_push($salidas_hoy, $reserva);
-                $salidas++;
                 } 
+                $salidas++;
             }
 
             if ($reserva->estado_reserva_id == 3) {
