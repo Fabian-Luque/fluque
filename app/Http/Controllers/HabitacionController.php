@@ -318,7 +318,6 @@ return $habitaciones_tipo;
         $rules = array(
 
             'nombre'              => 'required',
-            'disponibilidad_base' => 'required|numeric',
             'piso'                => 'required|numeric',
             'propiedad_id'        => 'required|numeric',
             'tipo_habitacion_id'  => 'required|numeric',
