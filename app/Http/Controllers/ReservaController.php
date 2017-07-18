@@ -1434,66 +1434,6 @@ class ReservaController extends Controller
 
         })->where('checkin', '<' , $fecha_hoy)->whereBetween('estado_reserva_id', [1,2])->with('habitacion.tipoHabitacion')->with('cliente')->with('estadoReserva')->get();
 
-
-
-/*
-        $entradas = Reserva::whereHas('habitacion', function($query) use($id){
-
-                    $query->where('propiedad_id', $id);
-
-        })->where('checkin', $fecha)->whereBetween('estado_reserva_id', [1,2])->with('habitacion.tipoHabitacion')->with('huespedes')->with('cliente.pais', 'cliente.region')->with('estadoReserva')->get();
-
-
-        $entradas_hoy = Reserva::whereHas('habitacion', function($query) use($id){
-
-                    $query->where('propiedad_id', $id);
-
-        })->where('checkin', $fecha)->whereIn('estado_reserva_id', [1,2,3])->get();
-
-
-
-        $salidas = Reserva::whereHas('habitacion', function($query) use($id){
-
-                    $query->where('propiedad_id', $id);
-
-        })->where('checkout', $fecha)->where('estado_reserva_id', 3)->with('habitacion.tipoHabitacion')->with('huespedes')->with('cliente')->with('estadoReserva')->get();
-
-
-        $salidas_hoy = Reserva::whereHas('habitacion', function($query) use($id){
-
-                    $query->where('propiedad_id', $id);})->where('checkout', $fecha)->whereIn('estado_reserva_id', [3,4,5])->get();
-
-
-
-        $habitaciones_occupadas = Reserva::whereHas('habitacion', function($query) use($id){
-
-                    $query->where('propiedad_id', $id);
-
-        })->where('checkin', '<=', $fecha)->where('checkout', '>', $fecha)->where('estado_reserva_id', 3)->get();
-
-
-
-
-        $reservas_dia = Reserva::whereHas('habitacion', function($query) use($id){
-
-                    $query->where('propiedad_id', $id);
-
-        })->whereBetween('created_at', [$startDate, $endDate])->with('habitacion.tipoHabitacion')->with('huespedes')->with('cliente')->with('estadoReserva')->with('metodoPago')->with('tipoFuente')->get();
-
-        $reservas_no_show = Reserva::whereHas('habitacion', function($query) use($id){
-
-                    $query->where('propiedad_id', $id);
-
-        })->where('checkin', '<' , $fecha_hoy)->whereBetween('estado_reserva_id', [1,2])->with('habitacion.tipoHabitacion')->with('cliente')->with('estadoReserva')->get();*/
-
-
-/*
-        $cantidad_entradas     = count($entradas_hoy);
-        $cantidad_salidas      = count($salidas_hoy); 
-        $cantidad_ocupadas     = count($habitaciones_occupadas); 
-        $cantidad_reservas_dia = count($reservas_dia);
-*/
-
         //PORCENTAJE OCUPACION GRAFICO
         $reservas = Reserva::whereHas('habitacion', function($query) use($id){
 
@@ -1522,53 +1462,10 @@ class ReservaController extends Controller
         $auxInicio->addDay();
         }
 
-
-
-
-/*        $fechaInicio=strtotime($fecha_inicio);
-        $fechaFin=strtotime($fecha_fin);
-        $ocupacion = [];
-        $numero_habitaciones = $propiedad->numero_habitaciones;
-
-
-
-
-        for($i=$fechaInicio; $i<=$fechaFin; $i+=86400){
-            
-            $fecha = date("Y-m-d", $i);
-
-       $reservas = Reserva::whereHas('habitacion', function($query) use($id){
-
-                    $query->where('propiedad_id', $id);
-
-        })->where('checkin','<=' ,$fecha)->where('checkout', '>', $fecha)->where('estado_reserva_id', '!=', 6)->where('estado_reserva_id', '!=', 7)->get();
-
-
-        $porcentaje = count($reservas)*100 / $numero_habitaciones;
-
-        $ocupacion_fecha = [
-
-            
-                'date' =>$fecha,
-                'value' =>round($porcentaje)
-
-        ];
-
-
-        array_push($ocupacion, $ocupacion_fecha);
-
-        unset($ocupacion_fecha);
-
-        }*/
-
-
         $suma_noches = 0;
         foreach ($reservas_dia as $reserva_dia) {
-            
-            $noches = $reserva_dia->noches;
-            $suma_noches += $noches;
-
-
+          $noches    = $reserva_dia->noches;
+          $suma_noches += $noches;
         }
 
         $data = array(
@@ -1582,12 +1479,10 @@ class ReservaController extends Controller
             'cantidad_reservas_dia' => count($reservas_dia),
             'suma_noches'           => $suma_noches,
             'porcentaje_ocupacion'  => $ocupacion,
-            'reservas_dia'          => $reservas_dia,
-            
-            );
+            'reservas_dia'          => $reservas_dia,  
+          );
 
         return $data;
-
     }
 
 
