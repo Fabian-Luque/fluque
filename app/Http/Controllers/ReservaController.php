@@ -545,7 +545,7 @@ class ReservaController extends Controller
             for($i=$fechaInicio; $i<=$fechaFin; $i+=86400){
               $fecha      = date("Y-m-d", $i);
               $habitacion = Habitacion::where('id', $habitacion_id)->whereHas('reservas', function($query) use($fecha){
-                $query->where('checkin','<=' ,$fecha)->where('checkout', '>', $fecha)->where('estado_reserva_id', '!=', 6)->where('estado_reserva_id', '!=', 7);
+                $query->where('checkin','<' ,$fecha)->where('checkout', '>', $fecha)->where('estado_reserva_id', '!=', 6)->where('estado_reserva_id', '!=', 7);
               })->get();
 
               if(count($habitacion) != 0) {
