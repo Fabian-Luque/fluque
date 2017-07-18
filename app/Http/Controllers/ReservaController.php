@@ -1358,49 +1358,69 @@ class ReservaController extends Controller
 
     public function panel(Request $request)
     {
+        if ($request->has('propiedad_id')) {
+            $id = $request->input('propiedad_id');
+            $propiedad    = Propiedad::where('id', $id)->first();
+            if (is_null($propiedad)) {
+                $retorno = array(
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia propiedad_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        if ($request->has('fecha_actual') && $request->has('fecha_inicio') && $request->has('fecha_fin')) {
+            $fecha        = $request->input('fecha_actual');
+            $fecha_inicio = $request->input('fecha_inicio');
+            $fecha_fin    = $request->input('fecha_fin');
+        } else {
+            $retorno = array(
+                'msj'    => "Solicitud incompleta",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+        
+        $fecha_hoy = new Carbon($fecha);
+
         $startDate = Carbon::today()->startOfDay();
-        $endDate = Carbon::today()->endOfDay();
+        $endDate   = Carbon::today()->endOfDay();
 
 
-        $id = $request->input('propiedad_id');
-        $fecha = $request->input('fecha_actual');
-        $fecha_inicio = $request->input('fecha_inicio');
-        $fecha_fin = $request->input('fecha_fin');
-
-        $fecha_hoy = Carbon::today();
-
-
-        $entradas = Reserva::whereHas('habitacion', function($query) use($id){
-
+        $reservas_hoy = Reserva::whereHas('habitacion', function($query) use($id){
                     $query->where('propiedad_id', $id);
+        })->where('checkin', '<=' , $fecha)->where('checkout', '>=', $fecha)->with('habitacion.tipoHabitacion')->with('huespedes')->with('cliente.pais', 'cliente.region')->with('estadoReserva')->get();
 
-        })->where('checkin', $fecha)->whereBetween('estado_reserva_id', [1,2])->with('habitacion.tipoHabitacion')->with('huespedes')->with('cliente.pais', 'cliente.region')->with('estadoReserva')->get();
+        $entradas              = 0;
+        $salidas               = 0;
+        $habitaciones_ocupadas = 0;
+        $entradas_hoy          = [];
+        $salidas_hoy           = [];
+        foreach ($reservas_hoy as $reserva) {
+            if ($reserva->checkin == $fecha_hoy && $reserva->estado_reserva_id !=6 && $reserva->estado_reserva_id !=7) {
+                if ($reserva->estado_reserva_id == 1 || $reserva->estado_reserva_id == 2 ) {
+                    array_push($entradas_hoy, $reserva);
+                } 
+                $entradas++;
+            }
 
-        $entradas_hoy = Reserva::whereHas('habitacion', function($query) use($id){
+            if ($reserva->checkout == $fecha_hoy && $reserva->estado_reserva_id !=1 && $reserva->estado_reserva_id !=2 && $reserva->estado_reserva_id !=6 && $reserva->estado_reserva_id !=7) {
+                if ($reserva->estado_reserva_id == 3) {
+                    array_push($salidas_hoy, $reserva);
+                } 
+                $salidas++;
+            }
 
-                    $query->where('propiedad_id', $id);
-
-        })->where('checkin', $fecha)->whereIn('estado_reserva_id', [1,2,3])->get();
-
-
-        $salidas = Reserva::whereHas('habitacion', function($query) use($id){
-
-                    $query->where('propiedad_id', $id);
-
-        })->where('checkout', $fecha)->where('estado_reserva_id', 3)->with('habitacion.tipoHabitacion')->with('huespedes')->with('cliente')->with('estadoReserva')->get();
-
-        $salidas_hoy = Reserva::whereHas('habitacion', function($query) use($id){
-
-                    $query->where('propiedad_id', $id);})->where('checkout', $fecha)->whereIn('estado_reserva_id', [3,4,5])->get();
-
-
-        $habitaciones_occupadas = Reserva::whereHas('habitacion', function($query) use($id){
-
-                    $query->where('propiedad_id', $id);
-
-        })->where('checkin', '<=', $fecha)->where('checkout', '>', $fecha)->where('estado_reserva_id', 3)->get();
-
-
+            if ($reserva->estado_reserva_id == 3) {
+                if ($reserva->checkout > $fecha_hoy) {
+                $habitaciones_ocupadas++;
+                }
+            }
+        }
 
         $reservas_dia = Reserva::whereHas('habitacion', function($query) use($id){
 
@@ -1414,81 +1434,55 @@ class ReservaController extends Controller
 
         })->where('checkin', '<' , $fecha_hoy)->whereBetween('estado_reserva_id', [1,2])->with('habitacion.tipoHabitacion')->with('cliente')->with('estadoReserva')->get();
 
-
-
-        $cantidad_entradas     = count($entradas_hoy);
-        $cantidad_salidas      = count($salidas_hoy); 
-        $cantidad_ocupadas     = count($habitaciones_occupadas); 
-        $cantidad_reservas_dia = count($reservas_dia);
-
-
-
-
-        $fechaInicio=strtotime($fecha_inicio);
-        $fechaFin=strtotime($fecha_fin);
-        $ocupacion = [];
-
-        $propiedad = Propiedad::where('id', $id)->first();
-        $numero_habitaciones = $propiedad->numero_habitaciones;
-
-
-
-        for($i=$fechaInicio; $i<=$fechaFin; $i+=86400){
-            
-            $fecha = date("Y-m-d", $i);
-
-       $reservas = Reserva::whereHas('habitacion', function($query) use($id){
+        //PORCENTAJE OCUPACION GRAFICO
+        $reservas = Reserva::whereHas('habitacion', function($query) use($id){
 
                     $query->where('propiedad_id', $id);
 
-        })->where('checkin','<=' ,$fecha)->where('checkout', '>', $fecha)->where('estado_reserva_id', '!=', 6)->where('estado_reserva_id', '!=', 7)->get();
+        })->where('checkin','>=' ,$fecha_inicio)->where('checkout', '<=', $fecha_fin)->where('estado_reserva_id', '!=', 6)->where('estado_reserva_id', '!=', 7)->get();
 
+        $numero_habitaciones = $propiedad->numero_habitaciones;
+        $auxInicio           = new Carbon($fecha_inicio);
+        $auxFin              = new Carbon($fecha_fin);
+        $ocupacion           = [];
+        while ($auxInicio <= $auxFin) {
+            $suma = 0;
+            foreach ($reservas as $reserva) {
+                if ($reserva->checkin <= $auxInicio && $reserva->checkout > $auxInicio) {
+                    $suma++;
+                }
+            }
+        $porcentaje               = ($suma*100) / $numero_habitaciones;
+        $fecha_ocupacion['date']  = $auxInicio->format('Y-m-d');
+        $fecha_ocupacion['value'] = round($porcentaje);
 
-        $porcentaje = count($reservas)*100 / $numero_habitaciones;
+        array_push($ocupacion, $fecha_ocupacion);
+        unset($fecha_ocupacion);
 
-        $ocupacion_fecha = [
-
-            
-                'date' =>$fecha,
-                'value' =>round($porcentaje)
-
-        ];
-
-
-        array_push($ocupacion, $ocupacion_fecha);
-
-        unset($ocupacion_fecha);
-
+        $auxInicio->addDay();
         }
-
 
         $suma_noches = 0;
         foreach ($reservas_dia as $reserva_dia) {
-            
-            $noches = $reserva_dia->noches;
-            $suma_noches += $noches;
-
-
+          $noches    = $reserva_dia->noches;
+          $suma_noches += $noches;
         }
 
         $data = array(
 
-            'cantidad_entradas' => $cantidad_entradas,
-            'cantidad_salidas'  => $cantidad_salidas,
-            'habitaciones_ocupadas' => $cantidad_ocupadas,
-            'entradas' => $entradas,
-            'salidas'  => $salidas,
-            'reservas_no_show' => $reservas_no_show,
-            'cantidad_reservas_dia' => $cantidad_reservas_dia,
-            'suma_noches' => $suma_noches,
-            'porcentaje_ocupacion' => $ocupacion,
-            'reservas_dia' => $reservas_dia,
-
-
-            );
+            'cantidad_entradas'     => $entradas,
+            'cantidad_salidas'      => $salidas,
+            'habitaciones_ocupadas' => $habitaciones_ocupadas,
+            'entradas'              => $entradas_hoy,
+            'salidas'               => $salidas_hoy,
+            'reservas_no_show'      => $reservas_no_show,
+            'cantidad_reservas_dia' => count($reservas_dia),
+            'suma_noches'           => $suma_noches,
+            'porcentaje_ocupacion'  => $ocupacion,
+            'reservas_dia'          => $reservas_dia,  
+          );
 
         return $data;
-
     }
 
 

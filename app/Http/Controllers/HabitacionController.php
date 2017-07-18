@@ -353,7 +353,7 @@ return $habitaciones_tipo;
 
                 $habitacion                      = new Habitacion();
                 $habitacion->nombre              = $request->get('nombre');
-               /* $habitacion->disponibilidad_base = $request->get('disponibilidad_base');*/
+                /*$habitacion->disponibilidad_base = $request->get('disponibilidad_base');*/
                 $habitacion->piso                = $request->get('piso');
                 $habitacion->propiedad_id        = $request->get('propiedad_id');
                 $habitacion->tipo_habitacion_id  = $request->get('tipo_habitacion_id');
