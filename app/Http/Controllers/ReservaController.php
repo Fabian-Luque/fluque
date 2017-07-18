@@ -200,44 +200,45 @@ class ReservaController extends Controller
     }
 
 
-  public function eliminarPago($id)
-  {
-    $pago = Pago::findOrFail($id);
-    $reserva_id = $pago->reserva_id;
-    $reserva = Reserva::where('id', $reserva_id)->first();
-    if ($pago->tipo == 'Pago habitacion') {
-      $monto_por_pagar = $reserva->monto_por_pagar + $pago->monto_pago;
-      $reserva->update(array('monto_por_pagar' => $monto_por_pagar));
+    public function eliminarPago($id)
+    {
+        $pago = Pago::findOrFail($id);
+        $reserva_id = $pago->reserva_id;
+        $reserva = Reserva::where('id', $reserva_id)->first();
+        if ($pago->tipo == 'Pago habitacion') {
+            $monto_por_pagar = $reserva->monto_por_pagar + $pago->monto_pago;
+            $reserva->update(array('monto_por_pagar' => $monto_por_pagar));
+        }
+        if ($pago->tipo == 'Pago consumos') {
+            $servicios = $pago->servicios;
+            if (count($servicios) == 0) {
+                $retorno = array(
+                    'errors' => true,
+                    'msj'    => " No autorizado"
+                ;
+                return Response::json($retorno, 400);
+            }
+
+            $monto_por_pagar = $reserva->monto_por_pagar + $pago->monto_pago;
+            $reserva->update(array('monto_por_pagar' => $monto_por_pagar));
+            foreach ($servicios as $servicio) {
+            $servicio->update(array('estado' => 'Por pagar'));
+            }
+        }
+        $pago->delete();
+
+        if ($reserva->estado_reserva_id == 4) {
+           $reserva->update(array('estado_reserva_id' => 5));
+        }
+
+        $retorno = [
+            'errors' => false,
+            'msj'    => 'Pago eliminado satisfactoriamente',
+        ];
+
+        return Response::json($retorno, 202);
+
     }
-    if ($pago->tipo == 'Pago consumos') {
-      $servicios = $pago->servicios;
-      if (count($servicios) == 0) {
-        $retorno = array(
-            'errors' => true,
-            'msj'    => " No autorizado"
-        );
-        return Response::json($retorno, 400);
-      }
-
-      $monto_por_pagar = $reserva->monto_por_pagar + $pago->monto_pago;
-      $reserva->update(array('monto_por_pagar' => $monto_por_pagar));
-      foreach ($servicios as $servicio) {
-        $servicio->update(array('estado' => 'Por pagar'));
-      }
-    }
-    $pago->delete();
-    if ($reserva->estado_reserva_id == 4) {
-       $reserva->update(array('estado_reserva_id' => 5));
-    }
-
-    $retorno = [
-        'errors' => false,
-        'msj'    => 'Pago eliminado satisfactoriamente',
-    ];
-
-    return Response::json($retorno, 202);
-
-  }
 
 
 
@@ -1439,7 +1440,7 @@ class ReservaController extends Controller
 
                     $query->where('propiedad_id', $id);
 
-        })->where('checkin','>=' ,$fecha_inicio)->where('checkout', '<=', $fecha_fin)->where('estado_reserva_id', '!=', 6)->where('estado_reserva_id', '!=', 7)->get();
+        })->where('checkin','>=' ,$fecha_inicio)->where('checkout', '<=', $fecha_fin)->where('estado_reserva_id', '!=', 1)->where('estado_reserva_id', '!=', 2)->where('estado_reserva_id', '!=', 6)->where('estado_reserva_id', '!=', 7)->get();
 
         $numero_habitaciones = $propiedad->numero_habitaciones;
         $auxInicio           = new Carbon($fecha_inicio);
