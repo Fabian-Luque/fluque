@@ -1401,7 +1401,7 @@ class ReservaController extends Controller
         $entradas_hoy          = [];
         $salidas_hoy           = [];
         foreach ($reservas_hoy as $reserva) {
-            if ($reserva->checkin == $fecha_hoy ) {
+            if ($reserva->checkin == $fecha_hoy && $reserva->estado_reserva_id !=6 && $reserva->estado_reserva_id !=7) {
                 if ($reserva->estado_reserva_id == 1 || $reserva->estado_reserva_id == 2 ) {
                     array_push($entradas_hoy, $reserva);
                 } 
