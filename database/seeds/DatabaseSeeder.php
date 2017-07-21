@@ -22,5 +22,6 @@ class DatabaseSeeder extends Seeder
        $this->call(ClasificacionMonedaTableSeeder::class);
        $this->call(EstadoHabitacionTableSeeder::class);
        $this->call(EstadoServicioTableSeeder::class);
+       $this->call(TipoCobroTableSeeder::class);
     }
 }

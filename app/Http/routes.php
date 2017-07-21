@@ -20,6 +20,8 @@ Route::group(['as' => 'api.jarvis.'], function(){
 
   Route::post('registro', 'UserController@store');
   Route::post('/signin', 'ApiAuthController@signin');
+  Route::post('crear/pais', 'PropiedadController@crearPais');
+  Route::post('crear/zona/horaria', 'PropiedadController@crearZona');
 
 	Route::group(['middleware' => ['jwt.auth']], function () {
 
@@ -68,7 +70,6 @@ Route::group(['as' => 'api.jarvis.'], function(){
 	Route::post('eliminar/moneda/propiedad', 'PropiedadController@eliminarMoneda');
 	Route::put('editar/moneda/{id}', 'PropiedadController@editarMoneda');
 	Route::get('reporte', 'PropiedadController@reportesDiario');
-	Route::post('crear/pais', 'PropiedadController@crearPais');
 	Route::get('paises', 'PropiedadController@getPaises');
 	Route::get('regiones', 'PropiedadController@getRegiones');
 	Route::post('calendario/temporada', 'TemporadaController@calendario');
@@ -80,7 +81,6 @@ Route::group(['as' => 'api.jarvis.'], function(){
 	Route::post('editar/temporadas', 'TemporadaController@editarTemporadas');
 	Route::get('reportes', 'PropiedadController@reportes');
 	Route::get('reportes/pago', 'PropiedadController@pagos');
-	Route::post('crear/zona/horaria', 'PropiedadController@crearZona');
 	Route::get('zonas/horarias', 'PropiedadController@getZonasHorarias');
 	Route::put('pago/{id}', 'ReservaController@editarPago');
 	Route::delete('pago/{id}', 'ReservaController@eliminarPago');
@@ -110,9 +110,9 @@ Route::auth();
 
 
 
-Route::get('/', function () {
+/*Route::get('/', function () {
     return view('welcome');
-  });
+  });*/
 
 /*Route::get('users', 'UserController@index');*/
 
@@ -205,8 +205,6 @@ Route::group(['middleware' => 'cors'], function(){
 	Route::post('eliminar/moneda/propiedad', 'PropiedadController@eliminarMoneda');
 
 	Route::put('editar/moneda/{id}', 'PropiedadController@editarMoneda');
-
-	Route::get('reporte', 'PropiedadController@reportesDiario');
 
 	Route::post('crear/pais', 'PropiedadController@crearPais');
 
