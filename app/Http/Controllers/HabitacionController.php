@@ -309,9 +309,7 @@ class HabitacionController extends Controller
         $rules = array(
 
             'nombre'              => '',
-            'precio_base'         => 'numeric',
             /* 'precios'               => 'array',*/
-            'disponibilidad_base' => 'numeric',
             'piso'                => 'numeric',
             'tipo_habitacion_id'  => 'numeric',
             'bano'                => '',
