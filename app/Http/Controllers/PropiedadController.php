@@ -771,8 +771,6 @@ class PropiedadController extends Controller
 
             $moneda      = PropiedadMoneda::findOrFail($id);
             $tipo_moneda = $moneda->tipo_moneda_id;
-            $moneda->update($request->all());
-            $moneda->touch();
 
             $propiedad_id   = $moneda->propiedad_id;
             $tipo_moneda_id = $request->input('tipo_moneda_id');
@@ -787,7 +785,7 @@ class PropiedadController extends Controller
 
                 $query->where('propiedad_id', $propiedad_id);
 
-            })->where('tipo_moneda_id', $tipo_moneda_id)->get();
+            })->where('tipo_moneda_id', $tipo_moneda)->get();
 
             $precios_servicio = PrecioServicio::where('tipo_moneda_id', $tipo_moneda)->whereHas('servicio', function ($query) use ($propiedad_id) {
 
@@ -798,7 +796,7 @@ class PropiedadController extends Controller
             if($tipo_moneda != $tipo_moneda_id){
                 foreach ($precios_habitacion as $precio) {
 
-
+                  $precio->delete();
 /*                $precio->update(array('precio_habitacion' => null, 'tipo_moneda_id' => $tipo_moneda_id));
 
                 $habitacion = $precio->habitacion;
@@ -819,6 +817,8 @@ class PropiedadController extends Controller
                 }
 
             }
+            $moneda->update($request->all());
+            $moneda->touch();
 
             $data = [
 
