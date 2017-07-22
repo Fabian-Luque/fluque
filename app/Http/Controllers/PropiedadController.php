@@ -748,10 +748,8 @@ class PropiedadController extends Controller
     {
 
         $rules = array(
-
             'clasificacion_moneda_id' => 'numeric',
             'tipo_moneda_id'          => 'numeric',
-
         );
 
         $validator = Validator::make($request->all(), $rules);
@@ -769,68 +767,41 @@ class PropiedadController extends Controller
 
         } else {
 
-            $moneda      = PropiedadMoneda::findOrFail($id);
-            $tipo_moneda = $moneda->tipo_moneda_id;
-            $moneda->update($request->all());
-            $moneda->touch();
+            $moneda         = PropiedadMoneda::findOrFail($id);
+            $tipo_moneda    = $moneda->tipo_moneda_id;
 
             $propiedad_id   = $moneda->propiedad_id;
             $tipo_moneda_id = $request->input('tipo_moneda_id');
 
-/*            $precios_habitacion = Precio::where('tipo_moneda_id', $tipo_moneda)->whereHas('habitacion', function ($query) use ($propiedad_id) {
-
-                $query->where('propiedad_id', $propiedad_id);
-
-            })->get();*/
-
             $precios_habitacion = PrecioTemporada::whereHas('temporada', function($query) use($propiedad_id){
-
                 $query->where('propiedad_id', $propiedad_id);
-
-            })->where('tipo_moneda_id', $tipo_moneda_id)->get();
+            })->where('tipo_moneda_id', $tipo_moneda)->get();
 
             $precios_servicio = PrecioServicio::where('tipo_moneda_id', $tipo_moneda)->whereHas('servicio', function ($query) use ($propiedad_id) {
-
                 $query->where('propiedad_id', $propiedad_id);
-
             })->get();
 
             if($tipo_moneda != $tipo_moneda_id){
                 foreach ($precios_habitacion as $precio) {
-
-
-/*                $precio->update(array('precio_habitacion' => null, 'tipo_moneda_id' => $tipo_moneda_id));
-
-                $habitacion = $precio->habitacion;
-
-                $habitacion->update(array('estado_habitacion_id' => 2));*/
-
-
+                  $precio->delete();
                 }
 
                 foreach ($precios_servicio as $precio) {
-
                  $precio->update(array('precio_servicio' => null, 'tipo_moneda_id' => $tipo_moneda_id));
-
                  $servicio = $precio->servicio;
-
                  $servicio->update(array('estado_servicio_id' => 2));
-
                 }
-
             }
+            $moneda->update($request->all());
+            $moneda->touch();
 
             $data = [
-
                 'errors' => false,
                 'msg'    => 'Moneda actualizada satisfactoriamente',
-
             ];
-
             return Response::json($data, 201);
 
         }
-
     }
 
 
