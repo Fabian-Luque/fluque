@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Equipamiento;
 use App\Habitacion;
 use App\Http\Controllers\Controller;
-use App\Precio;
+/*use App\Precio;*/
 use App\PrecioTemporada;
 use App\Propiedad;
 use App\Temporada;
@@ -537,7 +537,7 @@ class HabitacionController extends Controller
 
     }
 
-    public function crearPrecio(Request $request)
+/*    public function crearPrecio(Request $request)
     {
 
         $habitacion_id = $request->input('habitacion_id');
@@ -577,7 +577,7 @@ class HabitacionController extends Controller
 
         return Response::json($data, 201);
 
-    }
+    }*/
 
 
     public function destroy($id)

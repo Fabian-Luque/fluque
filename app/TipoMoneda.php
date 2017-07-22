@@ -8,12 +8,12 @@ class TipoMoneda extends Model
 {
     protected $table = 'tipo_moneda';
 
-    public function precios(){
+/*    public function precios(){
 
 		return $this->hasMany('App\Precio', 'tipo_moneda_id');
 
 
-	}
+	}*/
 
 	public function precioServicios(){
 

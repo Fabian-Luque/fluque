@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\ClasificacionMoneda;
 use App\Http\Controllers\Controller;
-use App\Precio;
+/*use App\Precio;*/
 use App\PrecioServicio;
 use App\Propiedad;
 use App\PropiedadMoneda;
@@ -778,11 +778,17 @@ class PropiedadController extends Controller
             $propiedad_id   = $moneda->propiedad_id;
             $tipo_moneda_id = $request->input('tipo_moneda_id');
 
-            $precios_habitacion = Precio::where('tipo_moneda_id', $tipo_moneda)->whereHas('habitacion', function ($query) use ($propiedad_id) {
+/*            $precios_habitacion = Precio::where('tipo_moneda_id', $tipo_moneda)->whereHas('habitacion', function ($query) use ($propiedad_id) {
 
                 $query->where('propiedad_id', $propiedad_id);
 
-            })->get();
+            })->get();*/
+
+            $precios_habitacion = PrecioTemporada::whereHas('temporada', function($query) use($propiedad_id){
+
+                $query->where('propiedad_id', $propiedad_id);
+
+            })->where('tipo_moneda_id', $tipo_moneda_id)->get();
 
             $precios_servicio = PrecioServicio::where('tipo_moneda_id', $tipo_moneda)->whereHas('servicio', function ($query) use ($propiedad_id) {
 
@@ -794,11 +800,11 @@ class PropiedadController extends Controller
                 foreach ($precios_habitacion as $precio) {
 
 
-                $precio->update(array('precio_habitacion' => null, 'tipo_moneda_id' => $tipo_moneda_id));
+/*                $precio->update(array('precio_habitacion' => null, 'tipo_moneda_id' => $tipo_moneda_id));
 
                 $habitacion = $precio->habitacion;
 
-                $habitacion->update(array('estado_habitacion_id' => 2));
+                $habitacion->update(array('estado_habitacion_id' => 2));*/
 
 
                 }

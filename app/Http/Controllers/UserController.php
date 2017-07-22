@@ -22,9 +22,9 @@ class UserController extends Controller
 
         try {
 
-            $users = User::where('id', $id)->with('propiedad.habitaciones')->with('propiedad.tipoMonedas.clasificacionMonedas')->get();
+            $users = User::where('id', $id)->with('propiedad.tipoMonedas.clasificacionMonedas')->get();
 
-            foreach ($users as $user) {
+/*            foreach ($users as $user) {
 
                 $numero_habitaciones = $user->propiedad->numero_habitaciones;
 
@@ -58,7 +58,7 @@ class UserController extends Controller
                 $user->propiedad->servicios_por_configurar    = count($servicios);
                 $user->propiedad->servicios_creados           = count($servicios_creados);
 
-            }
+            }*/
 
             return $users;
 
