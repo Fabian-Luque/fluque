@@ -216,7 +216,7 @@ class HabitacionController extends Controller
     {
 
         if ($request->has('propiedad_id')) {
-            $habitaciones = Habitacion::where('propiedad_id', $request->input('propiedad_id'))->with('estado')->with('tipoHabitacion')->with('precios.TipoMoneda')->with('equipamiento')->get();
+            $habitaciones = Habitacion::where('propiedad_id', $request->input('propiedad_id'))->with('estado')->with('tipoHabitacion')->with('equipamiento')->get();
             return $habitaciones;
 
         }
