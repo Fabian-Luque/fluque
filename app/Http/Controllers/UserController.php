@@ -24,42 +24,6 @@ class UserController extends Controller
 
             $users = User::where('id', $id)->with('propiedad.tipoMonedas.clasificacionMonedas')->get();
 
-/*            foreach ($users as $user) {
-
-                $numero_habitaciones = $user->propiedad->numero_habitaciones;
-
-                $habitaciones_creadas = count($user->propiedad->habitaciones);
-
-                $id = $user->propiedad->id;
-
-                $tipos = TipoHabitacion::whereHas('habitaciones', function ($query) use ($id) {
-
-                    $query->where('propiedad_id', $id);
-
-                })->get();
-
-                $habitaciones = Habitacion::where('propiedad_id', $id)->whereHas('precios', function ($query) {
-
-                    $query->where('precio_habitacion', null);
-
-                })->get();
-
-                $servicios = Servicio::where('propiedad_id', $id)->whereHas('precios', function ($query) {
-
-                    $query->where('precio_servicio', null);
-
-                })->get();
-
-                $servicios_creados = Servicio::where('propiedad_id', $id)->get();
-
-                $user->tipos_habitaciones                     = count($tipos);
-                $user->propiedad->habitaciones_faltantes      = $numero_habitaciones - $habitaciones_creadas;
-                $user->propiedad->habitaciones_por_configurar = count($habitaciones);
-                $user->propiedad->servicios_por_configurar    = count($servicios);
-                $user->propiedad->servicios_creados           = count($servicios_creados);
-
-            }*/
-
             return $users;
 
         } catch (ModelNotFoundException $e) {

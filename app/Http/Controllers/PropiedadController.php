@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\ClasificacionMoneda;
 use App\Http\Controllers\Controller;
-/*use App\Precio;*/
 use App\PrecioServicio;
 use App\Propiedad;
 use App\PropiedadMoneda;
