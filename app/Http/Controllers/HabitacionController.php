@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Equipamiento;
 use App\Habitacion;
 use App\Http\Controllers\Controller;
-use App\Precio;
 use App\PrecioTemporada;
 use App\Propiedad;
 use App\Temporada;
@@ -216,7 +215,7 @@ class HabitacionController extends Controller
     {
 
         if ($request->has('propiedad_id')) {
-            $habitaciones = Habitacion::where('propiedad_id', $request->input('propiedad_id'))->with('estado')->with('tipoHabitacion')->with('precios.TipoMoneda')->with('equipamiento')->get();
+            $habitaciones = Habitacion::where('propiedad_id', $request->input('propiedad_id'))->with('estado')->with('tipoHabitacion')->with('equipamiento')->get();
             return $habitaciones;
 
         }
@@ -534,48 +533,6 @@ class HabitacionController extends Controller
             return Response::json($data, 400);
 
         }
-
-    }
-
-    public function crearPrecio(Request $request)
-    {
-
-        $habitacion_id = $request->input('habitacion_id');
-
-        $propiedad = Propiedad::whereHas('habitaciones', function ($query) use ($habitacion_id) {
-
-            $query->where('id', $habitacion_id);
-
-        })->first();
-
-        $habitacion = Habitacion::where('id', $habitacion_id)->first();
-
-        $tipo_moneda_id = $request->input('tipo_moneda_id');
-
-        $precio_habitacion = $request->input('precio_habitacion');
-
-        $precio                    = new Precio();
-        $precio->precio_habitacion = $precio_habitacion;
-        $precio->tipo_moneda_id    = $tipo_moneda_id;
-        $precio->habitacion_id     = $habitacion_id;
-        $precio->save();
-
-        if (count($habitacion->precios) == count($propiedad->tipoMonedas)) {
-            $habitacion->update(array('estado_habitacion_id' => 1));
-
-        } else {
-
-            $habitacion->update(array('estado_habitacion_id' => 2));
-
-        }
-
-        $data = [
-            'errors' => false,
-            'msg'    => 'Precio creado satisfactoriamente',
-
-        ];
-
-        return Response::json($data, 201);
 
     }
 

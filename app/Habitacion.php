@@ -51,12 +51,6 @@ class Habitacion extends Model
 
 	}
 
-	public function precios(){
-
-		return $this->hasMany('App\Precio', 'habitacion_id');
-
-
-	}
 
 	public function estado(){
 

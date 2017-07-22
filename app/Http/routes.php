@@ -62,7 +62,6 @@ Route::group(['as' => 'api.jarvis.'], function(){
 		Route::get('disponibilidad', 'HabitacionController@disponibilidad');
 		Route::get('editar/reserva', 'ReservaController@editarReserva');
 		Route::get('tipo-moneda', 'HabitacionController@getTipoMoneda');
-		Route::post('crear/precio/habitacion', 'HabitacionController@crearPrecio');
 		Route::post('crear/precio/servicio', 'ServicioController@crearPrecio');
 		Route::post('cambiar/habitacion', 'ReservaController@cambiarHabitacion');
 		Route::get('clasificacion/moneda', 'PropiedadController@getClasificacionMoneda');
