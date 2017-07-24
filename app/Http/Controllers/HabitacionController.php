@@ -485,8 +485,61 @@ class HabitacionController extends Controller
 
     public function temporada(Request $request)
     {
+        if ($request->has('propiedad_id')) {
+            $propiedad_id = $request->input('propiedad_id');
+            $propiedad    = Propiedad::where('id', $propiedad_id)->first();
+            if (is_null($propiedad)) {
+                $retorno = array(
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia propiedad_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
 
         if ($request->has('precios')) {
+           $precios = $request['precios'];
+
+        } else {
+
+            $retorno = array(
+                'msj'    => "No se envia precios",
+                'errors' => true);
+            return Response::json($retorno, 400);
+
+        }
+
+        foreach ($precios as $precio) {
+            $precio_tipo_habitacion = PrecioTemporada::where('tipo_habitacion_id', $precio['tipo_habitacion_id'])->where('tipo_moneda_id', $precio['tipo_moneda_id'])->where('temporada_id', $precio['temporada_id'])->first();
+
+            if (is_null($precio_tipo_habitacion)) {
+
+                $precio_temporada                     = new PrecioTemporada;
+
+                $precio_temporada->precio             = $precio['precio'];
+                $precio_temporada->tipo_habitacion_id = $precio['tipo_habitacion_id'];
+                $precio_temporada->tipo_moneda_id     = $precio['tipo_moneda_id'];
+                $precio_temporada->temporada_id       = $precio['temporada_id'];
+                $precio_temporada->save();
+
+            } else {
+
+                $precio_temporada = $precio['precio'];
+
+                $precio_tipo_habitacion->update(array('precio' => $precio_temporada));
+
+            }
+
+        }
+
+
+
+
+/*        if ($request->has('precios')) {
 
             foreach ($request['precios'] as $precio) {
 
@@ -532,7 +585,7 @@ class HabitacionController extends Controller
 
             return Response::json($data, 400);
 
-        }
+        }*/
 
     }
 
