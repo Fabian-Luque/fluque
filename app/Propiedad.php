@@ -84,6 +84,13 @@ class Propiedad extends Model
 
     }
 
+    public function tipoCobro(){
+
+        return $this->belongsTo('App\TipoCobro', 'tipo_cobro_id');
+
+
+    }
+
 
     public function calificacionHuespedes(){
 
