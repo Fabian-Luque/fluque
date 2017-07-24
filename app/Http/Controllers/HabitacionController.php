@@ -513,80 +513,54 @@ class HabitacionController extends Controller
 
         }
 
-        foreach ($precios as $precio) {
-            $precio_tipo_habitacion = PrecioTemporada::where('tipo_habitacion_id', $precio['tipo_habitacion_id'])->where('tipo_moneda_id', $precio['tipo_moneda_id'])->where('temporada_id', $precio['temporada_id'])->first();
+        switch ($propiedad->tipo_cobro_id) {
+            case 1:
+                foreach ($precios as $precio) {
+                    $precio_temporada                     = new PrecioTemporada;
 
-            if (is_null($precio_tipo_habitacion)) {
-
-                $precio_temporada                     = new PrecioTemporada;
-
-                $precio_temporada->precio             = $precio['precio'];
-                $precio_temporada->tipo_habitacion_id = $precio['tipo_habitacion_id'];
-                $precio_temporada->tipo_moneda_id     = $precio['tipo_moneda_id'];
-                $precio_temporada->temporada_id       = $precio['temporada_id'];
-                $precio_temporada->save();
-
-            } else {
-
-                $precio_temporada = $precio['precio'];
-
-                $precio_tipo_habitacion->update(array('precio' => $precio_temporada));
-
-            }
-
-        }
-
-
-
-
-/*        if ($request->has('precios')) {
-
-            foreach ($request['precios'] as $precio) {
-
-                $precio_tipo_habitacion = PrecioTemporada::where('tipo_habitacion_id', $precio['tipo_habitacion_id'])->where('tipo_moneda_id', $precio['tipo_moneda_id'])->where('temporada_id', $precio['temporada_id'])->first();
-
-                if (is_null($precio_tipo_habitacion)) {
-
-                    $precio_temporada = new PrecioTemporada;
-
+                    $precio_temporada->cantidad_huespedes = 1;
                     $precio_temporada->precio             = $precio['precio'];
                     $precio_temporada->tipo_habitacion_id = $precio['tipo_habitacion_id'];
                     $precio_temporada->tipo_moneda_id     = $precio['tipo_moneda_id'];
                     $precio_temporada->temporada_id       = $precio['temporada_id'];
                     $precio_temporada->save();
-
-                } else {
-
-                    $precio_temporada = $precio['precio'];
-
-                    $precio_tipo_habitacion->update(array('precio' => $precio_temporada));
-
                 }
+            break;
 
-            }
+            case 2:
+                foreach ($precios as $precio) {
+                    $precio_temporada                     = new PrecioTemporada;
 
-            $data = array(
+                    $precio_temporada->cantidad_huespedes = 1;
+                    $precio_temporada->precio             = $precio['precio'];
+                    $precio_temporada->tipo_habitacion_id = $precio['tipo_habitacion_id'];
+                    $precio_temporada->tipo_moneda_id     = $precio['tipo_moneda_id'];
+                    $precio_temporada->temporada_id       = $precio['temporada_id'];
+                    $precio_temporada->save();
+                }
+            break;
 
-                'msj'    => "Precios guardados",
+            case 3:
+                foreach ($precios as $precio) {
+                    $precio_temporada                     = new PrecioTemporada;
+
+                    $precio_temporada->cantidad_huespedes = $precio['cantidad_huespedes'];
+                    $precio_temporada->precio             = $precio['precio'];
+                    $precio_temporada->tipo_habitacion_id = $precio['tipo_habitacion_id'];
+                    $precio_temporada->tipo_moneda_id     = $precio['tipo_moneda_id'];
+                    $precio_temporada->temporada_id       = $precio['temporada_id'];
+                    $precio_temporada->save();
+                }
+            break;
+        }
+
+            $retorno = array(
+
+                'msj'    => "Precios creados satisfactoriamente",
                 'errors' => false,
-
             );
 
-            return Response::json($data, 201);
-
-        } else {
-
-            $data = array(
-
-                'msj'    => "No se envia precios",
-                'errors' => true,
-
-            );
-
-            return Response::json($data, 400);
-
-        }*/
-
+            return Response::json($retorno, 201);
     }
 
 
