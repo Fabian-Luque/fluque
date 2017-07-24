@@ -148,7 +148,7 @@ class ReservaController extends Controller
 
         }
 
-        return $reserva->with('habitacion.tipoHabitacion')->with('cliente.tipoCliente')->with('huespedes')->with('tipoMoneda')->with('tipoFuente', 'estadoReserva')->get();
+        return $reserva->with('habitacion.tipoHabitacion')->with('cliente.tipoCliente')->with('huespedes.servicios')->with('tipoMoneda')->with('tipoFuente', 'estadoReserva')->get();
 
     }
 
