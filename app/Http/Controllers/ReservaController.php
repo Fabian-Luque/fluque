@@ -829,7 +829,7 @@ class ReservaController extends Controller
       $query->where('propiedad_id', $id);
     })->with('habitacion.tipoHabitacion')->with('pagos')->with('cliente.tipoCliente','cliente.pais','cliente.region')->with('huespedes.servicios')->with('tipoMoneda')->with('tipoFuente', 'metodoPago', 'estadoReserva')->orderBy('id', 'desc')->take(50)->get();
 
-/*    foreach ($reservas as $reserva){
+    foreach ($reservas as $reserva){
       foreach ($reserva['huespedes'] as $huesped) {
         $huesped->consumo_total = 0;
         foreach ($huesped['servicios'] as $servicio) {
@@ -837,7 +837,7 @@ class ReservaController extends Controller
 
         }
       }
-    }*/
+    }
 
     $data = ['reservas' => $reservas,];
 
@@ -1635,7 +1635,7 @@ class ReservaController extends Controller
 
         ->with('habitacion.tipoHabitacion')->with('cliente.pais','cliente.region','tipoMoneda' ,'tipoFuente', 'metodoPago','estadoReserva','pagos.tipoComprobante','pagos.tipoMoneda', 'pagos.metodoPago')->with('huespedes.pais', 'huespedes.region')->get();
 
-/*            foreach ($reservas as $reserva){
+            foreach ($reservas as $reserva){
                 foreach ($reserva['huespedes'] as $huesped) {
                     $huesped->consumo_total = 0;
                     foreach ($huesped['servicios'] as $servicio) {
@@ -1644,7 +1644,7 @@ class ReservaController extends Controller
                     }
                 }
 
-            }*/
+            }
 
 
             $reserva =  $reservas->first();
