@@ -636,8 +636,11 @@ class ClienteController extends Controller
 
 		}else{
 
-
-			return "Checkout no permitido, la reserva aun no se ha cursado";
+			$retorno = array(
+                  'msj'    => "Checkout no permitido, la reserva aún no se ha cursado",
+                  'errors' => true
+            );
+            return Response::json($retorno, 400);
 
 
 		}	
