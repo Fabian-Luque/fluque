@@ -17,6 +17,7 @@ use App\Region;
 use App\Huesped;
 use App\PrecioTemporada;
 use App\ZonaHoraria;
+use App\TipoCobro;
 use Illuminate\Http\Request;
 use Response;
 use Validator;
@@ -847,6 +848,14 @@ class PropiedadController extends Controller
         $zonas = ZonaHoraria::all();
 
         return $zonas;
+
+
+    }
+
+    public function getTipoCobro()
+    {
+        $tipoCobros = TipoCobro::all();
+        return $tipoCobros;
 
 
     }
