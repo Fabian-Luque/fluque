@@ -403,28 +403,35 @@ class TemporadaController extends Controller
             $tipo->tipos_moneda = $tipo_moneda;
         }
 
-        foreach ($tipos_habitacion as $value) {
-            $tp = $value->tipos_moneda;
-            if (count($tp) < count($moneda_propiedad)) {
-                $temporada = (int) $temporada_id;
-                if (count($tp) != 0) {
-                    foreach ($tp as $aux) {
-                        foreach ($moneda_propiedad as $moneda) {
-                            if ($aux->nombre != $moneda->nombre) {
-                                $p = ['id' => $moneda->id, 'nombre' => $moneda->nombre, 'cantidad_decimales' => $moneda->cantidad_decimales, 'precios_temporada' => [['precio' => null, 'temporada_id' => $temporada]]];
-                                $tp->push($p);
+/*        if ($propiedad->tipo_cobro_id != 3) {
+            foreach ($tipos_habitacion as $value) {
+                $tp = $value->tipos_moneda;
+                if (count($tp) < count($moneda_propiedad)) {
+                    $temporada = (int) $temporada_id;
+                    if (count($tp) != 0) {
+                        foreach ($tp as $aux) {
+                            foreach ($moneda_propiedad as $moneda) {
+                                if ($aux->nombre != $moneda->nombre) {
+                                    $p = ['id' => $moneda->id, 'nombre' => $moneda->nombre, 'cantidad_decimales' => $moneda->cantidad_decimales, 'precios_temporada' => [['cantidad_huespedes' => 1, 'precio' => null, 'temporada_id' => $temporada]]];
+                                    $tp->push($p);
+                                }
                             }
                         }
-                    }
-                } else {
-                    foreach ($moneda_propiedad as $moneda) {
-                        $p = ['id' => $moneda->id, 'nombre' => $moneda->nombre, 'cantidad_decimales' => $moneda->cantidad_decimales, 'precios_temporada' => [['precio' => null, 'temporada_id' => $temporada]]];
-                        $tp->push($p);
+                    } else {
+                        foreach ($moneda_propiedad as $moneda) {
+                            $p = ['id' => $moneda->id, 'nombre' => $moneda->nombre, 'cantidad_decimales' => $moneda->cantidad_decimales, 'precios_temporada' => [['cantidad_huespedes' => 1, 'precio' => null, 'temporada_id' => $temporada]]];
+                            $tp->push($p);
 
+                        }
                     }
                 }
             }
-        }
+            
+        } else {
+
+
+        }*/
+
 
         return $tipos_habitacion;
     }

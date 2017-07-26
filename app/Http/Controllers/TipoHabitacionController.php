@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\TipoHabitacion;
+use App\PrecioTemporada;
 use App\Propiedad;
 use Illuminate\Support\Facades\Validator;
 use Response;
@@ -39,8 +40,6 @@ class TipoHabitacionController extends Controller
 
 	public function store(Request $request)
 	{
-
-
 		$rules = array(
 
             'nombre'       => 'required',
@@ -64,6 +63,46 @@ class TipoHabitacionController extends Controller
         } else {
 
             $tipoHabitacion = TipoHabitacion::create($request->all());
+
+            $propiedad_id           = $request->input('propiedad_id');
+            $propiedad              = Propiedad::where('id', $propiedad_id)->first();
+            $moneda_propiedad       = $propiedad->tipoMonedas;
+            $temporadas_propiedad   = $propiedad->temporadas;
+
+
+            if ($propiedad->tipo_cobro_id != 3) {
+                foreach ($temporadas_propiedad as $temporada) {
+                    foreach ($moneda_propiedad as $moneda) {
+                        $precio_temporada                     = new PrecioTemporada;
+
+                        $precio_temporada->cantidad_huespedes = 1;
+                        $precio_temporada->precio             = 0;
+                        $precio_temporada->tipo_habitacion_id = $tipoHabitacion->id;
+                        $precio_temporada->tipo_moneda_id     = $moneda->id;
+                        $precio_temporada->temporada_id       = $temporada->id;;
+                        $precio_temporada->save();
+                    }
+                }
+            }else{
+
+                $capacidad = $tipoHabitacion->capacidad;
+
+                foreach ($temporadas_propiedad as $temporada) {
+                    foreach ($moneda_propiedad as $moneda) {
+
+                        for ($i=1; $i <= $capacidad  ; $i++) {
+                            $precio_temporada                     = new PrecioTemporada;
+
+                            $precio_temporada->cantidad_huespedes = $i;
+                            $precio_temporada->precio             = 0;
+                            $precio_temporada->tipo_habitacion_id = $tipoHabitacion->id;
+                            $precio_temporada->tipo_moneda_id     = $moneda->id;
+                            $precio_temporada->temporada_id       = $temporada->id;;
+                            $precio_temporada->save();   
+                        }
+                    }
+                }
+            }
 
             $data = [
                 'errors' => false,
