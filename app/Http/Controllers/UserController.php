@@ -14,26 +14,30 @@ use Illuminate\Support\Facades\Validator;
 use Response;
 use JWTAuth;
 
-class UserController extends Controller
-{
+class UserController extends Controller {
 
-    public function show($id)
-    {
+    public function show(Request $request) {
+        if ($request->has('id')) {
+            $users = User::where(
+                'id', 
+                $request->id
+            )->with('propiedad.tipoMonedas.clasificacionMonedas')
+            ->get();
 
-        try {
-
-            $users = User::where('id', $id)->with('propiedad.tipoMonedas.clasificacionMonedas')->get();
-
-            return $users;
-
-        } catch (ModelNotFoundException $e) {
-            $data = [
-                'errors' => true,
-                'msg'    => $e->getMessage(),
-            ];
-            return Response::json($data, 404);
+            if (count($users) != 0) {
+                $status = 200;
+                $data = $users;
+            } else {
+                $status = 200;
+                $data['errors'] = false;
+                $data['msg']    = 'Usuario no encontrado';
+            }
+        } else {
+            $status = 400;
+            $data['errors'] = true;
+            $data['msg']    = 'Usuario no encontrado';
         }
-
+        return Response::json($data, $status);
     }
 
     public function store(Request $request)
@@ -94,9 +98,7 @@ class UserController extends Controller
 
     }
 
-    public function update(Request $request, $id)
-    {
-
+    public function update(Request $request, $id) {
         $rules = array(
 
             'name'     => '',
@@ -131,11 +133,33 @@ class UserController extends Controller
                 'msg'    => 'Usuario actualizado satisfactoriamente',
 
             ];
-
             return Response::json($data, 201);
-
         }
-
     }
 
+    public function delete(Request $request) {
+        if ($request->has('id')) {
+            if ($user = User::find($request->id) && $prop = Propiedad::find($request->id)) {
+                $prop->delete();
+                $user->delete();
+
+                $data['errors'] = false;
+                $data['msg']    = 'Usuario eliminado satisfactoriamente';
+            } else {
+                $data['errors'] = true;
+                $data['msg']    = 'Usuario no encontrado';
+            }
+        } elseif ($request->has('id') && $request->has('flag')) {
+            if ($user = User::find($request->id)) {
+                $user->delete();
+            } else {
+                $data['errors'] = true;
+                $data['msg']    = 'Usuario no encontrado'; 
+            }
+        } else {
+            $data['errors'] = true;
+            $data['msg']    = 'Faltan datos requeridos';
+        }
+        return Response::json($data, 201);
+    }
 }
