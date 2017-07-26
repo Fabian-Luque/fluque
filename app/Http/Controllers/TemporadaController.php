@@ -410,7 +410,7 @@ class TemporadaController extends Controller
 
         $data['tipos_habitacion'] = $tipos_habitacion;
         if ($propiedad->tipo_cobro_id != 3) {
-            $cobro_propiedad = 'Precio';
+            $cobro_propiedad = ['Precio'];
             $data['cobro_propiedad'] = $cobro_propiedad;
 
         } else {
