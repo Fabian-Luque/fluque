@@ -464,14 +464,10 @@ class HabitacionController extends Controller
                 } else {
 
                     $data = array(
-
                         'msj'    => "Debe configurar una temporada para la fecha " . $auxFecha,
                         'errors' => true,
-
                     );
-
                     return Response::json($data, 400);
-
                 }
 
                 $auxFecha->addDay();
@@ -481,13 +477,10 @@ class HabitacionController extends Controller
             for ($i=1; $i<=$capacidad ; $i++) {
 
                 foreach ($propiedad_monedas as $moneda) {
-
                     $moneda_id  = $moneda->id;
                     $sumaPrecio = 0;
                     foreach ($auxPrecio as $precio_habitacion) {
-
                         if ($precio_habitacion['tipo_moneda_id'] == $moneda_id && $precio_habitacion['cantidad_huespedes'] == $i) {
-
                             $sumaPrecio += $precio_habitacion['precio'];
                         }
                     }
