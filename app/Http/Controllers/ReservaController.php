@@ -214,8 +214,8 @@ class ReservaController extends Controller
             if (count($servicios) == 0) {
                 $retorno = array(
                     'errors' => true,
-                    'msj'    => " No autorizado"
-                ;
+                    'msj'    => " No autorizado",
+                );
                 return Response::json($retorno, 400);
             }
 
