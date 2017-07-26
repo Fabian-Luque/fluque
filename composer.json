@@ -12,7 +12,10 @@
         "nesbot/carbon": "^1.21",
         "maatwebsite/excel": "~2.1.0",
         "barryvdh/laravel-dompdf": "^0.7.0",
-        "doctrine/dbal": "~2.5"
+        "doctrine/dbal": "~2.5",
+        "dwij/laraadmin": "1.0.40",
+        "laravelcollective/html": "^5.2.0",
+        "illuminate/html": "^5.0"
 
 
     },

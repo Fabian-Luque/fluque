@@ -23,6 +23,14 @@ Route::group(['middleware' => ['auth']],
 			}
 		);
 
+		Route::get(
+			'adminuser', 
+			function() {
+    			return View::make('administrador.user');
+			}
+		);
+	
+
     	// rutas CRUD USUARIO
 		Route::post('crear/user', 'UserController@store');
 		Route::post('obtener/user', 'UserController@show');
@@ -30,6 +38,8 @@ Route::group(['middleware' => ['auth']],
 		Route::post('eliminar/user', 'UserController@delete');
 	}
 );
+
+Route::post('todos/user', 'UserController@index');
 
 Route::group(['as' => 'api.jarvis.'], function(){
 
@@ -279,4 +289,4 @@ Route::get('/', function () {
 });*/
 /* ================== Homepage + Admin Routes ================== */
 
-require __DIR__.'/admin_routes.php';
+
