@@ -116,21 +116,16 @@ class TipoHabitacionController extends Controller
 
     public function editarPrecios(Request $request)
     {
-        $validator = Validator::make($request->all(),
-            [
-                'precio' => 'array',
-            ]
-        );
-
-        if ($validator->fails()) {
-            $data = [
-                'errors' => true,
-                'msg'    => $validator->messages(),
-            ];
-            return Response::json($data, 400);
+        if ($request->has('precios')) {
+            $precios = $request['precios'];
+            
         } else {
-
-            $precios = $request->input('precios');
+            $retorno = array(
+                'msj'    => "No se envia precios",
+                'errors' => true,
+            );
+            return Response::json($retorno, 400);
+        }
 
             foreach ($precios as $precio) {
                 $id                   = $precio['id']; 
@@ -138,13 +133,12 @@ class TipoHabitacionController extends Controller
                 $precio               = PrecioTemporada::findOrFail($id);
                 $precio->update(array('precio' => $precioTipoHabitacion));
             }
-            
-            $data = [
+
+            $retorno = array(
+                'msj'    => "Precio actualizado satisfactoriamente",
                 'errors' => false,
-                'msg'    => 'Precio actualizado satisfactoriamente',
-            ];
-            return Response::json($data, 201);
-        }
+            );
+            return Response::json($retorno, 201);
     }
 
 	public function update(Request $request ,$id)
