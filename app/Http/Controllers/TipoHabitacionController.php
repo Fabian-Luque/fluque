@@ -114,11 +114,11 @@ class TipoHabitacionController extends Controller
 
 	}
 
-    public function editarPrecio(Request $request, $id)
+    public function editarPrecios(Request $request)
     {
         $validator = Validator::make($request->all(),
             [
-                'precio' => 'numeric',
+                'precio' => 'array',
             ]
         );
 
@@ -129,35 +129,22 @@ class TipoHabitacionController extends Controller
             ];
             return Response::json($data, 400);
         } else {
-            try {
-                $precio = PrecioTemporada::findOrFail($id);
-                $precio->update($request->all());
-                $precio->touch();
-            } catch (QueryException $e) {
-                $data = [
-                    'errors' => true,
-                    'msg'    => $e->message(),
-                ];
-                return Response::json($data, 400);
-            } catch (ModelNotFoundException $e) {
-                $data = [
-                    'errors' => true,
-                    'msg'    => $e->getMessage(),
-                ];
-                return Response::json($data, 404);
+
+            $precios = $request->input('precios');
+
+            foreach ($precios as $precio) {
+                $id                   = $precio['id']; 
+                $precioTipoHabitacion = $precio['precio'];
+                $precio               = PrecioTemporada::findOrFail($id);
+                $precio->update(array('precio' => $precioTipoHabitacion));
             }
+            
             $data = [
                 'errors' => false,
                 'msg'    => 'Precio actualizado satisfactoriamente',
             ];
             return Response::json($data, 201);
         }
-
-
-
-
-
-
     }
 
 	public function update(Request $request ,$id)

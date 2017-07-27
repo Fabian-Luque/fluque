@@ -85,7 +85,7 @@ Route::group(['as' => 'api.jarvis.'], function(){
 		Route::delete('pago/{id}', 'ReservaController@eliminarPago');
 		Route::post('reserva/busqueda', 'ReservaController@filtroReservas');
 		Route::get('tipo/cobros', 'PropiedadController@getTipoCobro');
-		Route::put('editar/precio/{id}', 'TipoHabitacionController@editarPrecio');
+		Route::post('editar/precios', 'TipoHabitacionController@editarPrecios');
 
 
 		Route::resource('user', 'UserController', ['except' => ['create', 'edit','store']]);
