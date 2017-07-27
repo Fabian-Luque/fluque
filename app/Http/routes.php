@@ -2,17 +2,6 @@
 
 use Illuminate\Http\Response as HttpResponse;
 
-/*
-|--------------------------------------------------------------------------
-| Application Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register all of the routes for an application.
-| It's a breeze. Simply tell Laravel the URIs it should respond to
-| and give it the controller to call when that URI is requested.
-|
-*/
-
 // rutas dashboard
 Route::group(['middleware' => ['auth']], 
 	function() {
@@ -29,9 +18,10 @@ Route::group(['middleware' => ['auth']],
     			return View::make('administrador.user');
 			}
 		);
-	
 
     	// rutas CRUD USUARIO
+		Route::get('adminuser', 'UserController@index');
+
 		Route::post('crear/user', 'UserController@store');
 		Route::post('obtener/user', 'UserController@show');
 		Route::post('actualizar/user', 'UserController@update');
@@ -39,7 +29,8 @@ Route::group(['middleware' => ['auth']],
 	}
 );
 
-Route::post('todos/user', 'UserController@index');
+
+
 
 Route::group(['as' => 'api.jarvis.'], function(){
 

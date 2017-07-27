@@ -19,7 +19,8 @@ class UserController extends Controller {
 
     public function index(Request $request) {
         $data = User::all();
-        return Response::json($data);
+        //return Response::json($data);
+        return View('administrador.user')->with('users', $data);
     }
 
     public function show(Request $request) {
