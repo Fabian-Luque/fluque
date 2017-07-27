@@ -540,7 +540,7 @@ class PropiedadController extends Controller
 
             foreach ($propiedad as $prop) {
 
-                $prop->tipos_habitaciones = count($tipos);
+                $prop->tipoHabitacion = count($tipos);
 
             }
 

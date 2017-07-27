@@ -38,7 +38,7 @@ class Propiedad extends Model
 
     }
 
-    public function tipos_habitaciones(){
+    public function tiposHabitacion(){
 
         return $this->hasMany('App\TipoHabitacion', 'propiedad_id');
 

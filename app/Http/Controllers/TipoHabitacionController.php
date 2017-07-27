@@ -73,7 +73,7 @@ class TipoHabitacionController extends Controller
             if ($propiedad->tipo_cobro_id != 3) {
                 foreach ($temporadas_propiedad as $temporada) {
                     foreach ($moneda_propiedad as $moneda) {
-                        $precio_temporada                     = new PrecioTemporada;
+                        $precio_temporada                     = new PrecioTemporada();
 
                         $precio_temporada->cantidad_huespedes = 1;
                         $precio_temporada->precio             = 0;
@@ -91,7 +91,7 @@ class TipoHabitacionController extends Controller
                     foreach ($moneda_propiedad as $moneda) {
 
                         for ($i=1; $i <= $capacidad  ; $i++) {
-                            $precio_temporada                     = new PrecioTemporada;
+                            $precio_temporada                     = new PrecioTemporada();
 
                             $precio_temporada->cantidad_huespedes = $i;
                             $precio_temporada->precio             = 0;
@@ -118,7 +118,7 @@ class TipoHabitacionController extends Controller
     {
         if ($request->has('precios')) {
             $precios = $request['precios'];
-            
+
         } else {
             $retorno = array(
                 'msj'    => "No se envia precios",
