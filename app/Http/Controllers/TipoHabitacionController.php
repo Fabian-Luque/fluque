@@ -114,6 +114,52 @@ class TipoHabitacionController extends Controller
 
 	}
 
+    public function editarPrecio(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(),
+            [
+                'precio' => 'numeric',
+            ]
+        );
+
+        if ($validator->fails()) {
+            $data = [
+                'errors' => true,
+                'msg'    => $validator->messages(),
+            ];
+            return Response::json($data, 400);
+        } else {
+            try {
+                $precio = PrecioTemporada::findOrFail($id);
+                $precio->update($request->all());
+                $precio->touch();
+            } catch (QueryException $e) {
+                $data = [
+                    'errors' => true,
+                    'msg'    => $e->message(),
+                ];
+                return Response::json($data, 400);
+            } catch (ModelNotFoundException $e) {
+                $data = [
+                    'errors' => true,
+                    'msg'    => $e->getMessage(),
+                ];
+                return Response::json($data, 404);
+            }
+            $data = [
+                'errors' => false,
+                'msg'    => 'Precio actualizado satisfactoriamente',
+            ];
+            return Response::json($data, 201);
+        }
+
+
+
+
+
+
+    }
+
 	public function update(Request $request ,$id)
 	{
 

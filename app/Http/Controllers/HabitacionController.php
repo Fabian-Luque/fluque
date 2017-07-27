@@ -475,7 +475,6 @@ class HabitacionController extends Controller
             }
 
             for ($i=1; $i<=$capacidad ; $i++) {
-
                 foreach ($propiedad_monedas as $moneda) {
                     $moneda_id  = $moneda->id;
                     $sumaPrecio = 0;
@@ -492,19 +491,22 @@ class HabitacionController extends Controller
                 }
             }
 
-/*            return $precio_promedio_habitacion;
-
+            $tipos_moneda = [];
             foreach ($propiedad_monedas as $moneda) {
-
+                $precios_habitacion = [];
                 foreach ($precio_promedio_habitacion as $precio) {
-
-
-                    
+                    if ($moneda->id == $precio['tipo_moneda_id']) {
+                        array_push($precios_habitacion, $precio);
+                    }
                 }
-            }*/
-
-
-            $habitacion->precios = $precio_promedio_habitacion;
+                $auxMoneda['id'] = $moneda->id;
+                $auxMoneda['nombre'] = $moneda->nombre;
+                $auxMoneda['cantidad_decimales'] = $moneda->cantidad_decimales;
+                $auxMoneda['precios'] = $precios_habitacion;
+                array_push($tipos_moneda, $auxMoneda);
+                $precios_habitacion = [];
+            }
+            $habitacion->precios = $tipos_moneda;
 
             return $habitacion;
 
