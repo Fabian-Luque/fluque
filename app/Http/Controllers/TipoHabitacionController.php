@@ -158,23 +158,58 @@ class TipoHabitacionController extends Controller
             ];
             return Response::json($data, 400);
         } else {
-            try {
-                $tipoHabitacion = TipoHabitacion::findOrFail($id);
-                $tipoHabitacion->update($request->all());
-                $tipoHabitacion->touch();
-            } catch (QueryException $e) {
-                $data = [
-                    'errors' => true,
-                    'msg'    => $e->message(),
-                ];
-                return Response::json($data, 400);
-            } catch (ModelNotFoundException $e) {
-                $data = [
-                    'errors' => true,
-                    'msg'    => $e->getMessage(),
-                ];
-                return Response::json($data, 404);
+
+            $tipo_habitacion           = TipoHabitacion::findOrFail($id);
+            $propiedad                 = Propiedad::where('id', $tipo_habitacion->propiedad_id)->first();
+            $moneda_propiedad          = $propiedad->tipoMonedas;
+            $temporadas                = $propiedad->temporadas;
+
+            $capacidad                 = $request->input('capacidad');
+            $capacidad_tipo_habitacion = $tipo_habitacion->capacidad;
+
+            if ($propiedad->tipo_cobro_id == 3) {
+                if ($capacidad > $capacidad_tipo_habitacion) {
+                    foreach ($moneda_propiedad as $moneda) {
+                        for ($i=$capacidad_tipo_habitacion+1; $i <= $capacidad  ; $i++) {
+                            foreach ($temporadas as $temporada) {
+                                $precio_temporada                     = new PrecioTemporada();
+                                $precio_temporada->cantidad_huespedes = $i;
+                                $precio_temporada->precio             = 0;
+                                $precio_temporada->tipo_habitacion_id = $tipo_habitacion->id;
+                                $precio_temporada->tipo_moneda_id     = $moneda->id;
+                                $precio_temporada->temporada_id       = $temporada->id;
+                                $precio_temporada->save();   
+                            }
+                        }
+                    }
+                } elseif($capacidad < $capacidad_tipo_habitacion) {
+                    
+
+
+
+
+
+
+
+
+
+
+
+                }
+
+
+
+
+
+
+
             }
+
+
+
+            $tipo_habitacion->update($request->all());
+            $tipo_habitacion->touch();
+
             $data = [
                 'errors' => false,
                 'msg'    => 'Tipo Habitacion actualizado satisfactoriamente',
