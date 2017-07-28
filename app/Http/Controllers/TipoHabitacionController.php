@@ -164,8 +164,9 @@ class TipoHabitacionController extends Controller
             $moneda_propiedad          = $propiedad->tipoMonedas;
             $temporadas                = $propiedad->temporadas;
 
-            $capacidad                 = $request->input('capacidad');
-            $capacidad_tipo_habitacion = $tipo_habitacion->capacidad;
+            $capacidad                  = $request->input('capacidad');
+            $capacidad_tipo_habitacion  = $tipo_habitacion->capacidad;
+            $precios                    = $tipo_habitacion->precios;
 
             if ($propiedad->tipo_cobro_id == 3) {
                 if ($capacidad > $capacidad_tipo_habitacion) {
@@ -183,29 +184,19 @@ class TipoHabitacionController extends Controller
                         }
                     }
                 } elseif($capacidad < $capacidad_tipo_habitacion) {
-                    
+                    for ($i=$capacidad+1; $i <= $capacidad_tipo_habitacion  ; $i++) {
+                        foreach ($precios as $precio) {
 
+                            if ($precio->cantidad_huespedes == $i) {
+                                $id                      = $precio->id;
+                                $precio_tipo_habitacion  = PrecioTemporada::findOrFail($id);
+                                $precio_tipo_habitacion->delete();
 
-
-
-
-
-
-
-
-
-
+                            }
+                        }
+                    }
                 }
-
-
-
-
-
-
-
             }
-
-
 
             $tipo_habitacion->update($request->all());
             $tipo_habitacion->touch();
