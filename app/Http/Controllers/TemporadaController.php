@@ -78,7 +78,7 @@ class TemporadaController extends Controller
                             $precio_temporada->precio             = 0;
                             $precio_temporada->tipo_habitacion_id = $tipo->id;
                             $precio_temporada->tipo_moneda_id     = $moneda->id;
-                            $precio_temporada->temporada_id       = $temporada->id;;
+                            $precio_temporada->temporada_id       = $temporada->id;
                             $precio_temporada->save();
                         }
                     }
@@ -95,7 +95,7 @@ class TemporadaController extends Controller
                                 $precio_temporada->precio             = 0;
                                 $precio_temporada->tipo_habitacion_id = $tipo->id;
                                 $precio_temporada->tipo_moneda_id     = $moneda->id;
-                                $precio_temporada->temporada_id       = $temporada->id;;
+                                $precio_temporada->temporada_id       = $temporada->id;
                                 $precio_temporada->save();   
                             }
                         }

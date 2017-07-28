@@ -595,8 +595,68 @@ class PropiedadController extends Controller
         } else {
 
             $propiedad = Propiedad::findOrFail($id);
+
+            $moneda_propiedad       = $propiedad->tipoMonedas;
+            $tipos_habitacion       = $propiedad->tiposHabitacion;
+            $temporadas_propiedad   = $propiedad->temporadas;
+
+            if (count($tipos_habitacion) != 0 && count($temporadas_propiedad) != 0) {
+                if ($request->has('tipo_cobro_id')) {
+
+                    foreach ($tipos_habitacion as $tipo) {
+                        foreach ($tipo['precios'] as $precio) {
+                            $id                      = $precio->id;
+                            $precio_tipo_habitacion  = PrecioTemporada::findOrFail($id);
+                            $precio_tipo_habitacion->delete();
+                        }
+                        
+                    }
+                    
+                    if ($request->input('tipo_cobro_id') != 3) {
+
+                        foreach ($tipos_habitacion as $tipo) {
+                            foreach ($temporadas_propiedad as $temporada) {
+                                foreach ($moneda_propiedad as $moneda) {
+                                    $precio_temporada                     = new PrecioTemporada();
+
+                                    $precio_temporada->cantidad_huespedes = 1;
+                                    $precio_temporada->precio             = 0;
+                                    $precio_temporada->tipo_habitacion_id = $tipo->id;
+                                    $precio_temporada->tipo_moneda_id     = $moneda->id;
+                                    $precio_temporada->temporada_id       = $temporada->id;
+                                    $precio_temporada->save();
+                                }
+                            }
+                        }
+                    }else{
+
+                        foreach ($tipos_habitacion as $tipo) {
+                            $capacidad = $tipo->capacidad;
+                            foreach ($temporadas_propiedad as $temporada) {
+                                foreach ($moneda_propiedad as $moneda) {
+
+                                    for ($i=1; $i <= $capacidad  ; $i++) {
+                                        $precio_temporada                     = new PrecioTemporada();
+
+                                        $precio_temporada->cantidad_huespedes = $i;
+                                        $precio_temporada->precio             = 0;
+                                        $precio_temporada->tipo_habitacion_id = $tipo->id;
+                                        $precio_temporada->tipo_moneda_id     = $moneda->id;
+                                        $precio_temporada->temporada_id       = $temporada->id;
+                                        $precio_temporada->save();   
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+
             $propiedad->update($request->all());
             $propiedad->touch();
+
+
 
             $data = [
 
