@@ -676,26 +676,59 @@ class PropiedadController extends Controller
 
         if ($request->has('propiedad_id') && $request->has('monedas')) {
 
-            $propiedad             = Propiedad::where('id', $request->input('propiedad_id'))->with('habitaciones')->with('servicios')->first();
-            $cantidad_habitaciones = count($propiedad->habitaciones);
-            $cantidad_servicios    = count($propiedad->servicios);
+            $propiedad             = Propiedad::where('id', $request->input('propiedad_id'))->first();
+            $tipos_habitacion      = $propiedad->tiposHabitacion;
+            $servicios             = $propiedad->servicios;
+            $temporadas            = $propiedad->temporadas;
 
             if (!is_null($propiedad)) {
 
                 $monedas = $request->input('monedas');
 
                 foreach ($monedas as $moneda) {
-
                     $clasificacion_moneda = $moneda['clasificacion_moneda_id'];
                     $tipo_moneda          = $moneda['tipo_moneda_id'];
 
                     $propiedad->clasificacionMonedas()->attach($clasificacion_moneda, ['tipo_moneda_id' => $tipo_moneda]);
 
+                    if (count($tipos_habitacion) > 0) {
+                        if ($propiedad->tipo_cobro_id != 3) {
+                            foreach ($tipos_habitacion as $tipo) {
+                                foreach ($temporadas as $temporada) {
+                                    $precio_temporada                     = new PrecioTemporada();
+                                    $precio_temporada->cantidad_huespedes = 1;
+                                    $precio_temporada->precio             = 0;
+                                    $precio_temporada->tipo_habitacion_id = $tipo->id;
+                                    $precio_temporada->tipo_moneda_id     = $tipo_moneda;
+                                    $precio_temporada->temporada_id       = $temporada->id;
+                                    $precio_temporada->save();
+                                }
+                            }
+                            
+                        }else{
 
+                            foreach ($tipos_habitacion as $tipo) {
+                                $capacidad = $tipo->capacidad;
+                                foreach ($temporadas as $temporada) {
+                                    for ($i=1; $i <= $capacidad  ; $i++) {
 
-                    if ($cantidad_servicios > 0) {
+                                        $precio_temporada                     = new PrecioTemporada();
+                                        $precio_temporada->cantidad_huespedes = $i;
+                                        $precio_temporada->precio             = 0;
+                                        $precio_temporada->tipo_habitacion_id = $tipo->id;
+                                        $precio_temporada->tipo_moneda_id     = $tipo_moneda;
+                                        $precio_temporada->temporada_id       = $temporada->id;
+                                        $precio_temporada->save();   
+                                    }
+                                }
+                            }
+                        }
+                            
+                    }
 
-                        foreach ($propiedad->servicios as $servicio) {
+                    if (count($servicios) > 0) {
+
+                        foreach ($servicios as $servicio) {
 
                             $servicio_id = $servicio->id;
 
@@ -750,59 +783,49 @@ class PropiedadController extends Controller
 
     public function eliminarMoneda(Request $request)
     {
-
         if ($request->has('moneda_id')) {
-
-            $moneda_id      = $request->input('moneda_id');
-            $moneda         = PropiedadMoneda::where('id', $moneda_id)->first();
-            $tipo_moneda_id = $moneda->tipo_moneda_id;
-            $propiedad_id   = $moneda->propiedad_id;
-
-
-            $precios_habitacion = PrecioTemporada::whereHas('temporada', function($query) use($propiedad_id){
-
-                $query->where('propiedad_id', $propiedad_id);
-
-            })->where('tipo_moneda_id', $tipo_moneda_id)->get();
-
-            $precios_servicio = PrecioServicio::where('tipo_moneda_id', $tipo_moneda_id)->whereHas('servicio', function ($query) use ($propiedad_id) {
-
-                $query->where('propiedad_id', $propiedad_id);
-
-            })->get();
-
-            foreach ($precios_habitacion as $precio) {
-                
-                $precio->delete();
+            $moneda_id  = $request->input('moneda_id');
+            $moneda     = PropiedadMoneda::where('id', $moneda_id)->first();
+            if (is_null($moneda)) {
+                $retorno  = array(
+                    'msj'    => "Moneda de propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
             }
-
-            foreach ($precios_servicio as $precio) {
-
-                $precio->delete();
-            }
-
-            $moneda->delete();
-
-            $retorno = [
-
-                'errors' => false,
-                'msj'    => 'Moneda eliminada satisfactoriamente',
-
-            ];
-
-            return Response::json($retorno, 202);
 
         } else {
-
             $retorno = array(
-
-                'msj'    => "La solicitud esta incompleta",
-                'errors' => true,
-            );
-
+                'msj'    => "No se envia moneda_id",
+                'errors' => true);
             return Response::json($retorno, 400);
-
         }
+        
+        $tipo_moneda_id = $moneda->tipo_moneda_id;
+        $propiedad_id   = $moneda->propiedad_id;
+
+        $precios_habitacion = PrecioTemporada::whereHas('temporada', function($query) use($propiedad_id){
+            $query->where('propiedad_id', $propiedad_id);
+        })->where('tipo_moneda_id', $tipo_moneda_id)->get();
+
+        foreach ($precios_habitacion as $precio) {
+            $precio->delete();
+        }
+
+        $precios_servicio = PrecioServicio::where('tipo_moneda_id', $tipo_moneda_id)->whereHas('servicio', function ($query) use ($propiedad_id) {
+            $query->where('propiedad_id', $propiedad_id);
+        })->get();
+
+        foreach ($precios_servicio as $precio) {
+            $precio->delete();
+        }
+
+        $moneda->delete();
+
+        $retorno = array(
+            'errors' => false,
+            'msj'    => 'Moneda eliminada satisfactoriamente',
+        );
+        return Response::json($retorno, 202);
 
     }
 
