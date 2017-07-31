@@ -373,7 +373,7 @@ class ReservaController extends Controller
                 }else{
                 $reserva->numero_reserva        = 1;
                 }
-                $reserva->precio_habitacion     = $habitacion_info['precio_habitacion'];
+                /*$reserva->precio_habitacion     = $habitacion_info['precio_habitacion'];*/
                 $reserva->monto_alojamiento     = $habitacion_info['monto_alojamiento'];
                 $reserva->monto_total           = $habitacion_info['monto_alojamiento'];
                 $reserva->monto_consumo         = 0;
