@@ -87,7 +87,7 @@ class HabitacionController extends Controller
                 $fechaFin               = new Carbon($request->input('fecha_fin'));
                 $propiedad_monedas      = $propiedad->tipoMonedas; // monedas propiedad
 
-                $cantidad_dias = $fechaFin->diffInDays($fechaInicio);   // diferencia de dias entre fechas
+                /*$cantidad_dias = $fechaFin->diffInDays($fechaInicio);*/   // diferencia de dias entre fechas
 
                 foreach ($habitaciones_disponibles as $habitacion) {
 
@@ -172,7 +172,7 @@ class HabitacionController extends Controller
                                 }
                             }
 
-                            $precio_promedio = ['cantidad_huespedes' => 1, 'precio' => ($sumaPrecio / $cantidad_dias), 'tipo_moneda_id' => $moneda->id, 'nombre_moneda' => $moneda->nombre, 'cantidad_decimales' => $moneda->cantidad_decimales];
+                            $precio_promedio = ['cantidad_huespedes' => 1, 'precio' => $sumaPrecio, 'tipo_moneda_id' => $moneda->id, 'nombre_moneda' => $moneda->nombre, 'cantidad_decimales' => $moneda->cantidad_decimales];
 
                             array_push($precio_promedio_habitacion, $precio_promedio);
 
@@ -190,7 +190,7 @@ class HabitacionController extends Controller
                                     }
                                 }
 
-                                $precio_promedio = ['cantidad_huespedes' => $i, 'precio' => ($sumaPrecio / $cantidad_dias), 'tipo_moneda_id' => $moneda->id, 'nombre_moneda' => $moneda->nombre, 'cantidad_decimales' => $moneda->cantidad_decimales];
+                                $precio_promedio = ['cantidad_huespedes' => $i, 'precio' => $sumaPrecio, 'tipo_moneda_id' => $moneda->id, 'nombre_moneda' => $moneda->nombre, 'cantidad_decimales' => $moneda->cantidad_decimales];
 
                                 array_push($precio_promedio_habitacion, $precio_promedio);
 
@@ -198,7 +198,7 @@ class HabitacionController extends Controller
                         }
                     }
 
-                    $tipos_moneda = [];
+/*                    $tipos_moneda = [];
                     foreach ($propiedad_monedas as $moneda) {
                         $precios_habitacion = [];
                         foreach ($precio_promedio_habitacion as $precio) {
@@ -212,9 +212,9 @@ class HabitacionController extends Controller
                         $auxMoneda['precios'] = $precios_habitacion;
                         array_push($tipos_moneda, $auxMoneda);
                         $precios_habitacion = [];
-                    }
+                    }*/
 
-                $habitacion->tipos_monedas = $tipos_moneda;
+                $habitacion->precios = $precio_promedio_habitacion;
 
                 }
 
