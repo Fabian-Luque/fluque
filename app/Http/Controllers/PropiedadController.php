@@ -868,7 +868,7 @@ class PropiedadController extends Controller
 
             if($tipo_moneda != $tipo_moneda_id){
                 foreach ($precios_habitacion as $precio) {
-                  $precio->delete();
+                  $precio->update(array('precio' => 0, 'tipo_moneda_id' => $tipo_moneda_id));
                 }
 
                 foreach ($precios_servicio as $precio) {
