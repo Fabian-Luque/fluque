@@ -640,7 +640,7 @@ class ReservaController extends Controller
             if ($propiedad->tipo_cobro_id != 3) {
                 
                 foreach ($precio_promedio_habitacion as $precio) {
-                    if ($precio->tipo_moneda_id == $reserva->tipo_moneda_id) {
+                    if ($precio['tipo_moneda_id'] == $reserva->tipo_moneda_id) {
                         $precio_reserva = $precio->precio;
                     }
                 }
