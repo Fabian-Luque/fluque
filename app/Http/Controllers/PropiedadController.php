@@ -28,7 +28,6 @@ class PropiedadController extends Controller
 
     public function reportes(Request $request){
 
-        /*return Pago::all();*/
 
         $propiedad_id    = $request->input('propiedad_id');
         $propiedad       = Propiedad::where('id', $request->input('propiedad_id'))->first();
@@ -48,26 +47,30 @@ class PropiedadController extends Controller
             $fin             = new Carbon($request->input('fecha_fin'));
 /*            $fechaFin        = $fin->addDay();
             $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $fechaFin, $pais)->tz('UTC');*/
-
-            $fecha_fin = $fin->endOfDay();
+            $fin_fecha = $fin->addDay();
+            $fecha_fin = $fin_fecha->startOfDay();
 
         }else{
 
             /*$fecha_fin    = Carbon::createFromFormat('Y-m-d H:i:s', $inicio, $pais)->tz('UTC')->addDay();*/
             $i         = new Carbon($request->input('fecha_inicio'));
-            $fecha_fin = $i->endOfDay();
+            $fin_fecha = $i->addDay();
+            $fecha_fin = $fin_fecha->startOfDay();
 
         }
 
+
                     
         $pagos = Pago::where('created_at','>=' , $fecha_inicio)->where('created_at', '<' , $fecha_fin)->whereHas('reserva.habitacion', function($query) use($propiedad_id){
-        $query->where('propiedad_id', $propiedad_id);
+                $query->where('propiedad_id', $propiedad_id);
         })->get();
 
 
         $reservas_creadas = Reserva::where('created_at' , '>=', $fecha_inicio)->where('created_at', '<' , $fecha_fin)->whereHas('habitacion', function($query) use($propiedad_id){
         $query->where('propiedad_id', $propiedad_id);
         })->get();
+
+        $reservas_creadas = Reserva::where('created_at' , '>=', $fecha_inicio)->where('created_at', '<' , $fecha_fin)->get();
 
         $auxInicio = $getInicio->format('Y-m-d');
         $auxFin    = $fecha_fin->format('Y-m-d');
