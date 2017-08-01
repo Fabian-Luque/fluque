@@ -54,11 +54,21 @@ class PropiedadController extends Controller
 
         if ($request->has('fecha_fin')) {
             $fin             = new Carbon($request->input('fecha_fin'));
+
             $fechaFin        = $fin->addDay();
+            $fin_fecha       = $fechaFin->startOfDay();
+
             $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $fechaFin, $pais)->tz('UTC');
+                
+ 
+
         } else {
             $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $inicio, $pais)->tz('UTC')->addDay();
         }
+
+        
+
+        return $fecha_fin;
 
         $pagos = Pago::where('created_at','>=' , $fecha_inicio)->where('created_at', '<' , $fecha_fin)
             ->whereHas('reserva.habitacion', function($query) use($propiedad_id){
@@ -70,8 +80,6 @@ class PropiedadController extends Controller
         $reservas_creadas = Reserva::where('created_at' , '>=', $fecha_inicio)->where('created_at', '<' , $fecha_fin)->whereHas('habitacion', function($query) use($propiedad_id){
         $query->where('propiedad_id', $propiedad_id);
         })->get();
-
-        $reservas_creadas = Reserva::where('created_at' , '>=', $fecha_inicio)->where('created_at', '<' , $fecha_fin)->get();
 
         $auxInicio = $getInicio->format('Y-m-d');
         $auxFin    = $fecha_fin->format('Y-m-d');
@@ -97,7 +105,6 @@ class PropiedadController extends Controller
         $ingresos_consumos = [];
 
        foreach ($propiedad->tipoMonedas as $moneda) {
-
           $tipo_moneda_id = $moneda->pivot->tipo_moneda_id;
 
           $pagos_tipo_moneda = $pagos->where('tipo_moneda_id', $tipo_moneda_id);
