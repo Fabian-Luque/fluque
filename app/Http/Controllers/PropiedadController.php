@@ -66,9 +66,6 @@ class PropiedadController extends Controller
             $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $inicio, $pais)->tz('UTC')->addDay();
         }
 
-        
-
-        return $fecha_fin;
 
         $pagos = Pago::where('created_at','>=' , $fecha_inicio)->where('created_at', '<' , $fecha_fin)
             ->whereHas('reserva.habitacion', function($query) use($propiedad_id){
