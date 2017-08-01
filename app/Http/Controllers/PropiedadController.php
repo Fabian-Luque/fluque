@@ -28,28 +28,36 @@ class PropiedadController extends Controller
 
     public function reportes(Request $request){
 
+        /*return Pago::all();*/
+
         $propiedad_id    = $request->input('propiedad_id');
         $propiedad       = Propiedad::where('id', $request->input('propiedad_id'))->first();
 
         $getInicio       = new Carbon($request->input('fecha_inicio'));
-        $inicio          = $getInicio->startOfDay();
-        $zona_horaria    = ZonaHoraria::where('id', $propiedad->zona_horaria_id)->first();
+        $fecha_inicio          = $getInicio->startOfDay();
+       
+
+/*        $zona_horaria    = ZonaHoraria::where('id', $propiedad->zona_horaria_id)->first();
         $pais            = $zona_horaria->nombre;
-        $fecha_inicio    = Carbon::createFromFormat('Y-m-d H:i:s', $inicio, $pais)->tz('UTC');
+        $fecha_inicio    = Carbon::createFromFormat('Y-m-d H:i:s', $inicio, $pais)->tz('UTC');*/
+
 
 
         if ($request->has('fecha_fin')) {
             
             $fin             = new Carbon($request->input('fecha_fin'));
-            $fechaFin        = $fin->addDay();
-            $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $fechaFin, $pais)->tz('UTC');
+/*            $fechaFin        = $fin->addDay();
+            $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $fechaFin, $pais)->tz('UTC');*/
+
+            $fecha_fin = $fin->endOfDay();
 
         }else{
 
-            $fecha_fin    = Carbon::createFromFormat('Y-m-d H:i:s', $inicio, $pais)->tz('UTC')->addDay();
+            /*$fecha_fin    = Carbon::createFromFormat('Y-m-d H:i:s', $inicio, $pais)->tz('UTC')->addDay();*/
+            $i         = new Carbon($request->input('fecha_inicio'));
+            $fecha_fin = $i->endOfDay();
 
         }
-
 
                     
         $pagos = Pago::where('created_at','>=' , $fecha_inicio)->where('created_at', '<' , $fecha_fin)->whereHas('reserva.habitacion', function($query) use($propiedad_id){
@@ -61,7 +69,7 @@ class PropiedadController extends Controller
         $query->where('propiedad_id', $propiedad_id);
         })->get();
 
-        $auxInicio = $inicio->format('Y-m-d');
+        $auxInicio = $getInicio->format('Y-m-d');
         $auxFin    = $fecha_fin->format('Y-m-d');
 
         $reservas = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
