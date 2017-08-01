@@ -28,42 +28,43 @@ class PropiedadController extends Controller
 
     public function reportes(Request $request){
 
-
-        $propiedad_id    = $request->input('propiedad_id');
-        $propiedad       = Propiedad::where('id', $request->input('propiedad_id'))->first();
-
-        $getInicio       = new Carbon($request->input('fecha_inicio'));
-        $fecha_inicio          = $getInicio->startOfDay();
-       
-
-/*        $zona_horaria    = ZonaHoraria::where('id', $propiedad->zona_horaria_id)->first();
-        $pais            = $zona_horaria->nombre;
-        $fecha_inicio    = Carbon::createFromFormat('Y-m-d H:i:s', $inicio, $pais)->tz('UTC');*/
-
-
-
-        if ($request->has('fecha_fin')) {
-            
-            $fin             = new Carbon($request->input('fecha_fin'));
-/*            $fechaFin        = $fin->addDay();
-            $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $fechaFin, $pais)->tz('UTC');*/
-            $fin_fecha = $fin->addDay();
-            $fecha_fin = $fin_fecha->startOfDay();
-
-        }else{
-
-            /*$fecha_fin    = Carbon::createFromFormat('Y-m-d H:i:s', $inicio, $pais)->tz('UTC')->addDay();*/
-            $i         = new Carbon($request->input('fecha_inicio'));
-            $fin_fecha = $i->addDay();
-            $fecha_fin = $fin_fecha->startOfDay();
-
+        if ($request->has('propiedad_id')) {
+            $propiedad_id = $request->input('propiedad_id');
+            $propiedad    = Propiedad::where('id', $propiedad_id)->first();
+            if (is_null($propiedad)) {
+                $retorno = array(
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia propiedad_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+        
+        if ($request->has('fecha_inicio')) {
+            $getInicio       = new Carbon($request->input('fecha_inicio'));
+            $inicio          = $getInicio->startOfDay();
+            $zona_horaria    = ZonaHoraria::where('id', $propiedad->zona_horaria_id)->first();
+            $pais            = $zona_horaria->nombre;
+            $fecha_inicio    = Carbon::createFromFormat('Y-m-d H:i:s', $inicio, $pais)->tz('UTC');
         }
 
+        if ($request->has('fecha_fin')) {
+            $fin             = new Carbon($request->input('fecha_fin'));
+            $fechaFin        = $fin->addDay();
+            $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $fechaFin, $pais)->tz('UTC');
+        } else {
+            $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $inicio, $pais)->tz('UTC')->addDay();
+        }
 
-                    
-        $pagos = Pago::where('created_at','>=' , $fecha_inicio)->where('created_at', '<' , $fecha_fin)->whereHas('reserva.habitacion', function($query) use($propiedad_id){
+        $pagos = Pago::where('created_at','>=' , $fecha_inicio)->where('created_at', '<' , $fecha_fin)
+            ->whereHas('reserva.habitacion', function($query) use($propiedad_id){
                 $query->where('propiedad_id', $propiedad_id);
-        })->get();
+        })->with('tipoComprobante', 'metodoPago', 'tipoMoneda')->with('reserva')->get();
+
 
 
         $reservas_creadas = Reserva::where('created_at' , '>=', $fecha_inicio)->where('created_at', '<' , $fecha_fin)->whereHas('habitacion', function($query) use($propiedad_id){
