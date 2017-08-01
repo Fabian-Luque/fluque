@@ -41,6 +41,7 @@ class PropiedadController extends Controller
             
             $fin             = new Carbon($request->input('fecha_fin'));
             $fechaFin        = $fin->addDay();
+            $fin_fecha       = $fechaFin->startOfDay();
             $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $fechaFin, $pais)->tz('UTC');
 
         }else{
