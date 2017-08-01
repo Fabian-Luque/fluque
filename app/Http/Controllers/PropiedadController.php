@@ -870,7 +870,6 @@ class PropiedadController extends Controller
                 foreach ($precios_habitacion as $precio) {
                   $precio->update(array('precio' => 0, 'tipo_moneda_id' => $tipo_moneda_id));
                 }
-
                 foreach ($precios_servicio as $precio) {
                  $precio->update(array('precio_servicio' => null, 'tipo_moneda_id' => $tipo_moneda_id));
                  $servicio = $precio->servicio;
