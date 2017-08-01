@@ -15,6 +15,9 @@ use App\Reserva;
 use App\Habitacion;
 use App\Servicio;
 use App\PrecioServicio;
+use App\Temporada;
+use App\PrecioTemporada;
+use \Carbon\Carbon;
 
 
 
@@ -462,8 +465,7 @@ class ClienteController extends Controller
 	}
 
 
-
-	public function calificacion(Request $request){
+public function calificacion(Request $request){
 
 
 		$propiedad_id = $request->input('propiedad_id');
@@ -474,6 +476,8 @@ class ClienteController extends Controller
 
 		$propiedad = Propiedad::where('id', $propiedad_id)->first();
 		$reserva = Reserva::where('id', $reserva_id)->first();
+
+		$reserva->tipo_moneda_id;
 		$reserva_checkout = $reserva->checkout;
 		$reserva_checkin = $reserva->checkin;
 		
@@ -529,7 +533,6 @@ class ClienteController extends Controller
 
 
 		}elseif($reserva_checkout < $fecha_hoy){
-
 			if($reserva->monto_por_pagar == 0){
 
 			$reserva->update(array('estado_reserva_id' => 4));
@@ -573,34 +576,55 @@ class ClienteController extends Controller
 
 		}elseif($reserva_checkin < $fecha_hoy && $reserva_checkout > $fecha_hoy){
 
-
 			$habitacion = Habitacion::where('id', $reserva->habitacion_id)->first();
-
 			$fecha_actual = date('Y-m-d', strtotime('now'));
-			$noches = (date('j', strtotime('now')) - date("j",strtotime($reserva->checkin)));
+			
 
-			$precio_habitacion = $reserva->precio_habitacion;
+			$precios                    = $habitacion->tipoHabitacion->precios;
+            $tipo_habitacion_id         = $habitacion->tipo_habitacion_id;
+            $propiedad_monedas          = $propiedad->tipoMonedas; // monedas propiedad
+            $capacidad                  = $habitacion->tipoHabitacion->capacidad;
 
-			$precio_alojamiento = $noches * $precio_habitacion;
+            $precio_promedio_habitacion = [];
+            $auxPrecio                  = [];
+            $auxFecha                   = new Carbon($reserva_checkin);
+            $auxFin                     = new Carbon($fecha_actual);
+            $noches = $auxFin->diffInDays($auxFecha);
 
-			$monto_total = $precio_alojamiento + $reserva->monto_consumo;
+            $suma_precio_habitacion = 0;
+            while ($auxFecha < $auxFin) {
 
-			$total_pagos = 0;
-			foreach ($reserva->pagos as  $pago) {
-				
-				$total_pagos += $pago->monto_pago; 
+                $temporada = Temporada::where('propiedad_id', $propiedad_id)->whereHas('calendarios', function ($query) use ($auxFecha) {
+                    $query->where('fecha', $auxFecha);})->first();
 
-			}
+                $precio_temporada = PrecioTemporada::where('temporada_id', $temporada->id)->where('tipo_habitacion_id', $habitacion->tipo_habitacion_id)->where('tipo_moneda_id', $reserva->tipo_moneda_id)->where('cantidad_huespedes', $reserva->ocupacion)->first();
 
-			$monto_por_pagar = $monto_total - $total_pagos;
+                $suma_precio_habitacion += $precio_temporada->precio;
+
+                $auxFecha->addDay();
+
+            }
+    
+           $monto_alojamiento = $suma_precio_habitacion;
+           $monto_total       = $monto_alojamiento + $reserva->monto_consumo;
+
+           $pagos_realizados  = $reserva->pagos;
+           $monto_pagado      = 0;
+           foreach($pagos_realizados as $pago){
+             $monto_pagado += $pago->monto_pago;
+           }
+
+           $monto_por_pagar = $monto_total - $monto_pagado;
+           $checkout = $auxFin->format('Y-m-d');
+
 
 			if($reserva->monto_por_pagar == 0){
 
-			$reserva->update(array('estado_reserva_id' => 4,'monto_alojamiento' => $precio_alojamiento, 'monto_total' => $monto_total, 'monto_por_pagar' => $monto_por_pagar, 'checkout' => $fecha_actual, 'noches' => $noches));
+           $reserva->update(array('estado_reserva_id'=> 4, 'monto_alojamiento' => $monto_alojamiento , 'monto_total' => $monto_total , 'monto_por_pagar' => $monto_por_pagar , 'checkout' => $checkout, 'noches' => $noches));
 
 			}elseif($reserva->monto_por_pagar > 0){
 
-			$reserva->update(array('estado_reserva_id' => 5,'monto_alojamiento' => $precio_alojamiento, 'monto_total' => $monto_total, 'monto_por_pagar' => $monto_por_pagar, 'checkout' => $fecha_actual, 'noches' => $noches));
+           $reserva->update(array('estado_reserva_id'=> 5, 'monto_alojamiento' => $monto_alojamiento , 'monto_total' => $monto_total , 'monto_por_pagar' => $monto_por_pagar , 'checkout' => $checkout, 'noches' => $noches));
 
 
 			}
@@ -618,35 +642,27 @@ class ClienteController extends Controller
 
 
 			$calificacion_total = 0;
-			foreach ($huesped->calificacionPropiedades as $calificacion) {
-						
-				$num = $calificacion->pivot->calificacion;
+				foreach ($huesped->calificacionPropiedades as $calificacion) {
+							
+					$num = $calificacion->pivot->calificacion;
 
-				$calificacion_total = $calificacion_total + $num;
+					$calificacion_total = $calificacion_total + $num;
 
-				$promedio = $calificacion_total / $numero_calificaciones;
+					$promedio = $calificacion_total / $numero_calificaciones;
 
-				$huesped->update(array('calificacion_promedio' => $promedio));
+					$huesped->update(array('calificacion_promedio' => $promedio));
 
-
+				}
 			}
-		
-		}
-
 
 		}else{
 
-
 			return "Checkout no permitido, la reserva aun no se ha cursado";
-
-
 		}	
-
 
 		return "calificados";
 
 	}
-
 
 
 
