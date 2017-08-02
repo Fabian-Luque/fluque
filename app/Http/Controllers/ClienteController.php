@@ -593,56 +593,43 @@ public function calificacion(Request $request)
        $monto_por_pagar = $monto_total - $monto_pagado;
        $checkout = $auxFin->format('Y-m-d');
 
-
 		if($reserva->monto_por_pagar == 0){
 
-       $reserva->update(array('estado_reserva_id'=> 4, 'monto_alojamiento' => $monto_alojamiento , 'monto_total' => $monto_total , 'monto_por_pagar' => $monto_por_pagar , 'checkout' => $checkout, 'noches' => $noches));
+       		$reserva->update(array('estado_reserva_id'=> 4, 'monto_alojamiento' => $monto_alojamiento , 'monto_total' => $monto_total , 'monto_por_pagar' => $monto_por_pagar , 'checkout' => $checkout, 'noches' => $noches));
 
 		}elseif($reserva->monto_por_pagar > 0){
 
-       $reserva->update(array('estado_reserva_id'=> 5, 'monto_alojamiento' => $monto_alojamiento , 'monto_total' => $monto_total , 'monto_por_pagar' => $monto_por_pagar , 'checkout' => $checkout, 'noches' => $noches));
-
+       		$reserva->update(array('estado_reserva_id'=> 5, 'monto_alojamiento' => $monto_alojamiento , 'monto_total' => $monto_total , 'monto_por_pagar' => $monto_por_pagar , 'checkout' => $checkout, 'noches' => $noches));
 
 		}
-
 
 		foreach ($huespedes as $huesped) {
 
-		$huesped_id = $huesped;
+			$huesped_id = $huesped;
+			$huesped 	= Huesped::where('id', $huesped_id)->first();
 
-		$huesped = Huesped::where('id', $huesped_id)->first();
+			$propiedad->calificacionHuespedes()->attach($huesped->id, ['comentario' => $comentario_huesped, 'calificacion' => $calificacion_huesped]);
+			$numero_calificaciones = $huesped->calificacionPropiedades()->count();
 
-		$propiedad->calificacionHuespedes()->attach($huesped->id, ['comentario' => $comentario_huesped, 'calificacion' => $calificacion_huesped]);
-
-		$numero_calificaciones = $huesped->calificacionPropiedades()->count();
-
-
-		$calificacion_total = 0;
+			$calificacion_total = 0;
 			foreach ($huesped->calificacionPropiedades as $calificacion) {
-						
-				$num = $calificacion->pivot->calificacion;
-
+				$num 				= $calificacion->pivot->calificacion;
 				$calificacion_total = $calificacion_total + $num;
-
-				$promedio = $calificacion_total / $numero_calificaciones;
+				$promedio 			= $calificacion_total / $numero_calificaciones;
 
 				$huesped->update(array('calificacion_promedio' => $promedio));
-
 			}
 		}
-
 
 	}else{
 
 		$retorno = array(
-            'msj'    => "Checkout no permitido, la reserva aún no se ha cursado",
+            'msj'    => "La reserva aún no se ha cursado",
             'errors' => true);
         return Response::json($retorno, 400);
 	}
 
-
 	return "calificados";
-
 }
 
 
