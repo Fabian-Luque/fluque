@@ -478,8 +478,11 @@ public function calificacion(Request $request){
 		$reserva = Reserva::where('id', $reserva_id)->first();
 
 		$reserva->tipo_moneda_id;
-		$reserva_checkout = $reserva->checkout;
-		$reserva_checkin = $reserva->checkin;
+		$checkout = $reserva->checkout;
+		$checkin = $reserva->checkin;
+
+		$reserva_checkout = $checkout->format('Y-m-d');
+		$reserva_checkin = $checkin->format('Y-m-d');
 		
 		/*$reserva_checkout = strtotime($reserva->checkout);*/
 		$fecha_actual = strtotime('now');
