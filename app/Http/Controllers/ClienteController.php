@@ -499,7 +499,7 @@ public function calificacion(Request $request)
         return Response::json($retorno, 400);
    	}
    	
-   	if ($request->has('huespedes') && $request->has('comentario_huesped') && $request->has('calificacion_huesped')) {
+   	if ($request->has('huespedes') && $request->has('calificacion_huesped')) {
 		$huespedes = $request->input('huespedes');
 		$comentario_huesped = $request->input('comentario_huesped');
 		$calificacion_huesped = $request->input('calificacion_huesped');
