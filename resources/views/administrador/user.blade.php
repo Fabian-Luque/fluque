@@ -1,25 +1,54 @@
 @extends('administrador.home_admin')
-@section('container')
-<div class="content">
-    <div class="container-fluid">        
+@include('administrador.requests')
+@section('container1')
+<div id="respuesta" class="content">
+
+    <div class="panel-group">
+        <div class="panel-heading">
+            <div class="card">
+            <div class="btn-group btn-group-xs">
+                <button type="button" id="btn-crear" class="btn btn-success">
+  						<strong>CREAR</strong> 
+                </button>
+                <button type="button" id="btn-buscar" class="btn btn-info">BUSCAR</button>
+                <button type="button" id="btn-editar" class="btn btn-warning">EDITAR</button>
+                <button type="button" id="btn-eliminar" class="btn btn-danger">ELIMINAR</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">  
+    	<div id="cont1" class="navbar-header">    
+        </div>      
         <div class="card">
             <div class="content table-responsive table-full-width">
-    			<table class="table table-hover table-striped">
+    			<table id="tablausuarios" class="table table-hover table-striped">
         			<thead>
             			<th>ID</th>
             			<th>NOMBRE</th>
             			<th>CORREO</th>
             			<th>TELEFONO</th>
+            			<th>ACCIONES</th>
         			</thead>
         			<tbody>
-        				<tr>
-   							@foreach($users as $user) 
-								<td> {{ $user->id }} </td>
-								<td> {{ $user->name }} </td>
-								<td> {{ $user->email }} </td>
-								<td> {{ $user->phone }} </td>
-							@endforeach
-   						</tr>
+        				@if(!empty($users[0]['id']))
+        					@foreach($users as $user)
+        						<tr data-id="{{ $user->id }}" >
+									<td> {{ $user->id }} </td>
+									<td> {{ $user->name }} </td>
+									<td> {{ $user->email }} </td>
+									<td> {{ $user->phone }} </td>
+									<td> 
+										<a href="" id="btn-editar-lista" class="btn btn-info btn-xs">Editar</a>
+										  
+										<a href="" id="btn-eliminar-lista" value="{{ $user->id }}" class="btn btn-danger disable btn-xs">Eliminar</a>	
+									</td>
+									@if(!empty($resp['errors']))
+										<?php echo $resp; ?>
+									@endif
+   								</tr>
+   							@endforeach
+						@endif
         			</tbody>
     			</table>
 			</div>
@@ -27,3 +56,8 @@
     </div>
 </div>
 @endsection
+
+
+
+
+

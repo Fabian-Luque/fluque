@@ -1,42 +1,30 @@
 @extends('administrador.default')
-
 @section('content')
 <div class="wrapper">
-    <div class="sidebar" data-color="purple" data-image="assets/img/sidebar-5.jpg">
-
+   <div class="sidebar" data-color="green" data-image="/assets/img/mujer.jpg">
         <div class="sidebar-wrapper">
             <div class="logo">
                 <a href="https://holajarvis.com" class="simple-text">
-                    Jarvis Admin
+                    <img src="https://d3h2zczi4ovqqi.cloudfront.net/wp-content/uploads/2017/05/140.png">
                 </a>
             </div>
-
             <ul class="nav">
-            <!--
-                <li class="active">
-                    <a href="dashboard.html">
-                        <i class="pe-7s-graph"></i>
-                        <p>Dashboard</p>
-                    </a>
-                </li>
-            -->
-                <li>
-                    <a href="{{ url('/adminuser') }}">
+                <li class="dropdown">
+                    <a href="{{ url('/dash/adminuser') }}">
                         <i class="pe-7s-user"></i>
                         <p>Usuarios</p>
                     </a>
-                </li>
+                </li> 
                 <li>
-                    <a href="table.html">
+                    <a href="{{ url('/dash/adminprop') }}">
                         <i class="pe-7s-note2"></i>
-                        <p>Table List</p>
+                        <p>Propiedades</p>
                     </a>
                 </li>
-            
             </ul>
+
         </div>
     </div>
-
     <div class="main-panel">
         <nav class="navbar navbar-default navbar-fixed">
             <div class="container-fluid">
@@ -44,14 +32,22 @@
                     
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navigation-example-2">
 
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar">hola1</span>
-                        <span class="icon-bar">hola2</span>
-                        <span class="icon-bar">hola3</span>
+                        <span class="sr-only"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                 
                     </button>
                 </div>
-
-                <div class="collapse navbar-collapse">
+                <div class="collapse navbar-collapse" >
+                    <ul class="nav navbar-nav navbar-left">       
+                        <li>
+                            <p class="navbar-brand">
+                                Bienvenido!
+                                {{ Auth::user()->name }} 
+                            </p>
+                        </li>
+                    </ul>
                     <ul class="nav navbar-nav navbar-right">             
                         <li>
                             <a href="{{ url('/logout') }}">
@@ -62,7 +58,9 @@
                 </div>
             </div>
         </nav>
-        @yield('container')
+        @yield('container1')
+        @yield('registrar')
+        @yield('scripts')
         <footer class="footer">
             <div class="container-fluid">
                 <nav class="pull-left">

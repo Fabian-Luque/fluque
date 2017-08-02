@@ -3,7 +3,7 @@
 use Illuminate\Http\Response as HttpResponse;
 
 // rutas dashboard
-Route::group(['middleware' => ['auth']], 
+Route::group(['prefix' => 'dash', 'middleware' => ['auth']], 
 	function() {
     	Route::get(
 			'adminhome', 
@@ -13,23 +13,46 @@ Route::group(['middleware' => ['auth']],
 		);
 
 		Route::get(
+			'adminprop', 
+			function() {
+    			return View::make('administrador.prop');
+			}
+		);
+
+		Route::get(
+			'adminreguser', 
+			function() {
+    			return View::make('administrador.reguser');
+			}
+		);
+		Route::get('adminreguser', 'PropiedadController@getViewTipoPropiedad');
+
+
+		Route::get(
 			'adminuser', 
 			function() {
     			return View::make('administrador.user');
 			}
-		);
-
-    	// rutas CRUD USUARIO
-		Route::get('adminuser', 'UserController@index');
+		);		
+		Route::get('adminuser', 'UserController@show');
 
 		Route::post('crear/user', 'UserController@store');
-		Route::post('obtener/user', 'UserController@show');
 		Route::post('actualizar/user', 'UserController@update');
-		Route::post('eliminar/user', 'UserController@delete');
+		
+		
 	}
 );
 
 
+
+Route::post('obtener/user', 'UserController@show');
+Route::post('eliminar/user', 'UserController@delete');
+Route::post('prueba/user', 'UserController@prueba');
+
+//Route::get('eliminar/user/{id}', 'UserController@delete');
+
+
+//Route::post('obtener/user', 'UserController@show');
 
 
 Route::group(['as' => 'api.jarvis.'], function(){

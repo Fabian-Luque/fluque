@@ -1,3 +1,9 @@
+@extends('administrador.home_admin')
+@include('administrador.requests')
+
+@section('registrar')
+    <div class="container-fluid">
+<div class="card">
         <form action="registrar" method="post">
       <input type="hidden" name="_token" value="<?php echo csrf_token(); ?>">    
           <div class="form-group has-feedback">
@@ -35,7 +41,15 @@
 
             <div class="form-group has-feedback">
                 <label>Tipo propiedad</label>
-            <input type="text" class="form-control" name="tipo" >
+                          
+            <select type="text" class="form-control" name="tipo">
+              @if(!empty($tprops[0]['id']))
+                @foreach($tprops as $tprop)
+                  <option>{{ $tprop->nombre }}</option>
+                @endforeach
+              @endif
+            </select>
+
             <span class="glyphicon glyphicon-lock form-control-feedback"></span>
           </div>
 
@@ -63,3 +77,6 @@
             </div><!-- /.col -->
           </div>
         </form>
+        </div>
+        </div>
+@endsection

@@ -13,17 +13,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Response;
 use JWTAuth;
-use Collective\Html\Eloquent\FormAccessible;
+
 
 class UserController extends Controller {
 
-    public function index(Request $request) {
-        $data = User::all();
-        //return Response::json($data);
-        return View('administrador.user')->with('users', $data);
-    }
-
-    public function show(Request $request) {
+    public function show(Request $request) {  
         if ($request->has('id')) {
             $users = User::where(
                 'id', 
@@ -39,12 +33,12 @@ class UserController extends Controller {
                 $data['errors'] = false;
                 $data['msg']    = 'Usuario no encontrado';
             }
+            return Response::json($data, $status);
         } else {
-            $status = 400;
-            $data['errors'] = true;
-            $data['msg']    = 'Usuario no encontrado';
+            $status = 200;
+            $data = User::all();
+            return View('administrador.user')->with('users', $data);
         }
-        return Response::json($data, $status);
     }
 
     public function store(Request $request) {
@@ -92,6 +86,8 @@ class UserController extends Controller {
         }
     }
 
+
+
     public function update(Request $request, $id) {
         $rules = array(
             'name'     => '',
@@ -114,36 +110,38 @@ class UserController extends Controller {
             $user->touch();
 
             $data = [
-                'errors' => false,
+                'errors1' => false,
                 'msg'    => 'Usuario actualizado satisfactoriamente',
             ];
             return Response::json($data, 201);
         }
     }
 
-    public function delete(Request $request) {
-        if ($request->has('id')) {
-            if ($user = User::find($request->id) && $prop = Propiedad::find($request->id)) {
-                $prop->delete();
-                $user->delete();
+    public function prueba(Request $request) {
+            $data = [
+                'errors' => $request->id,
+                'msg'    => 'benjaaaaaaaaaaaaa!!!!!!',
+            ];
+        return Response::json($data);
+    }
 
-                $data['errors'] = false;
-                $data['msg']    = 'Usuario eliminado satisfactoriamente';
-            } else {
-                $data['errors'] = true;
-                $data['msg']    = 'Usuario no encontrado';
-            }
-        } elseif ($request->has('id') && $request->has('flag')) {
-            if ($user = User::find($request->id)) {
-                $user->delete();
-            } else {
-                $data['errors'] = true;
-                $data['msg']    = 'Usuario no encontrado'; 
-            }
+    public function delete(Request $request) {
+        dd($request->id);
+        if ($request->has('id')) {
+        if ($user = User::find($id)) {
+            $user->delete();
+
+            $data['errors'] = false;
+            $data['msg']    = 'Usuario eliminado satisfactoriamente';
         } else {
             $data['errors'] = true;
-            $data['msg']    = 'Faltan datos requeridos';
+            $data['msg']    = 'Usuario no encontrado';
         }
-        return Response::json($data, 201);
+    } else {
+        $data['errors'] = true;
+        $data['msg']    = 'datos requeridos';
+    }
+        return Response::json($data, 200);
+    
     }
 }
