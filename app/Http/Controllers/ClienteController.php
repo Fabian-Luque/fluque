@@ -17,6 +17,7 @@ use App\Servicio;
 use App\PrecioServicio;
 use App\Temporada;
 use App\PrecioTemporada;
+use App\ZonaHoraria;
 use \Carbon\Carbon;
 
 
@@ -465,101 +466,158 @@ class ClienteController extends Controller
 	}
 
 
-public function calificacion(Request $request){
-
-
-		$propiedad_id = $request->input('propiedad_id');
-		$reserva_id = $request->input('reserva_id');
+public function calificacion(Request $request)
+{
+    if ($request->has('propiedad_id')) {
+        $propiedad_id = $request->input('propiedad_id');
+        $propiedad    = Propiedad::where('id', $propiedad_id)->first();
+        if (is_null($propiedad)) {
+            $retorno = array(
+                'msj'    => "Propiedad no encontrada",
+                'errors' => true);
+            return Response::json($retorno, 404);
+        }
+    } else {
+        $retorno = array(
+            'msj'    => "No se envia propiedad_id",
+            'errors' => true);
+        return Response::json($retorno, 400);
+    }
+   	if ($request->has('reserva_id')) {
+   		$reserva_id = $request->input('reserva_id');
+   		$reserva    = Reserva::where('id', $reserva_id)->first();
+   		if (is_null($reserva)) {
+   			$retorno = array(
+                'msj'    => "Propiedad no encontrada",
+                'errors' => true);
+            return Response::json($retorno, 404);
+   		}
+   	} else {
+   		$retorno = array(
+            'msj'    => "No se envia reserva_id",
+            'errors' => true);
+        return Response::json($retorno, 400);
+   	}
+   	
+   	if ($request->has('huespedes') && $request->has('comentario_huesped') && $request->has('calificacion_huesped')) {
 		$huespedes = $request->input('huespedes');
 		$comentario_huesped = $request->input('comentario_huesped');
 		$calificacion_huesped = $request->input('calificacion_huesped');
+   	} else {
+   		$retorno = array(
+            'msj'    => "La solicitud esta incompleta",
+            'errors' => true);
+        return Response::json($retorno, 400);       		
+   	}
 
-		$propiedad = Propiedad::where('id', $propiedad_id)->first();
-		$reserva = Reserva::where('id', $reserva_id)->first();
+   	$zona_horaria    = ZonaHoraria::where('id', $propiedad->zona_horaria_id)->first();
+    $pais            = $zona_horaria->nombre;
+	$actual    		 = Carbon::now();
+	$hoy       		 = $actual->tz($pais)->startOfDay();
+	$fecha_hoy 		 = $hoy->format('Y-m-d');
 
-		$reserva->tipo_moneda_id;
-		$checkout = $reserva->checkout;
-		$checkin = $reserva->checkin;
+	$checkout 		 = new Carbon($reserva->checkout);
+	$checkin  		 = new Carbon($reserva->checkin);
 
-		$reserva_checkout = $checkout->format('Y-m-d');
-		$reserva_checkin = $checkin->format('Y-m-d');
+	$fecha_checkout = $checkout->format('Y-m-d');
+	$fecha_checkin  = $checkin->format('Y-m-d');
+
+	
+
+	if($fecha_checkout == $fecha_hoy || $fecha_checkout < $fecha_hoy){
+
+		if($reserva->monto_por_pagar == 0){
+			$reserva->update(array('estado_reserva_id' => 4));
+		}elseif($reserva->monto_por_pagar > 0){
+			$reserva->update(array('estado_reserva_id' => 5));
+		}
 		
-		/*$reserva_checkout = strtotime($reserva->checkout);*/
-		$fecha_actual = strtotime('now');
+		foreach ($huespedes as $huesped) {
 
-		$fecha_hoy = date("Y-m-d", $fecha_actual);
-
-
-		if($reserva_checkout == $fecha_hoy){
-
-			if($reserva->monto_por_pagar == 0){
-
-			$reserva->update(array('estado_reserva_id' => 4));
-
-			}elseif($reserva->monto_por_pagar > 0){
-
-			$reserva->update(array('estado_reserva_id' => 5));
-
-
-			}
-			
-
-
-			foreach ($huespedes as $huesped) {
-
-				
-				$huesped_id = $huesped;
-
-				$huesped = Huesped::where('id', $huesped_id)->first();
-
-				$propiedad->calificacionHuespedes()->attach($huesped->id, ['comentario' => $comentario_huesped, 'calificacion' => $calificacion_huesped]);
-
-				$numero_calificaciones = $huesped->calificacionPropiedades()->count();
-
-
-				$calificacion_total = 0;
-				foreach ($huesped->calificacionPropiedades as $calificacion) {
-							
-					$num = $calificacion->pivot->calificacion;
-
-					$calificacion_total = $calificacion_total + $num;
-
-					$promedio = $calificacion_total / $numero_calificaciones;
-
-					$huesped->update(array('calificacion_promedio' => $promedio));
-
-
-				}
-			
-			}
-
-
-
-		}elseif($reserva_checkout < $fecha_hoy){
-			if($reserva->monto_por_pagar == 0){
-
-			$reserva->update(array('estado_reserva_id' => 4));
-
-			}elseif($reserva->monto_por_pagar > 0){
-
-			$reserva->update(array('estado_reserva_id' => 5));
-
-
-			}
-
-			foreach ($huespedes as $huesped) {
-
-			
 			$huesped_id = $huesped;
-
-			$huesped = Huesped::where('id', $huesped_id)->first();
+			$huesped 	= Huesped::where('id', $huesped_id)->first();
 
 			$propiedad->calificacionHuespedes()->attach($huesped->id, ['comentario' => $comentario_huesped, 'calificacion' => $calificacion_huesped]);
-
 			$numero_calificaciones = $huesped->calificacionPropiedades()->count();
 
-
 			$calificacion_total = 0;
+			foreach ($huesped->calificacionPropiedades as $calificacion) {
+				$num 				= $calificacion->pivot->calificacion;
+				$calificacion_total = $calificacion_total + $num;
+				$promedio 			= $calificacion_total / $numero_calificaciones;
+
+				$huesped->update(array('calificacion_promedio' => $promedio));
+			}
+		}
+
+	}elseif($fecha_checkin < $fecha_hoy && $fecha_checkout > $fecha_hoy){
+
+		$habitacion 				= Habitacion::where('id', $reserva->habitacion_id)->first();
+		$precios                    = $habitacion->tipoHabitacion->precios;
+        $tipo_habitacion_id         = $habitacion->tipo_habitacion_id;
+        $propiedad_monedas          = $propiedad->tipoMonedas; // monedas propiedad
+        $capacidad                  = $habitacion->tipoHabitacion->capacidad;
+
+        $auxFecha                   = new Carbon($fecha_checkin);
+        $auxFin                     = new Carbon($fecha_hoy);
+        $noches 					= $auxFin->diffInDays($auxFecha);
+
+        $suma_precio_habitacion = 0;
+        while ($auxFecha < $auxFin) {
+
+          	$temporada = Temporada::where('propiedad_id', $propiedad_id)->whereHas('calendarios', function ($query) use ($auxFecha) {
+                $query->where('fecha', $auxFecha);})->first();
+
+          	if ($propiedad->tipo_cobro_id != 3) {
+
+            	$precio_temporada = PrecioTemporada::where('temporada_id', $temporada->id)->where('tipo_habitacion_id', $habitacion->tipo_habitacion_id)->where('tipo_moneda_id', $reserva->tipo_moneda_id)->where('cantidad_huespedes', 1)->first();
+
+          	} else {
+          		
+          		$precio_temporada = PrecioTemporada::where('temporada_id', $temporada->id)->where('tipo_habitacion_id', $habitacion->tipo_habitacion_id)->where('tipo_moneda_id', $reserva->tipo_moneda_id)->where('cantidad_huespedes', $reserva->ocupacion)->first();
+          	}
+
+            $suma_precio_habitacion += $precio_temporada->precio;
+            $auxFecha->addDay();
+        }
+
+       $monto_alojamiento = $suma_precio_habitacion;
+       $monto_total       = $monto_alojamiento + $reserva->monto_consumo;
+
+       $pagos_realizados  = $reserva->pagos;
+       $monto_pagado      = 0;
+       foreach($pagos_realizados as $pago){
+         $monto_pagado += $pago->monto_pago;
+       }
+
+       $monto_por_pagar = $monto_total - $monto_pagado;
+       $checkout = $auxFin->format('Y-m-d');
+
+
+		if($reserva->monto_por_pagar == 0){
+
+       $reserva->update(array('estado_reserva_id'=> 4, 'monto_alojamiento' => $monto_alojamiento , 'monto_total' => $monto_total , 'monto_por_pagar' => $monto_por_pagar , 'checkout' => $checkout, 'noches' => $noches));
+
+		}elseif($reserva->monto_por_pagar > 0){
+
+       $reserva->update(array('estado_reserva_id'=> 5, 'monto_alojamiento' => $monto_alojamiento , 'monto_total' => $monto_total , 'monto_por_pagar' => $monto_por_pagar , 'checkout' => $checkout, 'noches' => $noches));
+
+
+		}
+
+
+		foreach ($huespedes as $huesped) {
+
+		$huesped_id = $huesped;
+
+		$huesped = Huesped::where('id', $huesped_id)->first();
+
+		$propiedad->calificacionHuespedes()->attach($huesped->id, ['comentario' => $comentario_huesped, 'calificacion' => $calificacion_huesped]);
+
+		$numero_calificaciones = $huesped->calificacionPropiedades()->count();
+
+
+		$calificacion_total = 0;
 			foreach ($huesped->calificacionPropiedades as $calificacion) {
 						
 				$num = $calificacion->pivot->calificacion;
@@ -570,110 +628,22 @@ public function calificacion(Request $request){
 
 				$huesped->update(array('calificacion_promedio' => $promedio));
 
-
 			}
-		
 		}
 
 
+	}else{
 
-		}elseif($reserva_checkin < $fecha_hoy && $reserva_checkout > $fecha_hoy){
-
-			$habitacion = Habitacion::where('id', $reserva->habitacion_id)->first();
-			$fecha_actual = date('Y-m-d', strtotime('now'));
-			
-
-			$precios                    = $habitacion->tipoHabitacion->precios;
-            $tipo_habitacion_id         = $habitacion->tipo_habitacion_id;
-            $propiedad_monedas          = $propiedad->tipoMonedas; // monedas propiedad
-            $capacidad                  = $habitacion->tipoHabitacion->capacidad;
-
-            $precio_promedio_habitacion = [];
-            $auxPrecio                  = [];
-            $auxFecha                   = new Carbon($reserva_checkin);
-            $auxFin                     = new Carbon($fecha_actual);
-            $noches = $auxFin->diffInDays($auxFecha);
-
-            $suma_precio_habitacion = 0;
-            while ($auxFecha < $auxFin) {
-
-                $temporada = Temporada::where('propiedad_id', $propiedad_id)->whereHas('calendarios', function ($query) use ($auxFecha) {
-                    $query->where('fecha', $auxFecha);})->first();
-
-                $precio_temporada = PrecioTemporada::where('temporada_id', $temporada->id)->where('tipo_habitacion_id', $habitacion->tipo_habitacion_id)->where('tipo_moneda_id', $reserva->tipo_moneda_id)->where('cantidad_huespedes', $reserva->ocupacion)->first();
-
-                $suma_precio_habitacion += $precio_temporada->precio;
-
-                $auxFecha->addDay();
-
-            }
-    
-           $monto_alojamiento = $suma_precio_habitacion;
-           $monto_total       = $monto_alojamiento + $reserva->monto_consumo;
-
-           $pagos_realizados  = $reserva->pagos;
-           $monto_pagado      = 0;
-           foreach($pagos_realizados as $pago){
-             $monto_pagado += $pago->monto_pago;
-           }
-
-           $monto_por_pagar = $monto_total - $monto_pagado;
-           $checkout = $auxFin->format('Y-m-d');
-
-
-			if($reserva->monto_por_pagar == 0){
-
-           $reserva->update(array('estado_reserva_id'=> 4, 'monto_alojamiento' => $monto_alojamiento , 'monto_total' => $monto_total , 'monto_por_pagar' => $monto_por_pagar , 'checkout' => $checkout, 'noches' => $noches));
-
-			}elseif($reserva->monto_por_pagar > 0){
-
-           $reserva->update(array('estado_reserva_id'=> 5, 'monto_alojamiento' => $monto_alojamiento , 'monto_total' => $monto_total , 'monto_por_pagar' => $monto_por_pagar , 'checkout' => $checkout, 'noches' => $noches));
-
-
-			}
-
-
-			foreach ($huespedes as $huesped) {
-
-			$huesped_id = $huesped;
-
-			$huesped = Huesped::where('id', $huesped_id)->first();
-
-			$propiedad->calificacionHuespedes()->attach($huesped->id, ['comentario' => $comentario_huesped, 'calificacion' => $calificacion_huesped]);
-
-			$numero_calificaciones = $huesped->calificacionPropiedades()->count();
-
-
-			$calificacion_total = 0;
-				foreach ($huesped->calificacionPropiedades as $calificacion) {
-							
-					$num = $calificacion->pivot->calificacion;
-
-					$calificacion_total = $calificacion_total + $num;
-
-					$promedio = $calificacion_total / $numero_calificaciones;
-
-					$huesped->update(array('calificacion_promedio' => $promedio));
-
-				}
-			}
-
-		}else{
-
-
-			$retorno = array(
-                  'msj'    => "Checkout no permitido, la reserva aún no se ha cursado",
-                  'errors' => true
-            );
-            return Response::json($retorno, 400);
-
-
-
-		}	
-
-		return "calificados";
-
+		$retorno = array(
+            'msj'    => "Checkout no permitido, la reserva aún no se ha cursado",
+            'errors' => true);
+        return Response::json($retorno, 400);
 	}
+
+
+	return "calificados";
+
+}
 
 
 
