@@ -10,7 +10,7 @@ class Propiedad extends Model
 	use SoftDeletes;
     protected $table = 'propiedades';
 
-	protected $fillable = [ 'id', 'nombre','tipo', 'numero_habitaciones','region','pais','ciudad','estado','direccion', 'telefono', 'email', 'nombre_responsable', 'descripcion','iva', 'porcentaje_deposito', 'pais_id', 'region_id', 'tipo_propiedad_id', 'zona_horaria_id'];
+	protected $fillable = [ 'id', 'nombre','tipo', 'numero_habitaciones','region','pais','ciudad','estado','direccion', 'telefono', 'email', 'nombre_responsable', 'descripcion','iva', 'porcentaje_deposito', 'pais_id', 'region_id', 'tipo_propiedad_id', 'tipo_cobro_id', 'zona_horaria_id'];
 
 
 
@@ -38,7 +38,7 @@ class Propiedad extends Model
 
     }
 
-    public function tipos_habitaciones(){
+    public function tiposHabitacion(){
 
         return $this->hasMany('App\TipoHabitacion', 'propiedad_id');
 
@@ -80,6 +80,13 @@ class Propiedad extends Model
     public function temporadas(){
 
         return $this->hasMany('App\Temporada', 'propiedad_id');
+
+
+    }
+
+    public function tipoCobro(){
+
+        return $this->belongsTo('App\TipoCobro', 'tipo_cobro_id');
 
 
     }

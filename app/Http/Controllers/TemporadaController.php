@@ -7,6 +7,7 @@ use App\Propiedad;
 use App\Temporada;
 use App\TipoHabitacion;
 use App\TipoMoneda;
+use App\PrecioTemporada;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -63,16 +64,52 @@ class TemporadaController extends Controller
 
         } else {
 
-            $temporada = Temporada::create($request->all());
+            $temporada        = Temporada::create($request->all());
+            $propiedad        = Propiedad::where('id', $request->input('propiedad_id'))->first();
+            $tipos_habitacion = $propiedad->tiposHabitacion;
+            $moneda_propiedad = $propiedad->tipoMonedas;
 
-            $data = [
-                'errors' => false,
-                'msg'    => 'Temporada creada satisfactoriamente',
-            ];
-            return Response::json($data, 201);
+            if (count($tipos_habitacion) != 0) {
+                if ($propiedad->tipo_cobro_id != 3) {
+                    foreach ($tipos_habitacion as $tipo) {
+                        foreach ($moneda_propiedad as $moneda) {
+                            $precio_temporada                     = new PrecioTemporada();
+                            $precio_temporada->cantidad_huespedes = 1;
+                            $precio_temporada->precio             = 0;
+                            $precio_temporada->tipo_habitacion_id = $tipo->id;
+                            $precio_temporada->tipo_moneda_id     = $moneda->id;
+                            $precio_temporada->temporada_id       = $temporada->id;
+                            $precio_temporada->save();
+                        }
+                    }
+                    
+                }else{
+
+                    foreach ($tipos_habitacion as $tipo) {
+                        $capacidad = $tipo->capacidad;
+                        foreach ($moneda_propiedad as $moneda) {
+                            for ($i=1; $i <= $capacidad  ; $i++) {
+
+                                $precio_temporada                     = new PrecioTemporada();
+                                $precio_temporada->cantidad_huespedes = $i;
+                                $precio_temporada->precio             = 0;
+                                $precio_temporada->tipo_habitacion_id = $tipo->id;
+                                $precio_temporada->tipo_moneda_id     = $moneda->id;
+                                $precio_temporada->temporada_id       = $temporada->id;
+                                $precio_temporada->save();   
+                            }
+                        }
+                    }
+                }
+            }
+
+        $data = [
+            'errors' => false,
+            'msg'    => 'Temporada creada satisfactoriamente',
+        ];
+        return Response::json($data, 201);
 
         }
-
     }
 
     public function update(Request $request, $id)
@@ -391,7 +428,12 @@ class TemporadaController extends Controller
         $propiedad        = Propiedad::where('id', $temporada->propiedad_id)->first();
         $moneda_propiedad = $propiedad->tipoMonedas;
         $tipos_habitacion = TipoHabitacion::where('propiedad_id', $temporada->propiedad_id)->get();
+
+        $auxCapacidad = 0;
         foreach ($tipos_habitacion as $tipo) {
+            if ($tipo->capacidad > $auxCapacidad) {
+                $auxCapacidad = $tipo->capacidad;
+            }
             $tipo_habitacion_id = $tipo->id;
             $tipo_moneda        = TipoMoneda::whereHas('preciosTemporada', function ($query) use ($temporada_id, $tipo_habitacion_id) {
                 $query->where('temporada_id', $temporada_id)
@@ -403,30 +445,22 @@ class TemporadaController extends Controller
             $tipo->tipos_moneda = $tipo_moneda;
         }
 
-        foreach ($tipos_habitacion as $value) {
-            $tp = $value->tipos_moneda;
-            if (count($tp) < count($moneda_propiedad)) {
-                $temporada = (int) $temporada_id;
-                if (count($tp) != 0) {
-                    foreach ($tp as $aux) {
-                        foreach ($moneda_propiedad as $moneda) {
-                            if ($aux->nombre != $moneda->nombre) {
-                                $p = ['id' => $moneda->id, 'nombre' => $moneda->nombre, 'cantidad_decimales' => $moneda->cantidad_decimales, 'precios_temporada' => [['precio' => null, 'temporada_id' => $temporada]]];
-                                $tp->push($p);
-                            }
-                        }
-                    }
-                } else {
-                    foreach ($moneda_propiedad as $moneda) {
-                        $p = ['id' => $moneda->id, 'nombre' => $moneda->nombre, 'cantidad_decimales' => $moneda->cantidad_decimales, 'precios_temporada' => [['precio' => null, 'temporada_id' => $temporada]]];
-                        $tp->push($p);
+        $data['tipos_habitacion'] = $tipos_habitacion;
+        if ($propiedad->tipo_cobro_id != 3) {
+            $cobro_propiedad = ['Precio'];
+            $data['cobro_propiedad'] = $cobro_propiedad;
 
-                    }
-                }
+        } else {
+
+            $cantidad_huespedes = [];
+            for ($i=1; $i<=$auxCapacidad ; $i++){
+                $cobro_propiedad = "Huésped ". $i;
+                array_push($cantidad_huespedes, $cobro_propiedad);
             }
+            $data['cobro_propiedad'] = $cantidad_huespedes;
         }
 
-        return $tipos_habitacion;
+        return $data;
     }
 
     public function editarTemporadas(Request $request)
