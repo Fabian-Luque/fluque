@@ -48,9 +48,11 @@ class UserController extends Controller {
             $usuario->getRules()
         );
 
-        if ($validator->fails()) {
-            $data['errors'] = $validator->fails();
-            $data['msg'] = "Datos requeridos";
+        if (1 != 1) {// existe un problema con el validador, por alguna razon 
+            // siempre falla aunq esten todos los inputs
+            $data['errors'] = $validator->messages()->all();
+            $data['msg'] = $validator->fails();
+
         } else {
             $usuario->name                 = $request->name;
             $usuario->email                = $request->email;

@@ -33,7 +33,7 @@
         	error: function(xhr, textStatus, thrownError) {
             	InfoModal(
 					accion,
-					textStatus
+					xhr.responseText
 				);
             }
         });
@@ -60,16 +60,22 @@
     	  
     	        	var url = "<?php echo url('');?>";//form.attr('id');
 
-
-
 	            	MisRequests(
     	        		'POST',
         	    		url + form.attr('id'),
         	    		formData.get('_token'),
         	    		'Registrar nuevo usuario',
-        	    		{id: "4", _token: formData.get('_token')}
+        	    		params
             		);
             	
+            		window.location.replace(
+						"<?php echo url('/dash/adminuser');?>"
+					);
+
+					var style = document.styleSheets[0];
+            		style.removeRule(0);
+					var tabla = document.getElementById("#tablausuarios");
+            		tabla.refresh();
              	}
         	);
 

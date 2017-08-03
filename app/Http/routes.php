@@ -35,8 +35,10 @@ Route::group(['prefix' => 'dash', 'middleware' => ['auth']],
 			}
 		);		
 		Route::get('adminuser', 'UserController@show');
+		
+Route::post('crear/user', 'UserController@store');
 
-		Route::post('crear/user', 'UserController@store');
+		
 		Route::post('actualizar/user', 'UserController@update');
 		
 		
@@ -47,7 +49,6 @@ Route::post('eliminar/user', 'UserController@delete');
 );
 
 //Route::post('crear/user', 'UserController@store');
-
 
 
 Route::post('prueba/user', 'UserController@prueba');
