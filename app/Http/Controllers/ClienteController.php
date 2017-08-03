@@ -342,89 +342,57 @@ class ClienteController extends Controller
 
 	}
 
-	public function buscarRut(Request $request){
+	public function buscarRut(Request $request)
+	{
+		$rut 	 = $request->input('rut');
+	  	$cliente = Cliente::where('rut', $rut)->first();
 
-
-	  $rut = $request->input('rut');
-
-	  $cliente = Cliente::where('rut', $rut)->first();
-
-	  if(!is_null($cliente)){
-
+	  	if(!is_null($cliente)){
 
 			$data = array(
-
-					'msj' 	 => "El rut ya existe",
-					'errors' => true
-
-				);
+				'msj' 	 => "El rut ya existe",
+				'errors' => true
+			);
 
 			return $data;
 
-
-	  }else{
+	  	}else{
 
 	  		$data = array(
-
-					'msj' 	 => "Rut correcto",
-					'errors' => false
-
-				);
+				'msj' 	 => "Rut correcto",
+				'errors' => false
+			);
 
 			return $data;
-
-
-
-
-	  }
-
+	  	}
 
 	}
-
-
-
-
-
-
 
 
     
-	public function index(Request $request){
+public function index(Request $request)
+{
+	if($request->has('rut')){
 
+		$cliente_rut = $request->input('rut');
+		$cliente 	 = Cliente::where('rut', $cliente_rut)->first();
 
-		if($request->has('rut')){
+		if(is_null($cliente)){
 
-
-			$cliente_rut = $request->input('rut');
-
-			$cliente = Cliente::where('rut', $cliente_rut)->first();
-
-			if(is_null($cliente)){
-
-				$data = array(
-
-					'msj' => "Cliente no encontrado",
-					'errors' => true
-
-
-				);
-
+			$data = array(
+				'msj' => "Cliente no encontrado",
+				'errors' => true);
 			return Response::json($data, 404);
 
+		}else{
 
-
-
-			}else{
-
-			return $cliente = Cliente::where('rut', $cliente_rut)->with('pais', 'region')->first();
-
-
-
-			}
+		return $cliente = Cliente::where('rut', $cliente_rut)->with('pais', 'region')->first();
 
 		}
-
 	}
+
+
+}
 
 
 	public function getCliente(Request $request){
@@ -522,8 +490,6 @@ public function calificacion(Request $request)
 	$fecha_checkout = $checkout->format('Y-m-d');
 	$fecha_checkin  = $checkin->format('Y-m-d');
 
-	
-
 	if($fecha_checkout == $fecha_hoy || $fecha_checkout < $fecha_hoy){
 
 		if($reserva->monto_por_pagar == 0){
@@ -552,15 +518,15 @@ public function calificacion(Request $request)
 
 	}elseif($fecha_checkin < $fecha_hoy && $fecha_checkout > $fecha_hoy){
 
-		$habitacion 				= Habitacion::where('id', $reserva->habitacion_id)->first();
-		$precios                    = $habitacion->tipoHabitacion->precios;
-        $tipo_habitacion_id         = $habitacion->tipo_habitacion_id;
-        $propiedad_monedas          = $propiedad->tipoMonedas; // monedas propiedad
-        $capacidad                  = $habitacion->tipoHabitacion->capacidad;
+		$habitacion 			= Habitacion::where('id', $reserva->habitacion_id)->first();
+		$precios                = $habitacion->tipoHabitacion->precios;
+        $tipo_habitacion_id     = $habitacion->tipo_habitacion_id;
+        $propiedad_monedas      = $propiedad->tipoMonedas; // monedas propiedad
+        $capacidad              = $habitacion->tipoHabitacion->capacidad;
 
-        $auxFecha                   = new Carbon($fecha_checkin);
-        $auxFin                     = new Carbon($fecha_hoy);
-        $noches 					= $auxFin->diffInDays($auxFecha);
+        $auxFecha               = new Carbon($fecha_checkin);
+        $auxFin                 = new Carbon($fecha_hoy);
+        $noches 				= $auxFin->diffInDays($auxFecha);
 
         $suma_precio_habitacion = 0;
         while ($auxFecha < $auxFin) {
@@ -633,75 +599,58 @@ public function calificacion(Request $request)
 }
 
 
+public function update(Request $request, $id)
+{
+	$rules = array(
+
+        'nombre'                => '',
+        'apellido'				=> '',
+        'rut'   				=> '',
+        'direccion'				=> '',
+        'ciudad'				=> '',
+        'email'                 => '',
+        'telefono'   			=> '',
+        'giro'					=> '',
+        'pais_id'               => '',
+        'region_id'             => '',
+        
+    );
+
+	$validator = Validator::make($request->all(), $rules);
+
+     if ($validator->fails()) {
+
+        $data = [
+            'errors' => true,
+            'msg' => $validator->messages(),
+        ];
+
+        return Response::json($data, 400);
+
+    } else {
+
+        $cliente = Cliente::findOrFail($id);
+        $cliente->update($request->all());
+        $cliente->touch();
+        
+        $data = [
+            'errors' => false,
+            'msg' => 'Cliente actualizado satisfactoriamente',
+        ];
+        return Response::json($data, 201);
+
+    }
+
+}
 
 
+public function getTipoCliente()
+{
 
-		public function update(Request $request, $id){
+	$tipoCliente = TipoCliente::all();
+	return $tipoCliente;
 
-
-		$rules = array(
-
-            'nombre'                => '',
-            'apellido'				=> '',
-            'rut'   				=> '',
-            'direccion'				=> '',
-            'ciudad'				=> '',
-            'email'                 => '',
-            'telefono'   			=> '',
-            'giro'					=> '',
-            'pais_id'               => '',
-            'region_id'             => '',
-            
-        );
-
-    	$validator = Validator::make($request->all(), $rules);
-
-
-         if ($validator->fails()) {
-
-            $data = [
-
-                'errors' => true,
-                'msg' => $validator->messages(),
-
-            ];
-
-            return Response::json($data, 400);
-
-        } else {
-
-            $cliente = Cliente::findOrFail($id);
-
-            $cliente->update($request->all());
-            $cliente->touch();
-            
-            $data = [
-
-                'errors' => false,
-                'msg' => 'Cliente actualizado satisfactoriamente',
-
-            ];
-
-            return Response::json($data, 201);
-
-        }
-
-
-	}
-
-
-
-	public function getTipoCliente(){
-
-
-		$tipoCliente = TipoCliente::all();
-
-			return $tipoCliente;
-
-
-
-	}
-
+}
 
 
 

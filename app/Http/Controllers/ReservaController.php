@@ -476,6 +476,20 @@ class ReservaController extends Controller
                 'errors' => true);
             return Response::json($retorno, 400);
         }
+
+        if ($request->has('monto_alojamiento') && $request->has('monto_total') && $request->has('monto_por_pagar')) {
+            $monto_alojamiento = $request->input('monto_alojamiento');
+            $monto_total       = $request->input('monto_total');
+            $monto_por_pagar   = $request->input('monto_por_pagar');
+
+            $reserva->update(array('monto_alojamiento' => $monto_alojamiento, 'monto_total' => $monto_total, 'monto_por_pagar' => $monto_por_pagar));
+
+            $retorno = [
+              'errors' => false,
+              'msj'    => 'Reserva actualizada satisfactoriamente',
+            ];
+            return Response::json($retorno, 201);
+        }
         
         $reserva_checkout = $reserva->checkout;
         $reserva_checkin  = $reserva->checkin;
@@ -630,10 +644,6 @@ class ReservaController extends Controller
                     }
                 }
             }
-
-
-
-            /*return $precio_promedio_habitacion;*/
 
             $cantidad_huespedes = $reserva->ocupacion;
 
