@@ -23,6 +23,7 @@ Route::group(['as' => 'api.jarvis.'], function(){
 	Route::post('crear/pais', 'PropiedadController@crearPais');
 	Route::post('crear/zona/horaria', 'PropiedadController@crearZona');
 
+
 	Route::group(['middleware' => ['jwt.auth']], function () {
 
 		Route::post('reserva/habitacion', 'ReservaController@reserva');
@@ -83,6 +84,9 @@ Route::group(['as' => 'api.jarvis.'], function(){
 		Route::put('pago/{id}', 'ReservaController@editarPago');
 		Route::delete('pago/{id}', 'ReservaController@eliminarPago');
 		Route::post('reserva/busqueda', 'ReservaController@filtroReservas');
+		Route::get('tipo/cobros', 'PropiedadController@getTipoCobro');
+		Route::post('editar/precios', 'TipoHabitacionController@editarPrecios');
+
 
 		Route::resource('user', 'UserController', ['except' => ['create', 'edit','store']]);
 		Route::resource('propiedad', 'PropiedadController', ['except' => ['create', 'edit', 'store']]);
@@ -203,8 +207,6 @@ Route::group(['middleware' => 'cors'], function(){
 	Route::post('eliminar/moneda/propiedad', 'PropiedadController@eliminarMoneda');
 
 	Route::put('editar/moneda/{id}', 'PropiedadController@editarMoneda');
-
-	Route::get('reporte', 'PropiedadController@reportesDiario');
 
 	Route::post('crear/pais', 'PropiedadController@crearPais');
 
