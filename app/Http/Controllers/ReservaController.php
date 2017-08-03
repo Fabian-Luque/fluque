@@ -482,7 +482,20 @@ class ReservaController extends Controller
             $monto_total       = $request->input('monto_total');
             $monto_por_pagar   = $request->input('monto_por_pagar');
 
-            $reserva->update(array('monto_alojamiento' => $monto_alojamiento, 'monto_total' => $monto_total, 'monto_por_pagar' => $monto_por_pagar));
+            if ($reserva->estado_reserva_id == 4) {
+                if ($monto_por_pagar > 0) {
+                $reserva->update(array('estado_reserva_id' => 5,'monto_alojamiento' => $monto_alojamiento, 'monto_total' => $monto_total, 'monto_por_pagar' => $monto_por_pagar));
+                }
+            }elseif ($reserva->estado_reserva_id == 5) {
+                if ($monto_por_pagar == 0) {
+
+                    $reserva->update(array('estado_reserva_id' => 4, 'monto_alojamiento' => $monto_alojamiento, 'monto_total' => $monto_total, 'monto_por_pagar' => $monto_por_pagar));
+                }
+            }elseif($reserva->estado_reserva_id == 4 && $reserva->estado_reserva_id == 5){
+
+                $reserva->update(array('monto_alojamiento' => $monto_alojamiento, 'monto_total' => $monto_total, 'monto_por_pagar' => $monto_por_pagar));
+            }
+
 
             $retorno = [
               'errors' => false,
