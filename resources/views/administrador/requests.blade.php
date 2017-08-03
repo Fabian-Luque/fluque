@@ -1,4 +1,3 @@
-
 @section('scripts')
 
 <script type="text/javascript">
@@ -10,6 +9,14 @@
 		$('#myModal').modal('show');
 	}
 
+	function objectifyForm(formArray) {//serialize data function
+  		var returnArray = {};
+  		for (var i = 0; i < formArray.length; i++){
+    		returnArray[formArray[i]['name']] = formArray[i]['value'];
+  		}
+  		return returnArray;
+	}
+
 	function MisRequests(tipo, ur, tok, accion, datos) {
 		$.ajax({
             type: tipo,
@@ -18,31 +25,58 @@
             data: datos,
             			
             success: function(data) {
-				$("#titulomodal").empty();
-				$("#titulomodal").append("<p>"+accion+"</p>");
-				$("#textmodal").empty();
-				$("#textmodal").append("<p>"+data.msg+"</p>");
-				$('#myModal').modal('show');
+				InfoModal(
+					accion,
+					data.msg
+				);
             },
         	error: function(xhr, textStatus, thrownError) {
-            	$("#titulomodal").empty();
-				$("#titulomodal").append("<p> Error </p>");
-				$("#textmodal").empty();
-				$("#textmodal").append("<p>"+textStatus+"</p>");
-				$('#myModal').modal('show');
+            	InfoModal(
+					accion,
+					textStatus
+				);
             }
         });
 	}
 
 	$(document).ready(
 		function(e) {
+			$("form[name='f-crear-user']").submit(
+				function(e) {
+					e.preventDefault();
+			    	var form 	 = $(e.target);
+                	var	formData = new FormData();
+                	var	params   = form.serializeArray();
+                	
+	            	$.each(
+	            		params, 
+	            		function(i, val) {
+        	        		formData.append(
+        	        			val.name, 
+        	        			val.value
+        	        		);
+    	        		}
+    	        	);
+    	  
+    	        	var url = "<?php echo url('');?>";//form.attr('id');
+
+
+
+	            	MisRequests(
+    	        		'POST',
+        	    		url + form.attr('id'),
+        	    		formData.get('_token'),
+        	    		'Registrar nuevo usuario',
+        	    		{id: "4", _token: formData.get('_token')}
+            		);
+            	
+             	}
+        	);
+
 			$("#btn-crear").click(
 				function(e) {
 					e.preventDefault();
-					var row = $(this).parents('tr');
-					var id = row.data('id');
-
-					InfoModal("holaa","chaooo");
+			
 					window.location.replace(
 						"<?php echo url('/dash/adminreguser');?>"
 					);
@@ -64,8 +98,10 @@
 					e.preventDefault();
 					var row = $(this).parents('tr');
 					var id = row.data('id');
-					var ur = "<?php echo url('/dash/eliminar/user') ?>";
-					var tok = "<?php echo csrf_token(); ?>";		
+					var ur = "<?php echo url('dash/eliminar/user'); ?>";
+					var tok = "<?php echo csrf_token(); ?>";	
+
+					alert(id+'  '+tok+ '  '+ ur);	
 	
 					MisRequests(
 						"POST",
@@ -76,9 +112,10 @@
 					)
 
 					var style = document.styleSheets[0];
-            		style.removeRule (0);
+            		style.removeRule(0);
 					var tabla = document.getElementById("#tablausuarios");
-            		tabla.refresh ();
+            		tabla.refresh();
+
 				}
 			);
 				

@@ -8,7 +8,7 @@
                 <div class="panel-heading">Welcome</div>
                     @if($user = Auth::user())
                         <script type="text/javascript">
-                            window.location = "{{ url('/dash/adminhome') }}";
+                            window.location = "{{ url('/index.php/dash/adminhome') }}";
                         </script>
                     @endif
                 <div class="panel-body">

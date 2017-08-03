@@ -42,48 +42,35 @@ class UserController extends Controller {
     }
 
     public function store(Request $request) {
-        $rules = array(
-            'name'                => 'required',
-            'email'               => 'required|unique:users,email',
-            'phone'               => 'required',
-            'password'            => 'required|min:6',
-            'nombre'              => 'required',
-            'tipo_propiedad_id'   => 'required|numeric',
-            'numero_habitaciones' => 'required|numeric',
-            'ciudad'              => 'required',
-            'direccion'           => 'required',
-
+        $usuario = new User();
+        $validator = Validator::make(
+            $request->all(), 
+            $usuario->getRules()
         );
 
-        $validator = Validator::make($request->all(), $rules);
-
         if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator->errors());
+            $data['errors'] = $validator->fails();
+            $data['msg'] = "Datos requeridos";
         } else {
-            $usuario                       = new User();
-            $usuario->name                 = $request->get('name');
-            $usuario->email                = $request->get('email');
-            $usuario->password             = $request->get('password');
-            $usuario->phone                = $request->get('phone');
+            $usuario->name                 = $request->name;
+            $usuario->email                = $request->email;
+            $usuario->password             = $request->password;
+            $usuario->phone                = $request->phone;
             $usuario->save();
 
             $propiedad                      = new Propiedad();
             $propiedad->id                  = $usuario->id;
-            $propiedad->nombre              = $request->get('nombre');
-            $propiedad->numero_habitaciones = $request->get('numero_habitaciones');
-            $propiedad->ciudad              = $request->get('ciudad');
-            $propiedad->direccion           = $request->get('direccion');
-            $propiedad->tipo_propiedad_id   = $request->get('tipo_propiedad_id');
+            $propiedad->nombre              = $request->nombre;
+            $propiedad->direccion           = $request->direccion;
+            $propiedad->tipo_propiedad_id   = $request->tipo_propiedad_id;
             $propiedad->user_id             = $usuario->id;
             $propiedad->save();
 
-            $data = [
-                'errors' => false,
-                'msg'    => 'usuario creado satisfactoriamente',
-            ];
-
-            return Response::json($data, 201);
+            $data['errors'] = false;
+            $data['msg'] = 'usuario creado satisfactoriamente';
         }
+        return Response::json($data);
+        //return View('administrador.reguser')->with('resp', $data);
     }
 
 
@@ -103,7 +90,7 @@ class UserController extends Controller {
                 'errors' => true,
                 'msg'    => $validator->messages(),
             ];
-            return Response::json($data, 400);
+            return Response::json($data);
         } else {
             $user = User::findOrFail($id);
             $user->update($request->all());
@@ -113,7 +100,7 @@ class UserController extends Controller {
                 'errors1' => false,
                 'msg'    => 'Usuario actualizado satisfactoriamente',
             ];
-            return Response::json($data, 201);
+            return Response::json($data);
         }
     }
 
@@ -126,22 +113,20 @@ class UserController extends Controller {
     }
 
     public function delete(Request $request) {
-        dd($request->id);
         if ($request->has('id')) {
-        if ($user = User::find($id)) {
-            $user->delete();
+            if ($user = User::find($request->id)) {
+                $user->delete();
 
-            $data['errors'] = false;
-            $data['msg']    = 'Usuario eliminado satisfactoriamente';
+                $data['errors'] = false;
+                $data['msg']    = 'Usuario eliminado satisfactoriamente';
+            } else {
+                $data['errors'] = true;
+                $data['msg']    = 'Usuario no encontrado';
+            }
         } else {
             $data['errors'] = true;
-            $data['msg']    = 'Usuario no encontrado';
+            $data['msg']    = 'Datos requeridos';
         }
-    } else {
-        $data['errors'] = true;
-        $data['msg']    = 'datos requeridos';
-    }
-        return Response::json($data, 200);
-    
+        return Response::json($request->all());
     }
 }

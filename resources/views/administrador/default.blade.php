@@ -6,10 +6,9 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="csrf-token" content="{{ csrf_token() }}">
 	<title>Laravel</title>
-<script type="text/javascript" src="{{ asset('assets/js/jquery-1.10.2.js') }}"></script> 
+
 	<link href="{{ asset('assets/css/boostrap.css') }}" rel="stylesheet"> 
 
-	<link href="{{ asset('assets/css/boostrap.min.css') }}" rel="stylesheet"> 
 
 	<link href="{{ asset('assets/css/animate.min.css') }}" rel="stylesheet"/>
     <!--  Light Bootstrap Table core CSS    -->
@@ -17,18 +16,23 @@
 
     <link href="{{ asset('assets/css/pe-icon-7-stroke.css') }}" rel="stylesheet"/>
 
-	<script type="text/javascript" src="{{ asset('assets/js/bootstrap.min.js') }}"></script> 
+	
 
-	<script type="text/javascript" src="{{ asset('assets/js/light-bootstrap-dashboard.js') }}"></script>
+	
 
 			
 </head>
 <body>
-	
+	  <script type="text/javascript" src="{{ asset('assets/js/jquery-3.2.1.js') }}"></script> 
+
+
 
 
 	@yield('content')
 
+
+
+  
 	<!-- Scripts -->
 
 	<div class="modal fade" id="myModal" role="dialog">
@@ -47,6 +51,10 @@
         	</div>  
     	</div>
 	</div>
+   
 
+    <link href="{{ asset('assets/css/boostrap.min.css') }}" rel="stylesheet"> 
+    <script type="text/javascript" src="{{ asset('assets/js/light-bootstrap-dashboard.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/js/bootstrap.min.js') }}"></script> 
 </body>
 </html>

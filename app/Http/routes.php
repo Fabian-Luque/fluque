@@ -40,13 +40,16 @@ Route::group(['prefix' => 'dash', 'middleware' => ['auth']],
 		Route::post('actualizar/user', 'UserController@update');
 		
 		
+Route::post('obtener/user', 'UserController@show');
+Route::post('eliminar/user', 'UserController@delete');
+
 	}
 );
 
+//Route::post('crear/user', 'UserController@store');
 
 
-Route::post('obtener/user', 'UserController@show');
-Route::post('eliminar/user', 'UserController@delete');
+
 Route::post('prueba/user', 'UserController@prueba');
 
 //Route::get('eliminar/user/{id}', 'UserController@delete');

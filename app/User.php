@@ -37,6 +37,21 @@ class User extends Authenticatable {
         }
     }
 
+    public function getRules() {
+        $rules = array(
+            'name'                => 'required',
+            'email'               => 'required|unique:users,email',
+            'phone'               => 'required',
+            'password'            => 'required|min:6',
+            'nombre'              => 'required',
+            'tipo_propiedad_id'   => 'required|numeric',
+            'numero_habitaciones' => 'required|numeric',
+            'ciudad'              => 'required',
+            'direccion'           => 'required',
+        );
+        return $rules;
+    }
+
 /*    public function getCreatedAtAttribute($value)
     {
         $user = JWTAuth::parseToken()->toUser();
