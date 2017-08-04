@@ -89,29 +89,25 @@ class PDFController extends Controller
 
                     $total = $monto_alojamiento + $consumo;
                 }
+
                 
             }elseif($reserv->tipo_moneda_id == 2){
 
                 $total = $monto_alojamiento + $consumo;
-                $iva   = (($monto_reserva * $propiedad_iva) / 100);
-                $neto  = ($monto_reserva - $iva);
-
             }
         }
 
+
+        foreach ($reserva as $reserv) {
+            if ($reserv->tipo_moneda_id == 1) {
+                $pdf = PDF::loadView('pdf.estado_cuenta', ['propiedad' => $propiedad,'consumo' => $consumo , 'cliente'=> $cliente ,'reservas_pdf'=> $reservas_pdf, 'neto' => $neto , 'iva' => $iva, 'total' => $total]);
+                
+            }elseif($reserv->tipo_moneda_id == 2){
+                $pdf = PDF::loadView('pdf.estado_cuenta', ['propiedad' => $propiedad,'consumo' => $consumo , 'cliente'=> $cliente ,'reservas_pdf'=> $reservas_pdf,'total' => $total]);
+                
+            }
+        }
 		
-/*		if($iva == 1){
-		$neto = round($monto_alojamiento + $consumo); 
-		$iva = round(($neto * $propiedad_iva) / 100);
-		$total = round($neto + $iva);
-		}elseif($iva == 0){
-		$neto = round($monto_alojamiento + $consumo); 
-		$iva = round(($neto * 0) / 100);
-		$total = round($neto + $iva);
-
-		}*/
-
-		$pdf = PDF::loadView('pdf.estado_cuenta', ['propiedad' => $propiedad,'consumo' => $consumo , 'cliente'=> $cliente ,'reservas_pdf'=> $reservas_pdf, 'neto' => $neto , 'iva' => $iva, 'total' => $total]);
 
 		return $pdf->download('archivo.pdf');
 
@@ -233,7 +229,6 @@ class PDFController extends Controller
         $reservas = $request['reservas'];
         $propiedad_id = $request->input('propiedad_id');
         $cliente_id = $request->input('cliente_id');
-        $iva = $request->input('iva');
 
         $propiedad = Propiedad::where('id', $propiedad_id)->with('pais', 'region')->get();
         $cliente = Cliente::where('id', $cliente_id)->with('pais', 'region')->get();
@@ -268,25 +263,40 @@ class PDFController extends Controller
 
         }
 
-        
-        if($iva == 1){
-        $neto = $monto_alojamiento; 
-        $iva = round(($neto * $propiedad_iva) / 100);
-        $total = round($neto + $iva);
-        }elseif($iva == 0){
-        $neto = $monto_alojamiento; 
-        $iva = round(($neto * 0) / 100);
-        $total = round($neto + $iva);
+        foreach ($reserva as $reserv) {
+            if ($reserv->tipo_moneda_id == 1) {
 
+                if ($reserv->iva == 1) {
+                    $monto_reserva = $monto_alojamiento;
+                    $iva           = (($monto_reserva * $propiedad_iva) / 100);
+                    $neto          = ($monto_reserva - $iva);
+                    $total         = $neto + $iva;
+                } else {
+
+                    $total = $monto_alojamiento;
+                }
+
+                
+            }elseif($reserv->tipo_moneda_id == 2){
+
+                $total = $monto_alojamiento;
+            }
         }
 
-        $pdf = PDF::loadView('pdf.checkin', ['propiedad' => $propiedad, 'cliente'=> $cliente ,'reservas_pdf'=> $reservas_pdf, 'neto' => $neto , 'iva' => $iva, 'total' => $total]);
+
+        foreach ($reserva as $reserv) {
+            if ($reserv->tipo_moneda_id == 1) {
+                $pdf = PDF::loadView('pdf.checkin', ['propiedad' => $propiedad , 'cliente'=> $cliente ,'reservas_pdf'=> $reservas_pdf, 'neto' => $neto , 'iva' => $iva, 'total' => $total]);
+                
+            }elseif($reserv->tipo_moneda_id == 2){
+                $pdf = PDF::loadView('pdf.checkin', ['propiedad' => $propiedad, 'cliente'=> $cliente ,'reservas_pdf'=> $reservas_pdf,'total' => $total]);
+                
+            }
+        }
 
         return $pdf->download('archivo.pdf');
 
-
-
-      }
+    }
 
       public function huesped(Request $request)
       {

@@ -195,6 +195,11 @@
             @endforeach
           @endforeach
 
+
+          @foreach($reservas_pdf as $reservas)
+            @foreach($reservas as $reserva)
+              @if($reserva->tipo_moneda_id == 1)
+
             <tr>
               <td class="data-tabla-detalles borde-derecha"><p class="titulo">Consumos</p></td>
               <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{ $consumo }}</p></td>
@@ -211,6 +216,22 @@
               <th class="data-tabla-detalles borde-derecha"><p class="titulo align-right">Total</p></th>
               <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{ $total }}</p></td>
             </tr>
+              @else
+
+            <tr>
+              <td class="data-tabla-detalles borde-derecha"><p class="titulo">Consumos</p></td>
+              <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{ $consumo }}</p></td>
+            </tr>
+            <tr>
+              <th class="data-tabla-detalles borde-derecha"><p class="titulo align-right">Total</p></th>
+              <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{ $total }}</p></td>
+            </tr>
+
+
+
+              @endif
+            @endforeach
+          @endforeach
 
           </table>
         </div>
