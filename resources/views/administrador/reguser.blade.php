@@ -65,6 +65,7 @@
     <input type="text" class="form-control" name="direccion" >
     <span class="glyphicon glyphicon-lock form-control-feedback"></span>
   </div>
+</div>
 
 <div class="col-md-5"> 
 

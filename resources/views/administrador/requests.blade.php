@@ -1,5 +1,4 @@
 @section('scripts')
-
 <script type="text/javascript">
 	function InfoModal(titulo, texto) {
 		$("#titulomodal").empty();
@@ -7,14 +6,6 @@
 		$("#textmodal").empty();
 		$("#textmodal").append("<p>"+texto+"</p>");
 		$('#myModal').modal('show');
-	}
-
-	function objectifyForm(formArray) {//serialize data function
-  		var returnArray = {};
-  		for (var i = 0; i < formArray.length; i++){
-    		returnArray[formArray[i]['name']] = formArray[i]['value'];
-  		}
-  		return returnArray;
 	}
 
 	function MisRequests(tipo, ur, tok, accion, datos) {
@@ -67,15 +58,6 @@
         	    		'Registrar nuevo usuario',
         	    		params
             		);
-            	
-            		window.location.replace(
-						"<?php echo url('/dash/adminuser');?>"
-					);
-
-					var style = document.styleSheets[0];
-            		style.removeRule(0);
-					var tabla = document.getElementById("#tablausuarios");
-            		tabla.refresh();
              	}
         	);
 
@@ -89,48 +71,43 @@
 				}
 			);
 
-			$("#btn-editar-lista").click(
+			$("a").click(
 				function(e) {
-					e.preventDefault();
-					var row = $(this).parents('tr');
-					var id = row.data('id');
+					if ($(this).attr('name') == 'b-lista') {
+						e.preventDefault();
+						var val = $(this).attr('href');
 
-					InfoModal("holaa","chaooo");
-				}
-			);
+						switch (val) {
+        					case 'u':
+        										InfoModal(
+					"Actualizar datos",
+					"<button>Actualizar</button>"
+				);
+        					break;
 
-			$("#btn-eliminar-lista").click(
-				function(e) {
-					e.preventDefault();
-					var row = $(this).parents('tr');
-					var id = row.data('id');
-					var ur = "<?php echo url('dash/eliminar/user'); ?>";
-					var tok = "<?php echo csrf_token(); ?>";	
-
-					alert(id+'  '+tok+ '  '+ ur);	
+        					case 'd':
+        						var row = $(this).parents('tr');
+								var id = row.data('id');
+								var ur = "<?php echo url('dash/eliminar/user'); ?>";
+								var tok = "<?php echo csrf_token(); ?>";	
 	
-					MisRequests(
-						"POST",
-						ur,
-						tok,
-						"Eliminar usuario",
-						{id: id, _token: tok}
-					)
-
-					var style = document.styleSheets[0];
-            		style.removeRule(0);
-					var tabla = document.getElementById("#tablausuarios");
-            		tabla.refresh();
-
-				}
-			);
-				
+								MisRequests(
+									"POST",
+									ur,
+									tok,
+									"Eliminar usuario",
+									{id: id, _token: tok}
+								);
+        					break;
+        				
+        					default: 
+        					break;
+						}// fin switch
+					}
+				}// fin funcion
+			);				
 		}
 	);
 </script>
 @endsection
-
-
-
-
 

@@ -27,36 +27,21 @@ Route::group(['prefix' => 'dash', 'middleware' => ['auth']],
 		);
 		Route::get('adminreguser', 'PropiedadController@getViewTipoPropiedad');
 
-
 		Route::get(
 			'adminuser', 
 			function() {
     			return View::make('administrador.user');
 			}
 		);		
-		Route::get('adminuser', 'UserController@show');
-		
-Route::post('crear/user', 'UserController@store');
-
-		
-		Route::post('actualizar/user', 'UserController@update');
-		
-		
-Route::post('obtener/user', 'UserController@show');
-Route::post('eliminar/user', 'UserController@delete');
-
+		Route::get('adminuser', 'DashControllers\UserDashController@ReadUser');
+				
+		Route::post('crear/user', 'DashControllers\UserDashController@CreateUser');
+		Route::post('obtener/user', 'DashControllers\UserDashController@ReadUser');
+		Route::post('actualizar/user', 'DashControllers\UserDashController@UpdateUser');
+		Route::post('eliminar/user', 'DashControllers\UserDashController@DeleteUser');
 	}
 );
-
-//Route::post('crear/user', 'UserController@store');
-
-
-Route::post('prueba/user', 'UserController@prueba');
-
-//Route::get('eliminar/user/{id}', 'UserController@delete');
-
-
-//Route::post('obtener/user', 'UserController@show');
+////
 
 
 Route::group(['as' => 'api.jarvis.'], function(){
