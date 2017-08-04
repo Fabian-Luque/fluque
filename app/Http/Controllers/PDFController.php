@@ -26,7 +26,7 @@ class PDFController extends Controller
 		$reservas = $request['reservas'];
 		$propiedad_id = $request->input('propiedad_id');
 		$cliente_id = $request->input('cliente_id');
-		$iva = $request->input('iva');
+		/*$iva = $request->input('iva');*/
 
 
 
@@ -57,28 +57,50 @@ class PDFController extends Controller
       return Response::json($retorno, 400);
     }
 
-			foreach ($reserva as $ra) {
-				$monto_alojamiento += $ra->monto_alojamiento;
-				foreach($ra->huespedes as $huesped){
-					$huesped->monto_consumo = 0;
-					foreach($huesped->servicios as $servicio){
-						$huesped->monto_consumo += $servicio->pivot->precio_total;
-						$consumo += $servicio->pivot->precio_total;
+		foreach ($reserva as $ra) {
+			$monto_alojamiento += $ra->monto_alojamiento;
+			foreach($ra->huespedes as $huesped){
+				$huesped->monto_consumo = 0;
+				foreach($huesped->servicios as $servicio){
+					$huesped->monto_consumo += $servicio->pivot->precio_total;
+					$consumo += $servicio->pivot->precio_total;
 
 
-					}
-					
 				}
-
+				
 			}
+
+		}
 
 		array_push($reservas_pdf, $reserva);
 
 
-		}
+	}
+
+        foreach ($reserva as $reserv) {
+            if ($reserv->tipo_moneda_id == 1) {
+
+                if ($reserv->iva == 1) {
+                    $monto_reserva = $monto_alojamiento + $consumo;
+                    $iva           = (($monto_reserva * $propiedad_iva) / 100);
+                    $neto          = ($monto_reserva - $iva);
+                    $total         = $neto + $iva;
+                } else {
+
+                    $total = $monto_alojamiento + $consumo;
+                }
+                
+            }elseif($reserv->tipo_moneda_id == 2){
+
+                $total = $monto_alojamiento + $consumo;
+                $iva   = (($monto_reserva * $propiedad_iva) / 100);
+                $neto  = ($monto_reserva - $iva);
+
+            }
+        }
 
 		
-		if($iva == 1){
+/*		if($iva == 1){
 		$neto = round($monto_alojamiento + $consumo); 
 		$iva = round(($neto * $propiedad_iva) / 100);
 		$total = round($neto + $iva);
@@ -87,7 +109,7 @@ class PDFController extends Controller
 		$iva = round(($neto * 0) / 100);
 		$total = round($neto + $iva);
 
-		}
+		}*/
 
 		$pdf = PDF::loadView('pdf.estado_cuenta', ['propiedad' => $propiedad,'consumo' => $consumo , 'cliente'=> $cliente ,'reservas_pdf'=> $reservas_pdf, 'neto' => $neto , 'iva' => $iva, 'total' => $total]);
 

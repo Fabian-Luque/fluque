@@ -386,6 +386,8 @@ class ReservaController extends Controller
                 $reserva->checkin               = $fecha_inicio;
                 $reserva->checkout              = $fecha_fin;
                 $reserva->tipo_moneda_id        = $tipo_moneda_id;
+                $reserva->iva                   = $request['iva'];
+                $reserva->descuento             = $request['descuento'];
                 $reserva->estado_reserva_id     = $request['estado_reserva_id'];
                 $reserva->noches                = $request['noches'];
                 $reserva->observacion           = $request['observacion'];
