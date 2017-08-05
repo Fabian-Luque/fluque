@@ -199,29 +199,29 @@
           @foreach($reservas_pdf as $reservas)
             @foreach($reservas as $reserva)
               @if($reserva->tipo_moneda_id == 1)
+                @if($reserva->iva ==1)
+                <tr>
+                  <th class="data-tabla-detalles borde-derecha"><p class="titulo align-right">Subtotal</p></th>
+                  <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{ $neto }}</p></td>
+                </tr>
+                <tr>
+                  <th class="data-tabla-detalles borde-derecha"><p class="titulo align-right">IVA</p></th>
+                  <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{ $iva }}</p></td>
+                </tr>
+                <tr>
+                  <th class="data-tabla-detalles borde-derecha"><p class="titulo align-right">Total</p></th>
+                  <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{ $total }}</p></td>
+                </tr>
+                @else
 
-            <tr>
-              <td class="data-tabla-detalles borde-derecha"><p class="titulo">Consumos</p></td>
-              <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{ $consumo }}</p></td>
-            </tr>
-            <tr>
-              <th class="data-tabla-detalles borde-derecha"><p class="titulo align-right">Subtotal</p></th>
-              <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{ $neto }}</p></td>
-            </tr>
-            <tr>
-              <th class="data-tabla-detalles borde-derecha"><p class="titulo align-right">IVA</p></th>
-              <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{ $iva }}</p></td>
-            </tr>
-            <tr>
-              <th class="data-tabla-detalles borde-derecha"><p class="titulo align-right">Total</p></th>
-              <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{ $total }}</p></td>
-            </tr>
+                <tr>
+                  <th class="data-tabla-detalles borde-derecha"><p class="titulo align-right">Total</p></th>
+                  <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{ $total }}</p></td>
+                </tr>
+
+                @endif
               @else
 
-            <tr>
-              <td class="data-tabla-detalles borde-derecha"><p class="titulo">Consumos</p></td>
-              <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{ $consumo }}</p></td>
-            </tr>
             <tr>
               <th class="data-tabla-detalles borde-derecha"><p class="titulo align-right">Total</p></th>
               <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{ $total }}</p></td>
