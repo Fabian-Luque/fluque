@@ -19,7 +19,8 @@ class UserDashController extends Controller {
 
 	public function CreateUser(Request $request) {
         if ($request->has('name') && $request->has('email') && $request->has('password') && $request->has('phone') && $request->has('nombre') && $request->has('direccion') && $request->has('tipo_propiedad_id')) {
-            if (!$us = User::where('email',$request->email)) {
+            $us = User::where('email',$request->email)->first();
+            if (!isset($us->email)) {
                 $usuario = new User();
                 $usuario->name                 = $request->name;
                 $usuario->email                = $request->email;
@@ -39,14 +40,13 @@ class UserDashController extends Controller {
                 $data['msg'] = 'Usuario creado satisfactoriamente';
             } else {
                 $data['accion'] = 'Crear usuario';
-                $data['msg'] = 'Error. El correo de esta cuenta ya esta en uso';
+                $data['msg'] = 'Error. El correo ingresado ya esta en uso';
             }
         } else {
             $data['accion'] = 'Crear usuario';
             $data['msg'] = 'Datos requeridos';
         }
         return redirect('dash/adminuser')->with('respuesta', $data);
-        //return View('administrador.reguser')->with('respuesta', $data);
 	}
 
 	public function ReadUser(Request $request) {  
@@ -119,9 +119,13 @@ class UserDashController extends Controller {
         return Response::json($data);
 	} 
 
-    public function getViewTipoPropiedad(Request $request){
+    public function getViewTipoPropiedad(Request $request) {
         $TipoPropiedad = TipoPropiedad::all();
         return View('administrador.reguser')->with('tprops', $TipoPropiedad);
     }
- 
+
+    public function getViewPropiedad(Request $request) {
+        $propiedades = TipoPropiedad::all();
+        return View('administrador.prop')->with('tprops', $propiedades);
+    }
 }

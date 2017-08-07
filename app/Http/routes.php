@@ -27,6 +27,15 @@ Route::group(['prefix' => 'dash', 'middleware' => ['auth']],
 		);
 		Route::get('adminreguser', 'DashControllers\UserDashController@getViewTipoPropiedad');
 
+		Route::get('adminreguser', 'DashControllers\UserDashController@getViewPropiedad');
+
+		
+
+
+
+
+
+
 		Route::get(
 			'adminuser', 
 			function() {
