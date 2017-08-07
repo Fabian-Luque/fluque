@@ -804,11 +804,6 @@ class PropiedadController extends Controller
         }
     }
 
-    public function getViewTipoPropiedad(Request $request){
-        $TipoPropiedad = TipoPropiedad::all();
-        return View('administrador.reguser')->with('tprops', $TipoPropiedad);
-    }
-
     public function getTipoPropiedad($flag){
         $TipoPropiedad = TipoPropiedad::all();
         return $TipoPropiedad;

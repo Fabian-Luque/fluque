@@ -1,6 +1,25 @@
 @extends('administrador.home_admin')
 @include('administrador.requests')
 @section('container1')
+
+
+@if(session('respuesta'))
+    <?php 
+        $resp = session('respuesta');
+    ?>
+
+    <script type="text/javascript">
+        $(document).ready(
+            function(e) {
+                InfoModal(
+                    "<?php echo $resp['accion'];?>",
+                    "<?php echo $resp['msg'];?>"
+                );
+            }
+        );
+    </script>
+@endif
+
 <div id="respuesta" class="content">
 
     <div class="panel-group">
@@ -39,7 +58,6 @@
 									<td> {{ $user->email }} </td>
 									<td> {{ $user->phone }} </td>
 									<td> 
-
 										<a href="u" name="b-lista" value="{{ $user->id }}" class="btn btn-info btn-xs">Editar</a>
 										  
 										<a href="d" name="b-lista" value="{{ $user->id }}" class="btn btn-danger disable btn-xs">Eliminar</a>	

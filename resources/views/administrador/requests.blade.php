@@ -5,7 +5,9 @@
 		$("#titulomodal").append("<p>"+titulo+"</p>");
 		$("#textmodal").empty();
 		$("#textmodal").append("<p>"+texto+"</p>");
+		$("#confirma-del").hide();
 		$('#myModal').modal('show');
+
 	}
 
 	function MisRequests(tipo, ur, tok, accion, datos) {
@@ -24,7 +26,7 @@
         	error: function(xhr, textStatus, thrownError) {
             	InfoModal(
 					accion,
-					xhr.responseText
+					textStatus
 				);
             }
         });
@@ -32,34 +34,23 @@
 
 	$(document).ready(
 		function(e) {
-			$("form[name='f-crear-user']").submit(
+			
+			$("#confirma-del").click(
 				function(e) {
 					e.preventDefault();
-			    	var form 	 = $(e.target);
-                	var	formData = new FormData();
-                	var	params   = form.serializeArray();
-                	
-	            	$.each(
-	            		params, 
-	            		function(i, val) {
-        	        		formData.append(
-        	        			val.name, 
-        	        			val.value
-        	        		);
-    	        		}
-    	        	);
-    	  
-    	        	var url = "<?php echo url('');?>";//form.attr('id');
-
-	            	MisRequests(
-    	        		'POST',
-        	    		url + form.attr('id'),
-        	    		formData.get('_token'),
-        	    		'Registrar nuevo usuario',
-        	    		params
-            		);
-             	}
-        	);
+					var id = $('#confirma-del').attr('value');
+					var ur = "<?php echo url('dash/eliminar/user'); ?>";
+					var tok = "<?php echo csrf_token(); ?>";	
+	
+					MisRequests(
+						"POST",
+						ur,
+						tok,
+						"Eliminar usuario",
+						{id: id, _token: tok}
+					);
+				}
+			);
 
 			$("#btn-crear").click(
 				function(e) {
@@ -79,35 +70,34 @@
 
 						switch (val) {
         					case 'u':
-        										InfoModal(
-					"Actualizar datos",
-					"<button>Actualizar</button>"
-				);
+        						InfoModal("Actualizar","datos");
+        						$("#textmodal").load(
+        							"<?php echo url('/dash/edituser');?>"
+        						);
         					break;
 
         					case 'd':
         						var row = $(this).parents('tr');
 								var id = row.data('id');
-								var ur = "<?php echo url('dash/eliminar/user'); ?>";
-								var tok = "<?php echo csrf_token(); ?>";	
-	
-								MisRequests(
-									"POST",
-									ur,
-									tok,
-									"Eliminar usuario",
-									{id: id, _token: tok}
+        						
+        						InfoModal(
+									"Confirmacion",
+									"<h3>¿Esta seguro que desea eliminar este registro?</h3>"
 								);
+								$('#confirma-del').attr('value', id);
+								$('#confirma-del').show();
         					break;
         				
         					default: 
         					break;
 						}// fin switch
-					}
+					} 
 				}// fin funcion
 			);				
 		}
 	);
 </script>
 @endsection
+
+
 

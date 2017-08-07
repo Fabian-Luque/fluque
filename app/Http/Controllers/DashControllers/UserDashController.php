@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Propiedad;
 use App\Servicio;
 use App\TipoHabitacion;
+use App\TipoPropiedad;
 use App\User;
 use App\ZonaHoraria;
 use Illuminate\Http\Request;
@@ -34,13 +35,14 @@ class UserDashController extends Controller {
             $propiedad->user_id             = $usuario->id;
             $propiedad->save();
 
-            $data['errors'] = false;
+            $data['accion'] = 'Crear usuario';
             $data['msg'] = 'Usuario creado satisfactoriamente';
         } else {
-    		$data['errors'] = true;
-            $data['msg'] = "Datos requeridos";
+            $data['accion'] = 'Crear usuario';
+            $data['msg'] = 'Datos requeridos';
         }
-        return Response::json($data);
+        return redirect('dash/adminuser')->with('respuesta', $data);
+        //return View('administrador.reguser')->with('respuesta', $data);
 	}
 
 	public function ReadUser(Request $request) {  
@@ -110,6 +112,12 @@ class UserDashController extends Controller {
             $data['errors'] = true;
             $data['msg']    = 'Datos requeridos';
         }
-        return Response::json($request->all());
-	}  
+        return Response::json($data);
+	} 
+
+    public function getViewTipoPropiedad(Request $request){
+        $TipoPropiedad = TipoPropiedad::all();
+        return View('administrador.reguser')->with('tprops', $TipoPropiedad);
+    }
+ 
 }

@@ -29,8 +29,7 @@
         <nav class="navbar navbar-default navbar-fixed">
             <div class="container-fluid">
                 <div class="navbar-header">
-                    
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navigation-example-2">
+                                  <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navigation-example-2">
 
                         <span class="sr-only"></span>
                         <span class="icon-bar"></span>
@@ -58,16 +57,11 @@
                 </div>
             </div>
         </nav>
+        @yield('scripts')
         @yield('container1')
         @yield('registrar')
-        @yield('scripts')
-        <footer class="footer">
-            <div class="container-fluid">
-                <nav class="pull-left">
-                  
-                </nav>
-            </div>
-        </footer>
+
+        
     </div>
 </div>
 @endsection

@@ -1,11 +1,3 @@
-@extends('administrador.home_admin')
-@include('administrador.requests')
-@section('registrar')
-<div class="text-center col-md-4 col-md-offset-4" ">
-  <div class="col-lg-12 col-offset-6 centered">
-    <h3> Registro de Usuarios </h3>
-  </div>
-</div>  
 
 <ul>
     @foreach($errors->all() as $error)
@@ -15,10 +7,10 @@
 
 
 {!! Form::open(['route' => array('crear.user', )]) !!}
-<div class="container" style="padding-top: 6%;">   
+<div class="container text-center" >   
   <div class="row">
-    <div class="col-sm-6"">
-      <div style="padding-left: 30%;">
+    <div class="col-sm-2"">
+      <div >
       <div class="form-group has-feedback">
         {!! Form::label('Nombre') !!}
         {!! 
@@ -87,8 +79,8 @@
     
       </div>
     </div>
-    <div class="col-sm-6">
-      <div style="padding-right: 30%;">
+    <div class="col-sm-2">
+      <div>
         <div class="form-group has-feedback">
           {!! Form::label('Tipo Propiedad') !!}
           <select type="text" class="form-control" name="tipo_propiedad_id">
@@ -145,7 +137,7 @@
     </div>
   </div>
 </div>
-<div class="form-group has-feedback" style="padding-left:35%; padding-right:35%; padding-top: 1%">
+<div class="form-group has-feedback" style="padding-left:3%; padding-right:35%; padding-top: 1%">
     {!! Form::submit(
       'Registrar', 
       array(
@@ -154,4 +146,3 @@
     !!}
 </div>
 {!! Form::close() !!}
-@endsection

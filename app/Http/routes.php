@@ -25,17 +25,30 @@ Route::group(['prefix' => 'dash', 'middleware' => ['auth']],
     			return View::make('administrador.reguser');
 			}
 		);
-		Route::get('adminreguser', 'PropiedadController@getViewTipoPropiedad');
+		Route::get('adminreguser', 'DashControllers\UserDashController@getViewTipoPropiedad');
 
 		Route::get(
 			'adminuser', 
 			function() {
     			return View::make('administrador.user');
 			}
-		);		
+		);
+
+		Route::get(
+			'edituser', 
+			function() {
+    			return View::make('administrador.editmodal');
+			}
+		);
+		
+
+
 		Route::get('adminuser', 'DashControllers\UserDashController@ReadUser');
 				
-		Route::post('crear/user', 'DashControllers\UserDashController@CreateUser');
+		Route::post('crear/user', 'DashControllers\UserDashController@CreateUser')->name('crear.user');
+
+
+
 		Route::post('obtener/user', 'DashControllers\UserDashController@ReadUser');
 		Route::post('actualizar/user', 'DashControllers\UserDashController@UpdateUser');
 		Route::post('eliminar/user', 'DashControllers\UserDashController@DeleteUser');
