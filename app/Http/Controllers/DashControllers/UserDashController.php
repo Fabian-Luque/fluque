@@ -19,24 +19,28 @@ class UserDashController extends Controller {
 
 	public function CreateUser(Request $request) {
         if ($request->has('name') && $request->has('email') && $request->has('password') && $request->has('phone') && $request->has('nombre') && $request->has('direccion') && $request->has('tipo_propiedad_id')) {
-        
-        	$usuario = new User();
-            $usuario->name                 = $request->name;
-            $usuario->email                = $request->email;
-            $usuario->password             = $request->password;
-            $usuario->phone                = $request->phone;
-            $usuario->save();
+            if (!$us = User::where('email',$request->email)) {
+                $usuario = new User();
+                $usuario->name                 = $request->name;
+                $usuario->email                = $request->email;
+                $usuario->password             = $request->password;
+                $usuario->phone                = $request->phone;
+                $usuario->save();
 
-            $propiedad                      = new Propiedad();
-            $propiedad->id                  = $usuario->id;
-            $propiedad->nombre              = $request->nombre;
-            $propiedad->direccion           = $request->direccion;
-            $propiedad->tipo_propiedad_id   = $request->tipo_propiedad_id;
-            $propiedad->user_id             = $usuario->id;
-            $propiedad->save();
-
-            $data['accion'] = 'Crear usuario';
-            $data['msg'] = 'Usuario creado satisfactoriamente';
+                $propiedad                      = new Propiedad();
+                $propiedad->id                  = $usuario->id;
+                $propiedad->nombre              = $request->nombre;
+                $propiedad->direccion           = $request->direccion;
+                $propiedad->tipo_propiedad_id   = $request->tipo_propiedad_id;
+                $propiedad->user_id             = $usuario->id;
+                $propiedad->save();
+                
+                $data['accion'] = 'Crear usuario';
+                $data['msg'] = 'Usuario creado satisfactoriamente';
+            } else {
+                $data['accion'] = 'Crear usuario';
+                $data['msg'] = 'Error. El correo de esta cuenta ya esta en uso';
+            }
         } else {
             $data['accion'] = 'Crear usuario';
             $data['msg'] = 'Datos requeridos';
