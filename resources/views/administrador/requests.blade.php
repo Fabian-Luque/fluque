@@ -34,6 +34,13 @@
 
 	$(document).ready(
 		function(e) {
+
+			$("#confirmamodal").click(
+				function(e) {
+					e.preventDefault();
+					location.reload();
+				}
+			);
 			
 			$("#confirma-del").click(
 				function(e) {
@@ -49,6 +56,8 @@
 						"Eliminar usuario",
 						{id: id, _token: tok}
 					);
+
+
 				}
 			);
 

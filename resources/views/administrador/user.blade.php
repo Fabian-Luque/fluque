@@ -2,7 +2,6 @@
 @include('administrador.requests')
 @section('container1')
 
-
 @if(session('respuesta'))
     <?php 
         $resp = session('respuesta');
