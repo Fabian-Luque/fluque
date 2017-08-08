@@ -679,9 +679,28 @@ class ReservaController extends Controller
                 }
             }
 
-              
-           $monto_alojamiento = $precio_reserva;
-           $monto_total       = $monto_alojamiento + $reserva->monto_consumo;
+            $iva_propiedad = $propiedad->iva;
+            $iva_reserva   = $reserva->iva;
+            $descuento     = $reserva->descuento;
+
+            if ($reserva->iva == 0) {
+
+                $iva               = (($precio_reserva * $iva_propiedad) / 100);
+                $monto_alojamiento = $precio_reserva - $iva;
+                if ($descuento != 0) {
+                    $monto_alojamiento -= $descuento;
+                }
+                $monto_total       = $monto_alojamiento + $reserva->monto_consumo;
+
+            } else {
+
+                $monto_alojamiento = $precio_reserva;
+                if ($descuento != 0) {
+                    $monto_alojamiento -= $descuento;
+                }
+               $monto_total  = $monto_alojamiento + $reserva->monto_consumo;   
+            }
+
 
            $pagos_realizados  = $reserva->pagos;
            $monto_pagado      = 0;
@@ -845,8 +864,6 @@ class ReservaController extends Controller
                 }
             }
 
-
-
             /*return $precio_promedio_habitacion;*/
 
             $cantidad_huespedes = $reserva->ocupacion;
@@ -867,10 +884,29 @@ class ReservaController extends Controller
                     }
                 }
             }
+        
+            $iva_propiedad = $propiedad->iva;
+            $iva_reserva   = $reserva->iva;
+            $descuento     = $reserva->descuento;
 
-              
-           $monto_alojamiento = $precio_reserva;
-           $monto_total       = $monto_alojamiento + $reserva->monto_consumo;
+            if ($reserva->iva == 0) {
+
+                $iva               = (($precio_reserva * $iva_propiedad) / 100);
+                $monto_alojamiento = $precio_reserva - $iva;
+                if ($descuento != 0) {
+                    $monto_alojamiento -= $descuento;
+                }
+                $monto_total       = $monto_alojamiento + $reserva->monto_consumo;
+
+            } else {
+
+                $monto_alojamiento = $precio_reserva;
+                if ($descuento != 0) {
+                    $monto_alojamiento -= $descuento;
+                }
+               $monto_total  = $monto_alojamiento + $reserva->monto_consumo;   
+            }
+
 
            $pagos_realizados  = $reserva->pagos;
            $monto_pagado      = 0;
