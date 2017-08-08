@@ -479,6 +479,16 @@ class ReservaController extends Controller
             return Response::json($retorno, 400);
         }
 
+        if ($request->has('iva')) {
+            $iva = $request->input('iva');
+            $reserva->update(array('iva' => $iva));
+        }
+
+        if ($request->has('descuento')) {
+            $descuento = $request->input('descuento');
+            $reserva->update(array('descuento' => $descuento));
+        }
+
         if ($request->has('monto_alojamiento') && $request->has('monto_total') && $request->has('monto_por_pagar')) {
             $monto_alojamiento = $request->input('monto_alojamiento');
             $monto_total       = $request->input('monto_total');
