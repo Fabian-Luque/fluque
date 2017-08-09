@@ -3,7 +3,7 @@
 @section('registrar')
 <div class="text-center col-md-4 col-md-offset-4" ">
   <div class="col-lg-12 col-offset-6 centered">
-    <h4> Registro de Usuarios </h4>
+    <h4> Registro de Cuenta </h4>
   </div>
 </div>  
 

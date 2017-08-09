@@ -30,7 +30,7 @@
         </div>      
         <div class="card">
             <div class="table-responsive">
-    			<table id="tablausuarios" class="table table-hover table-striped">
+    			<table id="tablausuarios" class="table table-striped table-hover">
         			<thead>
             			<th>ID</th>
             			<th>NOMBRE</th>

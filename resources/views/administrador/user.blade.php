@@ -51,6 +51,7 @@
         			<tbody>
         				@if(!empty($users[0]['id']))
         					@foreach($users as $user)
+                                @if($user['email'] != Auth::user()->email)
         						<tr data-id="{{ $user->id }}" >
 									<td> {{ $user->id }} </td>
 									<td> {{ $user->name }} </td>
@@ -65,6 +66,7 @@
 										<?php echo $resp; ?>
 									@endif
    								</tr>
+                                @endif
    							@endforeach
 						@endif
         			</tbody>
