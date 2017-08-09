@@ -39,7 +39,7 @@
     	<div id="cont1" class="navbar-header">    
         </div>      
         <div class="card">
-            <div class="content table-responsive table-full-width">
+            <div class="table-responsive">
     			<table id="tablausuarios" class="table table-hover table-striped">
         			<thead>
             			<th>ID</th>

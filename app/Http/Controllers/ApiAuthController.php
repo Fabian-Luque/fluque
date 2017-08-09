@@ -22,16 +22,26 @@ class ApiAuthController extends Controller {
 
         	if (!is_null($estado)) {
         		switch ($estado->estado) {
+        			case '1':
+        				dd("hola");
+        			break;
+        			
         			case '2':
         				dd("hola");
-        				break;
-        			
+        			break;
+
+        			case '3':
+        				dd("hola");
+        			break;
+
+
         			default:
+
         			if (!$token = JWTAuth::attempt($credentials)) {
-            		$data['errors'] = true;
-                	$data['msg']  	= 'Usuario o contraseña incorrecta';
-            		$status = HttpResponse::HTTP_FORBIDDEN;
-        		} 
+            			$data['errors'] = true;
+ 		               	$data['msg']  	= 'Usuario o contraseña incorrecta';
+        	    		$status = HttpResponse::HTTP_FORBIDDEN;
+        			} 
         				break;
         		}
         	} else {
