@@ -14,7 +14,7 @@
 </ul>
 
 
-{!! Form::open(['route' => array('crear.user', )]) !!}
+{!! Form::open(['route' => array('crear.user', ), 'autocomplete' => 'off']) !!}
 <div class="container" style="padding-top: 6%;">   
   <div class="row">
     <div class="col-sm-6"">
@@ -44,10 +44,13 @@
             'required', 
             'class'=>'form-control',
             'name'=>'email', 
+            'id'=>'correo',
             'placeholder'=>'correo'
           )) 
         !!}
       </div>
+
+
 
       <div class="form-group has-feedback">
         {!! Form::label('password') !!}
@@ -55,6 +58,7 @@
           'password',[
             'class' => 'form-control', 
             'name'=>'password',
+            'autocomplete'=>'new-password',
             'placeholder' => 'Password', 
             'type' => 'password'
           ]) 

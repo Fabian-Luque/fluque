@@ -48,7 +48,7 @@
             			<th>PROPIEDAD</th>
             			<th>USUARIO</th>
             			<th>TIPO</th>
-            			<th>ACCION</th>
+            			<th>ACCIONES</th>
         			</thead>
         			<tbody>
         				@if(!empty($props[0]['id']))
