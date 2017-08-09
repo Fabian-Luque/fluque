@@ -386,6 +386,8 @@ class ReservaController extends Controller
                 $reserva->checkin               = $fecha_inicio;
                 $reserva->checkout              = $fecha_fin;
                 $reserva->tipo_moneda_id        = $tipo_moneda_id;
+                $reserva->iva                   = $request['iva'];
+                $reserva->descuento             = $habitacion_info['descuento'];
                 $reserva->estado_reserva_id     = $request['estado_reserva_id'];
                 $reserva->noches                = $request['noches'];
                 $reserva->observacion           = $request['observacion'];
@@ -475,6 +477,16 @@ class ReservaController extends Controller
                 'msj'    => "No se envia propiedad_id",
                 'errors' => true);
             return Response::json($retorno, 400);
+        }
+
+        if ($request->has('iva')) {
+            $iva = $request->input('iva');
+            $reserva->update(array('iva' => $iva));
+        }
+
+        if ($request->has('descuento')) {
+            $descuento = $request->input('descuento');
+            $reserva->update(array('descuento' => $descuento));
         }
 
         if ($request->has('monto_alojamiento') && $request->has('monto_total') && $request->has('monto_por_pagar')) {
@@ -665,6 +677,11 @@ class ReservaController extends Controller
                 foreach ($precio_promedio_habitacion as $precio) {
                     if ($precio['tipo_moneda_id'] == $reserva->tipo_moneda_id) {
                         $precio_reserva = $precio['precio'];
+                        if ($propiedad->tipo_cobro_id == 1) {
+                            $precio_reserva = $precio['precio'];
+                        } elseif ($propiedad->tipo_cobro_id == 2) {
+                            $precio_reserva = $precio['precio'] * $cantidad_huespedes;
+                        }
                     }
                 }
 
@@ -677,9 +694,28 @@ class ReservaController extends Controller
                 }
             }
 
-              
-           $monto_alojamiento = $precio_reserva;
-           $monto_total       = $monto_alojamiento + $reserva->monto_consumo;
+            $iva_propiedad = $propiedad->iva;
+            $iva_reserva   = $reserva->iva;
+            $descuento     = $reserva->descuento;
+
+            if ($reserva->iva == 0) {
+
+                $iva               = (($precio_reserva * $iva_propiedad) / 100);
+                $monto_alojamiento = $precio_reserva - $iva;
+                if ($descuento != 0) {
+                    $monto_alojamiento -= $descuento;
+                }
+                $monto_total       = $monto_alojamiento + $reserva->monto_consumo;
+
+            } else {
+
+                $monto_alojamiento = $precio_reserva;
+                if ($descuento != 0) {
+                    $monto_alojamiento -= $descuento;
+                }
+               $monto_total  = $monto_alojamiento + $reserva->monto_consumo;   
+            }
+
 
            $pagos_realizados  = $reserva->pagos;
            $monto_pagado      = 0;
@@ -843,9 +879,7 @@ class ReservaController extends Controller
                 }
             }
 
-
-
-            /*return $precio_promedio_habitacion;*/
+           /* return $precio_promedio_habitacion;*/
 
             $cantidad_huespedes = $reserva->ocupacion;
 
@@ -853,7 +887,12 @@ class ReservaController extends Controller
                 
                 foreach ($precio_promedio_habitacion as $precio) {
                     if ($precio['tipo_moneda_id']== $reserva->tipo_moneda_id) {
-                        $precio_reserva = $precio['precio'];
+
+                        if ($propiedad->tipo_cobro_id == 1) {
+                            $precio_reserva = $precio['precio'];
+                        } elseif ($propiedad->tipo_cobro_id == 2) {
+                            $precio_reserva = $precio['precio'] * $cantidad_huespedes;
+                        }
                     }
                 }
 
@@ -865,10 +904,29 @@ class ReservaController extends Controller
                     }
                 }
             }
+        
+            $iva_propiedad = $propiedad->iva;
+            $iva_reserva   = $reserva->iva;
+            $descuento     = $reserva->descuento;
 
-              
-           $monto_alojamiento = $precio_reserva;
-           $monto_total       = $monto_alojamiento + $reserva->monto_consumo;
+            if ($reserva->iva == 0) {
+
+                $iva               = (($precio_reserva * $iva_propiedad) / 100);
+                $monto_alojamiento = $precio_reserva - $iva;
+                if ($descuento != 0) {
+                    $monto_alojamiento -= $descuento;
+                }
+                $monto_total       = $monto_alojamiento + $reserva->monto_consumo;
+
+            } else {
+
+                $monto_alojamiento = $precio_reserva;
+                if ($descuento != 0) {
+                    $monto_alojamiento -= $descuento;
+                }
+               $monto_total  = $monto_alojamiento + $reserva->monto_consumo;   
+            }
+
 
            $pagos_realizados  = $reserva->pagos;
            $monto_pagado      = 0;
