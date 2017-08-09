@@ -18,23 +18,13 @@
         );
     </script>
 @endif
-
+    <h4 class="text-center"> Informacion de Propiedades </h4>
+  
 <div id="respuesta" class="content">
 
-    <div class="panel-group">
-        <div class="panel-heading">
-            <div class="card">
-            <div class="btn-group btn-group-xs">
-                <button type="button" id="btn-crear" class="btn btn-success">
-  						<strong>CREAR</strong> 
-                </button>
-                <button type="button" id="btn-buscar" class="btn btn-info">BUSCAR</button>
-                <button type="button" id="btn-editar" class="btn btn-warning">EDITAR</button>
-                <button type="button" id="btn-eliminar" class="btn btn-danger">ELIMINAR</button>
-                </div>
-            </div>
-        </div>
-    </div>
+
+
+  
     <div class="container-fluid">  
     	<div id="cont1" class="navbar-header">    
         </div>      
@@ -44,22 +34,47 @@
         			<thead>
             			<th>ID</th>
             			<th>NOMBRE</th>
-            			<th>CORREO</th>
+            			<th>NUMERO DE HAB</th>
+            			<th>CIUDAD</th>
+            			<th>DIRECCION</th>
             			<th>TELEFONO</th>
-            			<th>ACCIONES</th>
+            			<th>CORREO</th>
+            			<th>RESPONSABLE</th>
+            			<th>DESCRIPCION</th>
+            			<th>IVA</th>
+            			<th>% DEPOSITO</th>
+            			<th>PAIS</th>
+            			<th>REGION</th>
+            			<th>PROPIEDAD</th>
+            			<th>USUARIO</th>
+            			<th>TIPO</th>
+            			<th>ACCION</th>
         			</thead>
         			<tbody>
-        				@if(!empty($users[0]['id']))
-        					@foreach($users as $user)
-        						<tr data-id="{{ $user->id }}" >
-									<td> {{ $user->id }} </td>
-									<td> {{ $user->name }} </td>
-									<td> {{ $user->email }} </td>
-									<td> {{ $user->phone }} </td>
+        				@if(!empty($props[0]['id']))
+        					@foreach($props as $prop)
+        						<tr data-id="{{ $prop->id }}" >
+									<td> {{ $prop->id }} </td>
+									<td> {{ $prop->nombre }} </td>
+									<td> {{ $prop->numero_habitaciones }} </td>
+									<td> {{ $prop->ciudad }} </td>
+									<td> {{ $prop->direccion }} </td>
+									<td> {{ $prop->telefono }} </td>
+									<td> {{ $prop->email }} </td>
+									<td> {{ $prop->nombre_responsable }} </td>
+									<td> {{ $prop->descripcion }} </td>
+									<td> {{ $prop->iva }} </td>
+									<td> {{ $prop->porcentaje_deposito }} </td>
+									
+									<td> {{ $prop->pais_id }} </td>
+									<td> {{ $prop->region_id }} </td>
+									<td> {{ $prop->prop_id }} </td>
+									<td> {{ $prop->user_id }} </td>
+									<td> {{ $prop->tipo_propiedad_id }} </td>
 									<td> 
-										<a href="u" name="b-lista" value="{{ $user->id }}" class="btn btn-info btn-xs">Editar</a>
+										<a href="u" name="b-lista" value="{{ $prop->id }}" class="btn btn-info btn-xs">Editar</a>
 										  
-										<a href="d" name="b-lista" value="{{ $user->id }}" class="btn btn-danger disable btn-xs">Eliminar</a>	
+										<a href="d" name="b-lista" value="{{ $prop->id }}" class="btn btn-danger disable btn-xs">Eliminar</a>	
 									</td>
 									@if(!empty($resp['errors']))
 										<?php echo $resp; ?>

@@ -3,7 +3,7 @@
 @section('registrar')
 <div class="text-center col-md-4 col-md-offset-4" ">
   <div class="col-lg-12 col-offset-6 centered">
-    <h3> Registro de Usuarios </h3>
+    <h4> Registro de Usuarios </h4>
   </div>
 </div>  
 
@@ -94,7 +94,9 @@
           <select type="text" class="form-control" name="tipo_propiedad_id">
             @if(!empty($tprops[0]['id']))
               @foreach($tprops as $tprop)
-                <option value="{{ $tprop->id }}">{{ $tprop->nombre }}</option>
+                <option value="{{ $tprop->id }}">
+                  {{ $tprop->nombre }}
+                </option>
               @endforeach
             @endif
           </select>

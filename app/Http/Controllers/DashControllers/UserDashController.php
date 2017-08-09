@@ -125,7 +125,7 @@ class UserDashController extends Controller {
     }
 
     public function getViewPropiedad(Request $request) {
-        $propiedades = TipoPropiedad::all();
-        return View('administrador.prop')->with('tprops', $propiedades);
+        $propiedades = Propiedad::all();
+        return View('administrador.prop')->with('props', $propiedades);
     }
 }

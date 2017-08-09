@@ -37,7 +37,7 @@
 
 			$("#confirmamodal").click(
 				function(e) {
-					e.preventDefault();
+					e.preventDefault();	
 					location.reload();
 				}
 			);
