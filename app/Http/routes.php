@@ -42,6 +42,13 @@ Route::group(['prefix' => 'dash', 'middleware' => ['auth']],
     			return View::make('administrador.editmodal');
 			}
 		);
+
+		Route::get(
+			'buscauser', 
+			function() {
+    			return View::make('administrador.accionesC');
+			}
+		);
 		
 
 

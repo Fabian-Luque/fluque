@@ -26,12 +26,8 @@
             <div class="card">
             <div class="btn-group btn-group-xs">
                 <button type="button" id="btn-crear" class="btn btn-success">
-  						<strong>CREAR</strong> 
+  						<strong>CREAR CUENTA</strong> 
                 </button>
-                <button type="button" id="btn-buscar" class="btn btn-info">BUSCAR</button>
-                <button type="button" id="btn-editar" class="btn btn-warning">EDITAR</button>
-                <button type="button" id="btn-eliminar" class="btn btn-danger">ELIMINAR</button>
-                </div>
             </div>
         </div>
     </div>

@@ -8,6 +8,7 @@ use App\Propiedad;
 use App\Servicio;
 use App\TipoHabitacion;
 use App\TipoPropiedad;
+use App\Estadocuenta;
 use App\User;
 use App\ZonaHoraria;
 use Illuminate\Http\Request;
@@ -18,7 +19,7 @@ use JWTAuth;
 class UserDashController extends Controller {
 
 	public function CreateUser(Request $request) {
-        if ($request->has('name') && $request->has('email') && $request->has('password') && $request->has('phone') && $request->has('nombre') && $request->has('direccion') && $request->has('tipo_propiedad_id')) {
+        if ($request->has('name') && $request->has('email') && $request->has('password') && $request->has('phone') && $request->has('nombre') && $request->has('direccion') && $request->has('tipo_propiedad_id') && $request->has('tipo_cuenta')) {
             $us = User::where('email',$request->email)->first();
             if (!isset($us->email)) {
                 $usuario = new User();
@@ -35,6 +36,11 @@ class UserDashController extends Controller {
                 $propiedad->tipo_propiedad_id   = $request->tipo_propiedad_id;
                 $propiedad->user_id             = $usuario->id;
                 $propiedad->save();
+
+                $tipocuenta                     = new Estadocuenta();
+                $tipocuenta->propiedad_id       = $propiedad->id;
+                $tipocuenta->estado             = $request->tipo_cuenta;
+                $tipocuenta->save();
                 
                 $data['accion'] = 'Crear usuario';
                 $data['msg'] = 'Usuario creado satisfactoriamente';

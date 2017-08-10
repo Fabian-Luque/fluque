@@ -35,6 +35,17 @@
 	$(document).ready(
 		function(e) {
 
+			
+			$("#btn-buscar").click(
+				function(e) {
+					e.preventDefault();
+			
+					window.location.replace(
+						"<?php echo url('/dash/buscauser');?>"
+					);
+				}
+			);
+
 			$("#confirmamodal").click(
 				function(e) {
 					e.preventDefault();	
@@ -48,7 +59,6 @@
 					var id = $('#confirma-del').attr('value');
 					var ur = "<?php echo url('dash/eliminar/user'); ?>";
 					var tok = "<?php echo csrf_token(); ?>";	
-	
 					MisRequests(
 						"POST",
 						ur,
@@ -56,8 +66,6 @@
 						"Eliminar usuario",
 						{id: id, _token: tok}
 					);
-
-
 				}
 			);
 
@@ -97,6 +105,24 @@
 								$('#confirma-del').show();
         					break;
         				
+          					case 'up':
+        						InfoModal("Actualizar","datos");
+        						$("#textmodal").load(
+        							"<?php echo url('/dash/edituser');?>"
+        						);
+        					break;
+
+        					case 'dp':
+        						var row = $(this).parents('tr');
+								var id = row.data('id');
+        						
+        						InfoModal(
+									"Confirmacion",
+									"<h3>¿Esta seguro que desea eliminar este registro?</h3>"
+								);
+								$('#confirma-del').attr('value', id);
+								$('#confirma-del').show();
+        					break;
         					default: 
         					break;
 						}// fin switch

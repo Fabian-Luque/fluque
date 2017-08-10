@@ -4,9 +4,11 @@
    <div class="sidebar" data-color="green" data-image="/assets/img/mujer.jpg">
         <div class="sidebar-wrapper">
             <div class="logo">
-                <a href="https://holajarvis.com" class="simple-text">
-                    <img src="https://d3h2zczi4ovqqi.cloudfront.net/wp-content/uploads/2017/05/140.png">
+                <div class="col-lg-2">
+                <a href="https://www.gofeels.com" class="simple-text">
+                    <img src="https://www.gofeels.com/wp-content/uploads/2017/07/logodark.png">
                 </a>
+                </div>
             </div>
             <ul class="nav">
                 <li class="dropdown">
@@ -60,8 +62,7 @@
         @yield('scripts')
         @yield('container1')
         @yield('registrar')
-
-        
+        @yield('acciones')
     </div>
 </div>
 @endsection
