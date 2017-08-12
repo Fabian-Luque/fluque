@@ -93,16 +93,16 @@ class UserDashController extends Controller {
         if ($validator->fails()) {
             $data['errors'] = true;
             $data['msg'] = $validator->messages();
+
             return Response::json($data);
         } else {
             $user = User::find($request->id);
             $user->update($request->all());
             $user->touch();
 
-            $data = [
-                'errors1' => false,
-                'msg'    => 'Usuario actualizado satisfactoriamente',
-            ];
+            $data['errors'] = false;
+            $data['msg']    = 'Usuario actualizado satisfactoriamente';
+
             return Response::json($data);
         }
 	}  

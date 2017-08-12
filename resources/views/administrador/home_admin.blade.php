@@ -14,7 +14,7 @@
                 <li class="dropdown">
                     <a href="{{ url('/dash/adminuser') }}">
                         <i class="pe-7s-user"></i>
-                        <p>Usuarios</p>
+                        <p>Cuentas</p>
                     </a>
                 </li> 
                 <li>

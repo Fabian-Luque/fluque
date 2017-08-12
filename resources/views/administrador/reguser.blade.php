@@ -165,7 +165,7 @@
     </div>
   </div>
 </div>
-<div class="form-group has-feedback" style="padding-left:35%; padding-right:35%; padding-top: 1%">
+<div class="form-group has-feedback" style="padding-left:35%; padding-right:35%; padding-top: 1%;">
     {!! Form::submit(
       'Registrar', 
       array(
