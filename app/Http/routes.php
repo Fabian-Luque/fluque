@@ -22,7 +22,6 @@ Route::group(['as' => 'api.jarvis.'], function(){
 	Route::post('/signin', 'ApiAuthController@signin');
 	Route::post('crear/pais', 'PropiedadController@crearPais');
 	Route::post('crear/zona/horaria', 'PropiedadController@crearZona');
-	Route::get('reporte/financiero', 'PropiedadController@reporteFinanciero');
 
 
 	Route::group(['middleware' => ['jwt.auth']], function () {
@@ -87,6 +86,7 @@ Route::group(['as' => 'api.jarvis.'], function(){
 		Route::post('reserva/busqueda', 'ReservaController@filtroReservas');
 		Route::get('tipo/cobros', 'PropiedadController@getTipoCobro');
 		Route::post('editar/precios', 'TipoHabitacionController@editarPrecios');
+		Route::get('reporte/financiero', 'PropiedadController@reporteFinanciero');
 
 
 		Route::resource('user', 'UserController', ['except' => ['create', 'edit','store']]);
