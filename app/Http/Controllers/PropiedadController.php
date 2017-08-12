@@ -100,7 +100,8 @@ class PropiedadController extends Controller
             array_push($ingresos_mes, $montos);
             }
 
-        return $ingresos_mes; 
+        $grafico =[ 'grafico_1' => $ingresos_mes];
+        return $grafico;
     }
 
     public function reportes(Request $request){
