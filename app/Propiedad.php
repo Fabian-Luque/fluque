@@ -22,6 +22,10 @@ class Propiedad extends Model
 
     }
 
+    public function EstadoCuenta() {
+        return $this->hasOne('App\Estadocuenta', 'propiedad_id'); 
+    }
+
     public function pais(){
 
 

@@ -18,37 +18,25 @@ class ApiAuthController extends Controller {
         $user = User::where('email', $credentials['email'])->first();
 
         if(!is_null($user)) {
-        	$estado = Estadocuenta::where('propiedad_id', 2)->first();
+        	switch ($user->propiedad->EstadoCuenta->estado) {
+        		case '2': //
+        			$status         = 400;
+                    $data['errors'] = true;
+                    $data['msg']    = 'Su cuenta a caducado';
+        		break;
 
-        	if (!is_null($estado)) {
-        		switch ($estado->estado) {
-        			case '1': // estado demo hay q comprobar 15 dias
-        				dd("hola");
-        			break;
-        			
-        			case '2': // cuenta activa
-        				if (!$token = JWTAuth::attempt($credentials)) {
-            				$data['errors'] = true;
- 		               		$data['msg']  	= 'Usuario o contraseña incorrecta';
-        	    			$status = HttpResponse::HTTP_FORBIDDEN;
-        				} 
-        			break;
-
-        			case '3': //
-        				dd("hola");
-        			break;
-
-
-        			default:
-
-
-        				break;
-        		}
-        	} else {
-        		$status			= 400;
-        		$data['errors'] = true;
-        		$data['msg']  	= 'Su cuenta a caducado';
-        	}      
+    			default:
+                    if (!$token = JWTAuth::attempt($credentials)) {
+                        $data['errors'] = true;
+                        $data['msg']    = 'Usuario o contraseña incorrecta';
+                        $status = HttpResponse::HTTP_FORBIDDEN;
+                    } else {
+                        $status         = 200;
+                        $data['errors'] = false;
+                        $data['msg']    = 'log';
+                    }
+        		break;
+        	}
         } else {
         	$data['errors'] = true;
         	$data['msg']  	= 'xxxUsuario o contraseña incorrecta';
@@ -65,12 +53,17 @@ class ApiAuthController extends Controller {
 
 		try{
 			if(!$token = JWTAuth::attempt($credentials)){
-				return response()->json(['error' => 'invalid_credentials'], 401);
+				return response()->json(
+                    ['error' => 'invalid_credentials'], 
+                    401
+                );
 			}
 		} catch(JWTException $ex) {
-			return response()->json(['error' => 'algo anda mal'], 500);
+			return response()->json(
+                ['error' => 'algo anda mal'], 
+                500
+            );
 		}
-
 		$user = JWTAuth::toUser($token);
 		$userId = $user->id;
 		/*$userProp = DB::table('propiedades')->where('user_id', $user->id)->value('nombre');*/

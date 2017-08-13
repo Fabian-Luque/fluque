@@ -25,7 +25,10 @@ class CreateEventCambiaEstadoCuenta extends Migration {
                 DECLARE pid INT;
                 DECLARE state INT;
                 DECLARE created timestamp;  
-                DECLARE cur CURSOR FOR SELECT id, estado, created_at FROM `estado_cuenta`;
+                DECLARE cur CURSOR FOR 
+                    SELECT id, estado, created_at 
+                    FROM `estado_cuenta` 
+                    WHERE estado = 0;
                 DECLARE CONTINUE HANDLER FOR NOT FOUND SET fin = 1;
 
                 OPEN cur;
@@ -36,17 +39,18 @@ class CreateEventCambiaEstadoCuenta extends Migration {
                     IF fin = 1 THEN 
                         LEAVE mi_loop;
                     END IF;
-
-                    IF state = 0 THEN 
-                        IF (SELECT DATEDIFF(now(), created )) = 15 THEN
-                            UPDATE `estado_cuenta` SET estado = 2 WHERE id = pid;
-                        END IF;
+                    
+                    IF (SELECT DATEDIFF(now(), created )) = 15 THEN
+                        UPDATE `estado_cuenta` 
+                        SET estado = 2 
+                        WHERE id = pid;
                     END IF;
- 
+                  
                 END LOOP mi_loop; 
                 CLOSE cur;
             END |
-            DELIMITER ;');
+            DELIMITER ;
+        ');
     }
 
     /**
