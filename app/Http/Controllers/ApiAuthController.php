@@ -16,13 +16,14 @@ class ApiAuthController extends Controller {
 	public function signin(Request $request) {
         $credentials = $request->only('email', 'password');
         $user = User::where('email', $credentials['email'])->first();
+        $user_id = $user->id;
 
         if(!is_null($user)) {
         	switch ($user->propiedad->EstadoCuenta->estado) {
         		case '2': //
         			$status         = 400;
                     $data['errors'] = true;
-                    $data['msg']    = 'Su cuenta a caducado';
+                    $data['msg']    = 'Su cuenta de prueba a caducado';
         		break;
 
     			default:
@@ -31,20 +32,19 @@ class ApiAuthController extends Controller {
                         $data['msg']    = 'Usuario o contraseña incorrecta';
                         $status = HttpResponse::HTTP_FORBIDDEN;
                     } else {
-                        $status         = 200;
-                        $data['errors'] = false;
-                        $data['msg']    = 'log';
+                        $status          = 200;
+                        $data['errors']  = false;
+                        $data['msg']     = 'Usuario correcto';
+                        $data['usuario'] = compact('token', 'user_id');
                     }
         		break;
         	}
         } else {
         	$data['errors'] = true;
-        	$data['msg']  	= 'xxxUsuario o contraseña incorrecta';
+        	$data['msg']  	= 'Usuario o contraseña incorrecta';
             $status = HttpResponse::HTTP_FORBIDDEN;
         } 
-        return Response::json($data, $status);
-        $user_id = $user->id; 
-        return Response::json(compact('token', 'user_id'), 201);
+        return Response::json($data, $status); 
     }
 
 	public function userAuth(Request $request){
