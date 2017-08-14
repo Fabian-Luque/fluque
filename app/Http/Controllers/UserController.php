@@ -15,6 +15,50 @@ use Response;
 use JWTAuth;
 
 
+
+            SET GLOBAL event_scheduler = ON;
+            DELIMITER |
+
+            CREATE EVENT Evento
+            ON SCHEDULE EVERY 1 MINUTE STARTS CURRENT_TIMESTAMP 
+            DO
+            BEGIN
+                DECLARE fin INT DEFAULT 0;
+                DECLARE pid INT;
+                DECLARE dias INT;
+                DECLARE state INT;
+                DECLARE created timestamp;  
+                DECLARE cur CURSOR FOR 
+                    SELECT id, estado, created_at 
+                    FROM `estado_cuenta`;
+                DECLARE CONTINUE HANDLER FOR NOT FOUND SET fin = 1;
+
+                OPEN cur;
+                mi_loop: LOOP
+ 
+                    FETCH cur INTO pid, state, created;
+                    SELECT DATEDIFF(now(), created ) INTO dias;
+ 
+                    IF fin = 1 THEN 
+                        LEAVE mi_loop;
+                    END IF;
+                    
+                    IF dias = 15 THEN
+                        IF state = 15 THEN
+                            UPDATE `estado_cuenta` 
+                            SET estado = 2 
+                            WHERE id = pid; 
+                        END IF;
+                    END IF;
+                  
+                END LOOP mi_loop; 
+                CLOSE cur;
+            END |
+            DELIMITER ;
+
+
+
+
 class UserController extends Controller {
 
     public function show(Request $request) {  
@@ -106,13 +150,6 @@ class UserController extends Controller {
         }
     }
 
-    public function prueba(Request $request) {
-            $data = [
-                'errors' => $request->id,
-                'msg'    => 'benjaaaaaaaaaaaaa!!!!!!',
-            ];
-        return Response::json($data);
-    }
 
     public function delete(Request $request) {
         if ($request->has('id')) {

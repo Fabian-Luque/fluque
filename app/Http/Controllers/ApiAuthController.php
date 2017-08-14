@@ -21,7 +21,6 @@ class ApiAuthController extends Controller {
         if(!is_null($user)) {
         	switch ($user->propiedad->EstadoCuenta->estado) {
         		case '2': //
-        			$status         = 400;
                     $data['errors'] = true;
                     $data['msg']    = 'Su cuenta de prueba a caducado';
         		break;
@@ -32,10 +31,7 @@ class ApiAuthController extends Controller {
                         $data['msg']    = 'Usuario o contraseña incorrecta';
                         $status = HttpResponse::HTTP_FORBIDDEN;
                     } else {
-                        $status          = 200;
-                        $data['errors']  = false;
-                        $data['msg']     = 'Usuario correcto';
-                        $data['usuario'] = compact('token', 'user_id');
+                        $data = compact('token', 'user_id');
                     }
         		break;
         	}
@@ -44,15 +40,15 @@ class ApiAuthController extends Controller {
         	$data['msg']  	= 'Usuario o contraseña incorrecta';
             $status = HttpResponse::HTTP_FORBIDDEN;
         } 
-        return Response::json($data, $status); 
+        return Response::json($data); 
     }
 
-	public function userAuth(Request $request){
+	public function userAuth(Request $request) {
 		$credentials = $request->only('email', 'password');
 		$token = null;
 
-		try{
-			if(!$token = JWTAuth::attempt($credentials)){
+		try {
+			if(!$token = JWTAuth::attempt($credentials)) {
 				return response()->json(
                     ['error' => 'invalid_credentials'], 
                     401
@@ -67,8 +63,11 @@ class ApiAuthController extends Controller {
 		$user = JWTAuth::toUser($token);
 		$userId = $user->id;
 		/*$userProp = DB::table('propiedades')->where('user_id', $user->id)->value('nombre');*/
-
 		/*return response()->json(compact('token', 'user', 'userProp'));*/
 		return response()->json(compact('token', 'userId'));
 	}
+
+    public function ResetPassword(Request $request) {
+        
+    }
 }

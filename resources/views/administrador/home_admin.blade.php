@@ -4,11 +4,11 @@
    <div class="sidebar" data-color="green" data-image="/assets/img/mujer.jpg">
         <div class="sidebar-wrapper">
             <div class="logo">
-                <div class="col-lg-2">
-                <a href="https://www.gofeels.com" class="simple-text">
-                    <img src="https://www.gofeels.com/wp-content/uploads/2017/07/logodark.png">
-                </a>
-                </div>
+            
+                    <a href="https://www.gofeels.com" class="simple-text">
+                        <img class="img-responsive" src="https://www.gofeels.com/wp-content/uploads/2017/07/logodark.png">
+                    </a>
+           
             </div>
             <ul class="nav">
                 <li class="dropdown">
@@ -31,13 +31,11 @@
         <nav class="navbar navbar-default navbar-fixed">
             <div class="container-fluid">
                 <div class="navbar-header">
-                                  <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navigation-example-2">
-
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navigation-example-2">
                         <span class="sr-only"></span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
-                 
                     </button>
                 </div>
                 <div class="collapse navbar-collapse" >
