@@ -18,7 +18,12 @@ use App\Huesped;
 use App\PrecioTemporada;
 use App\ZonaHoraria;
 use App\TipoCobro;
+use App\TipoComprobante;
+use App\MetodoPago;
+use App\TipoFuente;
+use App\TipoCliente;
 use Illuminate\Support\Facades\Config;
+use Input;
 use Illuminate\Http\Request;
 use Response;
 use Validator;
@@ -26,7 +31,218 @@ use \Carbon\Carbon;
 
 class PropiedadController extends Controller
 {
+    /**
+     * Reporte financiero de propiedad
+     *
+     * @author ALLEN
+     *
+     * @param  Request          $request (propiedad_id, $fecha_inicio, $fecha_fin)
+     * @return Response::json
+     */
     public function reporteFinanciero(Request $request)
+    {
+        if ($request->has('propiedad_id')) {
+            $propiedad_id = $request->input('propiedad_id');
+            $propiedad    = Propiedad::where('id', $propiedad_id)->first();
+            if (is_null($propiedad)) {
+                $retorno = array(
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia propiedad_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        if ($request->has('fecha_inicio')) {
+            $getInicio       = new Carbon($request->input('fecha_inicio'));
+            $inicio          = $getInicio->startOfDay();
+            $zona_horaria    = ZonaHoraria::where('id', $propiedad->zona_horaria_id)->first();
+            $pais            = $zona_horaria->nombre;
+            $fecha_inicio    = Carbon::createFromFormat('Y-m-d H:i:s', $inicio, $pais)->tz('UTC');
+        }
+
+        if ($request->has('fecha_fin')) {
+            $fin             = new Carbon($request->input('fecha_fin'));
+            $fechaFin        = $fin->addDay();
+            $fin_fecha       = $fechaFin->startOfDay();
+            $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $fechaFin, $pais)->tz('UTC');
+        } else {
+            $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $inicio, $pais)->tz('UTC')->addDay();
+        }
+
+        $pagos    = Pago::where('created_at','>=' , $fecha_inicio)->where('created_at', '<' , $fecha_fin)
+            ->whereHas('reserva.habitacion', function($query) use($propiedad_id){
+                $query->where('propiedad_id', $propiedad_id);
+        })->with(['tipoComprobante', 'metodoPago', 'tipoMoneda','reserva.habitacion.tipoHabitacion', 'reserva.cliente.tipoCliente', 'reserva.tipoFuente'])->get();
+
+        $reservas = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
+                $query->where('propiedad_id', $propiedad_id);
+        })->whereHas('pagos', function($query) use($fecha_inicio,$fecha_fin){
+                $query->where('created_at','>=' , $fecha_inicio)->where('created_at', '<' , $fecha_fin);
+        })->with(['habitacion.tipoHabitacion', 'tipoFuente'])->get();
+
+        $propiedad_monedas         = $propiedad->tipoMonedas;
+        $tipos_comprobante         = tipoComprobante::all();
+        $ingresos_tipo_comprobante = [];
+        foreach ($tipos_comprobante as $comprobante) {
+            $ingresos_moneda = [];
+            foreach ($propiedad_monedas as $moneda) {
+                $suma_ingreso   = 0;
+                foreach ($pagos as $pago) {
+                    if ($moneda->id == $pago->tipo_moneda_id) {
+                        if ($comprobante->nombre == $pago->tipoComprobante->nombre) {
+                            $suma_ingreso += $pago->monto_equivalente;
+                        }
+                    }
+                }
+                $ingresos['monto']                   = $suma_ingreso;
+                $ingresos['tipo_moneda_id']          = $moneda->id;
+                $ingresos['nombre_moneda']           = $moneda->nombre;
+                $ingresos['cantidad_decimales']      = $moneda->cantidad_decimales;  
+                array_push($ingresos_moneda, $ingresos);
+            }
+            $ingresos_comprobate['id']           = $comprobante->id;
+            $ingresos_comprobate['nombre']       = $comprobante->nombre;
+            $ingresos_comprobate['ingresos']     = $ingresos_moneda;
+            array_push($ingresos_tipo_comprobante, $ingresos_comprobate);
+
+        }
+
+        $metodo_pagos              = MetodoPago::all();
+        $ingresos_metodo_pago      = [];
+        foreach ($metodo_pagos as $metodo) {
+            $ingresos_moneda = [];
+            foreach ($propiedad_monedas as $moneda) {
+                $suma_ingreso   = 0;
+                foreach ($pagos as $pago) {
+                    if ($moneda->id == $pago->tipo_moneda_id) {
+                        if ($metodo->nombre == $pago->MetodoPago->nombre) {
+                            $suma_ingreso += $pago->monto_equivalente;
+                        }
+                    }
+                }
+                $ingresos['monto']                   = $suma_ingreso;
+                $ingresos['tipo_moneda_id']          = $moneda->id;
+                $ingresos['nombre_moneda']           = $moneda->nombre;
+                $ingresos['cantidad_decimales']      = $moneda->cantidad_decimales;  
+                array_push($ingresos_moneda, $ingresos);
+            }
+            $ingresos_pago['id']           = $metodo->id;
+            $ingresos_pago['nombre']       = $metodo->nombre;
+            $ingresos_pago['ingresos']     = $ingresos_moneda;
+            array_push($ingresos_metodo_pago, $ingresos_pago);
+ 
+
+        }
+
+        $tipo_fuentes              = TipoFuente::all();
+        $ingresos_tipo_fuente      = [];
+        foreach ($tipo_fuentes as $fuente) {
+            $cantidad = 0;
+            foreach ($reservas as $reserva) {
+                if ($reserva->tipo_fuente_id == $fuente->id) {
+                    $cantidad++;
+                }
+            }
+            $ingresos_moneda = [];
+            foreach ($propiedad_monedas as $moneda) {
+                $suma_ingreso   = 0;
+                foreach ($pagos as $pago) {
+                    if ($moneda->id == $pago->tipo_moneda_id) {
+                        if ($fuente->nombre == $pago->reserva->tipoFuente->nombre) {
+                            $suma_ingreso += $pago->monto_equivalente;
+                        }
+                    }
+                }
+                $ingresos['monto']                   = $suma_ingreso;
+                $ingresos['tipo_moneda_id']          = $moneda->id;
+                $ingresos['nombre_moneda']           = $moneda->nombre;
+                $ingresos['cantidad_decimales']      = $moneda->cantidad_decimales;  
+                array_push($ingresos_moneda, $ingresos);
+            }
+            $ingresos_fuente['id']           = $fuente->id;
+            $ingresos_fuente['nombre']       = $fuente->nombre;
+            $ingresos_fuente['cantidad']     = $cantidad;
+            $ingresos_fuente['ingresos']     = $ingresos_moneda;
+            array_push($ingresos_tipo_fuente, $ingresos_fuente);
+        }
+
+        $tipos_habitacion = TipoHabitacion::whereHas('habitaciones', function ($query) use ($propiedad_id) {
+                $query->where('propiedad_id', $propiedad_id);
+        })->get();
+
+        $ingresos_tipo_habitacion   = [];
+        foreach ($tipos_habitacion as $tipo) {
+            $cantidad = 0;
+            foreach ($reservas as $reserva) {
+                if ($reserva->habitacion->tipoHabitacion->nombre == $tipo->nombre) {
+                    $cantidad++;
+                }
+            }
+            $ingresos_moneda = [];
+            foreach ($propiedad_monedas as $moneda) {
+                $suma_ingreso   = 0;
+                foreach ($pagos as $pago) {
+                    if ($moneda->id == $pago->tipo_moneda_id) {
+                        if ($tipo->nombre == $pago->reserva->cliente->tipoCliente->nombre) {
+                            $suma_ingreso += $pago->monto_equivalente;
+                        }
+                    }
+                }
+                $ingresos['monto']                   = $suma_ingreso;
+                $ingresos['tipo_moneda_id']          = $moneda->id;
+                $ingresos['nombre_moneda']           = $moneda->nombre;
+                $ingresos['cantidad_decimales']      = $moneda->cantidad_decimales;  
+                array_push($ingresos_moneda, $ingresos);
+            }
+            $ingresos_habitacion['id']           = $tipo->id;
+            $ingresos_habitacion['nombre']       = $tipo->nombre;
+            $ingresos_habitacion['cantidad']     = $cantidad;
+            $ingresos_habitacion['ingresos']     = $ingresos_moneda;
+            array_push($ingresos_tipo_habitacion, $ingresos_habitacion);
+        }
+
+        $tipos_cliente           = TipoCliente::all();
+        $ingresos_tipo_cliente   = [];
+        foreach ($tipos_cliente as $tipo) {
+            $ingresos_moneda = [];
+            foreach ($propiedad_monedas as $moneda) {
+                $suma_ingreso   = 0;
+                foreach ($pagos as $pago) {
+                    if ($moneda->id == $pago->tipo_moneda_id) {
+                        if ($tipo->nombre == $pago->reserva->habitacion->tipoHabitacion->nombre) {
+                            $suma_ingreso += $pago->monto_equivalente;
+                        }
+                    }
+                }
+                $ingresos['monto']                   = $suma_ingreso;
+                $ingresos['tipo_moneda_id']          = $moneda->id;
+                $ingresos['nombre_moneda']           = $moneda->nombre;
+                $ingresos['cantidad_decimales']      = $moneda->cantidad_decimales;  
+                array_push($ingresos_moneda, $ingresos);
+            }
+            $ingresos_habitacion['id']           = $tipo->id;
+            $ingresos_habitacion['nombre']       = $tipo->nombre;
+            $ingresos_habitacion['ingresos']     = $ingresos_moneda;
+            array_push($ingresos_tipo_cliente, $ingresos_habitacion);
+        }
+
+        $ingresos_total['tipos_habitaciones']    = $ingresos_tipo_habitacion;
+        $ingresos_total['tipos_fuentes']        = $ingresos_tipo_fuente;
+        $ingresos_total['tipos_clientes']       = $ingresos_tipo_cliente;
+        $ingresos_total['metodos_pagos']        = $ingresos_metodo_pago;
+        $ingresos_total['tipos_comprobantes']   = $ingresos_tipo_comprobante;
+
+        return $ingresos_total;
+    }
+
+
+
+    public function reporteFinancieroAnual(Request $request)
     {
         if ($request->has('propiedad_id')) {
             $propiedad_id = $request->input('propiedad_id');
@@ -54,51 +270,50 @@ class PropiedadController extends Controller
 
         $ingresos_mes     = [];
 
-            foreach ($meses as $mes) {
-                $mes_año = $mes;    
-                foreach ($años as $año) {
-                    foreach ($año[$año_actual] as $m) {
-                        $fecha_inicio = $m[$mes_año]['inicio'];
-                        $fecha_fin    = $m[$mes_año]['fin'];
+        foreach ($meses as $mes) {
+            $mes_año = $mes;    
+            foreach ($años as $año) {
+                foreach ($año[$año_actual] as $m) {
+                    $fecha_inicio = $m[$mes_año]['inicio'];
+                    $fecha_fin    = $m[$mes_año]['fin'];
 
-                        if ($fecha_inicio) {
-                            $getInicio       = new Carbon($fecha_inicio);
-                            $inicio          = $getInicio->startOfDay();
-                            $zona_horaria    = ZonaHoraria::where('id', $propiedad->zona_horaria_id)->first();
-                            $pais            = $zona_horaria->nombre;
-                            $fecha_inicio    = Carbon::createFromFormat('Y-m-d H:i:s', $inicio, $pais)->tz('UTC');
-                        }
-
-                        if ($fecha_fin) {
-                            $fin             = new Carbon($fecha_fin);
-                            $fechaFin        = $fin->addDay();
-                            $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $fechaFin, $pais)->tz('UTC');
-                        }
-
-                        $pagos = Pago::where('created_at','>=' , $fecha_inicio)->where('created_at', '<' , $fecha_fin)
-                            ->whereHas('reserva.habitacion', function($query) use($propiedad_id){
-                                $query->where('propiedad_id', $propiedad_id);
-                        })->with('tipoComprobante', 'metodoPago', 'tipoMoneda')->with('reserva')->get();
-
-                        $i = 1;
-                        foreach ($moneda_propiedad as $moneda) {
-                            $suma_pagos = 0;
-                            foreach ($pagos as $pago) { 
-                                if ($moneda->id == $pago->tipo_moneda_id) {
-                                    $suma_pagos += $pago->monto_equivalente;
-                                }
-                            }
-                            $ingreso['moneda-'.$i]  = $moneda->nombre;
-                            $ingreso['monto-'.$i]   = $suma_pagos;
-                            $ingreso['mes']         = $mes_año;
-                            $i++;
-                        }
-                        $montos = $ingreso;
+                    if ($fecha_inicio) {
+                        $getInicio       = new Carbon($fecha_inicio);
+                        $inicio          = $getInicio->startOfDay();
+                        $zona_horaria    = ZonaHoraria::where('id', $propiedad->zona_horaria_id)->first();
+                        $pais            = $zona_horaria->nombre;
+                        $fecha_inicio    = Carbon::createFromFormat('Y-m-d H:i:s', $inicio, $pais)->tz('UTC');
                     }
-                }
 
-            array_push($ingresos_mes, $montos);
+                    if ($fecha_fin) {
+                        $fin             = new Carbon($fecha_fin);
+                        $fechaFin        = $fin->addDay();
+                        $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $fechaFin, $pais)->tz('UTC');
+                    }
+
+                    $pagos = Pago::where('created_at','>=' , $fecha_inicio)->where('created_at', '<' , $fecha_fin)
+                        ->whereHas('reserva.habitacion', function($query) use($propiedad_id){
+                            $query->where('propiedad_id', $propiedad_id);
+                    })->with('tipoComprobante', 'metodoPago', 'tipoMoneda')->with('reserva')->get();
+
+                    $i = 1;
+                    foreach ($moneda_propiedad as $moneda) {
+                        $suma_pagos = 0;
+                        foreach ($pagos as $pago) { 
+                            if ($moneda->id == $pago->tipo_moneda_id) {
+                                $suma_pagos += $pago->monto_equivalente;
+                            }
+                        }
+                        $ingreso['moneda-'.$i]  = $moneda->nombre;
+                        $ingreso['monto-'.$i]   = $suma_pagos;
+                        $ingreso['mes']         = $mes_año;
+                        $i++;
+                    }
+                    $montos = $ingreso;
+                }
             }
+            array_push($ingresos_mes, $montos);
+        }
 
         $grafico =[ 'grafico_1' => $ingresos_mes];
         return $grafico;
