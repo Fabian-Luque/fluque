@@ -162,7 +162,7 @@ class PropiedadController extends Controller
                 $suma_ingreso   = 0;
                 foreach ($pagos as $pago) {
                     if ($moneda->id == $pago->tipo_moneda_id) {
-                        if ($tipo->nombre == $pago->reserva->cliente->tipoCliente->nombre) {
+                        if ($tipo->nombre == $pago->reserva->habitacion->tipoHabitacion->nombre) {
                             $suma_ingreso += $pago->monto_equivalente;
                         }
                     }
@@ -188,7 +188,7 @@ class PropiedadController extends Controller
                 $suma_ingreso   = 0;
                 foreach ($pagos as $pago) {
                     if ($moneda->id == $pago->tipo_moneda_id) {
-                        if ($tipo->nombre == $pago->reserva->habitacion->tipoHabitacion->nombre) {
+                        if ($tipo->nombre == $pago->reserva->cliente->tipoCliente->nombre) {
                             $suma_ingreso += $pago->monto_equivalente;
                         }
                     }
@@ -213,8 +213,14 @@ class PropiedadController extends Controller
         return $ingresos_total;
     }
 
-
-
+    /**
+     * Reporte financiero anual de propiedad
+     *
+     * @author ALLEN
+     *
+     * @param  Request          $request (propiedad_id, $ano_actua)
+     * @return Response::json
+     */
     public function reporteFinancieroAnual(Request $request)
     {
         if ($request->has('propiedad_id')) {
