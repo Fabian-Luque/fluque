@@ -242,7 +242,7 @@ class PropiedadController extends Controller
 
 
 
-    public function reporteFinancieroGrafico(Request $request)
+    public function reporteFinancieroAnual(Request $request)
     {
         if ($request->has('propiedad_id')) {
             $propiedad_id = $request->input('propiedad_id');
@@ -260,20 +260,25 @@ class PropiedadController extends Controller
             return Response::json($retorno, 400);
         }
 
+        if ($request->has('ano_actual')) {
+            $ano_actual = $request->input('ano_actual');
+        } else {
+            $retorno = array(
+               'msj'    => "No se envia año actual",
+               'errors' => true);
+            return Response::json($retorno, 404);
+        }
+
         $moneda_propiedad = $propiedad->tipoMonedas;
         $cantidad_monedas = count($moneda_propiedad);
         $años             = Config::get('reportes.años');
         $meses            = Config::get('reportes.meses');
-
-        $fecha_actual     = new Carbon('now');
-        $año_actual       = $fecha_actual->format('Y');
-
         $ingresos_mes     = [];
 
         foreach ($meses as $mes) {
             $mes_año = $mes;    
             foreach ($años as $año) {
-                foreach ($año[$año_actual] as $m) {
+                foreach ($año[$ano_actual] as $m) {
                     $fecha_inicio = $m[$mes_año]['inicio'];
                     $fecha_fin    = $m[$mes_año]['fin'];
 
@@ -304,9 +309,11 @@ class PropiedadController extends Controller
                                 $suma_pagos += $pago->monto_equivalente;
                             }
                         }
-                        $ingreso['moneda-'.$i]  = $moneda->nombre;
-                        $ingreso['monto-'.$i]   = $suma_pagos;
-                        $ingreso['mes']         = $mes_año;
+                        $ingreso['moneda-'.$i]      = $moneda->nombre;
+                        $ingreso['monto-'.$i]       = $suma_pagos;
+                        $ingreso['mes']             = $mes_año;
+                        $ingreso['fecha_inicio']    = $m[$mes_año]['inicio'];
+                        $ingreso['fecha_fin']       = $m[$mes_año]['fin'];
                         $i++;
                     }
                     $montos = $ingreso;
