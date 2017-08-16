@@ -77,17 +77,18 @@ class PropiedadController extends Controller
         $pagos    = Pago::where('created_at','>=' , $fecha_inicio)->where('created_at', '<' , $fecha_fin)
             ->whereHas('reserva.habitacion', function($query) use($propiedad_id){
                 $query->where('propiedad_id', $propiedad_id);
-        })->with(['tipoComprobante', 'metodoPago', 'tipoMoneda','reserva.habitacion.tipoHabitacion', 'reserva.cliente.tipoCliente', 'reserva.tipoFuente'])->get();
+        })->with(['tipoComprobante', 'metodoPago', 'tipoMoneda','reserva.habitacion.tipoHabitacion', 'reserva.cliente.tipoCliente', 'reserva.tipoFuente', 'reserva.huespedes.servicios'])->get();
 
         $reservas = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
                 $query->where('propiedad_id', $propiedad_id);
         })->whereHas('pagos', function($query) use($fecha_inicio,$fecha_fin){
                 $query->where('created_at','>=' , $fecha_inicio)->where('created_at', '<' , $fecha_fin);
-        })->with(['habitacion.tipoHabitacion', 'tipoFuente'])->get();
+        })->with(['habitacion.tipoHabitacion', 'tipoFuente', 'huespedes.servicios'])->get();
 
         $propiedad_monedas    = $propiedad->tipoMonedas;
         $total_habitacion     = [];
         $total_consumos       = [];
+        $total_ingresos       = [];
         foreach ($propiedad_monedas as $moneda) {
             $tipo_moneda_id    = $moneda->id;
             $pagos_tipo_moneda = $pagos->where('tipo_moneda_id', $tipo_moneda_id);
@@ -105,18 +106,24 @@ class PropiedadController extends Controller
                 }
             }
 
-          $hab['monto']              = $ingresos_por_habitacion;
-          $hab['tipo_moneda_id']     = $tipo_moneda_id;
-          $hab['nombre_moneda']      = $moneda->nombre;
-          $hab['cantidad_decimales'] = $moneda->cantidad_decimales;
+            $ingreso_total['monto']              = $suma_pagos;
+            $ingreso_total['tipo_moneda_id']     = $tipo_moneda_id;
+            $ingreso_total['nombre_moneda']      = $moneda->nombre;
+            $ingreso_total['cantidad_decimales'] = $moneda->cantidad_decimales;
 
-          $serv['monto']              = $ingresos_por_consumos;
-          $serv['tipo_moneda_id']     = $tipo_moneda_id;
-          $serv['nombre_moneda']      = $moneda->nombre;
-          $serv['cantidad_decimales'] = $moneda->cantidad_decimales;
+            $hab['monto']              = $ingresos_por_habitacion;
+            $hab['tipo_moneda_id']     = $tipo_moneda_id;
+            $hab['nombre_moneda']      = $moneda->nombre;
+            $hab['cantidad_decimales'] = $moneda->cantidad_decimales;
 
-          array_push($total_habitacion, $hab);
-          array_push($total_consumos, $serv);
+            $serv['monto']              = $ingresos_por_consumos;
+            $serv['tipo_moneda_id']     = $tipo_moneda_id;
+            $serv['nombre_moneda']      = $moneda->nombre;
+            $serv['cantidad_decimales'] = $moneda->cantidad_decimales;
+
+            array_push($total_ingresos, $ingreso_total);
+            array_push($total_habitacion, $hab);
+            array_push($total_consumos, $serv);
         }
 
         $propiedad_monedas         = $propiedad->tipoMonedas;
@@ -143,8 +150,6 @@ class PropiedadController extends Controller
             $ingresos_pago['nombre']       = $metodo->nombre;
             $ingresos_pago['ingresos']     = $ingresos_moneda;
             array_push($ingresos_metodo_pago, $ingresos_pago);
- 
-
         }
 
         $tipo_fuentes              = TipoFuente::all();
@@ -239,8 +244,31 @@ class PropiedadController extends Controller
             array_push($ingresos_tipo_cliente, $ingresos_habitacion);
         }
 
+        $servicios = Servicio::where('propiedad_id', $propiedad_id)->get();
+
+        $cantidad_servicios = [];
+        $cantidad_vendido   = 0;
+        foreach ($servicios as $servicio) {
+            foreach ($pagos as $pago) {
+                foreach ($pago->reserva->huespedes as $huesped) {
+                    foreach ($huesped->servicios as $serv) {
+                        if ($servicio->nombre == $serv->nombre) {
+                            $cantidad += $serv->pivot->cantidad;
+                        }
+                    }
+                }
+            }
+
+            $cantidad_serv['id']       = $servicio->id;
+            $cantidad_serv['nombre']   = $servicio->nombre;
+            $cantidad_serv['cantidad'] = $cantidad_vendido;
+            array_push($cantidad_servicios, $cantidad_serv);
+        }
+
+        $ingresos_total['ingresos_totales']         = $total_ingresos;
         $ingresos_total['ingresos_por_habitacion']  = $total_habitacion;
         $ingresos_total['ingresos_por_consumos']    = $total_consumos;
+        $ingresos_total['cantidad_servicios']       = $cantidad_servicios;
         $ingresos_total['tipos_habitaciones']       = $ingresos_tipo_habitacion;
         $ingresos_total['tipos_fuentes']            = $ingresos_tipo_fuente;
         $ingresos_total['tipos_clientes']           = $ingresos_tipo_cliente;
