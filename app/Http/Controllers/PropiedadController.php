@@ -86,32 +86,6 @@ class PropiedadController extends Controller
         })->with(['habitacion.tipoHabitacion', 'tipoFuente'])->get();
 
         $propiedad_monedas         = $propiedad->tipoMonedas;
-        $tipos_comprobante         = tipoComprobante::all();
-        $ingresos_tipo_comprobante = [];
-        foreach ($tipos_comprobante as $comprobante) {
-            $ingresos_moneda = [];
-            foreach ($propiedad_monedas as $moneda) {
-                $suma_ingreso   = 0;
-                foreach ($pagos as $pago) {
-                    if ($moneda->id == $pago->tipo_moneda_id) {
-                        if ($comprobante->nombre == $pago->tipoComprobante->nombre) {
-                            $suma_ingreso += $pago->monto_equivalente;
-                        }
-                    }
-                }
-                $ingresos['monto']                   = $suma_ingreso;
-                $ingresos['tipo_moneda_id']          = $moneda->id;
-                $ingresos['nombre_moneda']           = $moneda->nombre;
-                $ingresos['cantidad_decimales']      = $moneda->cantidad_decimales;  
-                array_push($ingresos_moneda, $ingresos);
-            }
-            $ingresos_comprobate['id']           = $comprobante->id;
-            $ingresos_comprobate['nombre']       = $comprobante->nombre;
-            $ingresos_comprobate['ingresos']     = $ingresos_moneda;
-            array_push($ingresos_tipo_comprobante, $ingresos_comprobate);
-
-        }
-
         $metodo_pagos              = MetodoPago::all();
         $ingresos_metodo_pago      = [];
         foreach ($metodo_pagos as $metodo) {
@@ -232,10 +206,9 @@ class PropiedadController extends Controller
         }
 
         $ingresos_total['tipos_habitaciones']    = $ingresos_tipo_habitacion;
-        $ingresos_total['tipos_fuentes']        = $ingresos_tipo_fuente;
-        $ingresos_total['tipos_clientes']       = $ingresos_tipo_cliente;
-        $ingresos_total['metodos_pagos']        = $ingresos_metodo_pago;
-        $ingresos_total['tipos_comprobantes']   = $ingresos_tipo_comprobante;
+        $ingresos_total['tipos_fuentes']         = $ingresos_tipo_fuente;
+        $ingresos_total['tipos_clientes']        = $ingresos_tipo_cliente;
+        $ingresos_total['metodos_pagos']         = $ingresos_metodo_pago;
 
         return $ingresos_total;
     }
