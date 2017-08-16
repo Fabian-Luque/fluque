@@ -242,7 +242,7 @@ class PropiedadController extends Controller
 
 
 
-    public function reporteFinancieroAnual(Request $request)
+    public function reporteFinancieroGrafico(Request $request)
     {
         if ($request->has('propiedad_id')) {
             $propiedad_id = $request->input('propiedad_id');
