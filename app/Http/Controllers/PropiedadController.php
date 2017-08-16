@@ -85,6 +85,40 @@ class PropiedadController extends Controller
                 $query->where('created_at','>=' , $fecha_inicio)->where('created_at', '<' , $fecha_fin);
         })->with(['habitacion.tipoHabitacion', 'tipoFuente'])->get();
 
+        $propiedad_monedas    = $propiedad->tipoMonedas;
+        $total_habitacion     = [];
+        $total_consumos       = [];
+        foreach ($propiedad_monedas as $moneda) {
+            $tipo_moneda_id    = $moneda->id;
+            $pagos_tipo_moneda = $pagos->where('tipo_moneda_id', $tipo_moneda_id);
+            $suma_pagos              = 0;
+            $ingresos_por_habitacion = 0;
+            $ingresos_por_consumos   = 0;
+            foreach ($pagos_tipo_moneda as $pago) {
+                $suma_pagos += $pago->monto_equivalente;
+                if($pago->tipo == 'Pago habitacion'){
+                    $ingresos_por_habitacion += $pago->monto_equivalente;
+                }elseif($pago->tipo == 'Pago consumos'){
+                    $ingresos_por_consumos += $pago->monto_equivalente;
+                }elseif ($pago->tipo == 'Confirmacion de reserva') {
+                    $ingresos_por_habitacion += $pago->monto_equivalente;
+                }
+            }
+
+          $hab['monto']              = $ingresos_por_habitacion;
+          $hab['tipo_moneda_id']     = $tipo_moneda_id;
+          $hab['nombre_moneda']      = $moneda->nombre;
+          $hab['cantidad_decimales'] = $moneda->cantidad_decimales;
+
+          $serv['monto']              = $ingresos_por_consumos;
+          $serv['tipo_moneda_id']     = $tipo_moneda_id;
+          $serv['nombre_moneda']      = $moneda->nombre;
+          $serv['cantidad_decimales'] = $moneda->cantidad_decimales;
+
+          array_push($total_habitacion, $hab);
+          array_push($total_consumos, $serv);
+        }
+
         $propiedad_monedas         = $propiedad->tipoMonedas;
         $metodo_pagos              = MetodoPago::all();
         $ingresos_metodo_pago      = [];
@@ -205,10 +239,12 @@ class PropiedadController extends Controller
             array_push($ingresos_tipo_cliente, $ingresos_habitacion);
         }
 
-        $ingresos_total['tipos_habitaciones']    = $ingresos_tipo_habitacion;
-        $ingresos_total['tipos_fuentes']         = $ingresos_tipo_fuente;
-        $ingresos_total['tipos_clientes']        = $ingresos_tipo_cliente;
-        $ingresos_total['metodos_pagos']         = $ingresos_metodo_pago;
+        $ingresos_total['ingresos_por_habitacion']  = $total_habitacion;
+        $ingresos_total['ingresos_por_consumos']    = $total_consumos;
+        $ingresos_total['tipos_habitaciones']       = $ingresos_tipo_habitacion;
+        $ingresos_total['tipos_fuentes']            = $ingresos_tipo_fuente;
+        $ingresos_total['tipos_clientes']           = $ingresos_tipo_cliente;
+        $ingresos_total['metodos_pagos']            = $ingresos_metodo_pago;
 
         return $ingresos_total;
     }
