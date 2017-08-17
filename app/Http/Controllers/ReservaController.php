@@ -1871,28 +1871,61 @@ class ReservaController extends Controller
         $fechas = [$fecha_inicio, $fecha_fin];
 
 
+        $habitaciones = Habitacion::where('propiedad_id', $id)->select('id', 'nombre', 'tipo_habitacion_id')->get();
+
+
         $tipos = TipoHabitacion::whereHas('habitaciones', function($query) use($id){
 
                     $query->where('propiedad_id', $id);
 
-        })->with(['habitaciones' => function ($q) use($id) {
+        })->with(['habitaciones' => function ($q){
 
-        $q->where('propiedad_id', $id)->with('tipoHabitacion');}])->get();
-
-
-        $reservas = Reserva::whereHas('habitacion', function($query) use($id){
-
-                    $query->where('propiedad_id', $id);
-
-        })->with('habitacion.tipoHabitacion')->with('cliente','huespedes.servicios','tipoMoneda','tipoFuente','metodoPago','estadoReserva','pagos')->whereBetween('checkin', $fechas)->where('estado_reserva_id', '!=' , 6 )->where('estado_reserva_id', '!=' , 7 )->get();
+        $q->select('id', 'nombre', 'tipo_habitacion_id');}])->get();
 
 
-
-        $reservas_checkout = Reserva::whereHas('habitacion', function($query) use($id){
+/*        return $reservas = Reserva::whereHas('habitacion', function($query) use($id){
 
                     $query->where('propiedad_id', $id);
 
-        })->with('habitacion.tipoHabitacion')->with('cliente','huespedes','tipoMoneda','tipoFuente', 'metodoPago','estadoReserva')->whereBetween('checkout', $fechas)->where('estado_reserva_id', '!=' , 6 )->where('estado_reserva_id', '!=' , 7 )->get();
+        })->select('id', 'checkin', 'checkout', 'habitacion_id', 'estado_reserva_id', 'cliente_id')->with(['cliente' => function ($q){
+
+        $q->select('id', 'nombre', 'apellido');}])->whereBetween('checkin', $fechas)->where('estado_reserva_id', '!=' , 6 )->where('estado_reserva_id', '!=' , 7 )->get();*/
+
+/*        return $reservas = Reserva::select('reservas.id', 'checkin', 'checkout', 'habitacion_id', 'estado_reserva_id', 'cliente_id','clientes.id', 'nombre', 'apellido')->whereHas('habitacion', function($query) use($id){
+
+                    $query->where('propiedad_id', $id);
+
+        })
+        ->join('clientes', 'clientes.id','=','cliente_id')
+        ->whereBetween('checkin', $fechas)->whereIn('estado_reserva_id', [1,2,3,4,5])->get();*/
+
+
+        $reservas = Reserva::select('reservas.id', 'checkin', 'checkout', 'habitacion_id', 'estado_reserva_id', 'cliente_id', 'nombre', 'apellido')->whereHas('habitacion', function($query) use($id){
+
+                   $query->where('propiedad_id', $id);
+
+       })
+       ->join('clientes', 'clientes.id','=','cliente_id')
+       ->whereBetween('checkin', $fechas)->whereIn('estado_reserva_id', [1,2,3,4,5])->get();
+
+
+
+
+        $reservas_checkout = Reserva::select('reservas.id', 'checkin', 'checkout', 'habitacion_id', 'estado_reserva_id', 'cliente_id', 'nombre', 'apellido')->whereHas('habitacion', function($query) use($id){
+
+                   $query->where('propiedad_id', $id);
+
+       })
+       ->join('clientes', 'clientes.id','=','cliente_id')
+       ->whereBetween('checkout', $fechas)->whereIn('estado_reserva_id', [1,2,3,4,5])->get();
+
+
+
+/*        return $reservas_checkout = Reserva::whereHas('habitacion', function($query) use($id){
+
+                    $query->where('propiedad_id', $id);
+
+        })->select('id', 'checkin', 'checkout', 'habitacion_id', 'cliente_id')->with('cliente')->whereBetween('checkout', $fechas)->where('estado_reserva_id', '!=' , 6 )->where('estado_reserva_id', '!=' , 7 )->get();*/
 
 
 
