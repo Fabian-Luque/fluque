@@ -1891,7 +1891,7 @@ class ReservaController extends Controller
 
         $q->select('id', 'nombre', 'apellido');}])->whereBetween('checkin', $fechas)->where('estado_reserva_id', '!=' , 6 )->where('estado_reserva_id', '!=' , 7 )->get();*/
 
-/*        return $reservas = Reserva::select('reservas.id', 'checkin', 'checkout', 'habitacion_id', 'estado_reserva_id', 'cliente_id','clientes.id', 'nombre', 'apellido')->whereHas('habitacion', function($query) use($id){
+ /*       return $reservas = Reserva::select('reservas.id', 'checkin', 'checkout', 'habitacion_id', 'estado_reserva_id', 'cliente_id','clientes.id', 'nombre', 'apellido')->whereHas('habitacion', function($query) use($id){
 
                     $query->where('propiedad_id', $id);
 
@@ -1900,7 +1900,7 @@ class ReservaController extends Controller
         ->whereBetween('checkin', $fechas)->whereIn('estado_reserva_id', [1,2,3,4,5])->get();*/
 
 
-        $reservas = Reserva::select('reservas.id', 'checkin', 'checkout', 'habitacion_id', 'estado_reserva_id', 'cliente_id', 'nombre', 'apellido')->whereHas('habitacion', function($query) use($id){
+        $reservas = Reserva::select('reservas.id', 'checkin', 'checkout', 'habitacion_id', 'estado_reserva_id', 'cliente_id', 'nombre', 'apellido', 'noches')->whereHas('habitacion', function($query) use($id){
 
                    $query->where('propiedad_id', $id);
 
