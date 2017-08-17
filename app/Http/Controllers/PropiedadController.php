@@ -285,7 +285,7 @@ class PropiedadController extends Controller
         $cantidad_noches        = ($fecha_inicio->diffInDays($fecha_fin)) + 1; 
         $cantidad_habitaciones  = count($propiedad->habitaciones);
         $total_noches           = $cantidad_habitaciones * $cantidad_noches;
-        
+
         $auxFecha_inicio        = new Carbon($auxInicio);
         $auxFecha_fin           = new Carbon($auxFin);
         $suma                   = 0;
@@ -304,11 +304,19 @@ class PropiedadController extends Controller
             $auxFecha_inicio->addDay();
         }
 
-        $precio            = $total_habitacion[0];
-        $monto_habitacion  = $precio['monto'];
-        $ADR               = ($monto_habitacion / $suma );
-        $ocupacion         = $suma / $total_noches; 
-        $REVPAR            = $ocupacion * $ADR;
+        $precio             = $total_habitacion[0];
+        $monto_habitacion   = $precio['monto'];
+        $ADR                = ($monto_habitacion / $suma );
+        $ocupacion          = $suma / $total_noches; 
+        $REVPAR             = $ocupacion * $ADR;
+
+        $rendimiento['adr']                   = number_format($ADR, 3, ',', ' ');
+        $rendimiento['revpar']                = number_format($REVPAR, 3, ',', ' ');
+        $rendimiento['ocupacion']             = number_format($ocupacion, 3, ',', ' ');
+        $rendimiento['habitaciones_ocupadas'] = $suma;
+        $rendimiento['tipo_moneda_id']        = $precio['tipo_moneda_id'];
+        $rendimiento['nombre_moneda']         = $precio['nombre_moneda'];
+        $rendimiento['cantidad_decimales']    = $precio['cantidad_decimales'];
 
         $ingresos_total['ingresos_totales']         = $total_ingresos;
         $ingresos_total['ingresos_por_habitacion']  = $total_habitacion;
@@ -318,8 +326,8 @@ class PropiedadController extends Controller
         $ingresos_total['tipos_fuentes']            = $ingresos_tipo_fuente;
         $ingresos_total['tipos_clientes']           = $ingresos_tipo_cliente;
         $ingresos_total['metodos_pagos']            = $ingresos_metodo_pago;
-        $ingresos_total['ADR']                      = $ADR;
-        $ingresos_total['REVPAR']                   = $REVPAR; 
+        $ingresos_total['rendimiento']              = $rendimiento;
+ 
 
         return $ingresos_total;
     }
