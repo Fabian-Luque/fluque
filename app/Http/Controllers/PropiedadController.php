@@ -310,9 +310,9 @@ class PropiedadController extends Controller
         $ocupacion          = $suma / $total_noches; 
         $REVPAR             = $ocupacion * $ADR;
 
-        $rendimiento['adr']                   = number_format($ADR, 3);
-        $rendimiento['revpar']                = number_format($REVPAR, 3);
-        $rendimiento['ocupacion']             = number_format($ocupacion, 3);
+        $rendimiento['adr']                   = $ADR;
+        $rendimiento['revpar']                = $REVPAR;
+        $rendimiento['ocupacion']             = $ocupacion;
         $rendimiento['habitaciones_ocupadas'] = $suma;
         $rendimiento['tipo_moneda_id']        = $precio['tipo_moneda_id'];
         $rendimiento['nombre_moneda']         = $precio['nombre_moneda'];
