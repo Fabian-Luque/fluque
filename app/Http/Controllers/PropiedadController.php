@@ -739,7 +739,7 @@ class PropiedadController extends Controller
 
 
 
-        $pagos = Pago::select('pagos.id', 'monto_pago', 'monto_equivalente','reservas.id as reserva_id' , 'numero_reserva', 'tipo', 'numero_operacion' ,'pagos.created_at', 'tipo_comprobante.nombre as nombre_tipo_comprobante', 'numero_cheque' ,'metodo_pago.nombre as nombre_metodo_pago', 'pagos.tipo_moneda_id' ,'tipo_moneda.nombre as nombre_tipo_moneda', 'cantidad_decimales')
+/*        $pagos = Pago::select('pagos.id', 'monto_pago', 'monto_equivalente','reservas.id as reserva_id' , 'numero_reserva', 'tipo', 'numero_operacion' ,'pagos.created_at', 'tipo_comprobante.nombre as nombre_tipo_comprobante', 'numero_cheque' ,'metodo_pago.nombre as nombre_metodo_pago', 'pagos.tipo_moneda_id' ,'tipo_moneda.nombre as nombre_tipo_moneda', 'cantidad_decimales')
                 ->whereHas('reserva.habitacion', function($query) use($propiedad_id){
                 $query->where('propiedad_id', $propiedad_id);})
                 ->join('reservas' , 'reservas.id', '=' , 'pagos.reserva_id')
@@ -747,6 +747,12 @@ class PropiedadController extends Controller
                 ->join('metodo_pago', 'metodo_pago.id', '=' , 'pagos.metodo_pago_id')
                 ->join('tipo_moneda', 'tipo_moneda.id', '=' , 'pagos.tipo_moneda_id')
                 ->where('pagos.created_at','>=' , $fecha_inicio)->where('pagos.created_at', '<' , $fecha_fin)
+                ->get();*/
+
+            $pagos = Pago::select('id' ,'created_at', 'tipo_moneda_id')
+                ->whereHas('reserva.habitacion', function($query) use($propiedad_id){
+                $query->where('propiedad_id', $propiedad_id);})
+                ->where('created_at','>=' , $fecha_inicio)->where('created_at', '<' , $fecha_fin)
                 ->get();
 
 
@@ -796,9 +802,11 @@ class PropiedadController extends Controller
                 array_push($auxMoneda, $ingreso);
             }
 
+
         $data['fecha']     = $auxFecha_inicio;
         $data['ingresos']  = $auxMoneda;
-        $data['pagos']     = $auxPagos;
+        $data['cantidad_creadas'] = count($auxPagos);
+        /*$data['pagos']     = $auxPagos;*/
         if (count($auxPagos) != 0) {
             array_push($fechas_pagos, $data);
         }
