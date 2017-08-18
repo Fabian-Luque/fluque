@@ -730,22 +730,23 @@ class PropiedadController extends Controller
         }
 
     
-/*
 
-        $pagos = Pago::where('created_at','>=' , $fecha_inicio)->where('created_at', '<' , $fecha_fin)
+
+/*        $pagos = Pago::where('created_at','>=' , $fecha_inicio)->where('created_at', '<' , $fecha_fin)
             ->whereHas('reserva.habitacion', function($query) use($propiedad_id){
                 $query->where('propiedad_id', $propiedad_id);
-        })->with('tipoComprobante', 'metodoPago', 'tipoMoneda')->with('reserva')->get();
+        })->with('tipoComprobante', 'metodoPago', 'tipoMoneda')->with('reserva')->get();*/
 
-*/
 
-        $pagos = Pago::whereHas('reserva.habitacion', function($query) use($propiedad_id){
+
+        return $pagos = Pago::select('pagos.id', 'monto_pago', 'monto_equivalente','reservas.id as reserva_id' , 'numero_reserva', 'tipo', 'numero_operacion' ,'pagos.created_at', 'tipo_comprobante.nombre as nombre_tipo_comprobante', 'numero_cheque' ,'metodo_pago.nombre as nombre_metodo_pago', 'pagos.tipo_moneda_id' ,'tipo_moneda.nombre as nombre_tipo_moneda', 'cantidad_decimales')
+                ->whereHas('reserva.habitacion', function($query) use($propiedad_id){
                 $query->where('propiedad_id', $propiedad_id);})
-                ->select('pagos.id', 'monto_pago', 'monto_equivalente','reservas.id as reserva_id' , 'numero_reserva', 'tipo', 'numero_operacion' ,'pagos.created_at', 'tipo_comprobante.nombre as nombre_tipo_comprobante', 'numero_cheque' ,'metodo_pago.nombre as nombre_metodo_pago', 'pagos.tipo_moneda_id' ,'tipo_moneda.nombre as nombre_tipo_moneda', 'cantidad_decimales')
                 ->join('reservas' , 'reservas.id', '=' , 'pagos.reserva_id')
                 ->join('tipo_comprobante', 'tipo_comprobante.id', '=' , 'pagos.tipo_comprobante_id')
                 ->join('metodo_pago', 'metodo_pago.id', '=' , 'pagos.metodo_pago_id')
                 ->join('tipo_moneda', 'tipo_moneda.id', '=' , 'pagos.tipo_moneda_id')
+                ->where('pagos.created_at','>=' , $fecha_inicio)->where('pagos.created_at', '<' , $fecha_fin)
                 ->get();
 
 
