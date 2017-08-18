@@ -729,10 +729,36 @@ class PropiedadController extends Controller
             $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $inicio, $pais)->tz('UTC')->addDay();
         }
 
+    
+/*
+
         $pagos = Pago::where('created_at','>=' , $fecha_inicio)->where('created_at', '<' , $fecha_fin)
             ->whereHas('reserva.habitacion', function($query) use($propiedad_id){
                 $query->where('propiedad_id', $propiedad_id);
         })->with('tipoComprobante', 'metodoPago', 'tipoMoneda')->with('reserva')->get();
+
+*/
+
+        $pagos = Pago::whereHas('reserva.habitacion', function($query) use($propiedad_id){
+                $query->where('propiedad_id', $propiedad_id);})
+                ->select('pagos.id', 'monto_pago', 'monto_equivalente','reservas.id as reserva_id' , 'numero_reserva', 'pagos.created_at', 'tipo_comprobante.nombre as nombre_tipo_comprobante', 'metodo_pago.nombre as nombre_metodo_pago', 'pagos.tipo_moneda_id' ,'tipo_moneda.nombre as nombre_tipo_moneda', 'cantidad_decimales')
+                ->join('reservas' , 'reservas.id', '=' , 'pagos.reserva_id')
+                ->join('tipo_comprobante', 'tipo_comprobante.id', '=' , 'pagos.tipo_comprobante_id')
+                ->join('metodo_pago', 'metodo_pago.id', '=' , 'pagos.metodo_pago_id')
+                ->join('tipo_moneda', 'tipo_moneda.id', '=' , 'pagos.tipo_moneda_id')
+                ->get();
+
+
+
+
+
+/*
+        $reservas = Reserva::select('reservas.id', 'checkin', 'checkout', 'habitacion_id', 'estado_reserva_id', 'cliente_id', 'nombre', 'apellido', 'noches')->whereHas('habitacion', function($query) use($id){
+
+                   $query->where('propiedad_id', $id);
+       })
+       ->join('clientes', 'clientes.id','=','cliente_id')
+       ->whereBetween('checkin', $fechas)->whereIn('estado_reserva_id', [1,2,3,4,5])->get();*/
 
         $moneda_propiedad = $propiedad->tipoMonedas;
         $auxInicio      = new Carbon($inicio);
@@ -750,6 +776,7 @@ class PropiedadController extends Controller
                     array_push($auxPagos, $pago);
                 }
             }
+
 
             $auxMoneda = [];
             foreach ($moneda_propiedad as $moneda) {
