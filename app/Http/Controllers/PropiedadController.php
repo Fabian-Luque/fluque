@@ -699,7 +699,7 @@ class PropiedadController extends Controller
     {
         if ($request->has('propiedad_id')) {
             $propiedad_id = $request->input('propiedad_id');
-            $propiedad    = Propiedad::where('id', $propiedad_id)->first();
+            $propiedad    = Propiedad::where('id', $propiedad_id)->with('tipoMonedas')->first();
             if (is_null($propiedad)) {
                 $retorno = array(
                     'msj'    => "Propiedad no encontrada",
@@ -749,11 +749,101 @@ class PropiedadController extends Controller
                 ->where('pagos.created_at','>=' , $fecha_inicio)->where('pagos.created_at', '<' , $fecha_fin)
                 ->get();*/
 
-            $pagos = Pago::select('id' ,'created_at', 'tipo_moneda_id')
+            $pagos = Pago::select('id' ,'created_at', 'monto_equivalente' ,'tipo_moneda_id')
                 ->whereHas('reserva.habitacion', function($query) use($propiedad_id){
-                $query->where('propiedad_id', $propiedad_id);})
+                    $query->where('propiedad_id', $propiedad_id);})
                 ->where('created_at','>=' , $fecha_inicio)->where('created_at', '<' , $fecha_fin)
                 ->get();
+
+
+            $moneda_propiedad = $propiedad->tipoMonedas;
+
+            $dates = [];
+            $fechas_pagos = [];
+            $fecha        = null;
+
+            foreach ($pagos as $pago) {
+                
+                $created_at  = new Carbon($pago->created_at);
+                $fecha_pago  = $created_at->format('Y-m-d');
+
+                if ($fecha == null) {
+
+                    $fecha     = $fecha_pago;
+                    $auxMoneda = [];
+                    foreach ($moneda_propiedad as $moneda) {
+                        $moneda_id = $moneda->id;
+                        $suma_pago = 0;
+                        foreach ($pagos as $p) {
+                            $created           = new Carbon($p->created_at);
+                            $pago_fecha        = $created_at->format('Y-m-d');
+                            $tipo_moneda_pago  = $p->tipo_moneda_id;
+
+                            if ($fecha == $pago_fecha) {
+                                if ($moneda_id == $tipo_moneda_pago) {
+                                    $suma_pago += $pago->monto_equivalente;
+                                }
+                            }
+                        }
+                        $ingreso['nombre_moneda']       = $moneda->nombre;
+                        $ingreso['monto']               = $suma_pago;
+                        $ingreso['tipo_moneda_id']      = $moneda->pivot->tipo_moneda_id;
+                        $ingreso['cantidad_decimales']  = $moneda->cantidad_decimales;
+                        array_push($auxMoneda, $ingreso);
+                    }
+
+                    $data['fecha']     = $fecha;
+                    $data['ingresos']  = $auxMoneda;
+                    array_push($fechas_pagos, $data);
+                    array_push($dates, $fecha);
+
+                } elseif ($fecha != $fecha_pago){
+
+                    $fecha = $fecha_pago;
+
+                    if (!in_array($fecha, $dates)) {
+                        $auxMoneda = [];
+                        foreach ($moneda_propiedad as $moneda) {
+                            $moneda_id = $moneda->id;
+                            $suma_pago = 0;
+                            foreach ($pagos as $p) {
+                                $created     = new Carbon($p->created_at);
+                                $pago_fecha     = $created_at->format('Y-m-d');
+                                $tipo_moneda_pago = $p->tipo_moneda_id;
+
+                                if ($fecha == $pago_fecha) {
+                                    if ($moneda_id == $tipo_moneda_pago) {
+                                        $suma_pago += $pago->monto_equivalente;
+                                    }
+                                }
+
+                            }
+                            $ingreso['nombre_moneda']       = $moneda->nombre;
+                            $ingreso['monto']               = $suma_pago;
+                            $ingreso['tipo_moneda_id']      = $moneda->pivot->tipo_moneda_id;
+                            $ingreso['cantidad_decimales']  = $moneda->cantidad_decimales;
+                            array_push($auxMoneda, $ingreso);
+                        }
+
+                        $data['fecha']     = $fecha;
+                        $data['ingresos']  = $auxMoneda;
+                        array_push($fechas_pagos, $data);
+                    }
+
+                }
+
+
+
+            }
+
+            return $fechas_pagos;
+
+
+
+
+
+
+
 
 
 
@@ -767,7 +857,9 @@ class PropiedadController extends Controller
        ->join('clientes', 'clientes.id','=','cliente_id')
        ->whereBetween('checkin', $fechas)->whereIn('estado_reserva_id', [1,2,3,4,5])->get();*/
 
-        $moneda_propiedad = $propiedad->tipoMonedas;
+       
+
+/*     $moneda_propiedad = $propiedad->tipoMonedas;
         $auxInicio      = new Carbon($inicio);
         $auxFecha_fin   = new Carbon($fecha_fin);
         $auxFin         = $auxFecha_fin->startOfDay();
@@ -806,7 +898,7 @@ class PropiedadController extends Controller
         $data['fecha']     = $auxFecha_inicio;
         $data['ingresos']  = $auxMoneda;
         $data['cantidad_creadas'] = count($auxPagos);
-        /*$data['pagos']     = $auxPagos;*/
+        $data['pagos']     = $auxPagos;
         if (count($auxPagos) != 0) {
             array_push($fechas_pagos, $data);
         }
@@ -814,7 +906,7 @@ class PropiedadController extends Controller
         $auxInicio->addDay();
         }
 
-        return $fechas_pagos;
+        return $fechas_pagos;*/
     }
 
 
