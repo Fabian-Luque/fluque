@@ -739,7 +739,7 @@ class PropiedadController extends Controller
 
 
 
-        return $pagos = Pago::select('pagos.id', 'monto_pago', 'monto_equivalente','reservas.id as reserva_id' , 'numero_reserva', 'tipo', 'numero_operacion' ,'pagos.created_at', 'tipo_comprobante.nombre as nombre_tipo_comprobante', 'numero_cheque' ,'metodo_pago.nombre as nombre_metodo_pago', 'pagos.tipo_moneda_id' ,'tipo_moneda.nombre as nombre_tipo_moneda', 'cantidad_decimales')
+        $pagos = Pago::select('pagos.id', 'monto_pago', 'monto_equivalente','reservas.id as reserva_id' , 'numero_reserva', 'tipo', 'numero_operacion' ,'pagos.created_at', 'tipo_comprobante.nombre as nombre_tipo_comprobante', 'numero_cheque' ,'metodo_pago.nombre as nombre_metodo_pago', 'pagos.tipo_moneda_id' ,'tipo_moneda.nombre as nombre_tipo_moneda', 'cantidad_decimales')
                 ->whereHas('reserva.habitacion', function($query) use($propiedad_id){
                 $query->where('propiedad_id', $propiedad_id);})
                 ->join('reservas' , 'reservas.id', '=' , 'pagos.reserva_id')
