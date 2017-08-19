@@ -695,6 +695,14 @@ class PropiedadController extends Controller
 
 
 
+    /**
+     * Reporte de pagos de propiedad
+     *
+     * @author ALLEN
+     *
+     * @param  Request          $request (propiedad_id, $fecha_inicio, $fecha_fin)
+     * @return Response::json
+     */
     public function pagos(Request $request)
     {
         if ($request->has('propiedad_id')) {
@@ -773,6 +781,66 @@ class PropiedadController extends Controller
         return $fechas;
 
     }
+
+    /**
+     * Obtiene pagos de un dia
+     *
+     * @author ALLEN
+     *
+     * @param  Request          $request (propiedad_id, fecha_inicio, fecha_fin)
+     * @return Response::json
+     */
+    public function getPagos(Request $request)
+    {
+        if ($request->has('propiedad_id')) {
+            $propiedad_id = $request->input('propiedad_id');
+            $propiedad    = Propiedad::where('id', $propiedad_id)->with('tipoMonedas')->first();
+            if (is_null($propiedad)) {
+                $retorno = array(
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia propiedad_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+        
+        if ($request->has('fecha_inicio')) {
+            $getInicio       = new Carbon($request->input('fecha_inicio'));
+            $inicio          = $getInicio->startOfDay();
+            $zona_horaria    = ZonaHoraria::where('id', $propiedad->zona_horaria_id)->first();
+            $pais            = $zona_horaria->nombre;
+            $fecha_inicio    = Carbon::createFromFormat('Y-m-d H:i:s', $inicio, $pais)->tz('UTC');
+        }
+
+        if ($request->has('fecha_fin')) {
+            $fin             = new Carbon($request->input('fecha_fin'));
+            $fechaFin        = $fin->addDay();
+            $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $fechaFin, $pais)->tz('UTC');
+        } else {
+            $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $inicio, $pais)->tz('UTC')->addDay();
+        }
+
+
+        $pagos = Pago::select('pagos.id', 'monto_pago', 'monto_equivalente','reservas.id as reserva_id' , 'numero_reserva', 'tipo', 'numero_operacion' ,'pagos.created_at', 'tipo_comprobante.nombre as nombre_tipo_comprobante', 'numero_cheque' ,'metodo_pago.nombre as nombre_metodo_pago', 'pagos.tipo_moneda_id' ,'tipo_moneda.nombre as nombre_tipo_moneda', 'cantidad_decimales')
+                ->whereHas('reserva.habitacion', function($query) use($propiedad_id){
+                $query->where('propiedad_id', $propiedad_id);})
+                ->join('reservas' , 'reservas.id', '=' , 'pagos.reserva_id')
+                ->join('tipo_comprobante', 'tipo_comprobante.id', '=' , 'pagos.tipo_comprobante_id')
+                ->join('metodo_pago', 'metodo_pago.id', '=' , 'pagos.metodo_pago_id')
+                ->join('tipo_moneda', 'tipo_moneda.id', '=' , 'pagos.tipo_moneda_id')
+                ->where('pagos.created_at','>=' , $fecha_inicio)->where('pagos.created_at', '<' , $fecha_fin)
+                ->get();
+
+        return $pagos;
+
+    }
+
+
+
 
 
 
