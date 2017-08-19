@@ -755,96 +755,68 @@ class PropiedadController extends Controller
                 ->where('created_at','>=' , $fecha_inicio)->where('created_at', '<' , $fecha_fin)
                 ->get();
 
+            $cantidad_noches    = ($fecha_inicio->diffInDays($fecha_fin)) + 1;
 
-            $moneda_propiedad = $propiedad->tipoMonedas;
+            $fecha = [];
+            $monto = 0;
 
-            $dates = [];
-            $fechas_pagos = [];
-            $fecha        = null;
+            $montos = [];
 
-            foreach ($pagos as $pago) {
+            foreach ($propiedad->tipoMonedas as $moneda) {
                 
-                $created_at  = new Carbon($pago->created_at);
-                $fecha_pago  = $created_at->format('Y-m-d');
+                $m['id']     = $moneda->id;
+                $m['nombre'] = $moneda->nombre;
+                $m['cantidad_decimales'] = $moneda->cantidad_decimales;
+                $m['suma'] = 0;
 
-                if ($fecha == null) {
 
-                    $fecha     = $fecha_pago;
-                    $auxMoneda = [];
-                    foreach ($moneda_propiedad as $moneda) {
-                        $moneda_id = $moneda->id;
-                        $suma_pago = 0;
-                        foreach ($pagos as $p) {
-                            $created           = new Carbon($p->created_at);
-                            $pago_fecha        = $created_at->format('Y-m-d');
-                            $tipo_moneda_pago  = $p->tipo_moneda_id;
+                array_push($montos, $m);
+            }
+                $u = $montos;
 
-                            if ($fecha == $pago_fecha) {
-                                if ($moneda_id == $tipo_moneda_pago) {
-                                    $suma_pago += $pago->monto_equivalente;
-                                }
-                            }
-                        }
-                        $ingreso['nombre_moneda']       = $moneda->nombre;
-                        $ingreso['monto']               = $suma_pago;
-                        $ingreso['tipo_moneda_id']      = $moneda->pivot->tipo_moneda_id;
-                        $ingreso['cantidad_decimales']  = $moneda->cantidad_decimales;
-                        array_push($auxMoneda, $ingreso);
-                    }
 
-                    $data['fecha']     = $fecha;
-                    $data['ingresos']  = $auxMoneda;
-                    array_push($fechas_pagos, $data);
-                    array_push($dates, $fecha);
 
-                } elseif ($fecha != $fecha_pago){
+            $a  = new Carbon($request->input('fecha_inicio'));
+            for( $i = 0 ; $i < $cantidad_noches; $i++){
 
-                    $fecha = $fecha_pago;
+                $k = $a->format('Y-m-d');
+               
+                $fecha[$i] = ['fecha' => $k, 'moneda' => $u];
 
-                    if (!in_array($fecha, $dates)) {
-                        $auxMoneda = [];
-                        foreach ($moneda_propiedad as $moneda) {
-                            $moneda_id = $moneda->id;
-                            $suma_pago = 0;
-                            foreach ($pagos as $p) {
-                                $created     = new Carbon($p->created_at);
-                                $pago_fecha     = $created_at->format('Y-m-d');
-                                $tipo_moneda_pago = $p->tipo_moneda_id;
 
-                                if ($fecha == $pago_fecha) {
-                                    if ($moneda_id == $tipo_moneda_pago) {
-                                        $suma_pago += $pago->monto_equivalente;
-                                    }
-                                }
+                $a->addDay();
 
-                            }
-                            $ingreso['nombre_moneda']       = $moneda->nombre;
-                            $ingreso['monto']               = $suma_pago;
-                            $ingreso['tipo_moneda_id']      = $moneda->pivot->tipo_moneda_id;
-                            $ingreso['cantidad_decimales']  = $moneda->cantidad_decimales;
-                            array_push($auxMoneda, $ingreso);
-                        }
+            }
 
-                        $data['fecha']     = $fecha;
-                        $data['ingresos']  = $auxMoneda;
-                        array_push($fechas_pagos, $data);
+           
+
+            $ini  = new Carbon($request->input('fecha_inicio'));
+            
+            foreach ($pagos as $pago) {
+
+                $created_at     = new Carbon($pago->created_at);
+            
+                $dif            = $ini->diffInDays($created_at);
+
+              
+               $largo = sizeof($fecha[$dif]['moneda']);
+               
+
+                for( $i = 0 ; $i < $largo ; $i++){
+
+                    if ($fecha[$dif]['moneda'][$i]['id'] == $pago->tipo_moneda_id ){
+
+                        $fecha[$dif]['moneda'][$i]['suma'] += $pago->monto_equivalente;
+                        
+                        
                     }
 
                 }
 
+        return $fecha;
 
 
-            }
-
-            return $fechas_pagos;
-
-
-
-
-
-
-
-
+    }
 
 
 
