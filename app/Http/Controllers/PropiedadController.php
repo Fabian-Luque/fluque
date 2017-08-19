@@ -735,7 +735,7 @@ class PropiedadController extends Controller
         ->where('created_at','>=' , $fecha_inicio)->where('created_at', '<' , $fecha_fin)
         ->get();
 
-        $cantidad_noches    = ($fecha_inicio->diffInDays($fecha_fin));
+        $cantidad_noches    = ($fecha_inicio->diffInDays($fecha_fin)) + 1;
         $fechas             = [];
         $monto              = 0;
         $montos             = [];
