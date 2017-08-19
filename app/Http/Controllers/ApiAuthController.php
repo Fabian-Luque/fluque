@@ -67,7 +67,43 @@ class ApiAuthController extends Controller {
 		return response()->json(compact('token', 'userId'));
 	}
 
-    public function ResetPassword(Request $request) {
-        
+    public function ResetPassword(Request $request, $token=null) {
+        if ($request->has('email') && $request->has('password') && $request->has('passwordc')) {
+
+            $user =  User::where('email', $request->email)->first();
+            if (!is_null($user) && (strcmp($request->password, $request->passwordc) == 0 )) {
+                $user->setPasswordAttribute($request->password);
+                $user->save();
+
+                $data['errors'] = false;
+                $data['msg']    = 'su contraseña ha sido cambiada con exito';
+
+                return redirect(
+                    'sendmailreset'
+                )->with('respuesta', $data);
+            } else {
+                $data['errors'] = true;
+                $data['msg']    = 'Confirmacion de contraseña no coincide';
+
+                return redirect(
+                    'sendmailreset'
+                )->with('respuesta', $data);
+            }     
+        } elseif (!is_null($token)) {
+            $data['errors'] = true;
+            $data['msg']    = 'Datos requeridos';
+            
+            return redirect(
+                'resetpass'
+            );
+        } else {
+            $data['errors'] = true;
+            $data['msg']    = 'Datos requeridos';
+            
+            return redirect(
+                'sendmailreset'
+            )->with('respuesta', $data);
+        }
+  
     }
 }

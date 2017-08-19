@@ -12,7 +12,7 @@ Route::get(
 );
 
 //////////////////////// rutas dash ////////////////////////////
-Route::post('enviarcorreo', 'CorreoController@sendmail');
+
 
 Route::group(['prefix' => 'dash', 'middleware' => ['auth']], 
 	function() {
@@ -72,13 +72,33 @@ Route::group(['prefix' => 'dash', 'middleware' => ['auth']],
 );
 //////////////////////// rutas dash  ///////////////////////////////////////
 
+	Route::post('reset/password', 'ApiAuthController@ResetPassword')->name('cambiar.pass');
+
+	Route::post('resetpass/email', 'CorreoController@sendmail')->name('reset.pass.sendmail');
+	
+	Route::get(
+		'sendmailreset', 
+		function() {
+    		return View::make('administrador.sendmailresetpass');
+		}
+	);
+
+	Route::get(
+		'resetpass', 
+		function() {
+    		return View::make('administrador.resetpass');
+		}
+	);
+
+	Route::get('reset/password/{token}', 'ApiAuthController@ResetPassword');
+
 Route::group(['as' => 'api.jarvis.'], function() {
 
 	Route::post('registro', 'UserController@store');
 	Route::post('/signin', 'ApiAuthController@signin');
 
 	Route::group(['middleware' => ['jwt.auth']], function () {
-
+		
 		Route::post('reserva/habitacion', 'ReservaController@reserva');
 		Route::get('reserva/propiedad', 'ReservaController@getReservas');
 		Route::get('tipo-fuente', 'ReservaController@getTipoFuente');

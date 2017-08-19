@@ -1,5 +1,4 @@
 @extends('layouts.app')
-
 @section('content')
 <div class="container">
     <div class="row">
@@ -12,7 +11,8 @@
                         </script>
                     @endif
                 <div class="panel-body">
-                    Your Application's Landing Page.
+                    
+                 
                 </div>
             </div>
         </div>
