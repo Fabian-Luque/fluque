@@ -735,7 +735,7 @@ class PropiedadController extends Controller
         ->where('created_at','>=' , $fecha_inicio)->where('created_at', '<' , $fecha_fin)
         ->get();
 
-        $cantidad_noches    = ($fecha_inicio->diffInDays($fecha_fin)) + 1;
+        $cantidad_noches    = ($fecha_inicio->diffInDays($fecha_fin));
         $fechas             = [];
         $monto              = 0;
         $montos             = [];
@@ -749,7 +749,7 @@ class PropiedadController extends Controller
         }
 
         $auxFecha  = new Carbon($request->input('fecha_inicio'));
-        for( $i = 0 ; $i < $cantidad_noches; $i++){
+        for( $i = 0 ; $i < ($cantidad_noches - 1); $i++){
 
             $fecha      = $auxFecha->format('Y-m-d');
             $fechas[$i] = ['fecha' => $fecha, 'moneda' => $montos];
