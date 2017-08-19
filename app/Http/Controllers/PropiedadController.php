@@ -729,156 +729,49 @@ class PropiedadController extends Controller
             $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $inicio, $pais)->tz('UTC')->addDay();
         }
 
-    
+        $pagos = Pago::select('id' ,'created_at', 'monto_equivalente' ,'tipo_moneda_id')
+        ->whereHas('reserva.habitacion', function($query) use($propiedad_id){
+            $query->where('propiedad_id', $propiedad_id);})
+        ->where('created_at','>=' , $fecha_inicio)->where('created_at', '<' , $fecha_fin)
+        ->get();
 
+        return $cantidad_noches    = ($fecha_inicio->diffInDays($fecha_fin)) + 1;
+        $fechas             = [];
+        $monto              = 0;
+        $montos             = [];
+        foreach ($propiedad->tipoMonedas as $moneda) {
+            $m['id']     = $moneda->id;
+            $m['nombre'] = $moneda->nombre;
+            $m['cantidad_decimales'] = $moneda->cantidad_decimales;
+            $m['suma'] = 0;
 
-/*        $pagos = Pago::where('created_at','>=' , $fecha_inicio)->where('created_at', '<' , $fecha_fin)
-            ->whereHas('reserva.habitacion', function($query) use($propiedad_id){
-                $query->where('propiedad_id', $propiedad_id);
-        })->with('tipoComprobante', 'metodoPago', 'tipoMoneda')->with('reserva')->get();*/
-
-
-
-/*        $pagos = Pago::select('pagos.id', 'monto_pago', 'monto_equivalente','reservas.id as reserva_id' , 'numero_reserva', 'tipo', 'numero_operacion' ,'pagos.created_at', 'tipo_comprobante.nombre as nombre_tipo_comprobante', 'numero_cheque' ,'metodo_pago.nombre as nombre_metodo_pago', 'pagos.tipo_moneda_id' ,'tipo_moneda.nombre as nombre_tipo_moneda', 'cantidad_decimales')
-                ->whereHas('reserva.habitacion', function($query) use($propiedad_id){
-                $query->where('propiedad_id', $propiedad_id);})
-                ->join('reservas' , 'reservas.id', '=' , 'pagos.reserva_id')
-                ->join('tipo_comprobante', 'tipo_comprobante.id', '=' , 'pagos.tipo_comprobante_id')
-                ->join('metodo_pago', 'metodo_pago.id', '=' , 'pagos.metodo_pago_id')
-                ->join('tipo_moneda', 'tipo_moneda.id', '=' , 'pagos.tipo_moneda_id')
-                ->where('pagos.created_at','>=' , $fecha_inicio)->where('pagos.created_at', '<' , $fecha_fin)
-                ->get();*/
-
-            $pagos = Pago::select('id' ,'created_at', 'monto_equivalente' ,'tipo_moneda_id')
-                ->whereHas('reserva.habitacion', function($query) use($propiedad_id){
-                    $query->where('propiedad_id', $propiedad_id);})
-                ->where('created_at','>=' , $fecha_inicio)->where('created_at', '<' , $fecha_fin)
-                ->get();
-
-            $cantidad_noches    = ($fecha_inicio->diffInDays($fecha_fin)) + 1;
-
-            $fecha = [];
-            $monto = 0;
-
-            $montos = [];
-
-            foreach ($propiedad->tipoMonedas as $moneda) {
-                
-                $m['id']     = $moneda->id;
-                $m['nombre'] = $moneda->nombre;
-                $m['cantidad_decimales'] = $moneda->cantidad_decimales;
-                $m['suma'] = 0;
-
-
-                array_push($montos, $m);
-            }
-                $u = $montos;
-
-
-
-            $a  = new Carbon($request->input('fecha_inicio'));
-            for( $i = 0 ; $i < $cantidad_noches; $i++){
-
-                $k = $a->format('Y-m-d');
-               
-                $fecha[$i] = ['fecha' => $k, 'moneda' => $u];
-
-
-                $a->addDay();
-
-            }
-
-           
-
-            $ini  = new Carbon($request->input('fecha_inicio'));
-            
-            foreach ($pagos as $pago) {
-
-                $created_at     = new Carbon($pago->created_at);
-            
-                $dif            = $ini->diffInDays($created_at);
-
-              
-               $largo = sizeof($fecha[$dif]['moneda']);
-               
-
-                for( $i = 0 ; $i < $largo ; $i++){
-
-                    if ($fecha[$dif]['moneda'][$i]['id'] == $pago->tipo_moneda_id ){
-
-                        $fecha[$dif]['moneda'][$i]['suma'] += $pago->monto_equivalente;
-                        
-                        
-                    }
-
-                }
-
-        return $fecha;
-
-
-    }
-
-
-
-
-/*
-        $reservas = Reserva::select('reservas.id', 'checkin', 'checkout', 'habitacion_id', 'estado_reserva_id', 'cliente_id', 'nombre', 'apellido', 'noches')->whereHas('habitacion', function($query) use($id){
-
-                   $query->where('propiedad_id', $id);
-       })
-       ->join('clientes', 'clientes.id','=','cliente_id')
-       ->whereBetween('checkin', $fechas)->whereIn('estado_reserva_id', [1,2,3,4,5])->get();*/
-
-       
-
-/*     $moneda_propiedad = $propiedad->tipoMonedas;
-        $auxInicio      = new Carbon($inicio);
-        $auxFecha_fin   = new Carbon($fecha_fin);
-        $auxFin         = $auxFecha_fin->startOfDay();
-
-        $fechas_pagos = [];
-        while ($auxInicio < $auxFin) {
-            $auxFecha_inicio = $auxInicio->format('Y-m-d');
-            $auxPagos = [];
-            foreach ($pagos as $pago) {
-                $created_at     = new Carbon($pago->created_at);
-                $auxCreated_at  = $created_at->format('Y-m-d');
-                if ($auxCreated_at == $auxFecha_inicio ) {
-                    array_push($auxPagos, $pago);
-                }
-            }
-
-
-            $auxMoneda = [];
-            foreach ($moneda_propiedad as $moneda) {
-                $moneda_id = $moneda->id;
-                $suma_pago = 0;
-                foreach ($auxPagos as $pago) {
-                    $tipo_moneda_pago = $pago->tipo_moneda_id;
-                    if ($moneda_id == $tipo_moneda_pago) {
-                        $suma_pago += $pago->monto_equivalente;
-                    }
-                }
-                $ingreso['nombre_moneda']       = $moneda->nombre;
-                $ingreso['monto']               = $suma_pago;
-                $ingreso['tipo_moneda_id']      = $moneda->pivot->tipo_moneda_id;
-                $ingreso['cantidad_decimales']  = $moneda->cantidad_decimales;
-                array_push($auxMoneda, $ingreso);
-            }
-
-
-        $data['fecha']     = $auxFecha_inicio;
-        $data['ingresos']  = $auxMoneda;
-        $data['cantidad_creadas'] = count($auxPagos);
-        $data['pagos']     = $auxPagos;
-        if (count($auxPagos) != 0) {
-            array_push($fechas_pagos, $data);
-        }
-        $data = [];
-        $auxInicio->addDay();
+            array_push($montos, $m);
         }
 
-        return $fechas_pagos;*/
+        $auxFecha  = new Carbon($request->input('fecha_inicio'));
+        for( $i = 1 ; $i < $cantidad_noches; $i++){
+
+            $fecha      = $auxFecha->format('Y-m-d');
+            $fechas[$i] = ['fecha' => $fecha, 'moneda' => $montos];
+
+            $auxFecha->addDay();
+        }
+
+        $ini  = new Carbon($request->input('fecha_inicio'));
+        foreach ($pagos as $pago) {
+            $created_at  = new Carbon($pago->created_at);
+            $dif         = $ini->diffInDays($created_at);  
+            $largo       = sizeof($fechas[$dif]['moneda']);
+
+            for( $i = 0 ; $i < $largo ; $i++){
+                if ($fechas[$dif]['moneda'][$i]['id'] == $pago->tipo_moneda_id ){
+                    $fechas[$dif]['moneda'][$i]['suma'] += $pago->monto_equivalente;
+                }
+            }
+        }
+        
+        return $fechas;
+
     }
 
 
