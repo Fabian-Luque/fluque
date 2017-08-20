@@ -790,8 +790,19 @@ class PropiedadController extends Controller
                 }
             }
         }
+
+        $fechas_montos = [];
+        foreach ($fechas as $fecha) {
+            $largo = count($fecha);
+            for( $i = 0 ; $i < $largo ; $i++){
+                $fecha['moneda'][$i]['suma'];
+                if ($fecha['moneda'][$i]['suma'] != 0 ){
+                        array_push($fechas_montos, $fecha);
+                }
+            }
+        }
         
-        return $fechas;
+        return $fechas_montos;
 
     }
 
