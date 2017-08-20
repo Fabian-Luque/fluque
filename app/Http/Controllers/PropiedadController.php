@@ -781,7 +781,7 @@ class PropiedadController extends Controller
         foreach ($pagos as $pago) {
             $created_at  = new Carbon($pago->created_at);
             $crat        = $created_at->startOfDay();
-            echo $dif         = $inc->diffInDays($crat); 
+            $dif         = $inc->diffInDays($crat); 
             $largo       = sizeof($fechas[$dif]['moneda']);
 
             for( $i = 0 ; $i < $largo ; $i++){
