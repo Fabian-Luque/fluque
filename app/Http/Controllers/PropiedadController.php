@@ -647,7 +647,7 @@ class PropiedadController extends Controller
        $cantidad_noches  = $fecha_inicio->diffInDays($fecha_fin); 
 
 
-       $auxFecha_inicio  = new Carbon($auxInicio);
+/*       $auxFecha_inicio  = new Carbon($auxInicio);
        $auxFecha_fin     = new Carbon($auxFin);
        $suma             = 0;
         while ($auxFecha_inicio < $auxFecha_fin) {
@@ -659,6 +659,27 @@ class PropiedadController extends Controller
                         
                     if ($reserva->estado_reserva_id == 3 || $reserva->estado_reserva_id == 4 || $reserva->estado_reserva_id == 5) {
                         
+                        $suma++;
+                    }
+                }
+            }
+
+
+         $auxFecha_inicio->addDay();
+        }*/
+
+
+       $auxFecha_inicio  = new Carbon($auxInicio);
+       $auxFecha_fin     = new Carbon($auxFin);
+       $suma             = 0;
+        while ($auxFecha_inicio < $auxFecha_fin) {
+            /*$fecha = $auxFecha_inicio->format('Y-m-d');*/
+
+            foreach ($reservas as $reserva) {
+                
+                if ($reserva->checkin <= $auxFecha_inicio && $reserva->checkout > $auxFecha_inicio) {
+                    if ($reserva->estado_reserva_id == 3 || $reserva->estado_reserva_id == 4 || $reserva->estado_reserva_id == 5) {
+                                
                         $suma++;
                     }
                 }
