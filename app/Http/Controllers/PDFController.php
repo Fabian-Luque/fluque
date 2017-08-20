@@ -613,21 +613,16 @@ class PDFController extends Controller
                    $auxFecha_fin     = new Carbon($auxFin);
                    $suma             = 0;
                     while ($auxFecha_inicio < $auxFecha_fin) {
-                        $fecha = $auxFecha_inicio->format('Y-m-d');
+                        /*$fecha = $auxFecha_inicio->format('Y-m-d');*/
 
                         foreach ($reservas as $reserva) {
                             
-                            if ($reserva->checkin <= $fecha && $reserva->checkout > $fecha) {
-                                    
+                            if ($reserva->checkin <= $auxFecha_inicio && $reserva->checkout > $auxFecha_inicio) {
                                 if ($reserva->estado_reserva_id == 3 || $reserva->estado_reserva_id == 4 || $reserva->estado_reserva_id == 5) {
-                                    
+                                            
                                     $suma++;
                                 }
-
-
                             }
-
-
                         }
 
 
