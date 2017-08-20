@@ -730,8 +730,15 @@ class PropiedadController extends Controller
         }
 
         if ($request->has('fecha_fin')) {
-            $fin             = new Carbon($request->input('fecha_fin'));
+/*            $fin             = new Carbon($request->input('fecha_fin'));
             $fechaFin        = $fin->addDay();
+            $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $fechaFin, $pais)->tz('UTC');*/
+
+            $fin             = new Carbon($request->input('fecha_fin'));
+
+            $fechaFin        = $fin->addDay();
+            $fin_fecha       = $fechaFin->startOfDay();
+
             $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $fechaFin, $pais)->tz('UTC');
         } else {
             $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $inicio, $pais)->tz('UTC')->addDay();
@@ -743,7 +750,7 @@ class PropiedadController extends Controller
         ->where('created_at','>=' , $fecha_inicio)->where('created_at', '<' , $fecha_fin)
         ->get();
 
-        $cantidad_noches    = ($fecha_inicio->diffInDays($fecha_fin)) + 1;
+        $cantidad_noches    = ($fecha_inicio->diffInDays($fecha_fin)) ;
         $fechas             = [];
         $monto              = 0;
         $montos             = [];
@@ -756,8 +763,9 @@ class PropiedadController extends Controller
             array_push($montos, $m);
         }
 
+
         $auxFecha  = new Carbon($request->input('fecha_inicio'));
-        for( $i = 0 ; $i < ($cantidad_noches - 1); $i++){
+        for( $i = 0 ; $i < $cantidad_noches; $i++){
 
             $fecha      = $auxFecha->format('Y-m-d');
             $fechas[$i] = ['fecha' => $fecha, 'moneda' => $montos];
@@ -765,12 +773,15 @@ class PropiedadController extends Controller
             $auxFecha->addDay();
         }
 
+
         $ini  = new Carbon($request->input('fecha_inicio'));
-        $ico  = $ini->startOfDay();
+        $inc  = $ini->startOfDay();
+
+
         foreach ($pagos as $pago) {
             $created_at  = new Carbon($pago->created_at);
-            $at          = $created_at->startOfDay();
-            $dif         = $ico->diffInDays($at);  
+            $crat        = $created_at->startOfDay();
+            echo $dif         = $inc->diffInDays($crat); 
             $largo       = sizeof($fechas[$dif]['moneda']);
 
             for( $i = 0 ; $i < $largo ; $i++){
