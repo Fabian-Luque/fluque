@@ -795,9 +795,10 @@ class PropiedadController extends Controller
         foreach ($fechas as $fecha) {
             $largo = count($fecha);
             for( $i = 0 ; $i < $largo ; $i++){
-                $fecha['moneda'][$i]['suma'];
                 if ($fecha['moneda'][$i]['suma'] != 0 ){
+                    if (!in_array($fecha, $fechas_montos)) {
                         array_push($fechas_montos, $fecha);
+                    }
                 }
             }
         }
