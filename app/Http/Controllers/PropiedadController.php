@@ -766,9 +766,11 @@ class PropiedadController extends Controller
         }
 
         $ini  = new Carbon($request->input('fecha_inicio'));
+        $ico  = $ini->startOfDay();
         foreach ($pagos as $pago) {
             $created_at  = new Carbon($pago->created_at);
-            $dif         = $ini->diffInDays($created_at);  
+            $at          = $created_at->startOfDay();
+            $dif         = $ico->diffInDays($at);  
             $largo       = sizeof($fechas[$dif]['moneda']);
 
             for( $i = 0 ; $i < $largo ; $i++){
