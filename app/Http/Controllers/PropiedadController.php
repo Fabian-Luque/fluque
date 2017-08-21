@@ -786,7 +786,7 @@ class PropiedadController extends Controller
 
 
         $auxFecha  = new Carbon($request->input('fecha_inicio'));
-        for( $i = 0 ; $i < $cantidad_noches; $i++){
+        for( $i = 0 ; $i <= $cantidad_noches; $i++){
 
             $fecha      = $auxFecha->format('Y-m-d');
             $fechas[$i] = ['fecha' => $fecha, 'moneda' => $montos];
