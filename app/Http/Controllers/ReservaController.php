@@ -1787,7 +1787,7 @@ class ReservaController extends Controller
             }
 
             if ($reserva->estado_reserva_id == 3) {
-                if ($reserva->checkout > $fecha_hoy) {
+                if ($reserva->checkout >= $fecha_hoy) {
                 $habitaciones_ocupadas++;
                 }
             }
@@ -1870,34 +1870,34 @@ class ReservaController extends Controller
 
         $fechas = [$fecha_inicio, $fecha_fin];
 
-
         $tipos = TipoHabitacion::whereHas('habitaciones', function($query) use($id){
 
                     $query->where('propiedad_id', $id);
 
-        })->with(['habitaciones' => function ($q) use($id) {
+        })->with(['habitaciones' => function ($q){
 
-        $q->where('propiedad_id', $id)->with('tipoHabitacion');}])->get();
-
-
-        $reservas = Reserva::whereHas('habitacion', function($query) use($id){
-
-                    $query->where('propiedad_id', $id);
-
-        })->with('habitacion.tipoHabitacion')->with('cliente','huespedes.servicios','tipoMoneda','tipoFuente','metodoPago','estadoReserva','pagos')->whereBetween('checkin', $fechas)->where('estado_reserva_id', '!=' , 6 )->where('estado_reserva_id', '!=' , 7 )->get();
+        $q->select('id', 'nombre', 'tipo_habitacion_id');}])->get();
 
 
+        $reservas = Reserva::select('reservas.id', 'checkin', 'checkout', 'habitacion_id', 'estado_reserva_id', 'cliente_id', 'nombre', 'apellido', 'noches')->whereHas('habitacion', function($query) use($id){
 
-        $reservas_checkout = Reserva::whereHas('habitacion', function($query) use($id){
+                   $query->where('propiedad_id', $id);
+       })
+       ->join('clientes', 'clientes.id','=','cliente_id')
+       ->whereBetween('checkin', $fechas)->whereIn('estado_reserva_id', [1,2,3,4,5])->get();
 
-                    $query->where('propiedad_id', $id);
 
-        })->with('habitacion.tipoHabitacion')->with('cliente','huespedes','tipoMoneda','tipoFuente', 'metodoPago','estadoReserva')->whereBetween('checkout', $fechas)->where('estado_reserva_id', '!=' , 6 )->where('estado_reserva_id', '!=' , 7 )->get();
 
+
+        $reservas_checkout = Reserva::select('reservas.id', 'checkin', 'checkout', 'habitacion_id', 'estado_reserva_id', 'cliente_id', 'nombre', 'apellido')->whereHas('habitacion', function($query) use($id){
+
+                   $query->where('propiedad_id', $id);
+       })
+       ->join('clientes', 'clientes.id','=','cliente_id')
+       ->whereBetween('checkout', $fechas)->whereIn('estado_reserva_id', [1,2,3,4,5])->get();
 
 
         $habitaciones_tipo = [];
-
         foreach ($tipos as $tipo) {
                 
             $habitaciones = $tipo->habitaciones;
@@ -1908,15 +1908,9 @@ class ReservaController extends Controller
 
             foreach ($habitaciones as $habitacion) {
                 
-/*                $nombre_habitacion = $habitacion->nombre;
-                $hab = [ 'nombre' => $nombre_habitacion];*/
                 array_push($habitaciones_tipo, $habitacion);
 
-
-
             }
-
-
         }
 
         $reservas_calendario = [];
