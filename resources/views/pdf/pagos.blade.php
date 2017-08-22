@@ -44,14 +44,14 @@
                     @endforeach
                 @endforeach
                         </tr>
-        		@foreach($pagos as $pago)
+        		    @foreach($fechas as $fecha)
                         <tr style="text-align:center;">
-                          <td class="data-tabla-detalles borde-derecha"><p>{{ $pago['fecha'] }}</p></td>
-        			@foreach($pago['ingresos'] as $ingreso)
-                          <td class="data-tabla-detalles borde-derecha"><p>{{ $ingreso['nombre_moneda'] }} ${{ $ingreso['monto'] }}</p></td>
+                          <td class="data-tabla-detalles borde-derecha"><p>{{ $fecha['fecha'] }}</p></td>
+        			  @foreach($fecha['moneda'] as $moneda)
+                          <td class="data-tabla-detalles borde-derecha"><p>{{ $moneda['nombre'] }} ${{ $moneda['suma'] }}</p></td>
                     @endforeach
                         </tr>
-        		@endforeach
+        		    @endforeach
                       
                         <tr style="text-align:center;">
                           <td class="data-tabla-detalles borde-derecha"><p>Total</p></td>

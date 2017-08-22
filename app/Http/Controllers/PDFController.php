@@ -146,10 +146,10 @@ class PDFController extends Controller
             $propiedad_id = $request->input('propiedad_id');
             $propiedad    = Propiedad::where('id', $propiedad_id)->with('tipoMonedas')->first();
             if (is_null($propiedad)) {
-            $retorno = array(
-                'msj'    => "Propiedad no encontrada",
-                'errors' => true);
-            return Response::json($retorno, 404);
+                $retorno = array(
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
             }
         } else {
             $retorno = array(
@@ -167,84 +167,96 @@ class PDFController extends Controller
         }
 
         if ($request->has('fecha_fin')) {
-            $fin             = new Carbon($request->input('fecha_fin'));
+/*            $fin             = new Carbon($request->input('fecha_fin'));
             $fechaFin        = $fin->addDay();
+            $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $fechaFin, $pais)->tz('UTC');*/
+
+            $fin             = new Carbon($request->input('fecha_fin'));
+
+            $fechaFin        = $fin->addDay();
+            $fin_fecha       = $fechaFin->startOfDay();
+
             $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $fechaFin, $pais)->tz('UTC');
         } else {
             $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $inicio, $pais)->tz('UTC')->addDay();
         }
 
-        $pagos = Pago::where('created_at','>=' , $fecha_inicio)->where('created_at', '<' , $fecha_fin)
-            ->whereHas('reserva.habitacion', function($query) use($propiedad_id){
-                $query->where('propiedad_id', $propiedad_id);
-        })->with('tipoComprobante', 'metodoPago', 'tipoMoneda')->with('reserva')->get();
+        $pagos = Pago::select('id' ,'created_at', 'monto_equivalente' ,'tipo_moneda_id')
+        ->whereHas('reserva.habitacion', function($query) use($propiedad_id){
+            $query->where('propiedad_id', $propiedad_id);})
+        ->where('created_at','>=' , $fecha_inicio)->where('created_at', '<' , $fecha_fin)
+        ->get();
 
-        $moneda_propiedad = $propiedad->tipoMonedas;
-        $auxInicio      = new Carbon($inicio);
-        $auxFecha_fin   = new Carbon($fecha_fin);
-        $auxFin         = $auxFecha_fin->startOfDay();
-
-        $fechas_pagos = [];
-        while ($auxInicio < $auxFin) {
-            $auxFecha_inicio = $auxInicio->format('d/m/Y');
-            $auxPagos = [];
-            foreach ($pagos as $pago) {
-                $created_at     = new Carbon($pago->created_at);
-                $auxCreated_at  = $created_at->format('d/m/Y');
-                if ($auxCreated_at == $auxFecha_inicio ) {
-                    array_push($auxPagos, $pago);
-                }
-            }
-
-            $auxMoneda = [];
-            foreach ($moneda_propiedad as $moneda) {
-                $moneda_id = $moneda->id;
-                $suma_pago = 0;
-                foreach ($auxPagos as $pago) {
-                    $tipo_moneda_pago = $pago->tipo_moneda_id;
-                    if ($moneda_id == $tipo_moneda_pago) {
-                        $suma_pago += $pago->monto_equivalente;
-                    }
-                }
-                $ingreso['nombre_moneda']       = $moneda->nombre;
-                $ingreso['monto']               = $suma_pago;
-                $ingreso['tipo_moneda_id']      = $moneda->pivot->tipo_moneda_id;
-                $ingreso['cantidad_decimales']  = $moneda->cantidad_decimales;
-                array_push($auxMoneda, $ingreso);
-            }
-
-        $data['fecha']     = $auxFecha_inicio;
-        $data['ingresos']  = $auxMoneda;
-        $data['pagos']     = $auxPagos;
-        if (count($auxPagos) != 0) {
-            array_push($fechas_pagos, $data);
-        }
-        $data = [];
-        $auxInicio->addDay();
-        }
-
-        $ingresos_totales = [];
+        $cantidad_noches    = ($fecha_inicio->diffInDays($fecha_fin)) ;
+        $fechas             = [];
+        $monto              = 0;
+        $montos             = [];
         foreach ($propiedad->tipoMonedas as $moneda) {
-            /*return $moneda->nombre;*/
-            $suma_ingreso = 0;
-            foreach ($fechas_pagos as $pago) {
-                /*return $pago;*/
-                foreach ($pago['ingresos'] as $ingreso) {
-                    /*return $ingreso['nombre_moneda'];*/
-                    if ($moneda->nombre == $ingreso['nombre_moneda']) {
-                        $suma_ingreso += $ingreso['monto'];
+            $m['id']     = $moneda->id;
+            $m['nombre'] = $moneda->nombre;
+            $m['cantidad_decimales'] = $moneda->cantidad_decimales;
+            $m['suma'] = 0;
+
+            array_push($montos, $m);
+        }
+
+
+        $auxFecha  = new Carbon($request->input('fecha_inicio'));
+        for( $i = 0 ; $i <= $cantidad_noches; $i++){
+
+            $fecha      = $auxFecha->format('Y-m-d');
+            $fechas[$i] = ['fecha' => $fecha, 'moneda' => $montos];
+
+            $auxFecha->addDay();
+        }
+
+
+        $ini  = new Carbon($request->input('fecha_inicio'));
+        $inc  = $ini->startOfDay();
+
+
+        foreach ($pagos as $pago) {
+            $created_at  = new Carbon($pago->created_at);
+            $crat        = $created_at->startOfDay();
+            $dif         = $inc->diffInDays($crat); 
+            $largo       = sizeof($fechas[$dif]['moneda']);
+
+            for( $i = 0 ; $i < $largo ; $i++){
+                if ($fechas[$dif]['moneda'][$i]['id'] == $pago->tipo_moneda_id ){
+                    $fechas[$dif]['moneda'][$i]['suma'] += $pago->monto_equivalente;
+                }
+            }
+        }
+
+        $fechas_montos = [];
+        foreach ($fechas as $fecha) {
+            $largo = count($fecha);
+            for( $i = 0 ; $i < $largo ; $i++){
+                if ($fecha['moneda'][$i]['suma'] != 0 ){
+                    if (!in_array($fecha, $fechas_montos)) {
+                        array_push($fechas_montos, $fecha);
                     }
                 }
             }
-            $sumaIngreso['nombre_moneda']       = $moneda->nombre;
-            $sumaIngreso['monto']               = $suma_ingreso;
-            $sumaIngreso['tipo_moneda_id']      = $moneda->pivot->tipo_moneda_id;
-            $sumaIngreso['cantidad_decimales']  = $moneda->cantidad_decimales;
-            array_push($ingresos_totales, $sumaIngreso);
         }
 
-        $fecha_fin = $fecha_fin->subDay();
-        $pdf = PDF::loadView('pdf.pagos', ['propiedad' => [$propiedad], 'pagos' => $fechas_pagos, 'fecha_inicio' => $fecha_inicio, 'fecha_fin' => $fecha_fin, 'ingresos_totales' => $ingresos_totales ]);
+        $montos_totales = [];
+        foreach ($propiedad->tipoMonedas as $moneda) {
+            $suma = 0;
+            foreach ($fechas_montos as $key => $fechas) {
+                foreach ($fechas['moneda'] as $m) {
+                    if ($m['nombre'] == $moneda->nombre) {
+                        $suma += $m['suma'];
+                    }
+                }
+            }
+            $total['nombre_moneda']  = $moneda->nombre;
+            $total['monto']          = $suma;
+            array_push($montos_totales, $total);
+
+        }
+        
+        $pdf = PDF::loadView('pdf.pagos', ['propiedad' => [$propiedad], 'fecha_inicio' => $fecha_inicio, 'fecha_fin' => $fecha_fin, 'fechas' => $fechas_montos, 'ingresos_totales' => $montos_totales]);
 
         return $pdf->download('archivo.pdf');
 
