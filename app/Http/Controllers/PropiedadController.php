@@ -895,12 +895,6 @@ class PropiedadController extends Controller
 
 
 
-
-
-
-
-
-
     public function ingresoServicio(Request $request)
     {
 
