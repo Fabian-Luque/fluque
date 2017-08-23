@@ -113,9 +113,11 @@ class PDFController extends Controller
         if ($tipo_moneda_reservas == 1) {
 
             if ($iva_reservas == 1) {
-                $total         = $monto_alojamiento;
-                $neto          = ($total / ($propiedad_iva + 1 ));
-                $iva           = ($neto * $propiedad_iva);
+    
+                $total  = $monto_alojamiento;
+                $neto       = ($total / ($propiedad_iva + 1 ));
+                $iva        = ($neto * $propiedad_iva);
+
 
                 $pdf = PDF::loadView('pdf.estado_cuenta', ['propiedad' => $propiedad , 'cliente'=> $cliente ,'reservas_pdf'=> $reservas_pdf, 'nombre_moneda' => $nombre_moneda,'iva_reservas' => $iva_reservas, 'neto' => $neto , 'iva' => $iva, 'total' => $total]);
             
