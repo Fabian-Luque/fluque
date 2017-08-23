@@ -49,6 +49,7 @@ Route::group(['as' => 'api.jarvis.'], function(){
 		Route::post('servicios/excel','ExcelController@importServicios');
 		Route::delete('consumo/{id}', 'HuespedController@eliminarConsumo');
 		Route::post('pdf/estado/cuenta', 'PDFController@estadoCuenta');
+		Route::post('pdf/estado/cuenta/resumen', 'PDFController@estadoCuentaResumen');
 		Route::post('pdf/reporte', 'PDFController@reporte');
 		Route::post('pdf/huesped', 'PDFController@huesped');
 		Route::post('pdf/checkin', 'PDFController@checkin');

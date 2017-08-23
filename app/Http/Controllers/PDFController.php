@@ -38,6 +38,7 @@ class PDFController extends Controller
 		foreach ($propiedad as $prop) {
 			
 			$propiedad_iva = $prop->iva;
+            $propiedad_iva = $propiedad_iva / 100;
 
 		}
 
@@ -112,10 +113,11 @@ class PDFController extends Controller
         if ($tipo_moneda_reservas == 1) {
 
             if ($iva_reservas == 1) {
-                $monto_reserva = $monto_alojamiento;
-                $iva           = (($monto_reserva * $propiedad_iva) / 100);
-                $neto          = ($monto_reserva - $iva);
-                $total         = $neto + $iva;
+    
+                $total  = $monto_alojamiento;
+                $neto       = ($total / ($propiedad_iva + 1 ));
+                $iva        = ($neto * $propiedad_iva);
+
 
                 $pdf = PDF::loadView('pdf.estado_cuenta', ['propiedad' => $propiedad , 'cliente'=> $cliente ,'reservas_pdf'=> $reservas_pdf, 'nombre_moneda' => $nombre_moneda,'iva_reservas' => $iva_reservas, 'neto' => $neto , 'iva' => $iva, 'total' => $total]);
             
@@ -140,16 +142,138 @@ class PDFController extends Controller
 
 	}
 
+
+    public function estadoCuentaResumen(Request $request){
+
+        $reservas = $request['reservas'];
+        $propiedad_id = $request->input('propiedad_id');
+        $cliente_id = $request->input('cliente_id');
+        /*$iva = $request->input('iva');*/
+
+
+
+        $propiedad = Propiedad::where('id', $propiedad_id)->with('pais', 'region')->get();
+        $cliente = Cliente::where('id', $cliente_id)->with('pais', 'region')->get();
+
+        $propiedad_iva = 0;
+        foreach ($propiedad as $prop) {
+            
+            $propiedad_iva = $prop->iva;
+            $propiedad_iva = $propiedad_iva / 100;
+
+        }
+
+        $reservas_pdf = [];
+        $monto_alojamiento = 0;
+        $consumo = 0;
+        $iva_reservas            = null;
+        $tipo_moneda_reservas    = null;
+        foreach($reservas as $id){
+
+        $reserva = Reserva::where('id', $id)->where('cliente_id', $cliente_id)->with('cliente.pais', 'cliente.region')->with('tipoMoneda')->with('habitacion.tipoHabitacion')->with('pagos.tipoMoneda', 'pagos.metodoPago', 'pagos.tipoComprobante')->with(['huespedes.servicios' => function ($q) use($id) {
+
+        $q->wherePivot('reserva_id', $id);}])->get();
+
+
+        if (count($reserva) == 0) {
+          $retorno = array(
+                'errors' => true,
+                'msj'    => " Las reservas no pertenecen al mismo cliente"
+          );
+          return Response::json($retorno, 400);
+        }
+
+
+        foreach ($reserva as $ra) {
+            if (is_null($iva_reservas)) {
+                $iva_reservas = $ra->iva;
+            } else {
+                if ($iva_reservas != $ra->iva) {
+                    $retorno = array(
+                        'errors' => true,
+                        'msj'    => " Error: Reservas con distinto impuesto "
+                    );
+                    return Response::json($retorno, 400);
+                }
+            }
+
+            if (is_null($tipo_moneda_reservas)) {
+                $tipo_moneda_reservas = $ra->tipo_moneda_id;
+            } else {
+                if ($tipo_moneda_reservas != $ra->tipo_moneda_id) {
+                    $retorno = array(
+                        'errors' => true,
+                        'msj'    => " Error: Las reservas deben estar cursada con el mismo tipo de moneda "
+                    );
+                    return Response::json($retorno, 400);
+                }
+            }
+        }
+
+
+
+        foreach ($reserva as $ra) {
+            $monto_alojamiento += $ra->monto_alojamiento;
+            foreach($ra->huespedes as $huesped){
+                $huesped->monto_consumo = 0;
+                foreach($huesped->servicios as $servicio){
+                    $huesped->monto_consumo += $servicio->pivot->precio_total;
+                    $consumo += $servicio->pivot->precio_total;
+                }
+            }
+        }
+
+        array_push($reservas_pdf, $reserva);
+
+
+    }
+
+        $auxMoneda     = TipoMoneda::where('id' , $tipo_moneda_reservas)->first();
+        $nombre_moneda = $auxMoneda->nombre;
+
+        if ($tipo_moneda_reservas == 1) {
+
+            if ($iva_reservas == 1) {
+                $total         = $monto_alojamiento;
+                $neto          = ($total / ($propiedad_iva + 1 ));
+                $iva           = ($neto * $propiedad_iva);
+
+                $pdf = PDF::loadView('pdf.estado_cuenta_resumen', ['propiedad' => $propiedad , 'cliente'=> $cliente ,'reservas_pdf'=> $reservas_pdf, 'nombre_moneda' => $nombre_moneda,'iva_reservas' => $iva_reservas, 'neto' => $neto , 'iva' => $iva, 'total' => $total]);
+            
+            } else {
+
+                $total = $monto_alojamiento;
+                $pdf   = PDF::loadView('pdf.estado_cuenta_resumen', ['propiedad' => $propiedad, 'cliente'=> $cliente ,'reservas_pdf'=> $reservas_pdf, 'nombre_moneda' => $nombre_moneda,'iva_reservas' => $iva_reservas,'total' => $total]);
+            
+            }
+
+        }elseif($tipo_moneda_reservas == 2){
+
+            $total = $monto_alojamiento;
+
+            $pdf = PDF::loadView('pdf.estado_cuenta_resumen', ['propiedad' => $propiedad , 'cliente'=> $cliente ,'reservas_pdf'=> $reservas_pdf, 'nombre_moneda' => $nombre_moneda,'iva_reservas' => $iva_reservas,'total' => $total]);
+
+        }
+        
+
+        return $pdf->download('archivo.pdf');
+
+
+    }
+
+
+
+
    public function pagos(Request $request)
    {
         if ($request->has('propiedad_id')) {
             $propiedad_id = $request->input('propiedad_id');
             $propiedad    = Propiedad::where('id', $propiedad_id)->with('tipoMonedas')->first();
             if (is_null($propiedad)) {
-            $retorno = array(
-                'msj'    => "Propiedad no encontrada",
-                'errors' => true);
-            return Response::json($retorno, 404);
+                $retorno = array(
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
             }
         } else {
             $retorno = array(
@@ -167,85 +291,96 @@ class PDFController extends Controller
         }
 
         if ($request->has('fecha_fin')) {
+/*            $fin             = new Carbon($request->input('fecha_fin'));
+            $fechaFin        = $fin->addDay();
+            $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $fechaFin, $pais)->tz('UTC');*/
+
             $fin             = new Carbon($request->input('fecha_fin'));
+
             $fechaFin        = $fin->addDay();
             $fin_fecha       = $fechaFin->startOfDay();
+
             $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $fechaFin, $pais)->tz('UTC');
         } else {
             $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $inicio, $pais)->tz('UTC')->addDay();
         }
 
-        $pagos = Pago::where('created_at','>=' , $fecha_inicio)->where('created_at', '<' , $fecha_fin)
-            ->whereHas('reserva.habitacion', function($query) use($propiedad_id){
-                $query->where('propiedad_id', $propiedad_id);
-        })->with('tipoComprobante', 'metodoPago', 'tipoMoneda')->with('reserva')->get();
+        $pagos = Pago::select('id' ,'created_at', 'monto_equivalente' ,'tipo_moneda_id')
+        ->whereHas('reserva.habitacion', function($query) use($propiedad_id){
+            $query->where('propiedad_id', $propiedad_id);})
+        ->where('created_at','>=' , $fecha_inicio)->where('created_at', '<' , $fecha_fin)
+        ->get();
 
-        $moneda_propiedad = $propiedad->tipoMonedas;
-        $auxInicio      = new Carbon($inicio);
-        $auxFecha_fin   = new Carbon($fecha_fin);
-        $auxFin         = $auxFecha_fin->startOfDay();
-
-        $fechas_pagos = [];
-        while ($auxInicio < $auxFin) {
-            $auxFecha_inicio = $auxInicio->format('d/m/Y');
-            $auxPagos = [];
-            foreach ($pagos as $pago) {
-                $created_at     = new Carbon($pago->created_at);
-                $auxCreated_at  = $created_at->format('d/m/Y');
-                if ($auxCreated_at == $auxFecha_inicio ) {
-                    array_push($auxPagos, $pago);
-                }
-            }
-
-            $auxMoneda = [];
-            foreach ($moneda_propiedad as $moneda) {
-                $moneda_id = $moneda->id;
-                $suma_pago = 0;
-                foreach ($auxPagos as $pago) {
-                    $tipo_moneda_pago = $pago->tipo_moneda_id;
-                    if ($moneda_id == $tipo_moneda_pago) {
-                        $suma_pago += $pago->monto_equivalente;
-                    }
-                }
-                $ingreso['nombre_moneda']       = $moneda->nombre;
-                $ingreso['monto']               = $suma_pago;
-                $ingreso['tipo_moneda_id']      = $moneda->pivot->tipo_moneda_id;
-                $ingreso['cantidad_decimales']  = $moneda->cantidad_decimales;
-                array_push($auxMoneda, $ingreso);
-            }
-
-        $data['fecha']     = $auxFecha_inicio;
-        $data['ingresos']  = $auxMoneda;
-        $data['pagos']     = $auxPagos;
-        if (count($auxPagos) != 0) {
-            array_push($fechas_pagos, $data);
-        }
-        $data = [];
-        $auxInicio->addDay();
-        }
-
-        $ingresos_totales = [];
+        $cantidad_noches    = ($fecha_inicio->diffInDays($fecha_fin)) ;
+        $fechas             = [];
+        $monto              = 0;
+        $montos             = [];
         foreach ($propiedad->tipoMonedas as $moneda) {
-            /*return $moneda->nombre;*/
-            $suma_ingreso = 0;
-            foreach ($fechas_pagos as $pago) {
-                /*return $pago;*/
-                foreach ($pago['ingresos'] as $ingreso) {
-                    /*return $ingreso['nombre_moneda'];*/
-                    if ($moneda->nombre == $ingreso['nombre_moneda']) {
-                        $suma_ingreso += $ingreso['monto'];
+            $m['id']     = $moneda->id;
+            $m['nombre'] = $moneda->nombre;
+            $m['cantidad_decimales'] = $moneda->cantidad_decimales;
+            $m['suma'] = 0;
+
+            array_push($montos, $m);
+        }
+
+
+        $auxFecha  = new Carbon($request->input('fecha_inicio'));
+        for( $i = 0 ; $i <= $cantidad_noches; $i++){
+
+            $fecha      = $auxFecha->format('Y-m-d');
+            $fechas[$i] = ['fecha' => $fecha, 'moneda' => $montos];
+
+            $auxFecha->addDay();
+        }
+
+
+        $ini  = new Carbon($request->input('fecha_inicio'));
+        $inc  = $ini->startOfDay();
+
+
+        foreach ($pagos as $pago) {
+            $created_at  = new Carbon($pago->created_at);
+            $crat        = $created_at->startOfDay();
+            $dif         = $inc->diffInDays($crat); 
+            $largo       = sizeof($fechas[$dif]['moneda']);
+
+            for( $i = 0 ; $i < $largo ; $i++){
+                if ($fechas[$dif]['moneda'][$i]['id'] == $pago->tipo_moneda_id ){
+                    $fechas[$dif]['moneda'][$i]['suma'] += $pago->monto_equivalente;
+                }
+            }
+        }
+
+        $fechas_montos = [];
+        foreach ($fechas as $fecha) {
+            $largo = count($fecha);
+            for( $i = 0 ; $i < $largo ; $i++){
+                if ($fecha['moneda'][$i]['suma'] != 0 ){
+                    if (!in_array($fecha, $fechas_montos)) {
+                        array_push($fechas_montos, $fecha);
                     }
                 }
             }
-            $sumaIngreso['nombre_moneda']       = $moneda->nombre;
-            $sumaIngreso['monto']               = $suma_ingreso;
-            $sumaIngreso['tipo_moneda_id']      = $moneda->pivot->tipo_moneda_id;
-            $sumaIngreso['cantidad_decimales']  = $moneda->cantidad_decimales;
-            array_push($ingresos_totales, $sumaIngreso);
         }
 
-        $fecha_fin = $fecha_fin->subDay();
-        $pdf = PDF::loadView('pdf.pagos', ['propiedad' => [$propiedad], 'pagos' => $fechas_pagos, 'fecha_inicio' => $fecha_inicio, 'fecha_fin' => $fecha_fin, 'ingresos_totales' => $ingresos_totales ]);
+        $montos_totales = [];
+        foreach ($propiedad->tipoMonedas as $moneda) {
+            $suma = 0;
+            foreach ($fechas_montos as $key => $fechas) {
+                foreach ($fechas['moneda'] as $m) {
+                    if ($m['nombre'] == $moneda->nombre) {
+                        $suma += $m['suma'];
+                    }
+                }
+            }
+            $total['nombre_moneda']  = $moneda->nombre;
+            $total['monto']          = $suma;
+            array_push($montos_totales, $total);
+
+        }
+        
+        $pdf = PDF::loadView('pdf.pagos', ['propiedad' => [$propiedad], 'fecha_inicio' => $fecha_inicio, 'fecha_fin' => $fecha_fin, 'fechas' => $fechas_montos, 'ingresos_totales' => $montos_totales]);
 
         return $pdf->download('archivo.pdf');
 
@@ -263,6 +398,7 @@ class PDFController extends Controller
         foreach ($propiedad as $prop) {
           
           $propiedad_iva = $prop->iva;
+          $propiedad_iva = $propiedad_iva / 100;
 
         }
 
@@ -319,10 +455,9 @@ class PDFController extends Controller
         if ($tipo_moneda_reservas == 1) {
 
             if ($iva_reservas == 1) {
-                $monto_reserva = $monto_alojamiento;
-                $iva           = (($monto_reserva * $propiedad_iva) / 100);
-                $neto          = ($monto_reserva - $iva);
-                $total         = $neto + $iva;
+                $total         = $monto_alojamiento;
+                $neto          = ($total / ($propiedad_iva + 1 ));
+                $iva           = ($neto * $propiedad_iva);
 
                 $pdf = PDF::loadView('pdf.checkin', ['propiedad' => $propiedad , 'cliente'=> $cliente ,'reservas_pdf'=> [$reservas_pdf], 'nombre_moneda' => $nombre_moneda,'iva_reservas' => $iva_reservas, 'neto' => $neto , 'iva' => $iva, 'total' => $total]);
             
