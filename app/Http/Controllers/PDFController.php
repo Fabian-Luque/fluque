@@ -221,12 +221,12 @@ class PDFController extends Controller
                 $neto          = ($monto_reserva - $iva);
                 $total         = $neto + $iva;
 
-                $pdf = PDF::loadView('pdf.estado_cuenta', ['propiedad' => $propiedad , 'cliente'=> $cliente ,'reservas_pdf'=> $reservas_pdf, 'nombre_moneda' => $nombre_moneda,'iva_reservas' => $iva_reservas, 'neto' => $neto , 'iva' => $iva, 'total' => $total]);
+                $pdf = PDF::loadView('pdf.estado_cuenta_resumen', ['propiedad' => $propiedad , 'cliente'=> $cliente ,'reservas_pdf'=> $reservas_pdf, 'nombre_moneda' => $nombre_moneda,'iva_reservas' => $iva_reservas, 'neto' => $neto , 'iva' => $iva, 'total' => $total]);
             
             } else {
 
                 $total = $monto_alojamiento;
-                $pdf   = PDF::loadView('pdf.estado_cuenta', ['propiedad' => $propiedad, 'cliente'=> $cliente ,'reservas_pdf'=> $reservas_pdf, 'nombre_moneda' => $nombre_moneda,'iva_reservas' => $iva_reservas,'total' => $total]);
+                $pdf   = PDF::loadView('pdf.estado_cuenta_resumen', ['propiedad' => $propiedad, 'cliente'=> $cliente ,'reservas_pdf'=> $reservas_pdf, 'nombre_moneda' => $nombre_moneda,'iva_reservas' => $iva_reservas,'total' => $total]);
             
             }
 
