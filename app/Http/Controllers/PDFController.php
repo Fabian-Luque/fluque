@@ -210,7 +210,22 @@ class PDFController extends Controller
             }
         }
 
+
+
+        foreach ($reserva as $ra) {
+            $monto_alojamiento += $ra->monto_alojamiento;
+            foreach($ra->huespedes as $huesped){
+                $huesped->monto_consumo = 0;
+                foreach($huesped->servicios as $servicio){
+                    $huesped->monto_consumo += $servicio->pivot->precio_total;
+                    $consumo += $servicio->pivot->precio_total;
+                }
+            }
+        }
+
         array_push($reservas_pdf, $reserva);
+
+
     }
 
         $auxMoneda     = TipoMoneda::where('id' , $tipo_moneda_reservas)->first();
