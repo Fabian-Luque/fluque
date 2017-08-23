@@ -281,12 +281,57 @@
               @foreach($huesped->servicios as $servicio)
             <tr>
               <td class="data-tabla-detalles borde-derecha"><p class="">{{ $servicio->pivot->created_at->format('d-m-Y') }}   -  {{ $servicio->pivot->cantidad }} {{ $servicio->nombre }}</p></td>
-              <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{ $servicio->pivot->precio_total }}</p></td>
+
+
+
+
+                        @if($reserva->tipo_moneda_id == 1)
+
+
+
+                       <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{  number_format($servicio->pivot->precio_total) }}</p></td>
+
+
+                        @else 
+
+  
+                        <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{  $servicio->pivot->precio_total }}</p></td>
+
+
+                      @endif
+
+
             </tr>
               @endforeach
             <tr>
               <th class="data-tabla-detalles borde-derecha"><p class="titulo align-right">Total</p></th>
-              <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{ $huesped->monto_consumo }}</p></td>
+
+
+
+
+
+
+
+
+
+                      @if($reserva->tipo_moneda_id == 1)
+                        <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{  number_format($huesped->monto_consumo)}}</p></td>
+
+                        @else 
+
+                        <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{  $huesped->monto_consumo}}</p></td>
+
+
+                      @endif
+
+
+
+
+
+
+
+
+
             </tr>
           </table>
             @endforeach
@@ -347,8 +392,30 @@
                       <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->numero_operacion }}</p></td>
                       @endif
 
+
+                      @if($pago->tipo_moneda_id == 1)
+
+
+                        <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->tipoMoneda->nombre }} ${{ number_format($pago->monto_equivalente) }}</p></td>
+
+
+
+                        @else 
+
+
                         <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->tipoMoneda->nombre }} ${{ $pago->monto_equivalente }}</p></td>
-                      
+
+
+
+                      @endif
+
+
+
+
+
+                  
+
+
                     </tr>
                      @endforeach
                     @endforeach

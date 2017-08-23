@@ -274,7 +274,22 @@
                 @else
                 <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->numero_operacion }}</p></td>
                 @endif
-                <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->tipoMoneda->nombre }} ${{$pago->monto_equivalente }}</p></td>
+                
+                      @if($pago->tipo_moneda_id == 1)
+
+
+                        <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->tipoMoneda->nombre }} ${{ number_format($pago->monto_equivalente) }}</p></td>
+
+
+
+                        @else 
+
+
+                        <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->tipoMoneda->nombre }} ${{ $pago->monto_equivalente }}</p></td>
+
+
+
+                      @endif
               </tr>
                @endforeach
               @endforeach
