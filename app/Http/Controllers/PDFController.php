@@ -25,6 +25,88 @@ use Response;
 
 class PDFController extends Controller
 {
+    public function entradas(Request $request)
+    {
+        if ($request->has('propiedad_id')) {
+            $id = $request->input('propiedad_id');
+            $propiedad    = Propiedad::where('id', $id)->with('zonaHoraria')->first();
+            if (is_null($propiedad)) {
+                $retorno = array(
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia propiedad_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        $enUTC           = Carbon::now();
+        $zona_horaria    = ZonaHoraria::where('id', $propiedad->zona_horaria_id)->first();
+        $pais            = $zona_horaria->nombre;
+        $fecha_pais      = $enUTC->tz($pais);
+        $fecha           = $fecha_pais->format('Y-m-d');
+        $dia             = $fecha_pais->format('d-m-Y');
+
+
+        $reservas_hoy = Reserva::whereHas('habitacion', function($query) use($id){
+                    $query->where('propiedad_id', $id);
+        })->where('checkin', $fecha)->with('habitacion.tipoHabitacion')->with('tipoMoneda')->with('huespedes')->with('cliente.pais', 'cliente.region')->with('estadoReserva')->whereIn('estado_reserva_id', [1,2])->get();
+
+        $pdf = PDF::loadView('pdf.entradas', ['fecha' => $dia, 'propiedad' => [$propiedad], 'reservas' => $reservas_hoy]);
+
+        return $pdf->download('archivo.pdf');
+
+    }
+
+    public function salidas(Request $request)
+    {
+        if ($request->has('propiedad_id')) {
+            $id = $request->input('propiedad_id');
+            $propiedad    = Propiedad::where('id', $id)->with('zonaHoraria')->first();
+            if (is_null($propiedad)) {
+                $retorno = array(
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia propiedad_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        $enUTC           = Carbon::now();
+        $zona_horaria    = ZonaHoraria::where('id', $propiedad->zona_horaria_id)->first();
+        $pais            = $zona_horaria->nombre;
+        $fecha_pais      = $enUTC->tz($pais);
+        $fecha           = $fecha_pais->format('Y-m-d');
+        $dia             = $fecha_pais->format('d-m-Y');
+
+/*        setlocale(LC_TIME, 'es');
+
+        $dt = new Carbon($fecha_pais);
+        $mes_fecha = $dt->formatLocalized('%B');
+        $mes = ucwords($mes_fecha);*/
+
+
+
+
+
+       $reservas_hoy = Reserva::whereHas('habitacion', function($query) use($id){
+                    $query->where('propiedad_id', $id);
+        })->where('checkout', $fecha)->with('habitacion.tipoHabitacion')->with('tipoMoneda')->with('huespedes')->with('cliente.pais', 'cliente.region')->with('estadoReserva')->whereIn('estado_reserva_id', [3,4,5])->get();
+
+        $pdf = PDF::loadView('pdf.salidas', ['fecha' => $dia,'propiedad' => [$propiedad], 'reservas' => $reservas_hoy]);
+
+        return $pdf->download('archivo.pdf');
+
+    }
+
+
 
 
     public function reporteFinanciero(Request $request)

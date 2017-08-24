@@ -52,6 +52,8 @@ Route::group(['as' => 'api.jarvis.'], function(){
 		Route::post('pdf/estado/cuenta/resumen', 'PDFController@estadoCuentaResumen');
 		Route::post('pdf/reporte', 'PDFController@reporte');
 		Route::get('pdf/reporte/financiero', 'PDFController@reporteFinanciero');
+		Route::get('pdf/entradas', 'PDFController@entradas');
+		Route::get('pdf/salidas', 'PDFController@salidas');
 		Route::post('pdf/huesped', 'PDFController@huesped');
 		Route::post('pdf/checkin', 'PDFController@checkin');
 		Route::post('pdf/pagos', 'PDFController@pagos');
