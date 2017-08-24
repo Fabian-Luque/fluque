@@ -26,7 +26,7 @@
 
 
 
-          <h2 class="titulo">Resumen financiero del mes de Agosto</h2>
+          <h2 class="titulo">Resumen financiero del mes de {{ $mes }}</h2>
 
 
 

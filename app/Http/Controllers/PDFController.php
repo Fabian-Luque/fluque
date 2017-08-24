@@ -278,7 +278,14 @@ class PDFController extends Controller
         $ingresos_total['tipos_clientes']           = $ingresos_tipo_cliente;
         $ingresos_total['metodos_pagos']            = $ingresos_metodo_pago;
 
-        $pdf = PDF::loadView('pdf.reporte_financiero', ['propiedad' => [$propiedad], 'ingresos' => $ingresos_total]);
+        setlocale(LC_TIME, 'es');
+
+        $dt = new Carbon($request->input('fecha_inicio'));
+        $mes_fecha = $dt->formatLocalized('%B');
+        $mes = ucwords($mes_fecha);
+
+     /*   return ['mes' => $mes ,'propiedad' => [$propiedad], 'ingresos' => $ingresos_total];*/
+        $pdf = PDF::loadView('pdf.reporte_financiero', ['mes' => $mes ,'propiedad' => [$propiedad], 'ingresos' => $ingresos_total]);
 
         return $pdf->download('archivo.pdf');
  
