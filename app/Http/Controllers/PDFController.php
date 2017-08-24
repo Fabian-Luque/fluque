@@ -356,13 +356,59 @@ class PDFController extends Controller
         $ingresos_total['tipos_clientes']           = $ingresos_tipo_cliente;
         $ingresos_total['metodos_pagos']            = $ingresos_metodo_pago;
 
-        setlocale(LC_TIME, 'es');
 
         $dt = new Carbon($request->input('fecha_inicio'));
         $mes_fecha = $dt->formatLocalized('%B');
-        $mes = ucwords($mes_fecha);
 
-     /*   return ['mes' => $mes ,'propiedad' => [$propiedad], 'ingresos' => $ingresos_total];*/
+
+        if ($mes_fecha == "January") {
+            $mes = "Enero";
+        }
+
+        if ($mes_fecha == "February") {
+            $mes = "Febrero";
+        }
+
+        if ($mes_fecha == "March") {
+            $mes = "Marzo";
+        }
+
+        if ($mes_fecha == "April") {
+            $mes = "Abril";
+        }
+
+        if ($mes_fecha == "May") {
+            $mes = "Mayo";
+        }
+
+        if ($mes_fecha == "June") {
+            $mes = "Junio";
+        }
+
+        if ($mes_fecha == "July") {
+            $mes = "Julio";
+        }
+
+        if ($mes_fecha == "August") {
+            $mes = "Agosto";
+        }
+
+        if ($mes_fecha == "September") {
+            $mes = "Septiembre";
+        }
+
+        if ($mes_fecha == "October") {
+            $mes = "Octubre";
+        }
+
+        if ($mes_fecha == "November") {
+            $mes = "Noviembre";
+        }
+
+        if ($mes_fecha == "December") {
+            $mes = "Diciembre";
+        }
+
         $pdf = PDF::loadView('pdf.reporte_financiero', ['mes' => $mes ,'propiedad' => [$propiedad], 'ingresos' => $ingresos_total]);
 
         return $pdf->download('archivo.pdf');
