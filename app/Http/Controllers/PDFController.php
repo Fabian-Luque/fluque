@@ -29,7 +29,7 @@ class PDFController extends Controller
     {
         if ($request->has('propiedad_id')) {
             $id = $request->input('propiedad_id');
-            $propiedad    = Propiedad::where('id', $id)->with('zonaHoraria')->first();
+            $propiedad    = Propiedad::where('id', $id)->first();
             if (is_null($propiedad)) {
                 $retorno = array(
                     'msj'    => "Propiedad no encontrada",
@@ -65,7 +65,7 @@ class PDFController extends Controller
     {
         if ($request->has('propiedad_id')) {
             $id = $request->input('propiedad_id');
-            $propiedad    = Propiedad::where('id', $id)->with('zonaHoraria')->first();
+            $propiedad    = Propiedad::where('id', $id)->first();
             if (is_null($propiedad)) {
                 $retorno = array(
                     'msj'    => "Propiedad no encontrada",
@@ -89,12 +89,8 @@ class PDFController extends Controller
 /*        setlocale(LC_TIME, 'es');
 
         $dt = new Carbon($fecha_pais);
-        $mes_fecha = $dt->formatLocalized('%B');
+        $mes_fecha = $dt->formatLocalized('%A %d %B %Y');
         $mes = ucwords($mes_fecha);*/
-
-
-
-
 
        $reservas_hoy = Reserva::whereHas('habitacion', function($query) use($id){
                     $query->where('propiedad_id', $id);
