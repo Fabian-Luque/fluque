@@ -40,7 +40,7 @@
             <tr>
               <th class="head-tabla-cliente"><p class="align-left">Ingreso por habitación</p></th>
           @foreach($ingresos['ingresos_por_habitacion'] as $ingreso)
-              <td class="data-tabla-cliente"><p class="nombre">{{ $ingreso['nombre_moneda'] }} {{$ingreso['monto'] }}</p></td>
+              <td class="data-tabla-cliente"><p class="nombre">{{ $ingreso['nombre_moneda'] }} ${{$ingreso['monto'] }}</p></td>
           @endforeach
             </tr>
 
@@ -49,7 +49,7 @@
             <tr>
               <th class="head-tabla-cliente"><p class="align-left">Ingreso por consumos</p></th>
           @foreach($ingresos['ingresos_por_consumos'] as $ingreso)
-              <td class="data-tabla-cliente"><p class="nombre">{{ $ingreso['nombre_moneda'] }} {{$ingreso['monto'] }}</p></td>
+              <td class="data-tabla-cliente"><p class="nombre">{{ $ingreso['nombre_moneda'] }} ${{$ingreso['monto'] }}</p></td>
           @endforeach 
             
             </tr>
@@ -58,7 +58,7 @@
               <th class="head-tabla-cliente"><p class="align-left">Total</p></th>
           @foreach($ingresos['ingresos_totales'] as $ingreso )
 
-              <td class="data-tabla-cliente"><p class="nombre">{{ $ingreso['nombre_moneda'] }} {{$ingreso['monto'] }}</p></td>
+              <td class="data-tabla-cliente"><p class="nombre">{{ $ingreso['nombre_moneda'] }} ${{$ingreso['monto'] }}</p></td>
               
           @endforeach 
 

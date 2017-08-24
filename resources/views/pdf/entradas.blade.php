@@ -61,10 +61,10 @@
 
               </td>
               <td class="data-tabla-detalles borde-derecha" style="text-align:center;">
-                <p>{{ $reserva['checkin']->format('d-m-Y') }}</p>
+                <p>{{ $reserva['checkin']->format('d/m/Y') }}</p>
               </td>
               <td class="data-tabla-detalles borde-derecha" style="text-align:center;">
-                <p>{{ $reserva['checkout']->format('d-m-Y') }}</p>
+                <p>{{ $reserva['checkout']->format('d/m/Y') }}</p>
               </td>
               <td class="data-tabla-detalles borde-derecha" style="text-align:center;">
 
@@ -77,7 +77,7 @@
                 <p>{{ $reserva['cliente']['nombre'] }} {{ $reserva['cliente']['apellido'] }}</p>
               </td>
               <td class="data-tabla-detalles borde-derecha" style="text-align:center;">
-                <p>{{ $reserva['tipoMoneda']['nombre'] }} {{ $reserva['monto_alojamiento'] }}</p>
+                <p>{{ $reserva['tipoMoneda']['nombre'] }} ${{ $reserva['monto_alojamiento'] }}</p>
               </td>
               <td class="data-tabla-detalles borde-derecha" style="text-align:center;">
                 <p>{{ $reserva['estadoReserva']['nombre'] }}</p>
