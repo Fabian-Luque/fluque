@@ -1211,6 +1211,7 @@ class ReservaController extends Controller
     ->join('clientes', 'clientes.id','=','cliente_id')
     ->join('tipo_moneda', 'tipo_moneda.id', '=', 'tipo_moneda_id')
     ->join('estado_reserva', 'estado_reserva.id', '=', 'estado_reserva_id')
+    ->orderBy('id', 'desc')
     ->take(50)
     ->get();
 
