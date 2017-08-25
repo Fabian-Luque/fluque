@@ -37,6 +37,14 @@ class User extends Authenticatable {
         }
     }
 
+    public function VerifyPassword($value) {
+        if (password_verify($value, $this->attributes['password'])) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
     public function getRules() {
         $rules = array(
             'name'                => 'required',

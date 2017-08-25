@@ -1,15 +1,59 @@
 @extends('layouts.app2')
 @include('administrador.requests')
 @section('resetpass')
+
+@if(session('respuesta'))
+    <?php 
+        $resp = session('respuesta');
+    ?>
+    <script type="text/javascript">
+        $(document).ready(
+
+            function(e) {
+                InfoModal(
+                    "Respuesta",
+                    "<?php echo $resp['msg'];?>"
+                );
+            }
+        );
+    </script>
+@endif
+
 <div class="container">
-            <div id="passwordreset" style="margin-top:50px" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
-                <div class="panel panel-info">
+    <div id="passwordreset" style="margin-top:50px" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
+      <div class="panel panel-info">
                     <div class="panel-heading">
                         <div class="panel-title">Cambiar Contraseña</div>
                     </div>                     
                     <div class="panel-body">
                         {!! Form::open(['route' => array('cambiar.pass', ), 'autocomplete' => 'off', 'class' => 'form-horizontal']) !!}
 
+                          @if(session('token_reset'))
+                            <?php 
+                              $token_reset = session('token_reset');
+                            ?>
+
+                            {{Form::hidden(
+                              'token_reset', 
+                              $token_reset, 
+                              array(
+                                'id' => 'token_reset_id',
+                                'name'=> 'token_reset'
+                            ))}}
+
+                          @elseif(session('respuesta'))
+                            <?php 
+                              $respuesta = session('respuesta');
+                            ?>
+
+                            {{Form::hidden(
+                              'token_reset', 
+                              $respuesta['tok'], 
+                              array(
+                                'id' => 'token_reset_id',
+                                'name'=> 'token_reset'
+                            ))}}
+                          @endif
                             <div class="form-group">
                                 <label for="email" class=" control-label col-sm-3">Correo de la cuenta</label>
                                 <div class="col-sm-9"> 

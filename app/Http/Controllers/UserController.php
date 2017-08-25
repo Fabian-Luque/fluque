@@ -119,8 +119,8 @@ class UserController extends Controller {
             }
         } else {
             $data['errors'] = true;
-            $data['msg']    = 'Datos requeridos';
+            $data['msg']    = trans('requests.success.code');//'Datos requeridos';
         }
-        return Response::json($request->all());
+        return Response::json($data);
     }
 }

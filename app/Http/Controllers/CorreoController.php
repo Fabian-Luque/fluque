@@ -11,13 +11,12 @@ use Password;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\PasswordBroker;
 use Illuminate\Foundation\Auth\ResetsPasswords;
-use App\User;
-//use SendsPasswordResetEmails;
+use App\User;   
+use App\ResetPass; 
 
 class CorreoController extends Controller {
     
-    public function sendmail(Request $request, $token) {
-        dd($token);
+    public function sendmail(Request $request, $token = null) {
         if ($request->has('destino')) {
             $user = User::where(
                 'email', 
@@ -28,7 +27,29 @@ class CorreoController extends Controller {
 
                 try {
                     $path = 'auth.emails.password';
-                    $request->token = str_random(64);
+                    $reset_pass = ResetPass::where(
+                        'email', 
+                        $request->destino
+                    )->first();
+
+                    if (!is_null($reset_pass)) {
+                        $reset_pass->delete();
+
+                        $reset_pass_new = new ResetPass();
+                        $reset_pass_new->email = $request->destino;
+                        $reset_pass_new->token = str_random(64);
+                        $reset_pass_new->save();
+
+                        $request->token = $reset_pass_new->token;
+                    } else {
+                        $reset_pass_new = new ResetPass();
+                        $reset_pass_new->email = $request->destino;
+                        $reset_pass_new->token = str_random(64);
+                        $reset_pass_new->save();
+
+                        $request->token  = $reset_pass_new->token;
+                    }
+
                     Mail::send(
                         $path, 
                         ['request' => $request],

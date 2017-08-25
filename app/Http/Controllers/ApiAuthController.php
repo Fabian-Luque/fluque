@@ -6,10 +6,12 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\User;
+use App\ResetPass;
 use App\Estadocuenta;
 use Illuminate\Http\Response as HttpResponse;
 use Response;
 use DB;
+use \Carbon\Carbon;
 
 class ApiAuthController extends Controller {
 
@@ -68,34 +70,70 @@ class ApiAuthController extends Controller {
 	}
 
     public function ResetPassword(Request $request, $token=null) {
-        if ($request->has('email') && $request->has('password') && $request->has('passwordc')) {
+        $carbon = new Carbon();
+        $date = $carbon->now();
+
+        if ($request->has('email') && $request->has('password') && $request->has('passwordc') && $request->has('token_reset')) {
 
             $user =  User::where('email', $request->email)->first();
-            if (!is_null($user) && (strcmp($request->password, $request->passwordc) == 0 )) {
-                $user->setPasswordAttribute($request->password);
-                $user->save();
+            $rpass = ResetPass::where('email', $user->email)->first();
 
-                $data['errors'] = false;
-                $data['msg']    = 'su contraseña ha sido cambiada con exito';
+            if (!is_null($rpass)) {
+                if (!is_null($user) && (strcmp($request->password, $request->passwordc) == 0 )) {
 
-                return redirect(
-                    'sendmailreset'
-                )->with('respuesta', $data);
+                    $now = Carbon::now()->setTimezone('America/Santiago');
+                    
+                    $tstamp_token = Carbon::createFromFormat(
+                        'Y-m-d H:i:s', 
+                        $rpass->created_at 
+                    ); 
+
+                    $time_token = round(
+                        abs(
+                            strtotime(
+                                $now->toDateTimeString()
+                            ) - strtotime(
+                                $tstamp_token->toDateTimeString()
+                            )
+                        ) / 60,0
+                    );
+
+                    if ((strcmp($request->token_reset, $rpass->token) == 0) && intval($time_token) < 10) {
+                        if ($user->VerifyPassword($request->password) == 0) {
+                            $user->setPasswordAttribute($request->password);
+                            $user->save();
+                            $rpass->delete();
+
+                            $data['errors'] = false;
+                            $data['msg']    = 'Su contraseña ha sido actualizada'; 
+                        } else {
+                            $data['errors'] = true;
+                            $data['msg']    = 'Por seguridad utilice una contraseña distinta'; 
+                            $data['tok']    = $request->token;
+
+                            return redirect(
+                                'resetpass'
+                            )->with('respuesta', $data);
+                        }
+                    } else {
+                        $data['errors'] = true;
+                        $data['msg']    = 'La peticion de cambio de contraseña a caducado';
+                    }
+                } else {
+                    $data['errors'] = true;
+                    $data['msg']    = 'Confirmacion de contraseña no coincide';
+                }
             } else {
                 $data['errors'] = true;
-                $data['msg']    = 'Confirmacion de contraseña no coincide';
-
-                return redirect(
-                    'sendmailreset'
-                )->with('respuesta', $data);
-            }     
+                $data['msg']    = 'La peticion de cambio de contraseña a caducado';
+            }
+            return redirect(
+                'sendmailreset'
+            )->with('respuesta', $data);    
         } elseif (!is_null($token)) {
-            $data['errors'] = true;
-            $data['msg']    = 'Datos requeridos';
-            
             return redirect(
                 'resetpass'
-            );
+            )->with('token_reset', $token);
         } else {
             $data['errors'] = true;
             $data['msg']    = 'Datos requeridos';
@@ -104,6 +142,5 @@ class ApiAuthController extends Controller {
                 'sendmailreset'
             )->with('respuesta', $data);
         }
-  
     }
 }

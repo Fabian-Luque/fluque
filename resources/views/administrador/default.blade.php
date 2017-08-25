@@ -17,9 +17,7 @@
     <link href="{{ asset('assets/css/boostrap.min.css') }}" rel="stylesheet"> 
     <script type="text/javascript" src="{{ asset('assets/js/light-bootstrap-dashboard.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/js/bootstrap.min.js') }}"></script> 
-
 @yield('content')
-
     <div class="modal fade" id="myModal" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -32,11 +30,9 @@
                 <div class="modal-footer">
                     <button id='confirma-del' value='' class='btn btn-danger'>Confirmar</button>
                     <button id="confirmamodal" type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-
                 </div>
             </div>  
         </div>
     </div>
-
 </body>
 </html>

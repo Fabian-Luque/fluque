@@ -72,6 +72,8 @@ Route::group(['prefix' => 'dash', 'middleware' => ['auth']],
 );
 //////////////////////// rutas dash  ///////////////////////////////////////
 
+Route::post('eliminar/user', 'UserController@delete');
+
 	Route::post('reset/password', 'ApiAuthController@ResetPassword')->name('cambiar.pass');
 
 	Route::post('resetpass/email', 'CorreoController@sendmail')->name('reset.pass.sendmail');
