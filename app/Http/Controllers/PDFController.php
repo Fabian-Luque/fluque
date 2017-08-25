@@ -25,6 +25,150 @@ use Response;
 
 class PDFController extends Controller
 {
+
+    public function reservas(Request $request, Reserva $reserva)
+    {
+        if ($request->has('propiedad_id')) {
+            $propiedad_id = $request->input('propiedad_id');
+            $propiedad    = Propiedad::where('id', $propiedad_id)->first();
+            if (is_null($propiedad)) {
+                $retorno = array(
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia propiedad_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        $reserva = $reserva->newQuery();
+
+        if ($request->has('fecha_inicio') && $request->has('fecha_fin')) {
+            $fecha_inicio = $request->input('fecha_inicio');
+            $fecha_fin    = $request->input('fecha_fin');
+
+            $reserva->whereHas('habitacion', function($query) use($propiedad_id){
+                $query->where('propiedad_id', $propiedad_id);
+            })->where(function ($query) use ($fecha_inicio, $fecha_fin) {
+                $query->where(function ($query) use ($fecha_inicio, $fecha_fin) {
+                    $query->whereBetween('checkin', [$fecha_inicio, $fecha_fin])
+                    ->orWhere(function ($query) use($fecha_inicio, $fecha_fin){
+                        $query->whereBetween('checkout', [$fecha_inicio, $fecha_fin]);
+                    });
+            });
+
+            });
+
+        }
+        
+        if ($request->has('nombre')) {
+            $nombre = $request->input('nombre');
+
+            $reserva->whereHas('habitacion', function($query) use($propiedad_id){
+                $query->where('propiedad_id', $propiedad_id);
+            })->where(function ($query) use ($nombre) {
+                $query->where(function ($query) use ($nombre) {
+                    $query->whereHas('cliente', function ($query) use ($nombre) {
+                    $query->where('nombre', $nombre);
+                    });
+            });
+            });
+
+        }
+
+        if ($request->has('apellido')) {
+            $apellido = $request->input('apellido');
+
+            $reserva->whereHas('habitacion', function($query) use($propiedad_id){
+                $query->where('propiedad_id', $propiedad_id);
+            })->where(function ($query) use ($apellido) {
+                $query->where(function ($query) use ($apellido) {
+                    $query->whereHas('cliente', function ($query) use ($apellido) {
+                    $query->where('apellido', $apellido);
+                    });
+                
+            });
+            });
+
+        }
+
+        if ($request->has('rut')) {
+            $rut = $request->input('rut');
+
+            $reserva->whereHas('habitacion', function($query) use($propiedad_id){
+                $query->where('propiedad_id', $propiedad_id);
+            })->where(function ($query) use ($rut) {
+                $query->where(function ($query) use ($rut) {
+                    $query->whereHas('cliente', function ($query) use ($rut) {
+                    $query->where('rut', $rut);
+                    });
+            });
+            });
+
+        }
+
+        if ($request->has('numero_reserva')) {
+            $numero_reserva = $request->input('numero_reserva');
+
+            $reserva->whereHas('habitacion', function($query) use($propiedad_id){
+                $query->where('propiedad_id', $propiedad_id);
+            })->where(function ($query) use ($numero_reserva) {
+                $query->where(function ($query) use ($numero_reserva) {
+                    $query->where('numero_reserva', $numero_reserva);
+            });
+            });
+        }
+
+        if ($request->has('estado_reserva_id')) {
+            $estado_reserva = $request->get('estado_reserva_id');
+
+            $reserva->whereHas('habitacion', function($query) use($propiedad_id){
+                $query->where('propiedad_id', $propiedad_id);
+            })->where(function ($query) use ($estado_reserva) {
+                $query->where(function ($query) use ($estado_reserva) {
+                    $query->whereIn('estado_reserva_id', $estado_reserva);
+            });
+            });
+
+        }
+
+        if ($request->has('tipo_fuente_id')) {
+            $tipo_fuente = $request->get('tipo_fuente_id');
+
+            $reserva->whereHas('habitacion', function($query) use($propiedad_id){
+                $query->where('propiedad_id', $propiedad_id);
+            })->where(function ($query) use ($tipo_fuente) {
+                $query->where(function ($query) use ($tipo_fuente) {
+                    $query->whereIn('tipo_fuente_id', $tipo_fuente);
+            });
+            });
+
+        }
+
+        $reservas = $reserva->select('reservas.id', 'numero_reserva' ,'checkin', 'habitacion_id', 'estado_reserva_id' ,'checkout', 'monto_total','estado_reserva.nombre as estado' ,'cliente_id', 'clientes.nombre as nombre_cliente', 'clientes.apellido as apellido_cliente', 'noches', 'tipo_moneda.nombre as nombre_moneda')
+        ->whereHas('habitacion', function($query) use($propiedad_id){
+        $query->where('propiedad_id', $propiedad_id);})
+        ->with(['huespedes' => function ($q){
+        $q->select('huespedes.id', 'nombre', 'apellido');}])
+        ->with('habitacion.tipoHabitacion')
+        ->join('clientes', 'clientes.id','=','cliente_id')
+        ->join('tipo_moneda', 'tipo_moneda.id', '=', 'tipo_moneda_id')
+        ->join('estado_reserva', 'estado_reserva.id', '=', 'estado_reserva_id')
+        ->get();
+
+        return ['propiedad' => [$propiedad], 'reservas' => $reservas];
+
+        $pdf = PDF::loadView('pdf.filtro_reservas', ['propiedad' => [$propiedad], 'reservas' => $reservas]);
+
+        return $pdf->download('archivo.pdf');
+
+    }
+
+
+
     public function entradas(Request $request)
     {
         if ($request->has('propiedad_id')) {
@@ -86,13 +230,7 @@ class PDFController extends Controller
         $fecha           = $fecha_pais->format('Y-m-d');
         $dia             = $fecha_pais->format('d-m-Y');
 
-/*        setlocale(LC_TIME, 'es');
-
-        $dt = new Carbon($fecha_pais);
-        $mes_fecha = $dt->formatLocalized('%A %d %B %Y');
-        $mes = ucwords($mes_fecha);*/
-
-       $reservas_hoy = Reserva::whereHas('habitacion', function($query) use($id){
+        $reservas_hoy = Reserva::whereHas('habitacion', function($query) use($id){
                     $query->where('propiedad_id', $id);
         })->where('checkout', $fecha)->with('habitacion.tipoHabitacion')->with('tipoMoneda')->with('huespedes')->with('cliente.pais', 'cliente.region')->with('estadoReserva')->whereIn('estado_reserva_id', [3,4,5])->get();
 
