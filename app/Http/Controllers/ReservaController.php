@@ -149,7 +149,16 @@ class ReservaController extends Controller
 
         }
 
-        $reservas = $reserva->with('habitacion.tipoHabitacion')->with('cliente.tipoCliente')->with('huespedes.servicios')->with('tipoMoneda')->with('tipoFuente', 'estadoReserva')->get();
+        $reservas = $reserva->select('reservas.id', 'numero_reserva' ,'checkin', 'habitacion_id' ,'checkout', 'monto_total','estado_reserva.nombre as estado' ,'cliente_id', 'clientes.nombre as nombre_cliente', 'clientes.apellido as apellido_cliente', 'noches', 'tipo_moneda.nombre as nombre_moneda')
+        ->whereHas('habitacion', function($query) use($propiedad_id){
+        $query->where('propiedad_id', $propiedad_id);})
+        ->with(['huespedes' => function ($q){
+        $q->select('huespedes.id', 'nombre', 'apellido');}])
+        ->with('habitacion.tipoHabitacion')
+        ->join('clientes', 'clientes.id','=','cliente_id')
+        ->join('tipo_moneda', 'tipo_moneda.id', '=', 'tipo_moneda_id')
+        ->join('estado_reserva', 'estado_reserva.id', '=', 'estado_reserva_id')
+        ->get();
 
         return $data = ['reservas' => $reservas];
 
