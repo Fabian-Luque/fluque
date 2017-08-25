@@ -93,6 +93,7 @@ Route::group(['as' => 'api.jarvis.'], function(){
 		Route::get('reportes/financiero/anual', 'PropiedadController@reporteFinancieroAnual');
 		Route::get('reportes/financiero', 'PropiedadController@reporteFinanciero');
 		Route::get('obtener/pagos', 'PropiedadController@getPagos');
+		Route::get('obtener/reserva', 'ReservaController@getPagoReserva');
 
 
 		Route::resource('user', 'UserController', ['except' => ['create', 'edit','store']]);

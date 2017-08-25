@@ -1239,6 +1239,7 @@ class ReservaController extends Controller
     return $data;      
   }
 
+
     public function pagoReserva(Request $request){
 
      
@@ -2008,6 +2009,49 @@ class ReservaController extends Controller
 
 
     }
+
+
+    public function getPagoReserva(Request $request)
+    {
+        if($request->has('reserva_id')){
+          $id        = $request->input('reserva_id');
+          $reserva   = Reserva::where('id', $id)->first();
+          if(is_null($reserva)){
+            $retorno = array(
+               'msj'    => "Reserva no encontrada",
+               'errors' => true);
+            return Response::json($retorno, 404);
+          }
+        }else{
+          $retorno = array(
+              'msj'    => "No se envia reserva_id",
+              'errors' => true);
+          return Response::json($retorno, 400);
+        }
+
+        $reservas = Reserva::where('id', $id)->with(['huespedes.servicios' => function ($q) use($id) {
+            $q->wherePivot('reserva_id', $id);}])
+        ->with('habitacion.tipoHabitacion')
+        ->with('cliente.pais','cliente.region','tipoMoneda' ,'tipoFuente', 'metodoPago','estadoReserva','pagos.tipoComprobante','pagos.tipoMoneda', 'pagos.metodoPago')
+        ->with('huespedes.pais', 'huespedes.region')
+        ->get();
+
+        foreach ($reservas as $reserva){
+            foreach ($reserva['huespedes'] as $huesped) {
+                $huesped->consumo_total = 0;
+                foreach ($huesped['servicios'] as $servicio) {
+                    $huesped->consumo_total += $servicio->pivot->precio_total;
+                }
+            }
+        }
+
+        $data = ['reservas' => $reservas];
+
+        return $data;
+
+    }
+
+
 
     public function show($id){
 
