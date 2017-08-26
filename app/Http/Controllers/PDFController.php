@@ -159,9 +159,7 @@ class PDFController extends Controller
         ->join('estado_reserva', 'estado_reserva.id', '=', 'estado_reserva_id')
         ->get();
 
-        return ['propiedad' => [$propiedad], 'reservas' => $reservas];
-
-        $pdf = PDF::loadView('pdf.filtro_reservas', ['propiedad' => [$propiedad], 'reservas' => $reservas]);
+        $pdf = PDF::loadView('pdf.reservas', ['propiedad' => [$propiedad], 'reservas' => $reservas]);
 
         return $pdf->download('archivo.pdf');
 
