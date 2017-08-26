@@ -402,6 +402,7 @@ class ReservaController extends Controller
                 $reserva->estado_reserva_id     = $request['estado_reserva_id'];
                 $reserva->noches                = $request['noches'];
                 $reserva->observacion           = $request['observacion'];
+                $reserva->detalle               = $request['detalle'];
                 $reserva->save();
 
             if(!empty($huespedes)){
@@ -1000,6 +1001,11 @@ class ReservaController extends Controller
         if($request->has('observacion')){
           $observacion = $request->input('observacion');
           $reserva->update(array('observacion' => $observacion));
+        }
+
+        if($request->has('detalle')){
+          $detalle = $request->input('detalle');
+          $reserva->update(array('detalle' => $detalle));
         }
 
         $retorno = [
