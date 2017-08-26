@@ -17,7 +17,7 @@
 {!! Form::open(['route' => array('crear.user', ), 'autocomplete' => 'off']) !!}
 <div class="container" style="padding-top: 6%;">   
   <div class="row">
-    <div class="col-sm-6"">
+    <div class="col-sm-6">
       <div style="padding-left: 30%;">
       <div class="form-group has-feedback">
         {!! Form::label('Nombre') !!}
@@ -49,8 +49,6 @@
           )) 
         !!}
       </div>
-
-
 
       <div class="form-group has-feedback">
         {!! Form::label('password') !!}
@@ -96,13 +94,12 @@
         <div class="form-group has-feedback">
           {!! Form::label('Tipo Propiedad') !!}
           <select type="text" class="form-control" name="tipo_propiedad_id">
-            @if(!empty($tprops[0]['id']))
-              @foreach($tprops as $tprop)
-                <option value="{{ $tprop->id }}">
-                  {{ $tprop->nombre }}
-                </option>
-              @endforeach
-            @endif
+            <option value="1">
+                  HOTEL
+            </option>
+            <option value="2">
+                  HOSTAL
+            </option>
           </select>
         </div>
 

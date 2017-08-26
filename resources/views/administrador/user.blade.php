@@ -56,7 +56,9 @@
 									<td> 
 										<a href="u" name="b-lista" value="{{ $user->id }}" class="btn btn-info btn-xs">Editar</a>
 										  
-										<a href="d" name="b-lista" value="{{ $user->id }}" class="btn btn-danger disable btn-xs">Eliminar</a>	
+										<a href="d" name="b-lista" value="{{ $user->id }}" class="btn btn-danger disable btn-xs">Eliminar</a>
+
+                        
 									</td>
 									@if(!empty($resp['errors']))
 										<?php echo $resp; ?>

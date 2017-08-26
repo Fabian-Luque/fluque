@@ -1,7 +1,7 @@
 @extends('layouts.app2')
 @include('administrador.requests')
-@section('resetmail')
 
+@section('resetmail')
 <ul>
     @foreach($errors->all() as $error)
         <li>{{ $error }}</li>
@@ -40,6 +40,7 @@
 					<div class="cols-sm-10">
 						<div class="input-group">
 							<span class="input-group-addon"><i class="fa fa-envelope fa" aria-hidden="true"></i></span>
+							
         					{!! Form::text(
           						'destino', 
           						null, 

@@ -14,7 +14,6 @@
         "barryvdh/laravel-dompdf": "^0.7.0",
         "doctrine/dbal": "~2.5",
         "laravelcollective/html": "^5.2.0",
-        "illuminate/html": "^5.0",
         "guzzlehttp/guzzle": "^6.3"
     },
     "require-dev": {

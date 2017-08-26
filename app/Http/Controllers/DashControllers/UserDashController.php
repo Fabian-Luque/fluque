@@ -80,31 +80,37 @@ class UserDashController extends Controller {
     }
 
 	public function UpdateUser(Request $request)  {
-        $validator = Validator::make(
-        	$request->all(), 
-        	array(
-            	'name'     => '',
-            	'email'    => 'email',
-            	'password' => 'min:6',
-            	'phone'    => '',
-        	)
-        );
+        if ($request->has('id') && $request->has('name') && $request->has('email') && $request->has('password') && $request->has('phone') && $request->has('nombre') && $request->has('direccion') && $request->has('tipo_propiedad_id') && $request->has('tipo_cuenta')) {
+            $usuario = User::find($request->id);
+            if (!isset($us->email)) {
+                $usuario->name                 = $request->name;
+                $usuario->email                = $request->email;
+                $usuario->password             = $request->password;
+                $usuario->phone                = $request->phone;
+                $usuario->save();
 
-        if ($validator->fails()) {
-            $data['errors'] = true;
-            $data['msg'] = $validator->messages();
+                $propiedad                      = Propiedad::where('user_id',$usuario->id)->first();
+                $propiedad->nombre              = $request->nombre;
+                $propiedad->direccion           = $request->direccion;
+                $propiedad->tipo_propiedad_id   = $request->tipo_propiedad_id;
+                $propiedad->save();
 
-            return Response::json($data);
+                $tipocuenta                     = Estadocuenta::where('propiedad_id',$propiedad->id)->first();
+                $tipocuenta->propiedad_id       = $propiedad->id;
+                $tipocuenta->estado             = $request->tipo_cuenta;
+                $tipocuenta->save();
+                
+                $data['accion'] = 'Crear usuario';
+                $data['msg'] = 'Usuario creado satisfactoriamente';
+            } else {
+                $data['accion'] = 'Crear usuario';
+                $data['msg'] = 'Error. El correo ingresado ya esta en uso';
+            }
         } else {
-            $user = User::find($request->id);
-            $user->update($request->all());
-            $user->touch();
-
-            $data['errors'] = false;
-            $data['msg']    = 'Usuario actualizado satisfactoriamente';
-
-            return Response::json($data);
+            $data['accion'] = 'Crear usuario';
+            $data['msg'] = 'Datos requeridos';
         }
+        return redirect('dash/adminuser')->with('respuesta', $data);
 	}  
 
 	public function DeleteUser(Request $request) {

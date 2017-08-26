@@ -5,11 +5,17 @@
     @endforeach
 </ul>
 
+@if(isset($user))
+{!! Form::model($user, ['route' => ['modificar.user', $user->id]]) !!}
 
-{!! Form::open(['route' => array('crear.user', )]) !!}
-<div class="container text-center" >   
+@else
+  
+{!! Form::open(['route' => array('crear.user', ), 'autocomplete' => 'off']) !!}
+
+@endif
+<div class="container text-center">   
   <div class="row">
-    <div class="col-sm-2"">
+    <div class="col-sm-2">
       <div >
       <div class="form-group has-feedback">
         {!! Form::label('Nombre') !!}
@@ -47,6 +53,7 @@
           'password',[
             'class' => 'form-control', 
             'name'=>'password',
+            'autocomplete'=>'new-password',
             'placeholder' => 'Password', 
             'type' => 'password'
           ]) 
@@ -84,11 +91,12 @@
         <div class="form-group has-feedback">
           {!! Form::label('Tipo Propiedad') !!}
           <select type="text" class="form-control" name="tipo_propiedad_id">
-            @if(!empty($tprops[0]['id']))
-              @foreach($tprops as $tprop)
-                <option value="{{ $tprop->id }}">{{ $tprop->nombre }}</option>
-              @endforeach
-            @endif
+            <option value="1">
+                  HOTEL
+            </option>
+            <option value="2">
+                  HOSTAL
+            </option>
           </select>
         </div>
 
