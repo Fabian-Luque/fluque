@@ -1152,7 +1152,7 @@ class PDFController extends Controller
 
                   })->with(['reservas' => function ($q) use($fecha_actual){
 
-                  $q->where('estado_reserva_id', 3)->where('checkin', '<=', $fecha_actual)->where('checkout', '>', $fecha_actual)->with('huespedes');}])->get();
+                  $q->where('estado_reserva_id', 3)->where('checkin', '<=', $fecha_actual)->where('checkout', '>=', $fecha_actual)->with('huespedes');}])->get();
 
                   $pdf = PDF::loadView('pdf.huesped', ['propiedad' => [$propiedad], 'fecha' =>  $fecha ,'habitaciones' => $habitaciones]);
 
