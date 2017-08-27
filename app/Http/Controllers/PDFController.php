@@ -198,7 +198,7 @@ class PDFController extends Controller
 
         $reservas_hoy = Reserva::whereHas('habitacion', function($query) use($id){
                     $query->where('propiedad_id', $id);
-        })->where('checkin', $fecha)->with('habitacion.tipoHabitacion')->with('tipoMoneda')->with('huespedes')->with('cliente.pais', 'cliente.region')->with('estadoReserva')->whereIn('estado_reserva_id', [1,2])->get();
+        })->where('checkin', $fecha)->with('habitacion.tipoHabitacion')->with('tipoMoneda')->with('huespedes')->with('cliente.pais', 'cliente.region')->with('estadoReserva')->whereIn('estado_reserva_id', [1,2,3])->get();
 
         $pdf = PDF::loadView('pdf.entradas', ['fecha' => $dia, 'propiedad' => [$propiedad], 'reservas' => $reservas_hoy]);
 
