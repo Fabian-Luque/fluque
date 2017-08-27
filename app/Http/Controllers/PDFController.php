@@ -47,8 +47,11 @@ class PDFController extends Controller
         $reserva = $reserva->newQuery();
 
         if ($request->has('fecha_inicio') && $request->has('fecha_fin')) {
-            $fecha_inicio = $request->input('fecha_inicio');
-            $fecha_fin    = $request->input('fecha_fin');
+            $inicio = new Carbon($request->input('fecha_inicio'));
+            $fin    = new Carbon($request->input('fecha_fin'));
+
+            $fecha_inicio = $inicio->startOfDay()->format('Y-m-d');
+            $fecha_fin    = $fin->startOfDay()->format('Y-m-d');
 
             $reserva->whereHas('habitacion', function($query) use($propiedad_id){
                 $query->where('propiedad_id', $propiedad_id);
