@@ -51,9 +51,14 @@ Route::group(['as' => 'api.jarvis.'], function(){
 		Route::post('pdf/estado/cuenta', 'PDFController@estadoCuenta');
 		Route::post('pdf/estado/cuenta/resumen', 'PDFController@estadoCuentaResumen');
 		Route::post('pdf/reporte', 'PDFController@reporte');
+		Route::post('pdf/reporte/financiero', 'PDFController@reporteFinanciero');
+		Route::post('pdf/entradas', 'PDFController@entradas');
+		Route::post('pdf/salidas', 'PDFController@salidas');
 		Route::post('pdf/huesped', 'PDFController@huesped');
 		Route::post('pdf/checkin', 'PDFController@checkin');
 		Route::post('pdf/pagos', 'PDFController@pagos');
+		Route::post('pdf/reservas', 'PDFController@reservas');
+		Route::post('pdf/comprobante/reserva', 'PDFController@comprobanteReserva');
 		Route::post('ingreso/servicio', 'PropiedadController@ingresoServicio');
 		Route::post('ingreso/servicio/cliente', 'ClienteController@ingresoServicio');
 		Route::get('cliente/empresa', 'ClienteController@getClientes');
@@ -90,6 +95,7 @@ Route::group(['as' => 'api.jarvis.'], function(){
 		Route::get('reportes/financiero/anual', 'PropiedadController@reporteFinancieroAnual');
 		Route::get('reportes/financiero', 'PropiedadController@reporteFinanciero');
 		Route::get('obtener/pagos', 'PropiedadController@getPagos');
+		Route::get('obtener/reserva', 'ReservaController@getPagoReserva');
 
 
 		Route::resource('user', 'UserController', ['except' => ['create', 'edit','store']]);

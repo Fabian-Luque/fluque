@@ -48,20 +48,24 @@ class ReservaController extends Controller
         $reserva = $reserva->newQuery();
 
         if ($request->has('fecha_inicio') && $request->has('fecha_fin')) {
-            $fecha_inicio = $request->input('fecha_inicio');
-            $fecha_fin    = $request->input('fecha_fin');
+            $inicio = new Carbon($request->input('fecha_inicio'));
+            $fin    = new Carbon($request->input('fecha_fin'));
 
-            $reserva->whereHas('habitacion', function($query) use($propiedad_id){
+            $fecha_inicio = $inicio->startOfDay()->format('Y-m-d');
+            $fecha_fin    = $fin->startOfDay()->format('Y-m-d');
+
+        $reserva->whereHas('habitacion', function($query) use($propiedad_id){
                 $query->where('propiedad_id', $propiedad_id);
             })->where(function ($query) use ($fecha_inicio, $fecha_fin) {
-                $query->where(function ($query) use ($fecha_inicio, $fecha_fin) {
-                    $query->whereBetween('checkin', [$fecha_inicio, $fecha_fin])
-                    ->orWhere(function ($query) use($fecha_inicio, $fecha_fin){
-                        $query->whereBetween('checkout', [$fecha_inicio, $fecha_fin]);
-                    });
-            });
-
-            });
+            $query->where(function ($query) use ($fecha_inicio, $fecha_fin) {
+                $query->where('checkin', '>=', $fecha_inicio);
+                $query->where('checkin', '<',  $fecha_fin);
+                        });
+            $query->orWhere(function($query) use ($fecha_inicio,$fecha_fin){
+                $query->where('checkin', '<=', $fecha_inicio);
+                $query->where('checkout', '>',  $fecha_inicio);
+        });                
+        });
 
         }
         
@@ -149,7 +153,18 @@ class ReservaController extends Controller
 
         }
 
-        return $reserva->with('habitacion.tipoHabitacion')->with('cliente.tipoCliente')->with('huespedes.servicios')->with('tipoMoneda')->with('tipoFuente', 'estadoReserva')->get();
+        $reservas = $reserva->select('reservas.id', 'numero_reserva' ,'checkin', 'habitacion_id', 'estado_reserva_id' ,'checkout', 'monto_total','estado_reserva.nombre as estado' ,'cliente_id', 'clientes.nombre as nombre_cliente', 'clientes.apellido as apellido_cliente', 'noches', 'tipo_moneda.nombre as nombre_moneda', 'cantidad_decimales')
+        ->whereHas('habitacion', function($query) use($propiedad_id){
+        $query->where('propiedad_id', $propiedad_id);})
+        ->with(['huespedes' => function ($q){
+        $q->select('huespedes.id', 'nombre', 'apellido');}])
+        ->with('habitacion.tipoHabitacion')
+        ->join('clientes', 'clientes.id','=','cliente_id')
+        ->join('tipo_moneda', 'tipo_moneda.id', '=', 'tipo_moneda_id')
+        ->join('estado_reserva', 'estado_reserva.id', '=', 'estado_reserva_id')
+        ->get();
+
+        return $data = ['reservas' => $reservas];
 
     }
 
@@ -391,6 +406,7 @@ class ReservaController extends Controller
                 $reserva->estado_reserva_id     = $request['estado_reserva_id'];
                 $reserva->noches                = $request['noches'];
                 $reserva->observacion           = $request['observacion'];
+                $reserva->detalle               = $request['detalle'];
                 $reserva->save();
 
             if(!empty($huespedes)){
@@ -991,6 +1007,11 @@ class ReservaController extends Controller
           $reserva->update(array('observacion' => $observacion));
         }
 
+        if($request->has('detalle')){
+          $detalle = $request->input('detalle');
+          $reserva->update(array('detalle' => $detalle));
+        }
+
         $retorno = [
           'errors' => false,
           'msj'    => 'Reserva actualizada satisfactoriamente',
@@ -1196,24 +1217,24 @@ class ReservaController extends Controller
       return Response::json($retorno, 400);
     }
     
-    $reservas = Reserva::whereHas('habitacion', function($query) use($id){
-      $query->where('propiedad_id', $id);
-    })->with('habitacion.tipoHabitacion')->with('pagos')->with('cliente.tipoCliente','cliente.pais','cliente.region')->with('huespedes.servicios')->with('tipoMoneda')->with('tipoFuente', 'metodoPago', 'estadoReserva')->orderBy('id', 'desc')->take(50)->get();
-
-    foreach ($reservas as $reserva){
-      foreach ($reserva['huespedes'] as $huesped) {
-        $huesped->consumo_total = 0;
-        foreach ($huesped['servicios'] as $servicio) {
-          $huesped->consumo_total += $servicio->pivot->precio_total;
-
-        }
-      }
-    }
+    $reservas = Reserva::select('reservas.id', 'numero_reserva' ,'checkin', 'habitacion_id', 'estado_reserva_id' ,'checkout', 'monto_total','estado_reserva.nombre as estado' ,'cliente_id', 'clientes.nombre as nombre_cliente', 'clientes.apellido as apellido_cliente', 'noches', 'tipo_moneda.nombre as nombre_moneda', 'cantidad_decimales')
+    ->whereHas('habitacion', function($query) use($id){
+        $query->where('propiedad_id', $id);})
+    ->with(['huespedes' => function ($q){
+        $q->select('huespedes.id', 'nombre', 'apellido');}])
+    ->with('habitacion.tipoHabitacion')
+    ->join('clientes', 'clientes.id','=','cliente_id')
+    ->join('tipo_moneda', 'tipo_moneda.id', '=', 'tipo_moneda_id')
+    ->join('estado_reserva', 'estado_reserva.id', '=', 'estado_reserva_id')
+    ->orderBy('reservas.id', 'desc')
+    ->take(50)
+    ->get();
 
     $data = ['reservas' => $reservas,];
 
     return $data;      
   }
+
 
     public function pagoReserva(Request $request){
 
@@ -1859,12 +1880,12 @@ class ReservaController extends Controller
 
     public function calendario(Request $request){
 
-
         $id = $request->input('propiedad_id');
         $fecha_inicio = $request->input('fecha_inicio');
         $fecha_fin    = $request->input('fecha_fin');
         $ancho_calendario = $request->input('ancho_calendario');
         $ancho_celdas = $request->input('ancho_celdas');
+        $cantidad_dias = $request->input('cantidad_dias');
         $calendario = [];
 
 
@@ -1914,37 +1935,39 @@ class ReservaController extends Controller
         }
 
         $reservas_calendario = [];
-        $mes_calendario =date ("F",strtotime($fecha_inicio));
-        foreach ($reservas as $reserva) {
+
        
+        foreach ($reservas as $reserva) {
+            /*return $reserva;*/
+       
+            $inicio   = new Carbon($fecha_inicio);
+            
+            $checkout = $reserva->checkout;
 
-            $checkin =date ("F",strtotime($reserva->checkin));
-            $checkout =date ("F",strtotime($reserva->checkout));
+            $fin      = new Carbon($checkout);
 
-            if($checkin == $checkout){
+            $diferencia = $inicio->diffInDays($fin);
 
-                $noches = $reserva->noches;
-                $dia = date ("j",strtotime($reserva->checkin));
-                $reserva->left = ($dia * $ancho_celdas)-30;
+            $checkin          = new Carbon($reserva->checkin);
+            $posicion_checkin = $inicio->diffInDays($checkin) + 1;
+            if($diferencia <= ($cantidad_dias -1 )){
 
-                $reserva->right = (($ancho_calendario - $reserva->left - ($noches * $ancho_celdas))+$ancho_celdas)-60;
+
+
+                $noches         = $reserva->noches;
+                $reserva->left  = ($posicion_checkin * $ancho_celdas)-30;
+
+                $reserva->right = (($ancho_calendario - $reserva->left - ($noches * $ancho_celdas)) + $ancho_celdas)-60;
 
                 array_push($reservas_calendario, $reserva);
              }else{
 
-                
-            $mes_checkin =date ("F",strtotime($reserva->checkin));
-            $mes_calendario =date ("F",strtotime($fecha_inicio));
 
-            if ($mes_checkin == $mes_calendario) {
-
-
-                $dia = date ("j",strtotime($reserva->checkin));
-                $reserva->left = ($dia * $ancho_celdas)-30;
+                $reserva->left = ($posicion_checkin * $ancho_celdas)-30;
 
                 $reserva->right = 0;
 
-                } 
+                
 
 
             array_push($reservas_calendario, $reserva);
@@ -1957,21 +1980,22 @@ class ReservaController extends Controller
         }
 
             foreach ($reservas_checkout as $reserva_checkout) {
-                $mes_checkout =date ("F",strtotime($reserva_checkout->checkout));
-                $mes_checkin =date ("F",strtotime($reserva_checkout->checkin));
-                $dia_checkout= date ("j",strtotime($reserva_checkout->checkout));
-            
-                 if ($mes_checkout == $mes_calendario) {
-                     if ($mes_checkin != $mes_calendario) {
+
+                $checkin = $reserva_checkout->checkin;
+                $in  = new Carbon($checkin);
+                $inicio   = new Carbon($fecha_inicio);
+
+                $checkout = new Carbon($reserva_checkout->checkout);
+                $posicion_checkout = $checkout->diffInDays($inicio) + 1;
+
+                    if ($in < $inicio ) {
 
                     $reserva_checkout->left = 0;
-                    $reserva_checkout->right = (($ancho_calendario - ( $ancho_celdas * $dia_checkout))+$ancho_celdas)-30;
+                    $reserva_checkout->right = (($ancho_calendario - ( $ancho_celdas * $posicion_checkout)) + $ancho_celdas)-30;
 
                     array_push($reservas_calendario, $reserva_checkout);
 
-                         }
                     }
-
                 }
 
             array_push($calendario, $habitaciones_tipo);
@@ -1980,9 +2004,50 @@ class ReservaController extends Controller
          return $calendario;
 
 
+    }
 
+
+    public function getPagoReserva(Request $request)
+    {
+        if($request->has('reserva_id')){
+          $id        = $request->input('reserva_id');
+          $reserva   = Reserva::where('id', $id)->first();
+          if(is_null($reserva)){
+            $retorno = array(
+               'msj'    => "Reserva no encontrada",
+               'errors' => true);
+            return Response::json($retorno, 404);
+          }
+        }else{
+          $retorno = array(
+              'msj'    => "No se envia reserva_id",
+              'errors' => true);
+          return Response::json($retorno, 400);
+        }
+
+        $reservas = Reserva::where('id', $id)->with(['huespedes.servicios' => function ($q) use($id) {
+            $q->wherePivot('reserva_id', $id);}])
+        ->with('habitacion.tipoHabitacion')
+        ->with('cliente.pais','cliente.region','tipoMoneda' ,'tipoFuente', 'metodoPago','estadoReserva','pagos.tipoComprobante','pagos.tipoMoneda', 'pagos.metodoPago')
+        ->with('huespedes.pais', 'huespedes.region')
+        ->get();
+
+        foreach ($reservas as $reserva){
+            foreach ($reserva['huespedes'] as $huesped) {
+                $huesped->consumo_total = 0;
+                foreach ($huesped['servicios'] as $servicio) {
+                    $huesped->consumo_total += $servicio->pivot->precio_total;
+                }
+            }
+        }
+
+        $data = ['reservas' => $reservas];
+
+        return $data;
 
     }
+
+
 
     public function show($id){
 
