@@ -54,17 +54,18 @@ class ReservaController extends Controller
             $fecha_inicio = $inicio->startOfDay()->format('Y-m-d');
             $fecha_fin    = $fin->startOfDay()->format('Y-m-d');
 
-            $reserva->whereHas('habitacion', function($query) use($propiedad_id){
+        $reserva->whereHas('habitacion', function($query) use($propiedad_id){
                 $query->where('propiedad_id', $propiedad_id);
             })->where(function ($query) use ($fecha_inicio, $fecha_fin) {
-                $query->where(function ($query) use ($fecha_inicio, $fecha_fin) {
-                    $query->whereBetween('checkin', [$fecha_inicio, $fecha_fin])
-                    ->orWhere(function ($query) use($fecha_inicio, $fecha_fin){
-                        $query->whereBetween('checkout', [$fecha_inicio, $fecha_fin]);
-                    });
-            });
-
-            });
+            $query->where(function ($query) use ($fecha_inicio, $fecha_fin) {
+                $query->where('checkin', '>=', $fecha_inicio);
+                $query->where('checkin', '<',  $fecha_fin);
+                        });
+            $query->orWhere(function($query) use ($fecha_inicio,$fecha_fin){
+                $query->where('checkin', '<=', $fecha_inicio);
+                $query->where('checkout', '>',  $fecha_inicio);
+        });                
+        });
 
         }
         
@@ -152,7 +153,7 @@ class ReservaController extends Controller
 
         }
 
-        $reservas = $reserva->select('reservas.id', 'numero_reserva' ,'checkin', 'habitacion_id', 'estado_reserva_id' ,'checkout', 'monto_total','estado_reserva.nombre as estado' ,'cliente_id', 'clientes.nombre as nombre_cliente', 'clientes.apellido as apellido_cliente', 'noches', 'tipo_moneda.nombre as nombre_moneda', 'cantidad_decimales')
+        return $reservas = $reserva->select('reservas.id', 'numero_reserva' ,'checkin', 'habitacion_id', 'estado_reserva_id' ,'checkout', 'monto_total','estado_reserva.nombre as estado' ,'cliente_id', 'clientes.nombre as nombre_cliente', 'clientes.apellido as apellido_cliente', 'noches', 'tipo_moneda.nombre as nombre_moneda', 'cantidad_decimales')
         ->whereHas('habitacion', function($query) use($propiedad_id){
         $query->where('propiedad_id', $propiedad_id);})
         ->with(['huespedes' => function ($q){

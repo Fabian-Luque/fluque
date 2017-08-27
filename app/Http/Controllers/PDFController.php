@@ -53,17 +53,19 @@ class PDFController extends Controller
             $fecha_inicio = $inicio->startOfDay()->format('Y-m-d');
             $fecha_fin    = $fin->startOfDay()->format('Y-m-d');
 
-            $reserva->whereHas('habitacion', function($query) use($propiedad_id){
+
+        $reserva->whereHas('habitacion', function($query) use($propiedad_id){
                 $query->where('propiedad_id', $propiedad_id);
             })->where(function ($query) use ($fecha_inicio, $fecha_fin) {
-                $query->where(function ($query) use ($fecha_inicio, $fecha_fin) {
-                    $query->whereBetween('checkin', [$fecha_inicio, $fecha_fin])
-                    ->orWhere(function ($query) use($fecha_inicio, $fecha_fin){
-                        $query->whereBetween('checkout', [$fecha_inicio, $fecha_fin]);
-                    });
-            });
-
-            });
+            $query->where(function ($query) use ($fecha_inicio, $fecha_fin) {
+                $query->where('checkin', '>=', $fecha_inicio);
+                $query->where('checkin', '<',  $fecha_fin);
+                        });
+            $query->orWhere(function($query) use ($fecha_inicio,$fecha_fin){
+                $query->where('checkin', '<=', $fecha_inicio);
+                $query->where('checkout', '>',  $fecha_inicio);
+        });                
+        });
 
         }
         
