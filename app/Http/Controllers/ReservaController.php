@@ -518,6 +518,10 @@ class ReservaController extends Controller
                 if ($monto_por_pagar == 0) {
 
                     $reserva->update(array('estado_reserva_id' => 4, 'monto_alojamiento' => $monto_alojamiento, 'monto_total' => $monto_total, 'monto_por_pagar' => $monto_por_pagar));
+                } else {
+
+                    $reserva->update(array('monto_alojamiento' => $monto_alojamiento, 'monto_total' => $monto_total, 'monto_por_pagar' => $monto_por_pagar));
+
                 }
             }elseif($reserva->estado_reserva_id != 4 && $reserva->estado_reserva_id != 5){
 
