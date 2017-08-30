@@ -148,7 +148,7 @@ class PermisosTableSeeder extends Seeder
 
     		],
     		[
-    			'nombre' 		=> 'Consumos',
+    			'nombre' 		=> 'Asignar consumos',
     			'seccion_id'	=> 7,
 
     		]

@@ -94,6 +94,52 @@ class UserController extends Controller
 
     }
 
+    public function crearUsuario(Request $request)
+    {
+        $rules = array(
+            'name'                => 'required',
+            'email'               => 'required|unique:users,email',
+            'phone'               => 'required',
+            'password'            => 'required|min:6',
+            'rol_id'              => 'required|numeric',
+        );
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+
+            return redirect()->back()->withErrors($validator->errors());
+
+        } else {
+
+            $user = JWTAuth::parseToken()->toUser();
+
+            $propiedad = $user->propiedad;
+            foreach ($propiedad as $prop) {
+                $propiedad_id = $prop->id;
+            }
+
+            $usuario                       = new User();
+            $usuario->name                 = $request->get('name');
+            $usuario->email                = $request->get('email');
+            $usuario->password             = $request->get('password');
+            $usuario->phone                = $request->get('phone');
+            $usuario->rol_id               = $request->get('rol_id');
+            $usuario->save();
+
+            $usuario->propiedad()->attach($propiedad_id);
+
+            $data = [
+                'errors' => false,
+                'msg'    => 'usuario creado satisfactoriamente',
+
+            ];
+
+            return Response::json($data, 201);
+
+        }
+    }
+
     public function update(Request $request, $id)
     {
 

@@ -30,7 +30,7 @@ class User extends Authenticatable
 
 
     public function propiedad(){
-        return $this->hasOne('App\Propiedad', 'user_id'); //relacion uno a uno
+        return $this->belongsToMany('App\Propiedad', 'propiedad_user'); //relacion muchos a muchos
     }
 
     public function roles(){
