@@ -96,6 +96,7 @@ Route::group(['as' => 'api.jarvis.'], function(){
 		Route::get('reportes/financiero', 'PropiedadController@reporteFinanciero');
 		Route::get('obtener/pagos', 'PropiedadController@getPagos');
 		Route::get('obtener/reserva', 'ReservaController@getPagoReserva');
+		Route::get('secciones', 'RolController@getSecciones');
 
 
 		Route::resource('user', 'UserController', ['except' => ['create', 'edit','store']]);
@@ -107,6 +108,7 @@ Route::group(['as' => 'api.jarvis.'], function(){
 		Route::resource('huesped', 'HuespedController', ['except' => ['create', 'edit']]);
 		Route::resource('temporada', 'TemporadaController', ['except' => ['create', 'edit']]);
 		Route::resource('tipo/habitacion', 'TipoHabitacionController', ['except' => ['create', 'edit']]);
+		Route::resource('rol', 'RolController', ['except' => ['create', 'edit']]);
 
 });
 

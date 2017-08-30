@@ -38,6 +38,13 @@ class Propiedad extends Model
 
     }
 
+    public function roles(){
+
+        return $this->hasMany('App\Rol', 'propiedad_id');
+
+
+    }
+
     public function tiposHabitacion(){
 
         return $this->hasMany('App\TipoHabitacion', 'propiedad_id');

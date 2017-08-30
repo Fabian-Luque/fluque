@@ -30,11 +30,11 @@ class User extends Authenticatable
 
 
     public function propiedad(){
-
-
         return $this->hasOne('App\Propiedad', 'user_id'); //relacion uno a uno
+    }
 
-
+    public function roles(){
+        return $this->belongsTo('App\Rol', 'rol_id');
     }
 
     public function setPasswordAttribute($value)

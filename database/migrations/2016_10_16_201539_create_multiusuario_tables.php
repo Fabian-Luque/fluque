@@ -15,59 +15,50 @@ class CreateMultiusuarioTables extends Migration
         // Create table for storing roles
         Schema::create('roles', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name')->unique();
-            $table->string('description')->nullable();
+            $table->string('nombre');
             $table->integer('propiedad_id')->unsigned()->nullable();
             $table->foreign('propiedad_id')->references('id')->on('propiedades')->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();
         });
 
-        // Create table for associating roles to users (Many-to-Many)
-        Schema::create('role_user', function (Blueprint $table) {
-            $table->integer('user_id')->unsigned();
-            $table->integer('role_id')->unsigned();
-
-            $table->foreign('user_id')->references('id')->on('users')
-                ->onDelete('cascade');
-            $table->foreign('role_id')->references('id')->on('roles')
-                ->onDelete('cascade');
-
-            $table->primary(['user_id', 'role_id']);
-        });
-
-        Schema::create('sections', function (Blueprint $table) {
+        Schema::create('secciones', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name')->unique();
+            $table->string('nombre');
             $table->timestamps();
             $table->softDeletes();
         });
         
         // Create table for storing permissions
-        Schema::create('permissions', function (Blueprint $table) {
+        Schema::create('permisos', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name')->unique();
-            $table->string('description')->nullable();
-            $table->integer('section_id')->unsigned();
-            $table->foreign('section_id')->references('id')->on('sections');
+            $table->string('nombre');
+            $table->integer('seccion_id')->unsigned();
+            $table->foreign('seccion_id')->references('id')->on('secciones');
             $table->timestamps();
             $table->softDeletes();
         });
 
 
         // Create table for associating permissions to roles (Many-to-Many)
-        Schema::create('permission_role', function (Blueprint $table) {
-            $table->integer('permission_id')->unsigned();
-            $table->integer('role_id')->unsigned();
-            $table->boolean('status')->default(0);
+        Schema::create('permiso_rol', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('permiso_id')->unsigned();
+            $table->integer('rol_id')->unsigned();
+            $table->boolean('estado')->default(0);
 
-            $table->foreign('permission_id')->references('id')->on('permissions')
+            $table->foreign('permiso_id')->references('id')->on('permisos')
                 ->onDelete('cascade');
-            $table->foreign('role_id')->references('id')->on('roles')
+            $table->foreign('rol_id')->references('id')->on('roles')
                 ->onDelete('cascade');
-
-            $table->primary(['permission_id', 'role_id']);
         });
+
+        Schema::table('users', function (Blueprint $table) {
+            $table->integer('rol_id')->unsigned()->nullable()->after('phone');
+            $table->foreign('rol_id')->references('id')->on('roles')->onDelete('set null');
+        });
+
+
     }
 
     /**
