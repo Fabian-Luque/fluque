@@ -9,6 +9,7 @@ use App\Rol;
 use App\Permiso;
 use App\Propiedad;
 use App\Seccion;
+use App\PermisoRol;
 use Response;
 use Validator;
 
@@ -32,7 +33,7 @@ class RolController extends Controller
 	        return Response::json($retorno, 400);
 	    }
 
-	    $roles = Rol::where('propiedad_id', $propiedad_id)->get();
+	    return $roles = Rol::where('propiedad_id', $propiedad_id)->get();
 
 /*	    $roles = Rol::where('propiedad_id', $propiedad_id)
 	    ->with(['permisos' => function ($q){
@@ -157,6 +158,8 @@ class RolController extends Controller
 	{
         $rules = array(
             'nombre'            => '',
+            'permisos'          => 'array',
+
         );
 
         $validator = Validator::make($request->all(), $rules);
@@ -175,6 +178,13 @@ class RolController extends Controller
             $rol = Rol::findOrFail($id);
             $rol->update($request->all());
             $rol->touch();
+
+            foreach ($request->get('permisos') as $permiso) {
+            	$estado = $permiso['estado'];
+
+            	$pmo = PermisoRol::where('id', $permiso['id'])->first();
+            	$pmo->update(array('estado' => $estado));
+            }
 
             $data = [
                 'errors' => false,

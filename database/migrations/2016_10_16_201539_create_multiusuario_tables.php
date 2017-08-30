@@ -51,6 +51,7 @@ class CreateMultiusuarioTables extends Migration
                 ->onDelete('cascade');
             $table->foreign('rol_id')->references('id')->on('roles')
                 ->onDelete('cascade');
+            $table->timestamps();
         });
 
         Schema::table('users', function (Blueprint $table) {
