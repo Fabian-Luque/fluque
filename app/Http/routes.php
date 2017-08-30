@@ -97,6 +97,7 @@ Route::group(['as' => 'api.jarvis.'], function(){
 		Route::get('obtener/pagos', 'PropiedadController@getPagos');
 		Route::get('obtener/reserva', 'ReservaController@getPagoReserva');
 		Route::get('secciones', 'RolController@getSecciones');
+		Route::get('rol/permisos', 'RolController@getPermisos');
 
 
 		Route::resource('user', 'UserController', ['except' => ['create', 'edit','store']]);

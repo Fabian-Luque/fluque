@@ -15,7 +15,7 @@ class Permiso extends Model
 
 	public function roles(){
 		return $this->belongsToMany('App\Rol', 'permiso_rol')
-			->withPivot('estado');
+			->withPivot('id', 'estado');
 	}
 
 	public function seccion(){

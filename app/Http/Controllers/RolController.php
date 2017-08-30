@@ -32,10 +32,67 @@ class RolController extends Controller
 	        return Response::json($retorno, 400);
 	    }
 
-	    $roles = Rol::where('propiedad_id', $propiedad_id)
+	    $roles = Rol::where('propiedad_id', $propiedad_id)->get();
+
+/*	    $roles = Rol::where('propiedad_id', $propiedad_id)
 	    ->with(['permisos' => function ($q){
-        	$q->select('permiso_id as id', 'nombre', 'estado');}])
+        	$q->select('permiso_id as id', 'nombre', 'estado', 'seccion_id');}])
+	    ->get();*/
+
+	}
+
+	public function getPermisos(Request $request)
+	{
+		if ($request->has('rol_id')) {
+	        $rol_id = $request->input('rol_id');
+	        $rol    = Rol::where('id', $rol_id)->first();
+	        if (is_null($rol)) {
+	            $retorno = array(
+	                'msj'    => "Rol no encontrado",
+	                'errors' => true);
+	            return Response::json($retorno, 404);
+	        }
+	    } else {
+	        $retorno = array(
+	            'msj'    => "No se envia rol_id",
+	            'errors' => true);
+	        return Response::json($retorno, 400);
+	    }
+
+/*	    $secciones = Seccion::with(['permisos' => function ($q) use($rol_id){
+        	$q->whereHas('roles', function($query) use($rol_id){
+                $query->where('roles.id', $rol_id);
+        });}])->get();*/
+
+        $secciones = Seccion::all();
+
+        $roles = Rol::where('id', $rol_id)
+	    ->with(['permisos' => function ($q){
+        	$q->select('permiso_id as id', 'nombre', 'estado', 'seccion_id');}])
 	    ->get();
+
+
+	    $categorias_permisos = [];
+	    foreach ($roles as $rol) {
+	    	foreach ($secciones as $seccion) {
+	    		$auxPermisos = [];
+	    		foreach ($rol->permisos as $permiso) {		
+	    			if ($seccion->id == $permiso->seccion_id) {
+	    				$auxPermiso['id'] 	  = $permiso->id;
+	    				$auxPermiso['nombre'] = $permiso->nombre;
+	    				$auxPermiso['estado'] = $permiso->estado;
+	    				$auxPermiso['pivot']  = $permiso->pivot;
+	    				array_push($auxPermisos, $auxPermiso);
+	    			}
+	    		}
+	    		$auxSeccion['nombre']   = $seccion->nombre;
+	    		$auxSeccion['permisos'] = $auxPermisos;
+	    		array_push($categorias_permisos, $auxSeccion);
+	    	}
+	    }
+
+	 	return $categorias_permisos;
+
 	}
 
 	public function getSecciones(Request $request){

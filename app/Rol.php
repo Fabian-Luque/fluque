@@ -15,7 +15,7 @@ class Rol extends Model
 
 	public function permisos(){
 		return $this->belongsToMany('App\Permiso', 'permiso_rol')
-			->withPivot('estado');
+			->withPivot('id', 'estado');
 	}
 
 	public function propiedad(){
