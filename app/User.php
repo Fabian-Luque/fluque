@@ -17,7 +17,7 @@ class User extends Authenticatable
      * @var array
      */
 
-    protected $fillable = ['name', 'email', 'password', 'phone', 'rol_id'];
+    protected $fillable = ['name', 'email', 'password', 'phone', 'rol_id', 'estado_id'];
 
     /**
      * The attributes that should be hidden for arrays.
@@ -35,6 +35,10 @@ class User extends Authenticatable
 
     public function rol(){
         return $this->belongsTo('App\Rol', 'rol_id');
+    }
+
+    public function estado(){
+        return $this->belongsTo('App\Estado', 'estado_id');
     }
 
     public function setPasswordAttribute($value)

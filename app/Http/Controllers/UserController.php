@@ -9,6 +9,7 @@ use App\Servicio;
 use App\TipoHabitacion;
 use App\User;
 use App\ZonaHoraria;
+use App\Estado;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Response;
@@ -66,6 +67,7 @@ class UserController extends Controller
             $usuario->password             = $request->get('password');
             $usuario->phone                = $request->get('phone');
             $usuario->rol_id               = 1;
+            $usuario->estado_id            = 1;
 
             $usuario->save();
 
@@ -123,6 +125,7 @@ class UserController extends Controller
             $usuario->password             = $request->get('password');
             $usuario->phone                = $request->get('phone');
             $usuario->rol_id               = $request->get('rol_id');
+            $usuario->estado_id            = 1;
             $usuario->save();
 
             $usuario->propiedad()->attach($propiedad_id);
@@ -172,6 +175,7 @@ class UserController extends Controller
             'password' => 'min:6',
             'phone'    => '',
             'rol_id'   => 'numeric',
+            'estado_id'=> 'numeric',
 
         );
 
@@ -204,6 +208,14 @@ class UserController extends Controller
             return Response::json($data, 201);
 
         }
+
+    }
+
+    public function getEstados()
+    {
+        $estados = Estado::all();
+
+        return $estados;
 
     }
 

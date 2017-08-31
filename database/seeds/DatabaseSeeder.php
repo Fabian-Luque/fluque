@@ -22,12 +22,13 @@ class DatabaseSeeder extends Seeder
        $this->call(ClasificacionMonedaTableSeeder::class);
        $this->call(EstadoHabitacionTableSeeder::class);
        $this->call(EstadoServicioTableSeeder::class);
-       $this->call(TipoCobroTableSeeder::class);*/
+       $this->call(TipoCobroTableSeeder::class);
        $this->call(SeccionTableSeeder::class);
        $this->call(PermisosTableSeeder::class);
        $this->call(RolTableSeeder::class);
        $this->call(PermisosRolTableSeeder::class);
-       $this->call(PropiedadUserTableSeeder::class);
+       $this->call(PropiedadUserTableSeeder::class);*/
+       $this->call(EstadoTableSeeder::class);
 
 
     }
