@@ -160,13 +160,6 @@ class UserController extends Controller
                 $query->where('propiedades.id', $propiedad_id);
         })->with('rol')->get();
 
-
-
-
-
-
-
-
     }
 
     public function update(Request $request, $id)
