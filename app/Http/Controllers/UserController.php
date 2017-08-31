@@ -23,7 +23,7 @@ class UserController extends Controller
 
         try {
 
-            $users = User::where('id', $id)->with('propiedad.tipoMonedas.clasificacionMonedas')->get();
+            $users = User::where('id', $id)->with('propiedad.tipoMonedas.clasificacionMonedas')->with('rol.permisos')->get();
 
             return $users;
 
