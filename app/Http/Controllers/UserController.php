@@ -70,7 +70,6 @@ class UserController extends Controller
             $usuario->save();
 
             $propiedad                      = new Propiedad();
-            $propiedad->id                  = $usuario->id;
             $propiedad->nombre              = $request->get('nombre');
             $propiedad->numero_habitaciones = $request->get('numero_habitaciones');
             $propiedad->ciudad              = $request->get('ciudad');
@@ -137,6 +136,37 @@ class UserController extends Controller
             return Response::json($data, 201);
 
         }
+    }
+
+    public function index(Request $request)
+    {
+        if ($request->has('propiedad_id')) {
+            $propiedad_id = $request->input('propiedad_id');
+            $propiedad    = Propiedad::where('id', $propiedad_id)->first();
+            if (is_null($propiedad)) {
+                $retorno = array(
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia propiedad_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        return $usuarios = User::whereHas('propiedad', function($query) use($propiedad_id){
+                $query->where('propiedades.id', $propiedad_id);
+        })->with('rol')->get();
+
+
+
+
+
+
+
+
     }
 
     public function update(Request $request, $id)

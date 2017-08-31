@@ -33,7 +33,7 @@ class User extends Authenticatable
         return $this->belongsToMany('App\Propiedad', 'propiedad_user'); //relacion muchos a muchos
     }
 
-    public function roles(){
+    public function rol(){
         return $this->belongsTo('App\Rol', 'rol_id');
     }
 
