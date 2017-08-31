@@ -34,12 +34,6 @@ class RolController extends Controller
 	    }
 
 	    return $roles = Rol::where('propiedad_id', $propiedad_id)->get();
-
-/*	    $roles = Rol::where('propiedad_id', $propiedad_id)
-	    ->with(['permisos' => function ($q){
-        	$q->select('permiso_id as id', 'nombre', 'estado', 'seccion_id');}])
-	    ->get();*/
-
 	}
 
 	public function getPermisos(Request $request)
@@ -59,11 +53,6 @@ class RolController extends Controller
 	            'errors' => true);
 	        return Response::json($retorno, 400);
 	    }
-
-/*	    $secciones = Seccion::with(['permisos' => function ($q) use($rol_id){
-        	$q->whereHas('roles', function($query) use($rol_id){
-                $query->where('roles.id', $rol_id);
-        });}])->get();*/
 
         $secciones = Seccion::all();
 

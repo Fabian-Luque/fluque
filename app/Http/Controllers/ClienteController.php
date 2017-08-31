@@ -46,7 +46,6 @@ class ClienteController extends Controller
 		 		$rut_consumidor = $servicio['rut_consumidor'];
 		 		$servicio_id = $servicio['servicio_id'];
                 $cantidad = $servicio['cantidad'];
-              /*  $precio_total = $servicio['precio_total'];*/
                 $cliente_id = $servicio['cliente_id'];
 
                 $serv = Servicio::where('id', $servicio_id)->where('propiedad_id', $request->input('propiedad_id'))->first();

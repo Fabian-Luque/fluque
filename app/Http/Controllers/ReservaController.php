@@ -895,8 +895,6 @@ class ReservaController extends Controller
                 }
             }
 
-           /* return $precio_promedio_habitacion;*/
-
             $cantidad_huespedes = $reserva->ocupacion;
 
             if ($propiedad->tipo_cobro_id != 3) {
@@ -1456,9 +1454,7 @@ class ReservaController extends Controller
                       $monto_consumos = 0;  // total monto consumos por pagar
                       foreach ($consumos as $consumo){
                         $monto_consumos += $consumo->precio_total;
-                              
-                     /* $consumo->update(array('estado' => 'Pagado'));*/
-
+                            
                      }
 
                   
