@@ -60,14 +60,12 @@ class UserController extends Controller
 
         } else {
 
-
             $usuario                       = new User();
             $usuario->name                 = $request->get('name');
             $usuario->email                = $request->get('email');
-            /*$usuario->password           = bcrypt($request->get('password'));*/
             $usuario->password             = $request->get('password');
             $usuario->phone                = $request->get('phone');
-
+            $usuario->rol_id               = 1;
 
             $usuario->save();
 
@@ -78,9 +76,10 @@ class UserController extends Controller
             $propiedad->ciudad              = $request->get('ciudad');
             $propiedad->direccion           = $request->get('direccion');
             $propiedad->tipo_propiedad_id   = $request->get('tipo_propiedad_id');
-            $propiedad->user_id             = $usuario->id;
 
             $propiedad->save();
+
+            $usuario->propiedad()->attach($propiedad->id);
 
             $data = [
                 'errors' => false,
@@ -149,6 +148,7 @@ class UserController extends Controller
             'email'    => 'email',
             'password' => 'min:6',
             'phone'    => '',
+            'rol_id'   => 'numeric',
 
         );
 
