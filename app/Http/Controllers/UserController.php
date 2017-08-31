@@ -161,7 +161,7 @@ class UserController extends Controller
 
         return $usuarios = User::whereHas('propiedad', function($query) use($propiedad_id){
                 $query->where('propiedades.id', $propiedad_id);
-        })->with('rol')->get();
+        })->with('rol')->with('estado')->get();
 
     }
 
