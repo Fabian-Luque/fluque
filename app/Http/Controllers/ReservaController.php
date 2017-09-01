@@ -1215,12 +1215,13 @@ class ReservaController extends Controller
       return Response::json($retorno, 400);
     }
     
-    $reservas = Reserva::select('reservas.id', 'numero_reserva' ,'checkin', 'habitacion_id', 'estado_reserva_id' ,'checkout', 'monto_total','estado_reserva.nombre as estado' ,'cliente_id', 'clientes.nombre as nombre_cliente', 'clientes.apellido as apellido_cliente', 'noches', 'tipo_moneda.nombre as nombre_moneda', 'cantidad_decimales')
+    $reservas = Reserva::select('reservas.id', 'numero_reserva' ,'checkin', 'habitacion_id', 'estado_reserva_id' ,'checkout','ocupacion', 'monto_total','estado_reserva.nombre as estado' ,'cliente_id', 'clientes.nombre as nombre_cliente', 'clientes.apellido as apellido_cliente', 'noches', 'tipo_moneda.nombre as nombre_moneda', 'cantidad_decimales')
     ->whereHas('habitacion', function($query) use($id){
         $query->where('propiedad_id', $id);})
     ->with(['huespedes' => function ($q){
         $q->select('huespedes.id', 'nombre', 'apellido');}])
     ->with('habitacion.tipoHabitacion')
+    ->with('cliente.pais', 'cliente.region')
     ->join('clientes', 'clientes.id','=','cliente_id')
     ->join('tipo_moneda', 'tipo_moneda.id', '=', 'tipo_moneda_id')
     ->join('estado_reserva', 'estado_reserva.id', '=', 'estado_reserva_id')
