@@ -751,15 +751,9 @@ class PropiedadController extends Controller
         }
 
         if ($request->has('fecha_fin')) {
-/*            $fin             = new Carbon($request->input('fecha_fin'));
-            $fechaFin        = $fin->addDay();
-            $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $fechaFin, $pais)->tz('UTC');*/
-
             $fin             = new Carbon($request->input('fecha_fin'));
-
             $fechaFin        = $fin->addDay();
             $fin_fecha       = $fechaFin->startOfDay();
-
             $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $fechaFin, $pais)->tz('UTC');
         } else {
             $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $inicio, $pais)->tz('UTC')->addDay();
@@ -863,14 +857,9 @@ class PropiedadController extends Controller
         }
 
         if ($request->has('fecha_fin')) {
-/*            $fin             = new Carbon($request->input('fecha_fin'));
-            $fechaFin        = $fin->addDay();
-            $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $fechaFin, $pais)->tz('UTC');*/
             $fin             = new Carbon($request->input('fecha_fin'));
-
             $fechaFin        = $fin->addDay();
             $fin_fecha       = $fechaFin->startOfDay();
-
             $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $fechaFin, $pais)->tz('UTC');
         } else {
             $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $inicio, $pais)->tz('UTC')->addDay();

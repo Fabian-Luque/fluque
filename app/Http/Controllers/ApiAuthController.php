@@ -21,24 +21,27 @@ class ApiAuthController extends Controller
         $credentials = $request->only('email', 'password');
 
         $user = User::where('email', $credentials['email'])->first();
-        if (!$token = JWTAuth::attempt($credentials)) {
-            $data = [
-                'errors' => true,
-                'msg'    => 'Usuario o contraseña incorrecta',
-            ];
-            return Response::json($data, HttpResponse::HTTP_FORBIDDEN);
+
+        if ($user->estado_id == 1) {
+	        if (!$token = JWTAuth::attempt($credentials)) {
+	            $data = [
+	                'errors' => true,
+	                'msg'    => 'Usuario o contraseña incorrecta',
+	            ];
+	            return Response::json($data, HttpResponse::HTTP_FORBIDDEN);
+	        }
+        } else {
+
+        	$data = array(
+                'msg'    => "Su cuenta se encuenta inactiva",
+                'errors' => true);
+            return Response::json($data, 401);
         }
 
-          $user_id = $user->id; 
+        $user_id = $user->id; 
         return Response::json(compact('token', 'user_id'), 201);
     }
 
-
-
-
-
-
-    
 
 
 

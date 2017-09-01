@@ -9,6 +9,7 @@ use App\Servicio;
 use App\TipoHabitacion;
 use App\User;
 use App\ZonaHoraria;
+use App\Estado;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Response;
@@ -22,7 +23,7 @@ class UserController extends Controller
 
         try {
 
-            $users = User::where('id', $id)->with('propiedad.tipoMonedas.clasificacionMonedas')->get();
+            $users = User::where('id', $id)->with('propiedad.tipoMonedas.clasificacionMonedas')->with('rol.permisos')->get();
 
             return $users;
 
@@ -60,27 +61,26 @@ class UserController extends Controller
 
         } else {
 
-
             $usuario                       = new User();
             $usuario->name                 = $request->get('name');
             $usuario->email                = $request->get('email');
-            /*$usuario->password           = bcrypt($request->get('password'));*/
             $usuario->password             = $request->get('password');
             $usuario->phone                = $request->get('phone');
-
+            $usuario->rol_id               = 1;
+            $usuario->estado_id            = 1;
 
             $usuario->save();
 
             $propiedad                      = new Propiedad();
-            $propiedad->id                  = $usuario->id;
             $propiedad->nombre              = $request->get('nombre');
             $propiedad->numero_habitaciones = $request->get('numero_habitaciones');
             $propiedad->ciudad              = $request->get('ciudad');
             $propiedad->direccion           = $request->get('direccion');
             $propiedad->tipo_propiedad_id   = $request->get('tipo_propiedad_id');
-            $propiedad->user_id             = $usuario->id;
 
             $propiedad->save();
+
+            $usuario->propiedad()->attach($propiedad->id);
 
             $data = [
                 'errors' => false,
@@ -94,6 +94,77 @@ class UserController extends Controller
 
     }
 
+    public function crearUsuario(Request $request)
+    {
+        $rules = array(
+            'name'                => 'required',
+            'email'               => 'required|unique:users,email',
+            'phone'               => 'required',
+            'password'            => 'required|min:6',
+            'rol_id'              => 'required|numeric',
+        );
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+
+            return redirect()->back()->withErrors($validator->errors());
+
+        } else {
+
+            $user = JWTAuth::parseToken()->toUser();
+
+            $propiedad = $user->propiedad;
+            foreach ($propiedad as $prop) {
+                $propiedad_id = $prop->id;
+            }
+
+            $usuario                       = new User();
+            $usuario->name                 = $request->get('name');
+            $usuario->email                = $request->get('email');
+            $usuario->password             = $request->get('password');
+            $usuario->phone                = $request->get('phone');
+            $usuario->rol_id               = $request->get('rol_id');
+            $usuario->estado_id            = 1;
+            $usuario->save();
+
+            $usuario->propiedad()->attach($propiedad_id);
+
+            $data = [
+                'errors' => false,
+                'msg'    => 'usuario creado satisfactoriamente',
+
+            ];
+
+            return Response::json($data, 201);
+
+        }
+    }
+
+    public function index(Request $request)
+    {
+        if ($request->has('propiedad_id')) {
+            $propiedad_id = $request->input('propiedad_id');
+            $propiedad    = Propiedad::where('id', $propiedad_id)->first();
+            if (is_null($propiedad)) {
+                $retorno = array(
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia propiedad_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        return $usuarios = User::whereHas('propiedad', function($query) use($propiedad_id){
+                $query->where('propiedades.id', $propiedad_id);
+        })->with('rol')->with('estado')->get();
+
+    }
+
     public function update(Request $request, $id)
     {
 
@@ -103,6 +174,8 @@ class UserController extends Controller
             'email'    => 'email',
             'password' => 'min:6',
             'phone'    => '',
+            'rol_id'   => 'numeric',
+            'estado_id'=> 'numeric',
 
         );
 
@@ -135,6 +208,14 @@ class UserController extends Controller
             return Response::json($data, 201);
 
         }
+
+    }
+
+    public function getEstados()
+    {
+        $estados = Estado::all();
+
+        return $estados;
 
     }
 

@@ -17,7 +17,7 @@ class Propiedad extends Model
     public function user(){
 
 
-        return $this->belongsTo('App\User', 'user_id'); 
+        return $this->belongsToMany('App\User', 'propiedad_user'); 
 
 
     }
@@ -34,6 +34,13 @@ class Propiedad extends Model
 
 
         return $this->belongsTo('App\Region', 'region_id'); 
+
+
+    }
+
+    public function roles(){
+
+        return $this->hasMany('App\Rol', 'propiedad_id');
 
 
     }
