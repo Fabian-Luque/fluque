@@ -7,7 +7,6 @@
 		$("#textmodal").append("<p>"+texto+"</p>");
 		$("#confirma-del").hide();
 		$('#myModal').modal('show');
-
 	}
 
 	function MisRequests(tipo, ur, tok, accion, datos) {
@@ -34,8 +33,6 @@
 
 	$(document).ready(
 		function(e) {
-
-			
 			$("#btn-buscar").click(
 				function(e) {
 					e.preventDefault();
@@ -72,7 +69,6 @@
 			$("#btn-crear").click(
 				function(e) {
 					e.preventDefault();
-			
 					window.location.replace(
 						"<?php echo url('/dash/adminreguser');?>"
 					);
@@ -87,10 +83,43 @@
 
 						switch (val) {
         					case 'u':
-        						InfoModal("Actualizar","datos");
+        						var row = $(this).parents('tr');
+								var id = row.data('id');
+								var tok = "<?php echo csrf_token(); ?>";
+								var user;
+						
+								
         						$("#textmodal").load(
         							"<?php echo url('/dash/edituser');?>"
         						);
+								$.ajax({
+            						type: "POST",
+            						url:  "<?php echo url('dash/obtener/user'); ?>",
+            						headers: {
+            							'X-CSRF-TOKEN': tok
+            						},
+            						data: {
+            							id: id, 
+            							_token: tok
+            						},
+            			
+            						success: function(data) {
+            							console.log(data.msg.id);
+            							$("#id_user").val(data.msg.id);
+            							$("#name").val(data.msg.name);
+            							$("#email").val(data.msg.email);
+            							$("#password").val(data.msg.password);
+            							$("#phone").val(data.msg.phone);
+            							$("#nombre").val(data.msg.propiedad.nombre);
+            							$("#ciudad").val(data.msg.propiedad.ciudad);
+            							$("#direccion").val(data.msg.propiedad.direccion);
+            						},
+        							error: function(xhr, textStatus, thrownError) {
+            							user = 'false';
+            						}
+        						});
+
+        						InfoModal("Actualizar",".");
         					break;
 
         					case 'd':

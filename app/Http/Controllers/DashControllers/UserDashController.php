@@ -52,30 +52,33 @@ class UserDashController extends Controller {
             $data['accion'] = 'Crear usuario';
             $data['msg'] = 'Datos requeridos';
         }
-        return redirect('dash/adminuser')->with('respuesta', $data);
+        return redirect('dash/adminuser')->with(
+            'respuesta', 
+            $data
+        );
 	}
 
 	public function ReadUser(Request $request) {  
         if ($request->has('id')) {
-            $users = User::where(
-                'id', 
+            $user = User::where(
+                'id',
                 $request->id
-            )->with('propiedad.tipoMonedas.clasificacionMonedas')
-            ->get();
-
-            if (count($users) != 0) {
-                $status = 200;
-                $data = $users;
-            } else {
-                $status = 200;
+            )->with('propiedad')->first();
+            if (count($user) != 0) {
                 $data['errors'] = false;
+                $data['msg']    = $user;
+            } else {
+                $data['errors'] = true;
                 $data['msg']    = 'Usuario no encontrado';
             }
-            return Response::json($data, $status);
+            return Response::json($data);
         } else {
             $status = 200;
             $data = User::all();
-            return View('administrador.user')->with('users', $data);
+            return View('administrador.user')->with(
+                'users', 
+                $data
+            );
         }
     }
 
@@ -100,17 +103,20 @@ class UserDashController extends Controller {
                 $tipocuenta->estado             = $request->tipo_cuenta;
                 $tipocuenta->save();
                 
-                $data['accion'] = 'Crear usuario';
-                $data['msg'] = 'Usuario creado satisfactoriamente';
+                $data['accion'] = 'Actualizar usuario';
+                $data['msg'] = 'Usuario Actualizado satisfactoriamente';
             } else {
-                $data['accion'] = 'Crear usuario';
+                $data['accion'] = 'Actualizar usuario';
                 $data['msg'] = 'Error. El correo ingresado ya esta en uso';
             }
         } else {
-            $data['accion'] = 'Crear usuario';
+            $data['accion'] = 'Actualizar usuario';
             $data['msg'] = 'Datos requeridos';
         }
-        return redirect('dash/adminuser')->with('respuesta', $data);
+        return redirect('dash/adminuser')->with(
+            'respuesta', 
+            $data
+        );
 	}  
 
 	public function DeleteUser(Request $request) {
@@ -133,11 +139,17 @@ class UserDashController extends Controller {
 
     public function getViewTipoPropiedad(Request $request) {
         $TipoPropiedad = TipoPropiedad::all();
-        return View('administrador.reguser')->with('tprops', $TipoPropiedad);
+        return View('administrador.reguser')->with(
+            'tprops', 
+            $TipoPropiedad
+        );
     }
 
     public function getViewPropiedad(Request $request) {
         $propiedades = Propiedad::all();
-        return View('administrador.prop')->with('props', $propiedades);
+        return View('administrador.prop')->with(
+            'props', 
+            $propiedades
+        );
     }
 }

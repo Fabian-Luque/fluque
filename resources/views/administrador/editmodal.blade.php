@@ -5,18 +5,12 @@
     @endforeach
 </ul>
 
-@if(isset($user))
-{!! Form::model($user, ['route' => ['modificar.user', $user->id]]) !!}
-
-@else
-  
-{!! Form::open(['route' => array('crear.user', ), 'autocomplete' => 'off']) !!}
-
-@endif
+{!! Form::open(['route' => array('editar.user', ), 'autocomplete' => 'off']) !!}
 <div class="container text-center">   
   <div class="row">
-    <div class="col-sm-2">
+    <div class="col-sm-3">
       <div >
+      {!! Form::hidden('id', '', array('id' => 'id_user')) !!}
       <div class="form-group has-feedback">
         {!! Form::label('Nombre') !!}
         {!! 
@@ -27,6 +21,7 @@
               'required', 
               'class'=>'form-control', 
               'name'=>'name',
+              'id'=>'name',
               'placeholder'=>'Nombre'
             )
           ) 
@@ -41,7 +36,8 @@
           array(
             'required', 
             'class'=>'form-control',
-            'name'=>'email', 
+            'name'=>'email',
+            'id'=>'email', 
             'placeholder'=>'correo'
           )) 
         !!}
@@ -53,6 +49,7 @@
           'password',[
             'class' => 'form-control', 
             'name'=>'password',
+            'id'=>'password',
             'autocomplete'=>'new-password',
             'placeholder' => 'Password', 
             'type' => 'password'
@@ -69,6 +66,7 @@
             'required', 
             'class'=>'form-control', 
             'name'=>'phone',
+            'id'=>'phone',
             'placeholder'=>'Telefono'
           )) 
         !!}
@@ -80,13 +78,14 @@
           array('required', 
             'class'=>'form-control',
             'name'=>'nombre', 
+            'id'=>'nombre',
             'placeholder'=>'Telefono')) 
         !!}
       </div>
     
       </div>
     </div>
-    <div class="col-sm-2">
+    <div class="col-sm-3">
       <div>
         <div class="form-group has-feedback">
           {!! Form::label('Tipo Propiedad') !!}
@@ -121,6 +120,7 @@
             array(
               'required', 
               'class'=>'form-control', 
+              'id'=>'ciudad',
               'name'=>'ciudad',
               'placeholder'=>'ciudad'
             )) 
@@ -135,10 +135,26 @@
             array(
               'required', 
               'class'=>'form-control', 
+              'id'=>'direccion',
               'name'=>'direccion',
               'placeholder'=>'direccion'
             )) 
           !!}
+        </div>
+
+        <div class="form-group has-feedback">
+          {!! Form::label('Tipo Cuenta') !!}
+          <select type="text" class="form-control" name="tipo_cuenta">
+                <option value="0">
+                  prueba
+                </option>
+                <option value="1">
+                  activa
+                </option>
+                <option value="2">
+                  inactiva
+                </option>
+          </select>
         </div>
 
       </div>
@@ -147,7 +163,7 @@
 </div>
 <div class="form-group has-feedback" style="padding-left:3%; padding-right:35%; padding-top: 1%">
     {!! Form::submit(
-      'Registrar', 
+      'Actualizar', 
       array(
         'class'=>'btn btn-primary btn-lg btn-block'
       ))

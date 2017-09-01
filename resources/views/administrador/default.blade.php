@@ -6,18 +6,17 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="csrf-token" content="{{ csrf_token() }}">
 	<title>Laravel</title>
-	<link href="{{ asset('assets/css/boostrap.css') }}" rel="stylesheet"> 
-	<link href="{{ asset('assets/css/animate.min.css') }}" rel="stylesheet"/>
-    <link href="{{ asset('assets/css/light-bootstrap-dashboard.css') }}" rel="stylesheet"/>
-    <link href="{{ asset('assets/css/pe-icon-7-stroke.css') }}" rel="stylesheet"/>
+    {!! Html::style('assets/css/boostrap.css'); !!}
+    {!! Html::style('assets/css/animate.min.css'); !!}
+    {!! Html::style('assets/css/light-bootstrap-dashboard.css'); !!}
+    {!! Html::style('assets/css/pe-icon-7-stroke.css'); !!}
+    {!! Html::style('assets/css/boostrap.min.css'); !!}
 </head>
 <body>
-	  <script type="text/javascript" src="{{ asset('assets/js/jquery-3.2.1.js') }}"></script> 
-	
-    <link href="{{ asset('assets/css/boostrap.min.css') }}" rel="stylesheet"> 
-    <script type="text/javascript" src="{{ asset('assets/js/light-bootstrap-dashboard.js') }}"></script>
-<script type="text/javascript" src="{{ asset('assets/js/bootstrap.min.js') }}"></script> 
-@yield('content')
+    {!! HTML::script('assets/js/jquery-3.2.1.js'); !!}
+    {!! HTML::script('assets/js/light-bootstrap-dashboard.js'); !!}
+    {!! HTML::script('assets/js/bootstrap.min.js'); !!}
+    @yield('content')
     <div class="modal fade" id="myModal" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -25,7 +24,7 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                     <h4 id="titulomodal" class="modal-title"></h4>
                 </div>
-                <div id="textmodal" class="modal-body">
+                <div id="textmodal" class="modal-body" style=" margin-left: 5%; margin-right: 5%;">
                 </div>
                 <div class="modal-footer">
                     <button id='confirma-del' value='' class='btn btn-danger'>Confirmar</button>
