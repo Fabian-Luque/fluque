@@ -73,7 +73,6 @@ class UserDashController extends Controller {
             }
             return Response::json($data);
         } else {
-            $status = 200;
             $data = User::all();
             return View('administrador.user')->with(
                 'users', 

@@ -1,6 +1,12 @@
-@extends('layouts.app')
+@extends('administrador.default')
 
 @section('content')
+<style type="text/css">
+    body {
+      background-color: #494a6b;
+      padding-top: 10%;  
+    }
+</style>
 <div class="container">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">

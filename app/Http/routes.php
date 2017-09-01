@@ -23,6 +23,8 @@ Route::group(['prefix' => 'dash', 'middleware' => ['auth']],
 			}
 		);
 
+
+
 		Route::get(
 			'adminprop', 
 			function() {

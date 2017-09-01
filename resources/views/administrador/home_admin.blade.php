@@ -54,9 +54,9 @@
                 </div>
             </div>
         </nav>
-        @yield('scripts')
         @yield('container1')
         @yield('registrar')
+        @yield('resetmail')
         @yield('acciones')
     </div>
 </div>

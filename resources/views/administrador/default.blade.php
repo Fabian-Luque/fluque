@@ -16,7 +16,10 @@
     {!! HTML::script('assets/js/jquery-3.2.1.js'); !!}
     {!! HTML::script('assets/js/light-bootstrap-dashboard.js'); !!}
     {!! HTML::script('assets/js/bootstrap.min.js'); !!}
+    @yield('scripts')
     @yield('content')
+    @yield('resetmail')
+    @yield('resetpass')
     <div class="modal fade" id="myModal" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">

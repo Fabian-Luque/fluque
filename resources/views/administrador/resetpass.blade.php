@@ -1,7 +1,12 @@
-@extends('layouts.app2')
+@extends('administrador.default')
 @include('administrador.requests')
 @section('resetpass')
-
+<style type="text/css">
+    body {
+      background-color: #494a6b;
+      padding-top: 10%;  
+    }
+</style>
 @if(session('respuesta'))
     <?php 
         $resp = session('respuesta');

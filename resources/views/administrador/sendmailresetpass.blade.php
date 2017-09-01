@@ -1,7 +1,13 @@
-@extends('layouts.app2')
+@extends('administrador.default')
 @include('administrador.requests')
 
 @section('resetmail')
+<style type="text/css">
+    body {
+      background-color: #494a6b;
+      padding-top: 10%;  
+    }
+</style>
 <ul>
     @foreach($errors->all() as $error)
         <li>{{ $error }}</li>
@@ -25,15 +31,12 @@
     </script>
 @endif
 
-<div class="container" style="padding-left: 30%; padding-right: 30%;">
-	<div class="row main">
-		<div class="panel-heading">
-	        <div class="panel-title text-center">
-	            <h1 class="title">GoFeels</h1>
-	            <hr/>
-	        </div>
-	    </div> 
-		<div class="main-login main-center">
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <div class="panel panel-default">
+                <div class="panel-heading">Cambiar contraseña</div>
+                <div class="panel-body">
 		{!! Form::open(['route' => array('reset.pass.sendmail', ), 'autocomplete' => 'off']) !!}
 				<div class="form-group">
 					<label for="email" class="cols-sm-2 control-label">Tu correo</label>
@@ -72,7 +75,11 @@
 				</div>
 				-->
 			{!! Form::close() !!}
-		</div>
-	</div>
+
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
 @endsection
