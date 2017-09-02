@@ -190,23 +190,48 @@
 
             <tr>
               <td class="data-tabla-detalles borde-derecha"><p class="titulo">Reserva Nº {{ $reserva->numero_reserva }} - Habitacion {{ $reserva->habitacion->nombre }} - {{ $reserva->habitacion->tipoHabitacion->nombre }} - {{ $reserva->ocupacion }} Huéspedes - {{ $reserva->noches }} Noches - Checkin {{ $reserva->checkin->format('d-m-Y') }} - Checkout {{ $reserva->checkout->format('d-m-Y') }}</p></td>
-              <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{ $reserva->monto_alojamiento }}</p></td>
+              <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{  number_format($reserva->monto_alojamiento) }}</p></td>
             </tr>
             @endforeach
           @endforeach
-            <tr>
 
-              <th class="data-tabla-detalles borde-derecha"><p class="titulo align-right">Subtotal</p></th>
-              <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{ $neto }}</p></td>
-            </tr>
-            <tr>
-              <th class="data-tabla-detalles borde-derecha"><p class="titulo align-right">IVA</p></th>
-              <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{ $iva }}</p></td>
-            </tr>
+
+          
+
+              @if($nombre_moneda == "CLP")
+                @if($iva_reservas == 1)
+
+
+                <tr>
+                  <th class="data-tabla-detalles borde-derecha"><p class="titulo align-right">Subtotal</p></th>
+                  <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $nombre_moneda }} ${{ number_format($neto)  }}</p></td>
+                </tr>
+                <tr>
+                  <th class="data-tabla-detalles borde-derecha"><p class="titulo align-right">IVA</p></th>
+                  <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $nombre_moneda }} ${{ number_format($iva) }}</p></td>
+                </tr>
+                <tr>
+                  <th class="data-tabla-detalles borde-derecha"><p class="titulo align-right">Total</p></th>
+                  <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $nombre_moneda }} ${{ number_format($total) }}</p></td>
+                </tr>
+
+                @else
+                <tr>
+                  <th class="data-tabla-detalles borde-derecha"><p class="titulo align-right">Total</p></th>
+                  <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $nombre_moneda }} ${{ number_format($total) }}</p></td>
+                </tr>
+
+                @endif
+
+              @else
+
             <tr>
               <th class="data-tabla-detalles borde-derecha"><p class="titulo align-right">Total</p></th>
-              <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{ $total }}</p></td>
+              <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $nombre_moneda }} ${{ $total }}</p></td>
             </tr>
+
+
+              @endif
 
           </table>
         </div>

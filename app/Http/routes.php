@@ -101,6 +101,7 @@ Route::group(['as' => 'api.jarvis.'], function() {
 	Route::post('registro', 'UserController@store');
 	Route::post('/signin', 'ApiAuthController@signin');
 
+
 	Route::group(['middleware' => ['jwt.auth']], function () {
 		
 		Route::post('reserva/habitacion', 'ReservaController@reserva');
@@ -126,10 +127,16 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::post('servicios/excel','ExcelController@importServicios');
 		Route::delete('consumo/{id}', 'HuespedController@eliminarConsumo');
 		Route::post('pdf/estado/cuenta', 'PDFController@estadoCuenta');
+		Route::post('pdf/estado/cuenta/resumen', 'PDFController@estadoCuentaResumen');
 		Route::post('pdf/reporte', 'PDFController@reporte');
+		Route::post('pdf/reporte/financiero', 'PDFController@reporteFinanciero');
+		Route::post('pdf/entradas', 'PDFController@entradas');
+		Route::post('pdf/salidas', 'PDFController@salidas');
 		Route::post('pdf/huesped', 'PDFController@huesped');
 		Route::post('pdf/checkin', 'PDFController@checkin');
 		Route::post('pdf/pagos', 'PDFController@pagos');
+		Route::post('pdf/reservas', 'PDFController@reservas');
+		Route::post('pdf/comprobante/reserva', 'PDFController@comprobanteReserva');
 		Route::post('ingreso/servicio', 'PropiedadController@ingresoServicio');
 		Route::post('ingreso/servicio/cliente', 'ClienteController@ingresoServicio');
 		Route::get('cliente/empresa', 'ClienteController@getClientes');
@@ -165,6 +172,17 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::put('pago/{id}', 'ReservaController@editarPago');
 		Route::delete('pago/{id}', 'ReservaController@eliminarPago');
 		Route::post('reserva/busqueda', 'ReservaController@filtroReservas');
+		Route::get('tipo/cobros', 'PropiedadController@getTipoCobro');
+		Route::post('editar/precios', 'TipoHabitacionController@editarPrecios');
+		Route::get('reportes/financiero/anual', 'PropiedadController@reporteFinancieroAnual');
+		Route::get('reportes/financiero', 'PropiedadController@reporteFinanciero');
+		Route::get('obtener/pagos', 'PropiedadController@getPagos');
+		Route::get('obtener/reserva', 'ReservaController@getPagoReserva');
+		Route::get('secciones', 'RolController@getSecciones');
+		Route::get('rol/permisos', 'RolController@getPermisos');
+		Route::post('crear/usuario', 'UserController@crearUsuario');
+		Route::get('estados', 'UserController@getEstados');
+
 
 		Route::resource('user', 'UserController', ['except' => ['create', 'edit','store']]);
 		Route::resource('propiedad', 'PropiedadController', ['except' => ['create', 'edit', 'store']]);
@@ -175,5 +193,29 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::resource('huesped', 'HuespedController', ['except' => ['create', 'edit']]);
 		Route::resource('temporada', 'TemporadaController', ['except' => ['create', 'edit']]);
 		Route::resource('tipo/habitacion', 'TipoHabitacionController', ['except' => ['create', 'edit']]);
+<<<<<<< HEAD
 	});
 });
+=======
+		Route::resource('rol', 'RolController', ['except' => ['create', 'edit']]);
+
+});
+
+
+
+});
+
+
+
+
+/*Route::auth();
+
+
+
+
+Route::get('/', function () {
+    return view('welcome');
+  });
+
+*/
+>>>>>>> 646347b970de129e41a4b490a1818ebb5cf4be13

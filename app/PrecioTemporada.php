@@ -8,10 +8,10 @@ class PrecioTemporada extends Model
 {
     protected $table = 'precios_temporada';
 
-	protected $fillable = ['precio', 'tipo_habitacion_id', 'tipo_moneda_id', 'temporada_id'];
+	protected $fillable = ['cantidad_huespedes', 'precio', 'tipo_habitacion_id', 'tipo_moneda_id', 'temporada_id'];
 
 
-	
+
 
 	public function tipoHabitacion(){
 

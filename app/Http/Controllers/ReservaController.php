@@ -15,6 +15,7 @@ use App\Pago;
 use App\TipoHabitacion;
 use App\Propiedad;
 use App\Servicio;
+use App\Temporada;
 use App\TipoComprobante;
 use App\HuespedReservaServicio;
 use Illuminate\Http\Request;
@@ -47,20 +48,24 @@ class ReservaController extends Controller
         $reserva = $reserva->newQuery();
 
         if ($request->has('fecha_inicio') && $request->has('fecha_fin')) {
-            $fecha_inicio = $request->input('fecha_inicio');
-            $fecha_fin    = $request->input('fecha_fin');
+            $inicio = new Carbon($request->input('fecha_inicio'));
+            $fin    = new Carbon($request->input('fecha_fin'));
 
-            $reserva->whereHas('habitacion', function($query) use($propiedad_id){
+            $fecha_inicio = $inicio->startOfDay()->format('Y-m-d');
+            $fecha_fin    = $fin->startOfDay()->format('Y-m-d');
+
+        $reserva->whereHas('habitacion', function($query) use($propiedad_id){
                 $query->where('propiedad_id', $propiedad_id);
             })->where(function ($query) use ($fecha_inicio, $fecha_fin) {
-                $query->where(function ($query) use ($fecha_inicio, $fecha_fin) {
-                    $query->whereBetween('checkin', [$fecha_inicio, $fecha_fin])
-                    ->orWhere(function ($query) use($fecha_inicio, $fecha_fin){
-                        $query->whereBetween('checkout', [$fecha_inicio, $fecha_fin]);
-                    });
-            });
-
-            });
+            $query->where(function ($query) use ($fecha_inicio, $fecha_fin) {
+                $query->where('checkin', '>=', $fecha_inicio);
+                $query->where('checkin', '<',  $fecha_fin);
+                        });
+            $query->orWhere(function($query) use ($fecha_inicio,$fecha_fin){
+                $query->where('checkin', '<=', $fecha_inicio);
+                $query->where('checkout', '>',  $fecha_inicio);
+        });                
+        });
 
         }
         
@@ -148,7 +153,18 @@ class ReservaController extends Controller
 
         }
 
-        return $reserva->with('habitacion.tipoHabitacion')->with('cliente.tipoCliente')->with('huespedes.servicios')->with('tipoMoneda')->with('tipoFuente', 'estadoReserva')->get();
+        $reservas = $reserva->select('reservas.id', 'numero_reserva' ,'checkin', 'habitacion_id', 'estado_reserva_id' ,'checkout', 'monto_total','estado_reserva.nombre as estado' ,'cliente_id', 'clientes.nombre as nombre_cliente', 'clientes.apellido as apellido_cliente', 'noches', 'tipo_moneda.nombre as nombre_moneda', 'cantidad_decimales')
+        ->whereHas('habitacion', function($query) use($propiedad_id){
+        $query->where('propiedad_id', $propiedad_id);})
+        ->with(['huespedes' => function ($q){
+        $q->select('huespedes.id', 'nombre', 'apellido');}])
+        ->with('habitacion.tipoHabitacion')
+        ->join('clientes', 'clientes.id','=','cliente_id')
+        ->join('tipo_moneda', 'tipo_moneda.id', '=', 'tipo_moneda_id')
+        ->join('estado_reserva', 'estado_reserva.id', '=', 'estado_reserva_id')
+        ->get();
+
+        return $data = ['reservas' => $reservas];
 
     }
 
@@ -200,44 +216,45 @@ class ReservaController extends Controller
     }
 
 
-  public function eliminarPago($id)
-  {
-    $pago = Pago::findOrFail($id);
-    $reserva_id = $pago->reserva_id;
-    $reserva = Reserva::where('id', $reserva_id)->first();
-    if ($pago->tipo == 'Pago habitacion') {
-      $monto_por_pagar = $reserva->monto_por_pagar + $pago->monto_pago;
-      $reserva->update(array('monto_por_pagar' => $monto_por_pagar));
+    public function eliminarPago($id)
+    {
+        $pago = Pago::findOrFail($id);
+        $reserva_id = $pago->reserva_id;
+        $reserva = Reserva::where('id', $reserva_id)->first();
+        if ($pago->tipo == 'Pago habitacion') {
+            $monto_por_pagar = $reserva->monto_por_pagar + $pago->monto_pago;
+            $reserva->update(array('monto_por_pagar' => $monto_por_pagar));
+        }
+        if ($pago->tipo == 'Pago consumos') {
+            $servicios = $pago->servicios;
+            if (count($servicios) == 0) {
+                $retorno = array(
+                    'errors' => true,
+                    'msj'    => " No autorizado",
+                );
+                return Response::json($retorno, 400);
+            }
+
+            $monto_por_pagar = $reserva->monto_por_pagar + $pago->monto_pago;
+            $reserva->update(array('monto_por_pagar' => $monto_por_pagar));
+            foreach ($servicios as $servicio) {
+            $servicio->update(array('estado' => 'Por pagar'));
+            }
+        }
+        $pago->delete();
+
+        if ($reserva->estado_reserva_id == 4) {
+           $reserva->update(array('estado_reserva_id' => 5));
+        }
+
+        $retorno = [
+            'errors' => false,
+            'msj'    => 'Pago eliminado satisfactoriamente',
+        ];
+
+        return Response::json($retorno, 202);
+
     }
-    if ($pago->tipo == 'Pago consumos') {
-      $servicios = $pago->servicios;
-      if (count($servicios) == 0) {
-        $retorno = array(
-            'errors' => true,
-            'msj'    => " No autorizado"
-        );
-        return Response::json($retorno, 400);
-      }
-
-      $monto_por_pagar = $reserva->monto_por_pagar + $pago->monto_pago;
-      $reserva->update(array('monto_por_pagar' => $monto_por_pagar));
-      foreach ($servicios as $servicio) {
-        $servicio->update(array('estado' => 'Por pagar'));
-      }
-    }
-    $pago->delete();
-    if ($reserva->estado_reserva_id == 4) {
-       $reserva->update(array('estado_reserva_id' => 5));
-    }
-
-    $retorno = [
-        'errors' => false,
-        'msj'    => 'Pago eliminado satisfactoriamente',
-    ];
-
-    return Response::json($retorno, 202);
-
-  }
 
 
 
@@ -372,7 +389,7 @@ class ReservaController extends Controller
                 }else{
                 $reserva->numero_reserva        = 1;
                 }
-                $reserva->precio_habitacion     = $habitacion_info['precio_habitacion'];
+                /*$reserva->precio_habitacion     = $habitacion_info['precio_habitacion'];*/
                 $reserva->monto_alojamiento     = $habitacion_info['monto_alojamiento'];
                 $reserva->monto_total           = $habitacion_info['monto_alojamiento'];
                 $reserva->monto_consumo         = 0;
@@ -384,9 +401,12 @@ class ReservaController extends Controller
                 $reserva->checkin               = $fecha_inicio;
                 $reserva->checkout              = $fecha_fin;
                 $reserva->tipo_moneda_id        = $tipo_moneda_id;
+                $reserva->iva                   = $request['iva'];
+                $reserva->descuento             = $habitacion_info['descuento'];
                 $reserva->estado_reserva_id     = $request['estado_reserva_id'];
                 $reserva->noches                = $request['noches'];
                 $reserva->observacion           = $request['observacion'];
+                $reserva->detalle               = $request['detalle'];
                 $reserva->save();
 
             if(!empty($huespedes)){
@@ -458,11 +478,68 @@ class ReservaController extends Controller
               'errors' => true);
           return Response::json($retorno, 400);
         }
+
+        if ($request->has('propiedad_id')) {
+            $propiedad_id   = $request->input('propiedad_id');
+            $propiedad      = Propiedad::where('id', $propiedad_id)->first();
+            if (is_null($propiedad)) {
+                $retorno  = array(
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia propiedad_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        if ($request->has('iva')) {
+            $iva = $request->input('iva');
+            $reserva->update(array('iva' => $iva));
+        }
+
+        if ($request->has('descuento')) {
+            $descuento = $request->input('descuento');
+            $reserva->update(array('descuento' => $descuento));
+        }
+
+        if ($request->has('monto_alojamiento') && $request->has('monto_total') && $request->has('monto_por_pagar')) {
+            $monto_alojamiento = $request->input('monto_alojamiento');
+            $monto_total       = $request->input('monto_total');
+            $monto_por_pagar   = $request->input('monto_por_pagar');
+
+            if ($reserva->estado_reserva_id == 4) {
+                if ($monto_por_pagar > 0) {
+                $reserva->update(array('estado_reserva_id' => 5,'monto_alojamiento' => $monto_alojamiento, 'monto_total' => $monto_total, 'monto_por_pagar' => $monto_por_pagar));
+                }
+            }elseif ($reserva->estado_reserva_id == 5) {
+                if ($monto_por_pagar == 0) {
+
+                    $reserva->update(array('estado_reserva_id' => 4, 'monto_alojamiento' => $monto_alojamiento, 'monto_total' => $monto_total, 'monto_por_pagar' => $monto_por_pagar));
+                } else {
+
+                    $reserva->update(array('monto_alojamiento' => $monto_alojamiento, 'monto_total' => $monto_total, 'monto_por_pagar' => $monto_por_pagar));
+
+                }
+            }elseif($reserva->estado_reserva_id != 4 && $reserva->estado_reserva_id != 5){
+
+                $reserva->update(array('monto_alojamiento' => $monto_alojamiento, 'monto_total' => $monto_total, 'monto_por_pagar' => $monto_por_pagar));
+            }
+
+
+            $retorno = [
+              'errors' => false,
+              'msj'    => 'Reserva actualizada satisfactoriamente',
+            ];
+            return Response::json($retorno, 201);
+        }
         
         $reserva_checkout = $reserva->checkout;
         $reserva_checkin  = $reserva->checkin;
         $habitacion_id    = $reserva->habitacion_id;
-        $hab              = Habitacion::where('id' , $habitacion_id)->first();
+        $hab       = Habitacion::where('id' , $habitacion_id)->first();
 
         if ($request->has('estado_reserva_id')) {
           $estado_reserva = $request->input('estado_reserva_id');
@@ -502,18 +579,172 @@ class ReservaController extends Controller
             } //fin for
 
             if(count($habitacion_ocupada) == 0){
-              $noches            = ((strtotime($reserva_checkout)-strtotime($fecha_inicio))/86400);
-              $monto_alojamiento = $noches * $reserva->precio_habitacion;
-              $monto_total       = $monto_alojamiento + $reserva->monto_consumo;
+            $precios                    = $hab->tipoHabitacion->precios;
+            $tipo_habitacion_id         = $hab->tipo_habitacion_id;
+            $propiedad_monedas          = $propiedad->tipoMonedas; // monedas propiedad
+            $capacidad                  = $hab->tipoHabitacion->capacidad;
 
-              $pagos_realizados  = $reserva->pagos;
-              $monto_pagado      = 0;
-              foreach($pagos_realizados as $pago){
-                $monto_pagado += $pago->monto_pago;
-              }
+            $precio_promedio_habitacion = [];
+            $auxPrecio                  = [];
+            $auxFecha                   = new Carbon($request->input('fecha_inicio'));
+            $auxFin                     = new Carbon($reserva->checkout);
+            $noches = $auxFin->diffInDays($auxFecha);
 
-              $monto_por_pagar = $monto_total - $monto_pagado;
-              $reserva->update(array('monto_alojamiento' => $monto_alojamiento , 'monto_total' => $monto_total , 'monto_por_pagar' => $monto_por_pagar , 'checkin' => $fecha_inicio, 'noches' => $noches));
+            while ($auxFecha < $auxFin) {
+
+                $temporada = Temporada::where('propiedad_id', $propiedad_id)->whereHas('calendarios', function ($query) use ($auxFecha) {
+                    $query->where('fecha', $auxFecha);})->first();
+
+                if (!is_null($temporada)) {
+
+                    $temporada_id      = $temporada->id;
+                    $precios_temporada = $precios->where('temporada_id', $temporada_id)->where('tipo_habitacion_id', $hab->tipo_habitacion_id);
+                    foreach ($precios_temporada as $precio) {
+                        if ($precio->precio == 0) {
+                            $data = array(
+                                'msj'    => "debe configurar precios para este tipo de habitacion",
+                                'errors' => true,
+                            );
+                            return Response::json($data, 400);
+                        }
+                    }
+
+                    if ($propiedad->tipo_cobro_id != 3) {
+                        foreach ($propiedad_monedas as $moneda) {
+                            $tipo_moneda = $moneda->id;
+
+                            foreach ($precios_temporada as $precio) {
+                                if ($tipo_moneda == $precio->tipo_moneda_id) {
+
+                                    $precio_tipo_habitacion = ['cantidad_huespedes' => $precio->cantidad_huespedes, 'precio' => $precio->precio, 'tipo_moneda_id' => $moneda->id, 'nombre_moneda' => $moneda->nombre, 'cantidad_decimales' => $moneda->cantidad_decimales];
+
+                                    array_push($auxPrecio, $precio_tipo_habitacion);
+                                }
+                            }
+                        }
+
+                    } else {
+
+                        foreach ($propiedad_monedas as $moneda) {
+
+                            $tipo_moneda = $moneda->id;
+                            foreach ($precios_temporada as $precio) {
+                                if ($tipo_moneda == $precio->tipo_moneda_id) {
+
+                                    $precio_tipo_habitacion = ['cantidad_huespedes' => $precio->cantidad_huespedes, 'precio' => $precio->precio, 'tipo_moneda_id' => $moneda->id, 'nombre_moneda' => $moneda->nombre, 'cantidad_decimales' => $moneda->cantidad_decimales];
+
+                                    array_push($auxPrecio, $precio_tipo_habitacion);
+                                }
+                            }
+                        }
+                    }
+
+                } else {
+
+                    $data = array(
+                        'msj'    => "Debe configurar una temporada para la fecha " . $auxFecha,
+                        'errors' => true,
+                    );
+                    return Response::json($data, 400);
+                }
+
+                $auxFecha->addDay();
+
+            }
+
+            $precio_promedio_habitacion = [];
+            if ($propiedad->tipo_cobro_id != 3) {
+
+                foreach ($propiedad_monedas as $moneda) {
+                    $moneda_id  = $moneda->id;
+                    $sumaPrecio = 0;
+                    foreach ($auxPrecio as $precio_habitacion) {
+                        if ($precio_habitacion['tipo_moneda_id'] == $moneda_id && $precio_habitacion['cantidad_huespedes'] == 1) {
+                            $sumaPrecio += $precio_habitacion['precio'];
+                        }
+                    }
+
+                    $precio_promedio = ['cantidad_huespedes' => 1, 'precio' => $sumaPrecio, 'tipo_moneda_id' => $moneda->id, 'nombre_moneda' => $moneda->nombre, 'cantidad_decimales' => $moneda->cantidad_decimales];
+
+                    array_push($precio_promedio_habitacion, $precio_promedio);
+
+                }
+                
+            } else {
+
+                for ($i=1; $i<=$capacidad ; $i++) {
+                    foreach ($propiedad_monedas as $moneda) {
+                        $moneda_id  = $moneda->id;
+                        $sumaPrecio = 0;
+                        foreach ($auxPrecio as $precio_habitacion) {
+                            if ($precio_habitacion['tipo_moneda_id'] == $moneda_id && $precio_habitacion['cantidad_huespedes'] == $i) {
+                                $sumaPrecio += $precio_habitacion['precio'];
+                            }
+                        }
+
+                        $precio_promedio = ['cantidad_huespedes' => $i, 'precio' => $sumaPrecio, 'tipo_moneda_id' => $moneda->id, 'nombre_moneda' => $moneda->nombre, 'cantidad_decimales' => $moneda->cantidad_decimales];
+
+                        array_push($precio_promedio_habitacion, $precio_promedio);
+
+                    }
+                }
+            }
+
+            $cantidad_huespedes = $reserva->ocupacion;
+
+            if ($propiedad->tipo_cobro_id != 3) {
+                
+                foreach ($precio_promedio_habitacion as $precio) {
+                    if ($precio['tipo_moneda_id'] == $reserva->tipo_moneda_id) {
+                        $precio_reserva = $precio['precio'];
+                        if ($propiedad->tipo_cobro_id == 1) {
+                            $precio_reserva = $precio['precio'];
+                        } elseif ($propiedad->tipo_cobro_id == 2) {
+                            $precio_reserva = $precio['precio'] * $cantidad_huespedes;
+                        }
+                    }
+                }
+
+            } else {
+
+                foreach ($precio_promedio_habitacion as $precio) {
+                    if ($precio['tipo_moneda_id'] == $reserva->tipo_moneda_id && $precio['cantidad_huespedes'] == $cantidad_huespedes) {
+                        $precio_reserva = $precio['precio'];
+                    }
+                }
+            }
+
+            $iva_propiedad = $propiedad->iva;
+            $iva_reserva   = $reserva->iva;
+            $descuento     = $reserva->descuento;
+
+            if ($reserva->iva == 0) {
+
+                $iva               = (($precio_reserva * $iva_propiedad) / 100);
+                $monto_alojamiento = $precio_reserva - $iva;
+                if ($descuento != 0) {
+                    $monto_alojamiento -= $descuento;
+                }
+                $monto_total       = $monto_alojamiento + $reserva->monto_consumo;
+
+            } else {
+
+                $monto_alojamiento = $precio_reserva;
+                if ($descuento != 0) {
+                    $monto_alojamiento -= $descuento;
+                }
+               $monto_total  = $monto_alojamiento + $reserva->monto_consumo;   
+            }
+
+
+           $pagos_realizados  = $reserva->pagos;
+           $monto_pagado      = 0;
+           foreach($pagos_realizados as $pago){
+             $monto_pagado += $pago->monto_pago;
+           }
+
+           $monto_por_pagar = $monto_total - $monto_pagado;
+           $reserva->update(array('monto_alojamiento' => $monto_alojamiento , 'monto_total' => $monto_total , 'monto_por_pagar' => $monto_por_pagar , 'checkin' => $fecha_inicio, 'noches' => $noches));
 
             }else{
               $retorno = array(
@@ -556,17 +787,175 @@ class ReservaController extends Controller
             }
 
             if(count($habitacion_ocupada) == 0){
-              $noches            = ((strtotime($fecha_fin)-strtotime($reserva_checkin))/86400);
-              $monto_alojamiento = $noches * $reserva->precio_habitacion;
-              $monto_total       = $monto_alojamiento + $reserva->monto_consumo;
-              $pagos_realizados  = $reserva->pagos;
-              $monto_pagado      = 0;
-              foreach($pagos_realizados as $pago){
-                $monto_pagado += $pago->monto_pago;
-              }
 
-              $monto_por_pagar = $monto_total - $monto_pagado;
-              $reserva->update(array('monto_alojamiento' => $monto_alojamiento , 'monto_total' => $monto_total , 'monto_por_pagar' => $monto_por_pagar , 'checkout' => $fecha_fin, 'noches' => $noches));
+            $precios                    = $hab->tipoHabitacion->precios;
+            $tipo_habitacion_id         = $hab->tipo_habitacion_id;
+            $propiedad_monedas          = $propiedad->tipoMonedas; // monedas propiedad
+            $capacidad                  = $hab->tipoHabitacion->capacidad;
+
+            $precio_promedio_habitacion = [];
+            $auxPrecio                  = [];
+            $auxFecha                   = new Carbon($reserva->checkin);
+            $auxFin                     = new Carbon($request->input('fecha_fin'));
+            $noches = $auxFin->diffInDays($auxFecha);
+
+            while ($auxFecha < $auxFin) {
+
+                $temporada = Temporada::where('propiedad_id', $propiedad_id)->whereHas('calendarios', function ($query) use ($auxFecha) {
+                    $query->where('fecha', $auxFecha);})->first();
+
+                if (!is_null($temporada)) {
+
+                    $temporada_id      = $temporada->id;
+                    $precios_temporada = $precios->where('temporada_id', $temporada_id)->where('tipo_habitacion_id', $hab->tipo_habitacion_id);
+                    foreach ($precios_temporada as $precio) {
+                        if ($precio->precio == 0) {
+                            $data = array(
+                                'msj'    => "debe configurar precios para este tipo de habitacion",
+                                'errors' => true,
+                            );
+                            return Response::json($data, 400);
+                        }
+                    }
+
+                    if ($propiedad->tipo_cobro_id != 3) {
+                        foreach ($propiedad_monedas as $moneda) {
+                            $tipo_moneda = $moneda->id;
+
+                            foreach ($precios_temporada as $precio) {
+                                if ($tipo_moneda == $precio->tipo_moneda_id) {
+
+                                    $precio_tipo_habitacion = ['cantidad_huespedes' => $precio->cantidad_huespedes, 'precio' => $precio->precio, 'tipo_moneda_id' => $moneda->id, 'nombre_moneda' => $moneda->nombre, 'cantidad_decimales' => $moneda->cantidad_decimales];
+
+                                    array_push($auxPrecio, $precio_tipo_habitacion);
+                                }
+                            }
+                        }
+
+                    } else {
+
+                        foreach ($propiedad_monedas as $moneda) {
+
+                            $tipo_moneda = $moneda->id;
+                            foreach ($precios_temporada as $precio) {
+                                if ($tipo_moneda == $precio->tipo_moneda_id) {
+
+                                    $precio_tipo_habitacion = ['cantidad_huespedes' => $precio->cantidad_huespedes, 'precio' => $precio->precio, 'tipo_moneda_id' => $moneda->id, 'nombre_moneda' => $moneda->nombre, 'cantidad_decimales' => $moneda->cantidad_decimales];
+
+                                    array_push($auxPrecio, $precio_tipo_habitacion);
+                                }
+                            }
+                        }
+                    }
+
+                } else {
+
+                    $data = array(
+                        'msj'    => "Debe configurar una temporada para la fecha " . $auxFecha,
+                        'errors' => true,
+                    );
+                    return Response::json($data, 400);
+                }
+
+                $auxFecha->addDay();
+
+            }
+
+            $precio_promedio_habitacion = [];
+            if ($propiedad->tipo_cobro_id != 3) {
+
+                foreach ($propiedad_monedas as $moneda) {
+                    $moneda_id  = $moneda->id;
+                    $sumaPrecio = 0;
+                    foreach ($auxPrecio as $precio_habitacion) {
+                        if ($precio_habitacion['tipo_moneda_id'] == $moneda_id && $precio_habitacion['cantidad_huespedes'] == 1) {
+                            $sumaPrecio += $precio_habitacion['precio'];
+                        }
+                    }
+
+                    $precio_promedio = ['cantidad_huespedes' => 1, 'precio' => $sumaPrecio, 'tipo_moneda_id' => $moneda->id, 'nombre_moneda' => $moneda->nombre, 'cantidad_decimales' => $moneda->cantidad_decimales];
+
+                    array_push($precio_promedio_habitacion, $precio_promedio);
+
+                }
+                
+            } else {
+
+                for ($i=1; $i<=$capacidad ; $i++) {
+                    foreach ($propiedad_monedas as $moneda) {
+                        $moneda_id  = $moneda->id;
+                        $sumaPrecio = 0;
+                        foreach ($auxPrecio as $precio_habitacion) {
+                            if ($precio_habitacion['tipo_moneda_id'] == $moneda_id && $precio_habitacion['cantidad_huespedes'] == $i) {
+                                $sumaPrecio += $precio_habitacion['precio'];
+                            }
+                        }
+
+                        $precio_promedio = ['cantidad_huespedes' => $i, 'precio' => $sumaPrecio, 'tipo_moneda_id' => $moneda->id, 'nombre_moneda' => $moneda->nombre, 'cantidad_decimales' => $moneda->cantidad_decimales];
+
+                        array_push($precio_promedio_habitacion, $precio_promedio);
+
+                    }
+                }
+            }
+
+            $cantidad_huespedes = $reserva->ocupacion;
+
+            if ($propiedad->tipo_cobro_id != 3) {
+                
+                foreach ($precio_promedio_habitacion as $precio) {
+                    if ($precio['tipo_moneda_id']== $reserva->tipo_moneda_id) {
+
+                        if ($propiedad->tipo_cobro_id == 1) {
+                            $precio_reserva = $precio['precio'];
+                        } elseif ($propiedad->tipo_cobro_id == 2) {
+                            $precio_reserva = $precio['precio'] * $cantidad_huespedes;
+                        }
+                    }
+                }
+
+            } else {
+
+                foreach ($precio_promedio_habitacion as $precio) {
+                    if ($precio['tipo_moneda_id'] == $reserva->tipo_moneda_id && $precio['cantidad_huespedes'] == $cantidad_huespedes) {
+                        $precio_reserva = $precio['precio'];
+                    }
+                }
+            }
+        
+            $iva_propiedad = $propiedad->iva;
+            $iva_reserva   = $reserva->iva;
+            $descuento     = $reserva->descuento;
+
+            if ($reserva->iva == 0) {
+
+                $iva               = (($precio_reserva * $iva_propiedad) / 100);
+                $monto_alojamiento = $precio_reserva - $iva;
+                if ($descuento != 0) {
+                    $monto_alojamiento -= $descuento;
+                }
+                $monto_total       = $monto_alojamiento + $reserva->monto_consumo;
+
+            } else {
+
+                $monto_alojamiento = $precio_reserva;
+                if ($descuento != 0) {
+                    $monto_alojamiento -= $descuento;
+                }
+               $monto_total  = $monto_alojamiento + $reserva->monto_consumo;   
+            }
+
+
+           $pagos_realizados  = $reserva->pagos;
+           $monto_pagado      = 0;
+           foreach($pagos_realizados as $pago){
+             $monto_pagado += $pago->monto_pago;
+           }
+
+           $monto_por_pagar = $monto_total - $monto_pagado;
+           $reserva->update(array('monto_alojamiento' => $monto_alojamiento , 'monto_total' => $monto_total , 'monto_por_pagar' => $monto_por_pagar , 'checkout' => $auxFin, 'noches' => $noches));
+
+
 
             }else{
               $retorno = array(
@@ -618,6 +1007,11 @@ class ReservaController extends Controller
         if($request->has('observacion')){
           $observacion = $request->input('observacion');
           $reserva->update(array('observacion' => $observacion));
+        }
+
+        if($request->has('detalle')){
+          $detalle = $request->input('detalle');
+          $reserva->update(array('detalle' => $detalle));
         }
 
         $retorno = [
@@ -825,24 +1219,25 @@ class ReservaController extends Controller
       return Response::json($retorno, 400);
     }
     
-    $reservas = Reserva::whereHas('habitacion', function($query) use($id){
-      $query->where('propiedad_id', $id);
-    })->with('habitacion.tipoHabitacion')->with('pagos')->with('cliente.tipoCliente','cliente.pais','cliente.region')->with('huespedes.servicios')->with('tipoMoneda')->with('tipoFuente', 'metodoPago', 'estadoReserva')->orderBy('id', 'desc')->take(50)->get();
-
-    foreach ($reservas as $reserva){
-      foreach ($reserva['huespedes'] as $huesped) {
-        $huesped->consumo_total = 0;
-        foreach ($huesped['servicios'] as $servicio) {
-          $huesped->consumo_total += $servicio->pivot->precio_total;
-
-        }
-      }
-    }
+    $reservas = Reserva::select('reservas.id', 'numero_reserva' ,'checkin', 'habitacion_id', 'estado_reserva_id' ,'checkout','ocupacion', 'monto_total','estado_reserva.nombre as estado' ,'cliente_id', 'clientes.nombre as nombre_cliente', 'clientes.apellido as apellido_cliente', 'noches', 'tipo_moneda.nombre as nombre_moneda', 'cantidad_decimales')
+    ->whereHas('habitacion', function($query) use($id){
+        $query->where('propiedad_id', $id);})
+    ->with(['huespedes' => function ($q){
+        $q->select('huespedes.id', 'nombre', 'apellido');}])
+    ->with('habitacion.tipoHabitacion')
+    ->with('cliente.pais', 'cliente.region')
+    ->join('clientes', 'clientes.id','=','cliente_id')
+    ->join('tipo_moneda', 'tipo_moneda.id', '=', 'tipo_moneda_id')
+    ->join('estado_reserva', 'estado_reserva.id', '=', 'estado_reserva_id')
+    ->orderBy('reservas.id', 'desc')
+    ->take(50)
+    ->get();
 
     $data = ['reservas' => $reservas,];
 
     return $data;      
   }
+
 
     public function pagoReserva(Request $request){
 
@@ -1064,9 +1459,7 @@ class ReservaController extends Controller
                       $monto_consumos = 0;  // total monto consumos por pagar
                       foreach ($consumos as $consumo){
                         $monto_consumos += $consumo->precio_total;
-                              
-                     /* $consumo->update(array('estado' => 'Pagado'));*/
-
+                            
                      }
 
                   
@@ -1416,7 +1809,7 @@ class ReservaController extends Controller
             }
 
             if ($reserva->estado_reserva_id == 3) {
-                if ($reserva->checkout > $fecha_hoy) {
+                if ($reserva->checkout >= $fecha_hoy) {
                 $habitaciones_ocupadas++;
                 }
             }
@@ -1488,45 +1881,45 @@ class ReservaController extends Controller
 
     public function calendario(Request $request){
 
-
         $id = $request->input('propiedad_id');
         $fecha_inicio = $request->input('fecha_inicio');
         $fecha_fin    = $request->input('fecha_fin');
         $ancho_calendario = $request->input('ancho_calendario');
         $ancho_celdas = $request->input('ancho_celdas');
+        $cantidad_dias = $request->input('cantidad_dias');
         $calendario = [];
 
 
         $fechas = [$fecha_inicio, $fecha_fin];
 
-
         $tipos = TipoHabitacion::whereHas('habitaciones', function($query) use($id){
 
                     $query->where('propiedad_id', $id);
 
-        })->with(['habitaciones' => function ($q) use($id) {
+        })->with(['habitaciones' => function ($q){
 
-        $q->where('propiedad_id', $id)->with('tipoHabitacion');}])->get();
-
-
-        $reservas = Reserva::whereHas('habitacion', function($query) use($id){
-
-                    $query->where('propiedad_id', $id);
-
-        })->with('habitacion.tipoHabitacion')->with('cliente','huespedes.servicios','tipoMoneda','tipoFuente','metodoPago','estadoReserva','pagos')->whereBetween('checkin', $fechas)->where('estado_reserva_id', '!=' , 6 )->where('estado_reserva_id', '!=' , 7 )->get();
+        $q->select('id', 'nombre', 'tipo_habitacion_id');}])->get();
 
 
+        $reservas = Reserva::select('reservas.id', 'checkin', 'checkout', 'habitacion_id', 'estado_reserva_id', 'cliente_id', 'nombre', 'apellido', 'noches')->whereHas('habitacion', function($query) use($id){
 
-        $reservas_checkout = Reserva::whereHas('habitacion', function($query) use($id){
+                   $query->where('propiedad_id', $id);
+       })
+       ->join('clientes', 'clientes.id','=','cliente_id')
+       ->whereBetween('checkin', $fechas)->whereIn('estado_reserva_id', [1,2,3,4,5])->get();
 
-                    $query->where('propiedad_id', $id);
 
-        })->with('habitacion.tipoHabitacion')->with('cliente','huespedes','tipoMoneda','tipoFuente', 'metodoPago','estadoReserva')->whereBetween('checkout', $fechas)->where('estado_reserva_id', '!=' , 6 )->where('estado_reserva_id', '!=' , 7 )->get();
 
+
+        $reservas_checkout = Reserva::select('reservas.id', 'checkin', 'checkout', 'habitacion_id', 'estado_reserva_id', 'cliente_id', 'nombre', 'apellido')->whereHas('habitacion', function($query) use($id){
+
+                   $query->where('propiedad_id', $id);
+       })
+       ->join('clientes', 'clientes.id','=','cliente_id')
+       ->whereBetween('checkout', $fechas)->whereIn('estado_reserva_id', [1,2,3,4,5])->get();
 
 
         $habitaciones_tipo = [];
-
         foreach ($tipos as $tipo) {
                 
             $habitaciones = $tipo->habitaciones;
@@ -1537,49 +1930,45 @@ class ReservaController extends Controller
 
             foreach ($habitaciones as $habitacion) {
                 
-/*                $nombre_habitacion = $habitacion->nombre;
-                $hab = [ 'nombre' => $nombre_habitacion];*/
                 array_push($habitaciones_tipo, $habitacion);
 
-
-
             }
-
-
         }
 
         $reservas_calendario = [];
-        $mes_calendario =date ("F",strtotime($fecha_inicio));
-        foreach ($reservas as $reserva) {
+
        
+        foreach ($reservas as $reserva) {
+            /*return $reserva;*/
+       
+            $inicio   = new Carbon($fecha_inicio);
+            
+            $checkout = $reserva->checkout;
 
-            $checkin =date ("F",strtotime($reserva->checkin));
-            $checkout =date ("F",strtotime($reserva->checkout));
+            $fin      = new Carbon($checkout);
 
-            if($checkin == $checkout){
+            $diferencia = $inicio->diffInDays($fin);
 
-                $noches = $reserva->noches;
-                $dia = date ("j",strtotime($reserva->checkin));
-                $reserva->left = ($dia * $ancho_celdas)-30;
+            $checkin          = new Carbon($reserva->checkin);
+            $posicion_checkin = $inicio->diffInDays($checkin) + 1;
+            if($diferencia <= ($cantidad_dias -1 )){
 
-                $reserva->right = (($ancho_calendario - $reserva->left - ($noches * $ancho_celdas))+$ancho_celdas)-60;
+
+
+                $noches         = $reserva->noches;
+                $reserva->left  = ($posicion_checkin * $ancho_celdas)-30;
+
+                $reserva->right = (($ancho_calendario - $reserva->left - ($noches * $ancho_celdas)) + $ancho_celdas)-60;
 
                 array_push($reservas_calendario, $reserva);
              }else{
 
-                
-            $mes_checkin =date ("F",strtotime($reserva->checkin));
-            $mes_calendario =date ("F",strtotime($fecha_inicio));
 
-            if ($mes_checkin == $mes_calendario) {
-
-
-                $dia = date ("j",strtotime($reserva->checkin));
-                $reserva->left = ($dia * $ancho_celdas)-30;
+                $reserva->left = ($posicion_checkin * $ancho_celdas)-30;
 
                 $reserva->right = 0;
 
-                } 
+                
 
 
             array_push($reservas_calendario, $reserva);
@@ -1592,21 +1981,22 @@ class ReservaController extends Controller
         }
 
             foreach ($reservas_checkout as $reserva_checkout) {
-                $mes_checkout =date ("F",strtotime($reserva_checkout->checkout));
-                $mes_checkin =date ("F",strtotime($reserva_checkout->checkin));
-                $dia_checkout= date ("j",strtotime($reserva_checkout->checkout));
-            
-                 if ($mes_checkout == $mes_calendario) {
-                     if ($mes_checkin != $mes_calendario) {
+
+                $checkin = $reserva_checkout->checkin;
+                $in  = new Carbon($checkin);
+                $inicio   = new Carbon($fecha_inicio);
+
+                $checkout = new Carbon($reserva_checkout->checkout);
+                $posicion_checkout = $checkout->diffInDays($inicio) + 1;
+
+                    if ($in < $inicio ) {
 
                     $reserva_checkout->left = 0;
-                    $reserva_checkout->right = (($ancho_calendario - ( $ancho_celdas * $dia_checkout))+$ancho_celdas)-30;
+                    $reserva_checkout->right = (($ancho_calendario - ( $ancho_celdas * $posicion_checkout)) + $ancho_celdas)-30;
 
                     array_push($reservas_calendario, $reserva_checkout);
 
-                         }
                     }
-
                 }
 
             array_push($calendario, $habitaciones_tipo);
@@ -1615,9 +2005,50 @@ class ReservaController extends Controller
          return $calendario;
 
 
+    }
 
+
+    public function getPagoReserva(Request $request)
+    {
+        if($request->has('reserva_id')){
+          $id        = $request->input('reserva_id');
+          $reserva   = Reserva::where('id', $id)->first();
+          if(is_null($reserva)){
+            $retorno = array(
+               'msj'    => "Reserva no encontrada",
+               'errors' => true);
+            return Response::json($retorno, 404);
+          }
+        }else{
+          $retorno = array(
+              'msj'    => "No se envia reserva_id",
+              'errors' => true);
+          return Response::json($retorno, 400);
+        }
+
+        $reservas = Reserva::where('id', $id)->with(['huespedes.servicios' => function ($q) use($id) {
+            $q->wherePivot('reserva_id', $id);}])
+        ->with('habitacion.tipoHabitacion')
+        ->with('cliente.pais','cliente.region','tipoMoneda' ,'tipoFuente', 'metodoPago','estadoReserva','pagos.tipoComprobante','pagos.tipoMoneda', 'pagos.metodoPago')
+        ->with('huespedes.pais', 'huespedes.region')
+        ->get();
+
+        foreach ($reservas as $reserva){
+            foreach ($reserva['huespedes'] as $huesped) {
+                $huesped->consumo_total = 0;
+                foreach ($huesped['servicios'] as $servicio) {
+                    $huesped->consumo_total += $servicio->pivot->precio_total;
+                }
+            }
+        }
+
+        $data = ['reservas' => $reservas];
+
+        return $data;
 
     }
+
+
 
     public function show($id){
 

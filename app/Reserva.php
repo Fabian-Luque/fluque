@@ -14,7 +14,7 @@ class Reserva extends Model
 	use SoftDeletes;
     protected $table = 'reservas';
 
-	protected $fillable = ['precio_habitacion','monto_alojamiento','noches','observacion','monto_consumo','monto_total','monto_sugerido','monto_por_pagar','ocupacion','tipo_fuente_id','habitacion_id','cliente_id','checkin','checkout','estado_reserva_id'];
+	protected $fillable = ['precio_habitacion','monto_alojamiento','noches','iva','descuento','observacion','detalle','monto_consumo','monto_total','monto_por_pagar','monto_sugerido','monto_por_pagar','ocupacion','tipo_fuente_id','habitacion_id','cliente_id','checkin','checkout','estado_reserva_id'];
 
 	protected $dates = ['checkin', 'checkout'];
 
@@ -88,9 +88,12 @@ class Reserva extends Model
 
 	public function getCreatedAtAttribute($value)
     {
-        $user 			 = JWTAuth::parseToken()->toUser();
-        $propiedad 		 = $user->propiedad;
-        $zona_horaria    = ZonaHoraria::where('id', $propiedad->zona_horaria_id)->first();
+        $user            = JWTAuth::parseToken()->toUser();
+        $propiedad       = $user->propiedad;
+        foreach ($propiedad as $prop) {
+            $zona_horaria_id = $prop->zona_horaria_id;
+        }
+        $zona_horaria    = ZonaHoraria::where('id', $zona_horaria_id)->first();
         $pais            = $zona_horaria->nombre;
         return Carbon::parse($value)->timezone($pais)->format('Y-m-d H:i:s');
     }   

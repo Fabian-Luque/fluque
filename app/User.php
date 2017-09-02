@@ -16,7 +16,7 @@ class User extends Authenticatable {
      * @var array
      */
 
-    protected $fillable = ['name', 'email', 'password', 'phone'];
+    protected $fillable = ['name', 'email', 'password', 'phone', 'rol_id', 'estado_id'];
 
     /**
      * The attributes that should be hidden for arrays.
@@ -27,8 +27,22 @@ class User extends Authenticatable {
         'password', 'remember_token',
     ];
 
+<<<<<<< HEAD
     public function propiedad() {
         return $this->hasOne('App\Propiedad', 'user_id'); //relacion uno a uno
+=======
+
+    public function propiedad(){
+        return $this->belongsToMany('App\Propiedad', 'propiedad_user'); //relacion muchos a muchos
+    }
+
+    public function rol(){
+        return $this->belongsTo('App\Rol', 'rol_id');
+    }
+
+    public function estado(){
+        return $this->belongsTo('App\Estado', 'estado_id');
+>>>>>>> 646347b970de129e41a4b490a1818ebb5cf4be13
     }
 
     public function setPasswordAttribute($value) {

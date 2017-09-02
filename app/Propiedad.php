@@ -9,10 +9,21 @@ class Propiedad extends Model {
 	use SoftDeletes;
     protected $table = 'propiedades';
 
-	protected $fillable = [ 'id', 'nombre','tipo', 'numero_habitaciones','region','pais','ciudad','estado','direccion', 'telefono', 'email', 'nombre_responsable', 'descripcion','iva', 'porcentaje_deposito', 'pais_id', 'region_id', 'tipo_propiedad_id', 'zona_horaria_id'];
+	protected $fillable = [ 'id', 'nombre','tipo', 'numero_habitaciones','region','pais','ciudad','estado','direccion', 'telefono', 'email', 'nombre_responsable', 'descripcion','iva', 'porcentaje_deposito', 'pais_id', 'region_id', 'tipo_propiedad_id', 'tipo_cobro_id', 'zona_horaria_id'];
 
+<<<<<<< HEAD
     public function user() {
         return $this->belongsTo('App\User', 'user_id'); 
+=======
+
+
+    public function user(){
+
+
+        return $this->belongsToMany('App\User', 'propiedad_user'); 
+
+
+>>>>>>> 646347b970de129e41a4b490a1818ebb5cf4be13
     }
 
     public function EstadoCuenta() {
@@ -27,7 +38,19 @@ class Propiedad extends Model {
         return $this->belongsTo('App\Region', 'region_id'); 
     }
 
+<<<<<<< HEAD
     public function tipos_habitaciones() {
+=======
+    public function roles(){
+
+        return $this->hasMany('App\Rol', 'propiedad_id');
+
+
+    }
+
+    public function tiposHabitacion(){
+
+>>>>>>> 646347b970de129e41a4b490a1818ebb5cf4be13
         return $this->hasMany('App\TipoHabitacion', 'propiedad_id');
     }
 
@@ -51,7 +74,20 @@ class Propiedad extends Model {
         return $this->hasMany('App\Temporada', 'propiedad_id');
     }
 
+<<<<<<< HEAD
     public function calificacionHuespedes() {
+=======
+    public function tipoCobro(){
+
+        return $this->belongsTo('App\TipoCobro', 'tipo_cobro_id');
+
+
+    }
+
+
+    public function calificacionHuespedes(){
+
+>>>>>>> 646347b970de129e41a4b490a1818ebb5cf4be13
         return $this->belongsToMany('App\Huesped', 'huesped_propiedad')
         ->withPivot('comentario', 'calificacion')
         ->withTimestamps();

@@ -206,17 +206,17 @@
                 </tr>
                 <tr>
                   <th class="data-tabla-detalles borde-derecha"><p class="titulo align-right">IVA</p></th>
-                  <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $nombre_moneda }} ${{  number_format($iva) }}</p></td>
+                  <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $nombre_moneda }} ${{ number_format($iva)}}</p></td>
                 </tr>
                 <tr>
                   <th class="data-tabla-detalles borde-derecha"><p class="titulo align-right">Total</p></th>
-                  <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $nombre_moneda }} ${{   number_format($total)}}</p></td>
+                  <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $nombre_moneda }} ${{ number_format($total) }}</p></td>
                 </tr>
 
                 @else
                 <tr>
                   <th class="data-tabla-detalles borde-derecha"><p class="titulo align-right">Total</p></th>
-                  <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $nombre_moneda }} ${{ number_format($total)}}</p></td>
+                  <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $nombre_moneda }} ${{ number_format($total) }}</p></td>
                 </tr>
 
                 @endif
@@ -225,13 +225,81 @@
 
             <tr>
               <th class="data-tabla-detalles borde-derecha"><p class="titulo align-right">Total</p></th>
-              <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $nombre_moneda }} ${{ $total  }}</p></td>
+              <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $nombre_moneda }} ${{ $total }}</p></td>
             </tr>
 
 
               @endif
 
           </table>
+
+
+          <div class="titulo" style="text-align:left;">
+            <h3 class="">Detalle de pagos</h3>
+          </div>
+
+          <div class="detalles" style="margin:20px 0px;">
+            <table class="tabla-detalles">
+              <tr>
+               <th class="data-tabla-detalles borde-derecha"><p>Nº Reserva</p></th>
+                <th class="data-tabla-detalles borde-derecha"><p>Tipo de pago</p></th>
+                <th class="data-tabla-detalles borde-derecha"><p>Fecha</p></th>
+                <th class="data-tabla-detalles borde-derecha"><p>Método de pago</p></th>
+                <th class="data-tabla-detalles borde-derecha"><p>Tipo de comprobante</p></th>
+                <th class="data-tabla-detalles borde-derecha"><p>Nº de operación</p></th>
+                <th class="data-tabla-detalles borde-derecha"><p>Monto</p></th>
+              </tr>
+
+          @foreach($reservas_pdf as $reservas)
+              @foreach($reservas as $reserva)
+               @foreach($reserva->pagos as $pago)
+              <tr>
+                <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $reserva->numero_reserva }}</p></td>
+                <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->tipo }}</p></td>
+                <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->created_at }}</p></td>
+                @if($pago->numero_cheque == null)
+                <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->metodoPago->nombre }}</p></td>
+                @else
+                <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->metodoPago->nombre }} {{$pago->numero_cheque }}</p></td>
+                @endif
+
+                @if($pago->tipoComprobante == null)
+                <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p></p></td>
+                @else
+                <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->tipoComprobante->nombre }}</p></td>
+                @endif
+
+                @if($pago->numero_operacion == null)
+                <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p></p></td>
+                @else
+                <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->numero_operacion }}</p></td>
+                @endif
+                
+                      @if($pago->tipo_moneda_id == 1)
+
+
+                        <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->tipoMoneda->nombre }} ${{ number_format($pago->monto_equivalente) }}</p></td>
+
+
+
+                        @else 
+
+
+                        <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->tipoMoneda->nombre }} ${{ $pago->monto_equivalente }}</p></td>
+
+
+
+                      @endif
+              </tr>
+               @endforeach
+              @endforeach
+          @endforeach
+
+
+            </table>
+          </div>
+
+
         </div>
         <!--  Fin detalles  -->
 
@@ -257,173 +325,6 @@
       </div>
     </div>
 
-
-
-    <div class="page-break"></div>
-
-    <div class="contenedor">
-
-      <div class="detalle-consumo">
-        <h2 class="titulo">Detalle de consumos</h2>
-        @foreach($cliente as $cte)
-        <h3 class="margen">Cliente principal de la reserva: <span>{{ $cte->nombre }} {{ $cte->apellido }}</span></h3>
-        @endforeach
-
-        <div class="">
-
-        @foreach($reservas_pdf as $reservas)
-          @foreach($reservas as $reserva)
-            @foreach($reserva->huespedes as $huesped)
-          <p class="negrita">{{ $huesped->nombre }} {{ $huesped->apellido }}</p>
-          <p class="negrita">Reserva Nº {{ $reserva->numero_reserva }} - Habitacion {{ $reserva->habitacion->nombre }} - {{ $reserva->habitacion->tipoHabitacion->nombre }}</p>
-
-          <table class="tabla-comsumos margen">
-              @foreach($huesped->servicios as $servicio)
-            <tr>
-              <td class="data-tabla-detalles borde-derecha"><p class="">{{ $servicio->pivot->created_at->format('d-m-Y') }}   -  {{ $servicio->pivot->cantidad }} {{ $servicio->nombre }}</p></td>
-
-
-
-
-                        @if($reserva->tipo_moneda_id == 1)
-
-
-
-                       <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{  number_format($servicio->pivot->precio_total) }}</p></td>
-
-
-                        @else 
-
-  
-                        <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{  $servicio->pivot->precio_total }}</p></td>
-
-
-                      @endif
-
-
-            </tr>
-              @endforeach
-            <tr>
-              <th class="data-tabla-detalles borde-derecha"><p class="titulo align-right">Total</p></th>
-
-
-
-
-
-
-
-
-
-                      @if($reserva->tipo_moneda_id == 1)
-                        <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{  number_format($huesped->monto_consumo)}}</p></td>
-
-                        @else 
-
-                        <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{  $huesped->monto_consumo}}</p></td>
-
-
-                      @endif
-
-
-
-
-
-
-
-
-
-            </tr>
-          </table>
-            @endforeach
-          @endforeach
-        @endforeach
-        </div>
-
-
-
-      </div>
-
-
-    </div>
-
-    <div class="page-break"></div>
-
-    <div class="contenedor">
-      <div class="estado-cuenta" style="margin-top: 20px;">
-
-                <div class="titulo" style="text-align:left;">
-                  <h3 class="">Detalle de pagos</h3>
-                </div>
-
-                <div class="detalles" style="margin:20px 0px;">
-                  <table class="tabla-detalles">
-                    <tr>
-                     <th class="data-tabla-detalles borde-derecha"><p>Nº Reserva</p></th>
-                      <th class="data-tabla-detalles borde-derecha"><p>Tipo de pago</p></th>
-                      <th class="data-tabla-detalles borde-derecha"><p>Fecha</p></th>
-                      <th class="data-tabla-detalles borde-derecha"><p>Método de pago</p></th>
-                      <th class="data-tabla-detalles borde-derecha"><p>Tipo de comprobante</p></th>
-                      <th class="data-tabla-detalles borde-derecha"><p>Nº de operación</p></th>
-                      <th class="data-tabla-detalles borde-derecha"><p>Monto</p></th>
-                    </tr>
-
-                @foreach($reservas_pdf as $reservas)
-                    @foreach($reservas as $reserva)
-                     @foreach($reserva->pagos as $pago)
-                    <tr>
-                      <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $reserva->numero_reserva }}</p></td>
-                      <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->tipo }}</p></td>
-                      <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->created_at }}</p></td>
-                      @if($pago->numero_cheque == null)
-                      <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->metodoPago->nombre }}</p></td>
-                      @else
-                      <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->metodoPago->nombre }} {{$pago->numero_cheque }}</p></td>
-                      @endif
-
-                      @if($pago->tipoComprobante == null)
-                      <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p></p></td>
-                      @else
-                      <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->tipoComprobante->nombre }}</p></td>
-                      @endif
-
-                      @if($pago->numero_operacion == null)
-                      <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p></p></td>
-                      @else
-                      <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->numero_operacion }}</p></td>
-                      @endif
-
-
-                      @if($pago->tipo_moneda_id == 1)
-
-
-                        <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->tipoMoneda->nombre }} ${{ number_format($pago->monto_equivalente) }}</p></td>
-
-
-
-                        @else 
-
-
-                        <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->tipoMoneda->nombre }} ${{ $pago->monto_equivalente }}</p></td>
-
-
-
-                      @endif
-
-
-
-
-
-                  
-
-
-                    </tr>
-                     @endforeach
-                    @endforeach
-                @endforeach
-
-
-                  </table>
-                </div>
 
   </body>
 </html>
