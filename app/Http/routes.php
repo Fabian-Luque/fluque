@@ -122,7 +122,7 @@ Route::group(['as' => 'api.jarvis.'], function(){
 
 
 
-/*Route::auth();
+Route::auth();
 
 
 
@@ -131,4 +131,3 @@ Route::get('/', function () {
     return view('welcome');
   });
 
-*/
