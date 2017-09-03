@@ -10,27 +10,14 @@ use JWTAuth;
 
 class User extends Authenticatable {
     use SoftDeletes;
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
 
-    protected $fillable = ['name', 'email', 'password', 'phone', 'rol_id', 'estado_id'];
+    protected $fillable = [
+        'name', 'email', 'password', 'phone', 'rol_id', 'estado_id'
+    ];
 
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
     protected $hidden = [
         'password', 'remember_token',
     ];
-
-<<<<<<< HEAD
-    public function propiedad() {
-        return $this->hasOne('App\Propiedad', 'user_id'); //relacion uno a uno
-=======
 
     public function propiedad(){
         return $this->belongsToMany('App\Propiedad', 'propiedad_user'); //relacion muchos a muchos
@@ -42,7 +29,6 @@ class User extends Authenticatable {
 
     public function estado(){
         return $this->belongsTo('App\Estado', 'estado_id');
->>>>>>> 646347b970de129e41a4b490a1818ebb5cf4be13
     }
 
     public function setPasswordAttribute($value) {

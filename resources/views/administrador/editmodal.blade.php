@@ -6,9 +6,9 @@
 </ul>
 
 {!! Form::open(['route' => array('editar.user', ), 'autocomplete' => 'off']) !!}
-<div class="container text-center">   
+<div class="container text-center justify-content-center">   
   <div class="row">
-    <div class="col-sm-3">
+    <div class="col-xs-2 col-sm-2 text-center">
       <div >
       {!! Form::hidden('id', '', array('id' => 'id_user')) !!}
       <div class="form-group has-feedback">
@@ -85,7 +85,7 @@
     
       </div>
     </div>
-    <div class="col-sm-3">
+    <div class="col-xs-2 col-sm-2 text-center">
       <div>
         <div class="form-group has-feedback">
           {!! Form::label('Tipo Propiedad') !!}
@@ -100,7 +100,7 @@
         </div>
 
         <div class="form-group has-feedback">
-          {!! Form::label('Numero de Habitaciones') !!}
+          {!! Form::label('N° Habitaciones') !!}
           {!! Form::number(
             'credit_amount', 
             '1', [

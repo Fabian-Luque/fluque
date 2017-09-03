@@ -183,7 +183,6 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::post('crear/usuario', 'UserController@crearUsuario');
 		Route::get('estados', 'UserController@getEstados');
 
-
 		Route::resource('user', 'UserController', ['except' => ['create', 'edit','store']]);
 		Route::resource('propiedad', 'PropiedadController', ['except' => ['create', 'edit', 'store']]);
 		Route::resource('habitacion', 'HabitacionController', ['except' => ['create', 'edit']]);
@@ -193,29 +192,8 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::resource('huesped', 'HuespedController', ['except' => ['create', 'edit']]);
 		Route::resource('temporada', 'TemporadaController', ['except' => ['create', 'edit']]);
 		Route::resource('tipo/habitacion', 'TipoHabitacionController', ['except' => ['create', 'edit']]);
-<<<<<<< HEAD
-	});
-});
-=======
+
 		Route::resource('rol', 'RolController', ['except' => ['create', 'edit']]);
-
 });
 
-
-
 });
-
-
-
-
-/*Route::auth();
-
-
-
-
-Route::get('/', function () {
-    return view('welcome');
-  });
-
-*/
->>>>>>> 646347b970de129e41a4b490a1818ebb5cf4be13

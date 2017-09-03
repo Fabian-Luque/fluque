@@ -15,50 +15,17 @@ use Illuminate\Support\Facades\Validator;
 use Response;
 use JWTAuth;
 
-<<<<<<< HEAD
 class UserController extends Controller {
-
-    public function show(Request $request) {  
-        if ($request->has('id')) {
-            $users = User::where(
-                'id', 
-                $request->id
-            )->with('propiedad.tipoMonedas.clasificacionMonedas')
-            ->get();
-
-            if (count($users) != 0) {
-                $status = 200;
-                $data = $users;
-            } else {
-                $status = 200;
-                $data['errors'] = false;
-                $data['msg']    = 'Usuario no encontrado';
-            }
-            return Response::json($data, $status);
-        } else {
-            $status = 200;
-            $data = User::all();
-            return View('administrador.user')->with('users', $data);
-=======
-class UserController extends Controller
-{
-
-    public function show($id)
-    {
-
+    public function show($id){
         try {
-
             $users = User::where('id', $id)->with('propiedad.tipoMonedas.clasificacionMonedas')->with('rol.permisos')->get();
-
             return $users;
-
         } catch (ModelNotFoundException $e) {
             $data = [
                 'errors' => true,
                 'msg'    => $e->getMessage(),
             ];
             return Response::json($data, 404);
->>>>>>> 646347b970de129e41a4b490a1818ebb5cf4be13
         }
     }
 
@@ -69,34 +36,10 @@ class UserController extends Controller
             $usuario->getRules()
         );
 
-        if (1 != 1) {// existe un problema con el validador, por alguna razon 
-            // siempre falla aunq esten todos los inputs
-            $data['errors'] = $validator->messages()->all();
-            $data['msg'] = $validator->fails();
-
+        if ($validator->fails()) {
+            $data['errors'] = true;
+            $data['msg'] = $validator->errors();
         } else {
-<<<<<<< HEAD
-            $usuario->name                 = $request->name;
-            $usuario->email                = $request->email;
-            $usuario->password             = $request->password;
-            $usuario->phone                = $request->phone;
-            $usuario->save();
-
-            $propiedad                      = new Propiedad();
-            $propiedad->id                  = $usuario->id;
-            $propiedad->nombre              = $request->nombre;
-            $propiedad->direccion           = $request->direccion;
-            $propiedad->tipo_propiedad_id   = $request->tipo_propiedad_id;
-            $propiedad->user_id             = $usuario->id;
-            $propiedad->save();
-
-            $data['errors'] = false;
-            $data['msg'] = 'usuario creado satisfactoriamente';
-        }
-        return Response::json($data);
-        //return View('administrador.reguser')->with('resp', $data);
-=======
-
             $usuario                       = new User();
             $usuario->name                 = $request->get('name');
             $usuario->email                = $request->get('email');
@@ -115,23 +58,17 @@ class UserController extends Controller
             $propiedad->tipo_propiedad_id   = $request->get('tipo_propiedad_id');
 
             $propiedad->save();
-
             $usuario->propiedad()->attach($propiedad->id);
 
             $data = [
                 'errors' => false,
                 'msg'    => 'usuario creado satisfactoriamente',
-
             ];
-
             return Response::json($data, 201);
-
         }
-
     }
 
-    public function crearUsuario(Request $request)
-    {
+    public function crearUsuario(Request $request) {
         $rules = array(
             'name'                => 'required',
             'email'               => 'required|unique:users,email',
@@ -143,11 +80,8 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {
-
             return redirect()->back()->withErrors($validator->errors());
-
         } else {
-
             $user = JWTAuth::parseToken()->toUser();
 
             $propiedad = $user->propiedad;
@@ -165,20 +99,16 @@ class UserController extends Controller
             $usuario->save();
 
             $usuario->propiedad()->attach($propiedad_id);
-
             $data = [
                 'errors' => false,
                 'msg'    => 'usuario creado satisfactoriamente',
 
             ];
-
             return Response::json($data, 201);
-
         }
     }
 
-    public function index(Request $request)
-    {
+    public function index(Request $request) {
         if ($request->has('propiedad_id')) {
             $propiedad_id = $request->input('propiedad_id');
             $propiedad    = Propiedad::where('id', $propiedad_id)->first();
@@ -195,14 +125,16 @@ class UserController extends Controller
             return Response::json($retorno, 400);
         }
 
-        return $usuarios = User::whereHas('propiedad', function($query) use($propiedad_id){
-                $query->where('propiedades.id', $propiedad_id);
-        })->with('rol')->with('estado')->get();
-
->>>>>>> 646347b970de129e41a4b490a1818ebb5cf4be13
+        return $usuarios = User::whereHas(
+            'propiedad', 
+            function($query) use($propiedad_id) {
+                $query->where(
+                    'propiedades.id', 
+                    $propiedad_id
+                );
+            }
+        )->with('rol')->with('estado')->get();
     }
-
-
 
     public function update(Request $request, $id) {
         $rules = array(
@@ -210,12 +142,8 @@ class UserController extends Controller
             'email'    => 'email',
             'password' => 'min:6',
             'phone'    => '',
-<<<<<<< HEAD
-=======
             'rol_id'   => 'numeric',
             'estado_id'=> 'numeric',
-
->>>>>>> 646347b970de129e41a4b490a1818ebb5cf4be13
         );
 
         $validator = Validator::make($request->all(), $rules);
@@ -239,7 +167,6 @@ class UserController extends Controller
         }
     }
 
-
     public function delete(Request $request) {
         if ($request->has('id')) {
             if ($user = User::find($request->id)) {
@@ -253,20 +180,13 @@ class UserController extends Controller
             }
         } else {
             $data['errors'] = true;
-            $data['msg']    = trans('requests.success.code');//'Datos requeridos';
+            $data['msg']    = trans('requests.success.code');
         }
         return Response::json($data);
     }
-<<<<<<< HEAD
-=======
 
-    public function getEstados()
-    {
+    public function getEstados() {
         $estados = Estado::all();
-
         return $estados;
-
     }
-
->>>>>>> 646347b970de129e41a4b490a1818ebb5cf4be13
 }

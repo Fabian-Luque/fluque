@@ -27,8 +27,8 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                     <h4 id="titulomodal" class="modal-title"></h4>
                 </div>
-                <div id="textmodal" class="modal-body" style=" margin-left: 5%; margin-right: 5%;">
-                </div>
+                <div id="textmodal" class="modal-body  justify-content-center" style="margin-left: 15%;" >
+                </div> 
                 <div class="modal-footer">
                     <button id='confirma-del' value='' class='btn btn-danger'>Confirmar</button>
                     <button id="confirmamodal" type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>

@@ -48,7 +48,6 @@
             			<th>PROPIEDAD</th>
             			<th>USUARIO</th>
             			<th>TIPO</th>
-            			<th>ACCIONES</th>
         			</thead>
         			<tbody>
         				@if(!empty($props[0]['id']))
@@ -71,11 +70,7 @@
 									<td> {{ $prop->prop_id }} </td>
 									<td> {{ $prop->user_id }} </td>
 									<td> {{ $prop->tipo_propiedad_id }} </td>
-									<td> 
-										<a href="u" name="b-lista" value="{{ $prop->id }}" class="btn btn-info btn-xs">Editar</a>
-										  
-										<a href="d" name="b-lista" value="{{ $prop->id }}" class="btn btn-danger disable btn-xs">Eliminar</a>	
-									</td>
+									
 									@if(!empty($resp['errors']))
 										<?php echo $resp; ?>
 									@endif
