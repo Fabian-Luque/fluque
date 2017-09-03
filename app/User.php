@@ -20,15 +20,26 @@ class User extends Authenticatable {
     ];
 
     public function propiedad(){
-        return $this->belongsToMany('App\Propiedad', 'propiedad_user'); //relacion muchos a muchos
+        return $this->belongsToMany(
+            'App\Propiedad', 
+            'propiedad_user',
+            'user_id',
+            'propiedad_id'
+        ); //relacion muchos a muchos
     }
-
+   
     public function rol(){
         return $this->belongsTo('App\Rol', 'rol_id');
     }
 
     public function estado(){
         return $this->belongsTo('App\Estado', 'estado_id');
+    }
+
+    public function setPasswordAttribute($value) {
+        if(!empty($value)) { 
+            $this->attributes['password'] = bcrypt($value);
+        }
     }
 
     public function setPasswordAttribute($value) {

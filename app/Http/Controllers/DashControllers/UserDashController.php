@@ -19,28 +19,30 @@ use JWTAuth;
 class UserDashController extends Controller {
 
 	public function CreateUser(Request $request) {
-        if ($request->has('name') && $request->has('email') && $request->has('password') && $request->has('phone') && $request->has('nombre') && $request->has('direccion') && $request->has('tipo_propiedad_id') && $request->has('tipo_cuenta')) {
+        if ($request->has('name') && $request->has('email') && $request->has('password') && $request->has('phone') && $request->has('nombre') && $request->has('direccion') && $request->has('tipo_propiedad_id') && $request->has('tipo_cuenta') && $request->has('ciudad') && $request->has('numero_habitaciones')) {
             $us = User::where('email',$request->email)->first();
             if (!isset($us->email)) {
                 $usuario = new User();
-                $usuario->name                 = $request->name;
-                $usuario->email                = $request->email;
-                $usuario->password             = $request->password;
-                $usuario->phone                = $request->phone;
+                $usuario->name                  = $request->name;
+                $usuario->email                 = $request->email;
+                $usuario->password              = $request->password;
+                $usuario->phone                 = $request->phone;
+                $usuario->rol_id                = 1;
+                $usuario->estado_id             = 1;
                 $usuario->save();
 
                 $propiedad                      = new Propiedad();
                 $propiedad->id                  = $usuario->id;
                 $propiedad->nombre              = $request->nombre;
                 $propiedad->direccion           = $request->direccion;
+                $propiedad->ciudad              = $request->ciudad;
+                $propiedad->numero_habitaciones = $request->numero_habitaciones;
                 $propiedad->tipo_propiedad_id   = $request->tipo_propiedad_id;
+                $propiedad->estado_cuenta_id    = $request->tipo_cuenta;
                 $propiedad->save();
 
-                $tipocuenta                     = new Estadocuenta();
-                $tipocuenta->propiedad_id       = $propiedad->id;
-                $tipocuenta->estado             = $request->tipo_cuenta;
-                $tipocuenta->save();
-                
+                $usuario->propiedad()->attach($propiedad->id);
+
                 $data['accion'] = 'Crear usuario';
                 $data['msg'] = 'Usuario creado satisfactoriamente';
             } else {
@@ -57,12 +59,13 @@ class UserDashController extends Controller {
         );
 	}
 
-	public function ReadUser(Request $request) {  
+    public function ReadUser(Request $request) {  
         if ($request->has('id')) {
             $user = User::where(
                 'id',
                 $request->id
             )->with('propiedad')->first();
+
             if (count($user) != 0) {
                 $data['errors'] = false;
                 $data['msg']    = $user;
@@ -73,6 +76,7 @@ class UserDashController extends Controller {
             return Response::json($data);
         } else {
             $data = User::all();
+
             return View('administrador.user')->with(
                 'users', 
                 $data
@@ -81,25 +85,30 @@ class UserDashController extends Controller {
     }
 
 	public function UpdateUser(Request $request)  {
-        if ($request->has('id') && $request->has('name') && $request->has('email') && $request->has('password') && $request->has('phone') && $request->has('nombre') && $request->has('direccion') && $request->has('tipo_propiedad_id') && $request->has('tipo_cuenta')) {
+        if ($request->has('id') && $request->has('name') && $request->has('email') && $request->has('phone') && $request->has('nombre') && $request->has('direccion') && $request->has('tipo_propiedad_id') && $request->has('tipo_cuenta')) {
             $usuario = User::find($request->id);
             if (!isset($us->email)) {
-                $usuario->name                 = $request->name;
-                $usuario->email                = $request->email;
-                $usuario->password             = $request->password;
-                $usuario->phone                = $request->phone;
+                $usuario->name                  = $request->name;
+                $usuario->email                 = $request->email;
+                $usuario->phone                 = $request->phone;
+                $usuario->rol_id                = 1;
+                $usuario->estado_id             = 1;
                 $usuario->save();
-
-                $propiedad                      = Propiedad::where('user_id',$usuario->id)->first();
+                $usuario->propiedad()->detach($usuario->id);
+                $propiedad                      = Propiedad::where(
+                    'id',
+                    $usuario->id
+                )->first();
+                
                 $propiedad->nombre              = $request->nombre;
                 $propiedad->direccion           = $request->direccion;
+                $propiedad->ciudad              = $request->ciudad;
+                $propiedad->numero_habitaciones = $request->numero_habitaciones;
                 $propiedad->tipo_propiedad_id   = $request->tipo_propiedad_id;
+                $propiedad->estado_cuenta_id    = $request->tipo_cuenta;
                 $propiedad->save();
 
-                $tipocuenta                     = Estadocuenta::where('propiedad_id',$propiedad->id)->first();
-                $tipocuenta->propiedad_id       = $propiedad->id;
-                $tipocuenta->estado             = $request->tipo_cuenta;
-                $tipocuenta->save();
+                $usuario->propiedad()->attach($propiedad->id);
                 
                 $data['accion'] = 'Actualizar usuario';
                 $data['msg'] = 'Usuario Actualizado satisfactoriamente';
@@ -145,6 +154,17 @@ class UserDashController extends Controller {
 
     public function getViewPropiedad(Request $request) {
         $propiedades = Propiedad::all();
+        foreach ($propiedades as $prop) {
+            $prop->tipo_propiedad = TipoPropiedad::find(
+                $prop->tipo_propiedad_id
+            )->nombre;
+
+            if (isset($prop->estado_cuenta_id)) {
+                $prop->estado_cuenta = Estadocuenta::find(
+                    $prop->estado_cuenta_id
+                )->nombre;
+            }
+        }
         return View('administrador.prop')->with(
             'props', 
             $propiedades

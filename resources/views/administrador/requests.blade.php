@@ -104,15 +104,23 @@
             						},
             			
             						success: function(data) {
-            							console.log(data.msg.id);
+            							console.log(data.msg.propiedad[0].nombre);
+            							console.log(data.msg);
             							$("#id_user").val(data.msg.id);
             							$("#name").val(data.msg.name);
             							$("#email").val(data.msg.email);
             							$("#password").val(data.msg.password);
             							$("#phone").val(data.msg.phone);
-            							$("#nombre").val(data.msg.propiedad.nombre);
-            							$("#ciudad").val(data.msg.propiedad.ciudad);
-            							$("#direccion").val(data.msg.propiedad.direccion);
+            							
+
+										$("#num_hab").val(data.msg.propiedad[0].numero_habitaciones);
+            							$("#nombre").val(data.msg.propiedad[0].nombre);
+            							$("#ciudad").val(data.msg.propiedad[0].ciudad);
+            							$("#direccion").val(data.msg.propiedad[0].direccion);
+            							$("#estado_cuenta").val(
+            								data.msg.propiedad[0].estado_cuenta_id
+            							);
+            							
             						},
         							error: function(xhr, textStatus, thrownError) {
             							user = 'false';

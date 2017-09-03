@@ -18,12 +18,10 @@ class ApiAuthController extends Controller {
 	public function signin(Request $request) {
         $credentials = $request->only('email', 'password');
         $user = User::where('email', $credentials['email'])->first();
-
         $user_id = $user->id;
 
         if(!is_null($user)) {
-
-            switch ($user->propiedad->EstadoCuenta->estado) {
+            switch ($user->propiedad[0]->estado_cuenta_id) {
         		case '2': //
                     $data['errors'] = true;
                     $data['msg']    = 'Su cuenta de prueba a caducado';
@@ -42,6 +40,14 @@ class ApiAuthController extends Controller {
                         } else {
                             $data = compact('token', 'user_id');
                         }
+                    } else {
+                        $data['errors'] = true;
+                        $data['msg'] = 'Su cuenta se encuentra inactiva';
+              
+                        return Response::json(
+                            $data, 
+                            HttpResponse::HTTP_FORBIDDEN
+                        );
                     }
         		break;
         	}

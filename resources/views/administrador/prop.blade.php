@@ -21,10 +21,6 @@
     <h4 class="text-center"> Informacion de Propiedades </h4>
   
 <div id="respuesta" class="content">
-
-
-
-  
     <div class="container-fluid">  
     	<div id="cont1" class="navbar-header">    
         </div>      
@@ -34,20 +30,11 @@
         			<thead>
             			<th>ID</th>
             			<th>NOMBRE</th>
+                        <th>TIPO</th>
             			<th>NUMERO DE HAB</th>
             			<th>CIUDAD</th>
             			<th>DIRECCION</th>
-            			<th>TELEFONO</th>
-            			<th>CORREO</th>
-            			<th>RESPONSABLE</th>
-            			<th>DESCRIPCION</th>
-            			<th>IVA</th>
-            			<th>% DEPOSITO</th>
-            			<th>PAIS</th>
-            			<th>REGION</th>
-            			<th>PROPIEDAD</th>
-            			<th>USUARIO</th>
-            			<th>TIPO</th>
+            			<th>CUENTA</th>
         			</thead>
         			<tbody>
         				@if(!empty($props[0]['id']))
@@ -55,25 +42,11 @@
         						<tr data-id="{{ $prop->id }}" >
 									<td> {{ $prop->id }} </td>
 									<td> {{ $prop->nombre }} </td>
+                                    <td> {{ $prop->tipo_propiedad }} </td>
 									<td> {{ $prop->numero_habitaciones }} </td>
 									<td> {{ $prop->ciudad }} </td>
 									<td> {{ $prop->direccion }} </td>
-									<td> {{ $prop->telefono }} </td>
-									<td> {{ $prop->email }} </td>
-									<td> {{ $prop->nombre_responsable }} </td>
-									<td> {{ $prop->descripcion }} </td>
-									<td> {{ $prop->iva }} </td>
-									<td> {{ $prop->porcentaje_deposito }} </td>
-									
-									<td> {{ $prop->pais_id }} </td>
-									<td> {{ $prop->region_id }} </td>
-									<td> {{ $prop->prop_id }} </td>
-									<td> {{ $prop->user_id }} </td>
-									<td> {{ $prop->tipo_propiedad_id }} </td>
-									
-									@if(!empty($resp['errors']))
-										<?php echo $resp; ?>
-									@endif
+                                    <td> {{ $prop->estado_cuenta }} </td>
    								</tr>
    							@endforeach
 						@endif

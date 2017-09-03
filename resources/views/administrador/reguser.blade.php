@@ -147,13 +147,13 @@
         <div class="form-group has-feedback">
           {!! Form::label('Tipo Cuenta') !!}
           <select type="text" class="form-control" name="tipo_cuenta">
-                <option value="0">
+                <option value="1">
                   prueba
                 </option>
-                <option value="1">
+                <option value="2">
                   activa
                 </option>
-                <option value="2">
+                <option value="3">
                   inactiva
                 </option>
           </select>

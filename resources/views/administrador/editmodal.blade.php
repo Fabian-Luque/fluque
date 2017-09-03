@@ -44,20 +44,6 @@
       </div>
 
       <div class="form-group has-feedback">
-        {!! Form::label('password') !!}
-        {!! Form::password(
-          'password',[
-            'class' => 'form-control', 
-            'name'=>'password',
-            'id'=>'password',
-            'autocomplete'=>'new-password',
-            'placeholder' => 'Password', 
-            'type' => 'password'
-          ]) 
-        !!}
-      </div>
-
-      <div class="form-group has-feedback">
         {!! Form::label('Telefono') !!}
         {!! Form::text(
           'telefono', 
@@ -75,11 +61,12 @@
       <div class="form-group has-feedback">
         {!! Form::label('Nombre Propiedad') !!}
         {!! Form::text('phone', null, 
-          array('required', 
+          array(
+            'required', 
             'class'=>'form-control',
             'name'=>'nombre', 
             'id'=>'nombre',
-            'placeholder'=>'Telefono')) 
+            'placeholder'=>'Nombre propiedad')) 
         !!}
       </div>
     
@@ -106,6 +93,7 @@
             '1', [
               'min' => '1', 
               'max' => '50000', 
+              'id' => 'num_hab',
               'class' => 'form-control',
               'name' => 'numero_habitaciones'
             ]) 
@@ -144,7 +132,7 @@
 
         <div class="form-group has-feedback">
           {!! Form::label('Tipo Cuenta') !!}
-          <select type="text" class="form-control" name="tipo_cuenta">
+          <select type="text" class="form-control" id="estado_cuenta" name="tipo_cuenta">
                 <option value="0">
                   prueba
                 </option>
