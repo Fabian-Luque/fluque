@@ -42,12 +42,6 @@ class User extends Authenticatable {
         }
     }
 
-    public function setPasswordAttribute($value) {
-        if(!empty($value)) { 
-            $this->attributes['password'] = bcrypt($value);
-        }
-    }
-
     public function VerifyPassword($value) {
         if (password_verify($value, $this->attributes['password'])) {
             return 1;

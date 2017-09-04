@@ -48,6 +48,7 @@
         				@if(!empty($users[0]['id']))
         					@foreach($users as $user)
                                 @if($user['email'] != Auth::user()->email)
+                                @if($user['name'] != 'admin')
         						<tr data-id="{{ $user->id }}" >
 									<td> {{ $user->id }} </td>
 									<td> {{ $user->name }} </td>
@@ -57,13 +58,12 @@
 										<a href="u" name="b-lista" value="{{ $user->id }}" class="btn btn-info btn-xs">Editar</a>
 										  
 										<a href="d" name="b-lista" value="{{ $user->id }}" class="btn btn-danger disable btn-xs">Eliminar</a>
-
-                        
 									</td>
 									@if(!empty($resp['errors']))
 										<?php echo $resp; ?>
 									@endif
    								</tr>
+                                @endif
                                 @endif
    							@endforeach
 						@endif
