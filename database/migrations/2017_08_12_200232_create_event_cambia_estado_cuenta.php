@@ -18,7 +18,7 @@ class CreateEventCambiaEstadoCuenta extends Migration {
             DELIMITER |
 
             CREATE EVENT Evento
-            ON SCHEDULE EVERY 720 MINUTE STARTS CURRENT_TIMESTAMP 
+            ON SCHEDULE EVERY 1 MINUTE STARTS CURRENT_TIMESTAMP 
             DO
             BEGIN
                 DECLARE fin INT DEFAULT 0;
@@ -27,8 +27,8 @@ class CreateEventCambiaEstadoCuenta extends Migration {
                 DECLARE state INT;
                 DECLARE created timestamp;  
                 DECLARE cur CURSOR FOR 
-                    SELECT id, estado, created_at 
-                    FROM `estado_cuenta`;
+                    SELECT id, estado_cuenta_id, created_at 
+                    FROM `propiedades`;
                 DECLARE CONTINUE HANDLER FOR NOT FOUND SET fin = 1;
 
                 OPEN cur;
@@ -41,10 +41,10 @@ class CreateEventCambiaEstadoCuenta extends Migration {
                         LEAVE mi_loop;
                     END IF;
                     
-                    IF dias = 15 THEN
-                        IF state = 0 THEN
-                            UPDATE `estado_cuenta` 
-                            SET estado = 2 
+                    IF dias = 0 THEN
+                        IF state = 1 THEN
+                            UPDATE `propiedades` 
+                            SET estado_cuenta_id = 3 
                             WHERE id = pid; 
                         END IF;
                     END IF;
