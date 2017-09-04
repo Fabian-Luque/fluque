@@ -153,12 +153,13 @@ class UserDashController extends Controller {
     }
 
     public function getViewPropiedad(Request $request) {
-        $propiedades = Propiedad::all();
+        $propiedades = Propiedad::all();        
         foreach ($propiedades as $prop) {
-            $prop->tipo_propiedad = TipoPropiedad::find(
-                $prop->tipo_propiedad_id
-            )->nombre;
-
+            if (isset($prop)) {
+                $prop->tipo_propiedad = TipoPropiedad::find(
+                    $prop->tipo_propiedad_id
+                )->nombre;
+            }
             if (isset($prop->estado_cuenta_id)) {
                 $prop->estado_cuenta = Estadocuenta::find(
                     $prop->estado_cuenta_id
