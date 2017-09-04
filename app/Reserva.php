@@ -56,6 +56,12 @@ class Reserva extends Model
 
 	}
 
+	public function caja(){
+
+		return $this->belongsTo('App\Caja', 'caja_id');
+
+	}
+
 	public function pagos(){
 
 		return $this->hasMany('App\Pago', 'reserva_id');

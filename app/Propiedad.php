@@ -98,6 +98,13 @@ class Propiedad extends Model
 
     }
 
+    public function cajas(){
+
+        return $this->hasMany('App\Caja', 'propiedad_id');
+
+
+    }
+
 
     public function calificacionHuespedes(){
 
