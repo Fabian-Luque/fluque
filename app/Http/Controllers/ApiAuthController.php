@@ -22,36 +22,41 @@ class ApiAuthController extends Controller {
         if(!is_null($user)) {
             $user_id = $user->id;
 
-            switch ($user->propiedad[0]->estado_cuenta_id) {
-        		case '2': //
-                    $data['errors'] = true;
-                    $data['msg']    = 'Su cuenta de prueba a caducado';
-        		break;
+            if (strcmp(env('MAIL_USERNAME', $request->email) == 0) {
+                switch ($user->propiedad[0]->estado_cuenta_id) {
+        		    case '2': //
+                        $data['errors'] = true;
+                        $data['msg']    = 'Su cuenta de prueba a caducado';
+        		    break;
 
-    			default:
-                    if ($user->estado_id == 1) {
-                        if (!$token = JWTAuth::attempt($credentials)) {
+    			    default:
+                        if ($user->estado_id == 1) {
+                            if (!$token = JWTAuth::attempt($credentials)) {
+                                $data['errors'] = true;
+                                $data['msg'] = 'Usuario o contraseña incorrecta';
+                                return Response::json(
+                                    $data, 
+                                    HttpResponse::HTTP_FORBIDDEN
+                                );
+                            } else {
+                                $data = compact('token', 'user_id');
+                            }
+                        } else {
                             $data['errors'] = true;
-                            $data['msg'] = 'Usuario o contraseña incorrecta';
+                            $data['msg'] = 'Su cuenta se encuentra inactiva';
               
                             return Response::json(
                                 $data, 
                                 HttpResponse::HTTP_FORBIDDEN
                             );
-                        } else {
-                            $data = compact('token', 'user_id');
                         }
-                    } else {
-                        $data['errors'] = true;
-                        $data['msg'] = 'Su cuenta se encuentra inactiva';
-              
-                        return Response::json(
-                            $data, 
-                            HttpResponse::HTTP_FORBIDDEN
-                        );
-                    }
-        		break;
-        	}
+        		    break;
+        	    }
+            } else {
+                $data['errors'] = true;
+                $data['msg']    = 'El correo ingresado no pertenece al administrador';
+                $status = HttpResponse::HTTP_FORBIDDEN;
+            }
         } else {
         	$data['errors'] = true;
         	$data['msg']  	= 'Usuario o contraseña incorrecta';
