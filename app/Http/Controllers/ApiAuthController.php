@@ -18,9 +18,10 @@ class ApiAuthController extends Controller {
 	public function signin(Request $request) {
         $credentials = $request->only('email', 'password');
         $user = User::where('email', $credentials['email'])->first();
-        $user_id = $user->id;
 
         if(!is_null($user)) {
+            $user_id = $user->id;
+
             switch ($user->propiedad[0]->estado_cuenta_id) {
         		case '2': //
                     $data['errors'] = true;
@@ -57,6 +58,36 @@ class ApiAuthController extends Controller {
             $status = HttpResponse::HTTP_FORBIDDEN;
         } 
         return Response::json($data); 
+    }
+
+    public function  ResetPassUser(Request $request) {
+        if ($request->has('email') && $request->has('password') && $request->has('actual')) {
+            $user =  User::where('email', $request->email)->first();
+            if (!is_null($user)) {
+               if ($user->VerifyPassword($request->password) == 0) {
+                    if ($user->VerifyPassword($request->actual) == 1) {
+                        $user->setPasswordAttribute($request->password);
+                        $user->save();
+
+                        $data['errors'] = false;
+                        $data['msg']    = 'Su contraseña ha sido actualizada'; 
+                    } else {
+                        $data['errors'] = false;
+                        $data['msg']    = 'Contraseña actual ingresada no valida'; 
+                    }
+               } else {
+                    $data['errors'] = false;
+                    $data['msg']    = 'Utilice una contraeña ditinta a la actual';
+               }
+            } else {
+                $data['errors'] = false;
+                $data['msg']    = 'Usuario no exite';
+            }
+        } else {
+            $data['errors'] = true;
+            $data['msg']    = 'Datos requeridos';
+        }
+        return Response::json($data);
     }
 
     public function ResetPassword(Request $request, $token=null) {
