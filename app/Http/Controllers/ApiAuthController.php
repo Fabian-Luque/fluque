@@ -22,7 +22,6 @@ class ApiAuthController extends Controller {
         if(!is_null($user)) {
             $user_id = $user->id;
 
-            if (strcmp(env('MAIL_USERNAME', $request->email) == 0) {
                 switch ($user->propiedad[0]->estado_cuenta_id) {
         		    case '2': //
                         $data['errors'] = true;
@@ -52,11 +51,6 @@ class ApiAuthController extends Controller {
                         }
         		    break;
         	    }
-            } else {
-                $data['errors'] = true;
-                $data['msg']    = 'El correo ingresado no pertenece al administrador';
-                $status = HttpResponse::HTTP_FORBIDDEN;
-            }
         } else {
         	$data['errors'] = true;
         	$data['msg']  	= 'Usuario o contraseña incorrecta';

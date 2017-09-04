@@ -76,7 +76,7 @@ Route::group(['prefix' => 'dash', 'middleware' => ['auth']],
 
 Route::post('eliminar/user', 'UserController@delete');
 
-Route::post('cambio/password', 'ApiAuthController@ResetPassUser');
+
 
 	Route::post('reset/password', 'ApiAuthController@ResetPassword')->name('cambiar.pass');
 
@@ -105,7 +105,7 @@ Route::group(['as' => 'api.jarvis.'], function() {
 
 
 	Route::group(['middleware' => ['jwt.auth']], function () {
-		
+		Route::post('cambio/password', 'ApiAuthController@ResetPassUser');
 		Route::post('reserva/habitacion', 'ReservaController@reserva');
 		Route::get('reserva/propiedad', 'ReservaController@getReservas');
 		Route::get('tipo-fuente', 'ReservaController@getTipoFuente');

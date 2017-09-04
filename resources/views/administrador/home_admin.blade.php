@@ -5,7 +5,7 @@
         <div class="sidebar-wrapper">
             <div class="logo">
                 <a href="https://www.gofeels.com" class="simple-text">
-                    <img class="img-responsive" src="https://www.gofeels.com/wp-content/uploads/2017/07/logodark.png">
+                    <img class="img-responsive" src="https://www.gofeels.com/wp-content/uploads/2017/07/logolight.png">
                 </a>
             </div>
             <ul class="nav">
