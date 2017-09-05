@@ -26,39 +26,32 @@ class ApiAuthController extends Controller {
         		    case '3': //
                         $data['errors'] = trans('request.failure.status');
                         $data['msg']    = 'Su cuenta de prueba a caducado';
-
-                        
+                        $status         = trans('request.failure.code.forbidden');
         		    break;
 
     			    default:
                         if ($user->estado_id == 1) {
                             if (!$token = JWTAuth::attempt($credentials)) {
-                                $data['errors'] = true;
-                                $data['msg'] = 'Usuario o contraseña incorrecta';
-                                return Response::json(
-                                    $data, 
-                                    HttpResponse::HTTP_FORBIDDEN
-                                );
+                                $data['errors'] = trans('request.failure.status');
+                                $data['msg']    = 'Usuario o contraseña incorrecta';
+                                $status         = trans('request.failure.code.forbidden');
                             } else {
-                                $data = compact('token', 'user_id');
+                                $data   = compact('token', 'user_id');
+                                $status = trans('request.success.code');
                             }
-                        } else {
-                            $data['errors'] = true;
-                            $data['msg'] = 'Su cuenta se encuentra inactiva';
-              
-                            return Response::json(
-                                $data, 
-                                HttpResponse::HTTP_FORBIDDEN
-                            );
+                        } else {   
+                            $data['errors'] = trans('request.failure.status');
+                            $data['msg']    = 'Su cuenta se encuentra inactiva';
+                            $status         = trans('request.failure.code.forbidden');
                         }
         		    break;
         	    }
         } else {
-        	$data['errors'] = true;
-        	$data['msg']  	= 'Usuario o contraseña incorrecta';
-            $status = HttpResponse::HTTP_FORBIDDEN;
+        	$data['errors'] = trans('request.failure.status');
+        	$data['msg']  	= trans('request.failure.bad');
+            $status         = trans('request.failure.code.not_founded');
         } 
-        return Response::json($data); 
+        return Response::json($data, $status); 
     }
 
     public function  ResetPassUser(Request $request) {
@@ -70,23 +63,28 @@ class ApiAuthController extends Controller {
                         $user->setPasswordAttribute($request->password);
                         $user->save();
 
-                        $data['errors'] = false;
+                        $data['errors'] = trans('request.success.status');
                         $data['msg']    = 'Su contraseña ha sido actualizada'; 
+                        $status         = trans('request.success.code');
                     } else {
-                        $data['errors'] = false;
-                        $data['msg']    = 'Contraseña actual ingresada no valida'; 
+                        $data['errors'] = trans('request.failure.status');
+                        $data['msg']    = 'Contraseña actual ingresada no valida';
+                        $status         = trans('request.failure.code.bad_request');
                     }
                } else {
-                    $data['errors'] = false;
-                    $data['msg']    = 'Utilice una contraeña ditinta a la actual';
+                    $data['errors'] = trans('request.failure.status');
+                    $data['msg']    = 'Utilice una contraeña distinta a la actual';
+                    $status         = trans('request.failure.code.bad_request');
                }
             } else {
-                $data['errors'] = false;
+                $data['errors'] = trans('request.failure.status');
                 $data['msg']    = 'Usuario no exite';
+                $status         = trans('request.failure.code.not_founded');
             }
         } else {
-            $data['errors'] = true;
+            $data['errors'] = trans('request.failure.status');
             $data['msg']    = 'Datos requeridos';
+            $status         = trans('request.failure.code.bad_request');
         }
         return Response::json($data);
     }
