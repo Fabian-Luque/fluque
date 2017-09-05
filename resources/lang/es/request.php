@@ -7,7 +7,7 @@ return [
     ],
     'failure' => [
         'status' => true,
-        'codes'  => [
+        'code'  => [
             'not_founded' => '404', // no encontrado
             'bad_request' => '400', // peticion mala
             'forbidden'   => '403', // prohibido

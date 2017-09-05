@@ -80,6 +80,7 @@
                                 <div class="col-sm-9">
                                 {!! Form::password(
           							'password',[
+                        'required',
             						'class' => 'form-control', 
             						'name'=>'password',
             						'autocomplete'=>'new-password',
@@ -95,6 +96,7 @@
                                 <div class="col-sm-9">
                                 {!! Form::password(
           							'passwordc',[
+                        'required',
             						'class' => 'form-control', 
             						'name'=>'passwordc',
                         'minlength' => '6',
