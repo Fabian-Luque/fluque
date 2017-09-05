@@ -1396,7 +1396,7 @@ class PropiedadController extends Controller
         }
     }
 
-    public function getTipoPropiedad($flag){
+    public function getTipoPropiedad(){
         $TipoPropiedad = TipoPropiedad::all();
         return $TipoPropiedad;
     }
