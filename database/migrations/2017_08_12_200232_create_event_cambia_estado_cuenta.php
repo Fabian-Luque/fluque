@@ -13,6 +13,7 @@ class CreateEventCambiaEstadoCuenta extends Migration {
      * @return void
      */
     public function up() {
+        /*
         DB::unprepared('
             SET GLOBAL event_scheduler = ON;
             DELIMITER |
@@ -28,7 +29,7 @@ class CreateEventCambiaEstadoCuenta extends Migration {
                 DECLARE created timestamp;  
                 DECLARE cur CURSOR FOR 
                     SELECT id, estado_cuenta_id, created_at 
-                    FROM `propiedades`;
+                    FROM `propiedades` WHERE estado_cuenta_id=1;
                 DECLARE CONTINUE HANDLER FOR NOT FOUND SET fin = 1;
 
                 OPEN cur;
@@ -54,6 +55,7 @@ class CreateEventCambiaEstadoCuenta extends Migration {
             END |
             DELIMITER ;
         ');
+        */
     }
 
     /**

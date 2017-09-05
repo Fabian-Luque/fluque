@@ -23,7 +23,7 @@ class ApiAuthController extends Controller {
             $user_id = $user->id;
 
                 switch ($user->propiedad[0]->estado_cuenta_id) {
-        		    case '2': //
+        		    case '3': //
                         $data['errors'] = true;
                         $data['msg']    = 'Su cuenta de prueba a caducado';
         		    break;
