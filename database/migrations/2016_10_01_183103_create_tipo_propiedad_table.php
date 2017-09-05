@@ -13,26 +13,9 @@ class CreateTipoPropiedadTable extends Migration {
                 $table->timestamps();                
             }
         );
-
-        DB::table('tipo_propiedad')->insert(
-            array(
-                'nombre' => 'HOTEL'
-            ),
-            array(
-                'nombre' => 'HOSTAL'
-            )
-        );
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
-    {
-            
+    public function down() {
         Schema::drop('tipo_propiedad');
-
     }
 }
