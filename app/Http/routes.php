@@ -100,6 +100,8 @@ Route::group(['as' => 'api.jarvis.'], function(){
 		Route::get('rol/permisos', 'RolController@getPermisos');
 		Route::post('crear/usuario', 'UserController@crearUsuario');
 		Route::get('estados', 'UserController@getEstados');
+		Route::post('abrir/caja', 'CajaController@abrirCaja');
+
 
 
 		Route::resource('user', 'UserController', ['except' => ['create', 'edit','store']]);
@@ -112,6 +114,7 @@ Route::group(['as' => 'api.jarvis.'], function(){
 		Route::resource('temporada', 'TemporadaController', ['except' => ['create', 'edit']]);
 		Route::resource('tipo/habitacion', 'TipoHabitacionController', ['except' => ['create', 'edit']]);
 		Route::resource('rol', 'RolController', ['except' => ['create', 'edit']]);
+
 
 });
 

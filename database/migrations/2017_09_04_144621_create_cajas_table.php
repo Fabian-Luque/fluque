@@ -17,9 +17,9 @@ class CreateCajasTable extends Migration
             $table->date('fecha_apertura');
             $table->date('hora_apertura');
             $table->date('monto_apertura');
-            $table->date('fecha_cierre');
-            $table->date('hora_cierre');
-            $table->integer('monto_cierre');
+            $table->date('fecha_cierre')->nullable();
+            $table->date('hora_cierre')->nullable();
+            $table->integer('monto_cierre')->nullable();
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users');
             $table->integer('propiedad_id')->unsigned();
