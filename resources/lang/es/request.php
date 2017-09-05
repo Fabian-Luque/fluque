@@ -2,16 +2,17 @@
 
 return [
     'success' => [
+        'status' => false,
         'code'   => '200',
-        'status' => 'ok',
     ],
     'failure' => [
-        'status' => 'error',
+        'status' => true,
         'codes'  => [
-            'not_founded' => '404',
-            'bad_request' => '400',
-            'forbidden'   => '403',
+            'not_founded' => '404', // no encontrado
+            'bad_request' => '400', // peticion mala
+            'forbidden'   => '403', // prohibido
         ],
         'bad'    => 'Solicitud incorrecta.',
     ],
 ];
+
