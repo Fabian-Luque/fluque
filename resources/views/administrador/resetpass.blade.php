@@ -83,6 +83,7 @@
             						'class' => 'form-control', 
             						'name'=>'password',
             						'autocomplete'=>'new-password',
+                        'minlength' => '6',
             						'placeholder' => 'Nueva contraseña', 
             						'type' => 'password'
           						])!!}
@@ -96,6 +97,7 @@
           							'passwordc',[
             						'class' => 'form-control', 
             						'name'=>'passwordc',
+                        'minlength' => '6',
             						'autocomplete'=>'new-password',
             						'placeholder' => 'Confirme contraseña', 
             						'type' => 'password'
