@@ -5,17 +5,20 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="csrf-token" content="{{ csrf_token() }}">
-	<title>Laravel</title>
+	<title>GoFeels</title>
     {!! Html::style('assets/css/boostrap.css'); !!}
     {!! Html::style('assets/css/animate.min.css'); !!}
     {!! Html::style('assets/css/light-bootstrap-dashboard.css'); !!}
     {!! Html::style('assets/css/pe-icon-7-stroke.css'); !!}
     {!! Html::style('assets/css/boostrap.min.css'); !!}
-</head>
-<body>
     {!! HTML::script('assets/js/jquery-3.2.1.js'); !!}
     {!! HTML::script('assets/js/light-bootstrap-dashboard.js'); !!}
     {!! HTML::script('assets/js/bootstrap.min.js'); !!}
+
+    <link rel="shortcut icon" href="{{ asset('assets/img/hotel.png') }}">
+</head>
+<body>
+
     @yield('scripts')
     @yield('content')
     @yield('resetmail')
