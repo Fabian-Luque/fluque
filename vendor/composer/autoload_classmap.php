@@ -60,6 +60,7 @@ return array(
     'App\\Http\\Controllers\\HabitacionController' => $baseDir . '/app/Http/Controllers/HabitacionController.php',
     'App\\Http\\Controllers\\HomeController' => $baseDir . '/app/Http/Controllers/HomeController.php',
     'App\\Http\\Controllers\\HuespedController' => $baseDir . '/app/Http/Controllers/HuespedController.php',
+    'App\\Http\\Controllers\\MyAllocatorController' => $baseDir . '/app/Http/Controllers/MyAllocatorController.php',
     'App\\Http\\Controllers\\PDFController' => $baseDir . '/app/Http/Controllers/PDFController.php',
     'App\\Http\\Controllers\\PropiedadController' => $baseDir . '/app/Http/Controllers/PropiedadController.php',
     'App\\Http\\Controllers\\ReservaController' => $baseDir . '/app/Http/Controllers/ReservaController.php',

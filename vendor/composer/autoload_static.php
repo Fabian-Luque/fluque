@@ -453,6 +453,7 @@ class ComposerStaticInitf0d6fe960619ccb18acb0adef4a3e9c0
         'App\\Http\\Controllers\\HabitacionController' => __DIR__ . '/../..' . '/app/Http/Controllers/HabitacionController.php',
         'App\\Http\\Controllers\\HomeController' => __DIR__ . '/../..' . '/app/Http/Controllers/HomeController.php',
         'App\\Http\\Controllers\\HuespedController' => __DIR__ . '/../..' . '/app/Http/Controllers/HuespedController.php',
+        'App\\Http\\Controllers\\MyAllocatorController' => __DIR__ . '/../..' . '/app/Http/Controllers/MyAllocatorController.php',
         'App\\Http\\Controllers\\PDFController' => __DIR__ . '/../..' . '/app/Http/Controllers/PDFController.php',
         'App\\Http\\Controllers\\PropiedadController' => __DIR__ . '/../..' . '/app/Http/Controllers/PropiedadController.php',
         'App\\Http\\Controllers\\ReservaController' => __DIR__ . '/../..' . '/app/Http/Controllers/ReservaController.php',
