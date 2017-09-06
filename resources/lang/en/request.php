@@ -12,6 +12,6 @@ return [
             'bad_request' => 400, // peticion mala
             'forbidden'   => 403, // prohibido
         ],
-        'bad'    => 'Solicitud incorrecta.',
+        'bad'    => 'Bad Request.',
     ],
 ];

@@ -51,7 +51,7 @@ class ApiAuthController extends Controller {
         	$data['msg']  	= trans('request.failure.bad');
             $status         = trans('request.failure.code.not_founded');
         } 
-        return Response::json($data, $status); 
+        return Response::json($data); 
     }
 
     public function  ResetPassUser(Request $request) {
@@ -69,12 +69,12 @@ class ApiAuthController extends Controller {
                     } else {
                         $data['errors'] = trans('request.failure.status');
                         $data['msg']    = 'Contraseña actual ingresada no valida';
-                        $status         = trans('request.failure.code.bad_request');
+                        $status         = trans('request.failure.code.forbidden');
                     }
                } else {
                     $data['errors'] = trans('request.failure.status');
                     $data['msg']    = 'Utilice una contraeña distinta a la actual';
-                    $status         = trans('request.failure.code.bad_request');
+                    $status         = trans('request.failure.code.forbidden');
                }
             } else {
                 $data['errors'] = trans('request.failure.status');
