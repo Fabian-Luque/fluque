@@ -21,6 +21,7 @@ class ApiAuthController extends Controller {
         if(!is_null($user)) {
             $user_id = $user->id;
 
+            if (strcmp($request->email, 'soporte@gofeels.com') != 0) {
                 switch ($user->propiedad[0]->estado_cuenta_id) {
         		    case '3': //
                         $data['errors'] = trans('request.failure.status');
@@ -45,12 +46,17 @@ class ApiAuthController extends Controller {
                         }
         		    break;
         	    }
+            } else {
+                $data['errors'] = trans('request.failure.status');
+                $data['msg']    = 'Su cuenta se encuentra inactiva';
+                $status         = trans('request.failure.code.forbidden');
+            }
         } else {
         	$data['errors'] = trans('request.failure.status');
         	$data['msg']  	= trans('request.failure.bad');
             $status         = trans('request.failure.code.not_founded');
         } 
-        return Response::json($data, intval($status)); 
+        return Response::json($data, 403); 
     }
 
     public function  ResetPassUser(Request $request) {
