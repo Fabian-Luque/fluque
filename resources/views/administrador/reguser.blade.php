@@ -83,7 +83,7 @@
           array('required', 
             'class'=>'form-control',
             'name'=>'nombre', 
-            'placeholder'=>'Telefono')) 
+            'placeholder'=>'Nombre Propiedad')) 
         !!}
       </div>
     

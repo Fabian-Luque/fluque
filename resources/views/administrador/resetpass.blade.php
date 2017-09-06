@@ -7,22 +7,7 @@
       padding-top: 10%;  
     }
 </style>
-@if(session('respuesta'))
-    <?php 
-        $resp = session('respuesta');
-    ?>
-    <script type="text/javascript">
-        $(document).ready(
 
-            function(e) {
-                InfoModal(
-                    "Respuesta",
-                    "<?php echo $resp['msg'];?>"
-                );
-            }
-        );
-    </script>
-@endif
 
 <div class="container">
     <div id="passwordreset" style="margin-top:50px" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
@@ -46,23 +31,12 @@
                                 'name'=> 'token_reset'
                             ))}}
 
-                          @elseif(session('respuesta'))
-                            <?php 
-                              $respuesta = session('respuesta');
-                            ?>
-
-                            {{Form::hidden(
-                              'token_reset', 
-                              $respuesta['tok'], 
-                              array(
-                                'id' => 'token_reset_id',
-                                'name'=> 'token_reset'
-                            ))}}
+                        
                           @endif
                             <div class="form-group">
                                 <label for="email" class=" control-label col-sm-3">Correo de la cuenta</label>
                                 <div class="col-sm-9"> 
-        						{!! Form::text(
+        						{!! Form::email(
           							'email', 
           							null, 
           							array(
@@ -81,6 +55,7 @@
                                 {!! Form::password(
           							'password',[
                         'required',
+                        'id' => 'pass1',
             						'class' => 'form-control', 
             						'name'=>'password',
             						'autocomplete'=>'new-password',
@@ -97,6 +72,7 @@
                                 {!! Form::password(
           							'passwordc',[
                         'required',
+                        'id' => 'pass2',
             						'class' => 'form-control', 
             						'name'=>'passwordc',
                         'minlength' => '6',
@@ -121,4 +97,24 @@
                 </div>
             </div>             
         </div>
+
+@if(session('respuesta'))
+    <?php 
+        $resp = session('respuesta');
+    ?>
+    <script type="text/javascript">
+
+        $(document).ready(
+
+            function(e) {
+                InfoModal(
+                    "Respuesta",
+                    "<?php echo $resp['msg'];?>"
+                );
+            }
+
+        );
+    </script>
+@endif
+
 @endsection
