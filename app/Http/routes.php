@@ -74,7 +74,7 @@ Route::group(['prefix' => 'dash', 'middleware' => ['auth']],
 );
 //////////////////////// rutas dash  ///////////////////////////////////////
 
-Route::post('eliminar/user', 'UserController@delete');
+Route::post('my', 'MyAllocatorController@ejm');
 
 
 
