@@ -101,77 +101,82 @@ class ApiAuthController extends Controller {
         if ($request->has('email') && $request->has('password') && $request->has('passwordc') && $request->has('token_reset')) {
 
             $user =  User::where('email', $request->email)->first();
-            
             $rpass = ResetPass::where('email', $user->email)->first();
+            if (strcmp($request->password, $request->passwordc) == 0) {
+            if (!is_null($rpass)) {
+                if (!is_null($user)) {
 
-            if (!is_null($user)) {
-                if (!is_null($rpass)) {
-                    if ((strcmp($request->password, $request->passwordc) == 0 )) {
-
-                        $now = Carbon::now()->setTimezone('America/Santiago');
+                    $now = Carbon::now()->setTimezone('America/Santiago');
                     
-                        $tstamp_token = Carbon::createFromFormat(
-                            'Y-m-d H:i:s', 
-                            $rpass->created_at 
-                        ); 
+                    $tstamp_token = Carbon::createFromFormat(
+                        'Y-m-d H:i:s', 
+                        $rpass->created_at 
+                    ); 
 
-                        $time_token = round(
-                            abs(
-                                strtotime(
-                                    $now->toDateTimeString()
-                                ) - strtotime(
-                                    $tstamp_token->toDateTimeString()
-                                )
-                            ) / 60,0
-                        );
+                    $time_token = round(
+                        abs(
+                            strtotime(
+                                $now->toDateTimeString()
+                            ) - strtotime(
+                                $tstamp_token->toDateTimeString()
+                            )
+                        ) / 60,0
+                    );
 
-                        if ((strcmp($request->token_reset, $rpass->token) == 0) && intval($time_token) < 10) {
-                            if ($user->VerifyPassword($request->password) == 0) {
-                                $user->setPasswordAttribute($request->password);
-                                $user->save();
-                                $rpass->delete();
+                    if ((strcmp($request->token_reset, $rpass->token) == 0) && intval($time_token) < 10) {
+                        if ($user->VerifyPassword($request->password) == 0) {
+                            $user->setPasswordAttribute($request->password);
+                            $user->save();
+                            $rpass->delete();
 
-                                $data['errors'] = false;
-                                $data['msg']    = 'Su contraseña ha sido actualizada'; 
-                            } else {
-                                $data['errors'] = true;
-                                $data['msg']    = 'Por seguridad utilice una contraseña distinta'; 
-                                $data['tok']    = $request->token;
-
-                                return redirect(
-                                    'resetpass'
-                                )->with('respuesta', $data);
-                            }
+                            $data['errors'] = false;
+                            $data['msg']    = 'Su contraseña ha sido actualizada'; 
                         } else {
                             $data['errors'] = true;
-                            $data['msg']    = 'La peticion de cambio de contraseña a caducado';
+                            $data['msg']    = 'Por seguridad utilice una contraseña distinta'; 
+                            $data['tok']    = $request->token;
+
+                            return redirect(
+                                'resetpass'
+                            )->with('respuesta', $data);
                         }
                     } else {
                         $data['errors'] = true;
-                        $data['msg']    = 'Confirmacion de contraseña no coincide';
+                        $data['msg']    = 'La peticion de cambio de contraseña a caducado';
                     }
                 } else {
                     $data['errors'] = true;
-                    $data['msg']    = 'La peticion de cambio de contraseña a caducado';
-                } 
-            } elseif (!is_null($token)) {
-                return redirect(
-                    'resetpass'
-                )->with('token_reset', $token);
+                    $data['msg']    = 'Acceso denegado';
+                }
             } else {
                 $data['errors'] = true;
-                $data['msg']    = 'Acceso denegado, token de segridad no encontrado';
-            
-                return redirect(
-                    'resetpass'
-                )->with('respuesta', $data);
+                $data['msg']    = 'La peticion de cambio de contraseña a caducado';
             }
         } else {
             $data['errors'] = true;
-            $data['msg']    = 'Datos requeridos';
+            $data['msg']    = 'Confirmacion de contraseña no coincide';
+
             return redirect(
-                    'resetpass'
+                'resetpass'
+            )->with('respuest', $data);  
+        }
+
+            return redirect(
+                'sendmailreset'
             )->with('respuesta', $data);   
+       
+             
+        } elseif (!is_null($token)) {
+            return redirect(
+                'resetpass'
+            )->with('token_reset', $token);
+        } else {
+            $data['errors'] = true;
+            $data['msg']    = 'Sesion expirada';
+            
+            return redirect(
+                'sendmailreset'
+            )->with('respuesta', $data);
         }
     }
 }

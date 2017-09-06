@@ -7,7 +7,22 @@
       padding-top: 10%;  
     }
 </style>
+@if(session('respuesta'))
+    <?php 
+        $resp = session('respuesta');
+    ?>
+    <script type="text/javascript">
+        $(document).ready(
 
+            function(e) {
+                InfoModal(
+                    "Respuesta",
+                    "<?php echo $resp['msg'];?>"
+                );
+            }
+        );
+    </script>
+@endif
 
 <div class="container">
     <div id="passwordreset" style="margin-top:50px" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
@@ -31,65 +46,89 @@
                                 'name'=> 'token_reset'
                             ))}}
 
-                        
+                          @elseif(session('respuesta'))
+                            <?php 
+                              $respuesta = session('respuesta');
+                            ?>
+
+                            {{Form::hidden(
+                              'token_reset', 
+                              $respuesta['tok'], 
+                              array(
+                                'id' => 'token_reset_id',
+                                'name'=> 'token_reset'
+                            ))}}
+                            @elseif(session('respuest'))
+                            <?php 
+                              $respuest = session('respuest');
+                            ?>
+                                  <script type="text/javascript">
+        $(document).ready(
+
+            function(e) {
+                InfoModal(
+                    "Respuesta",
+                    "<?php echo $respuest['msg'];?>"
+                );
+            }
+        );
+    </script>
                           @endif
                             <div class="form-group">
                                 <label for="email" class=" control-label col-sm-3">Correo de la cuenta</label>
                                 <div class="col-sm-9"> 
-        						{!! Form::email(
-          							'email', 
-          							null, 
-          							array(
-            							'required', 
-            							'class'=>'form-control',
-            							'name'=>'email', 
-            							'id'=>'correo',
-            							'placeholder'=>'Correo de la cuenta'
-          							)
-          						)!!}
-          						</div>
+                    {!! Form::text(
+                        'email', 
+                        null, 
+                        array(
+                          'required', 
+                          'class'=>'form-control',
+                          'name'=>'email', 
+                          'id'=>'correo',
+                          'placeholder'=>'Correo de la cuenta'
+                        )
+                      )!!}
+                      </div>
                             </div>
                             <div class="form-group">
                                 <label for="email" class=" control-label col-sm-3">Nueva contraseña</label>
                                 <div class="col-sm-9">
                                 {!! Form::password(
-          							'password',[
+                        'password',[
                         'required',
-                        'id' => 'pass1',
-            						'class' => 'form-control', 
-            						'name'=>'password',
-            						'autocomplete'=>'new-password',
+                        'class' => 'form-control', 
+                        'name'=>'password',
+                        'autocomplete'=>'new-password',
                         'minlength' => '6',
-            						'placeholder' => 'Nueva contraseña', 
-            						'type' => 'password'
-          						])!!}
-          						</div>
+                        'placeholder' => 'Nueva contraseña', 
+                        'type' => 'password'
+                      ])!!}
+                      </div>
                             </div>
                             <div class="form-group">
 
                                 <label for="email" class=" control-label col-sm-3">Confirmacion</label>
                                 <div class="col-sm-9">
                                 {!! Form::password(
-          							'passwordc',[
+                        'passwordc',[
                         'required',
-                        'id' => 'pass2',
-            						'class' => 'form-control', 
-            						'name'=>'passwordc',
+                        'class' => 'form-control', 
+                        'name'=>'passwordc',
                         'minlength' => '6',
-            						'autocomplete'=>'new-password',
-            						'placeholder' => 'Confirme contraseña', 
-            						'type' => 'password'
-          						])!!}
-          						</div>
+                        'autocomplete'=>'new-password',
+                        'placeholder' => 'Confirme contraseña', 
+                        'type' => 'password'
+                      ])!!}
+                      </div>
                             </div>
                             <div class="form-group">             
                                 <div class="  col-sm-offset-3 col-sm-9">
                                     {!! Form::submit(
-      									'Cambiar', 
-      									array(
-        									'class'=>'btn btn-primary btn-lg btn-block'
-      									)
-      								)!!}
+                        'Cambiar', 
+                        array(
+                          'class'=>'btn btn-primary btn-lg btn-block'
+                        )
+                      )!!}
                                 </div>
                             </div>                             
                         {!! Form::close() !!}
@@ -97,24 +136,4 @@
                 </div>
             </div>             
         </div>
-
-@if(session('respuesta'))
-    <?php 
-        $resp = session('respuesta');
-    ?>
-    <script type="text/javascript">
-
-        $(document).ready(
-
-            function(e) {
-                InfoModal(
-                    "Respuesta",
-                    "<?php echo $resp['msg'];?>"
-                );
-            }
-
-        );
-    </script>
-@endif
-
 @endsection

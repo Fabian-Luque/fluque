@@ -47,8 +47,8 @@
                                     <i class="fa fa-btn fa-sign-in"></i> Iniciar
                                 </button>
 
-                              <!--  <a class="btn btn-link" href="{{ url('/sendmailreset') }}">Olvidaste tu contraseña?</a>
-                              -->
+                               <a class="btn btn-link" href="{{ url('/sendmailreset') }}">Olvidaste tu contraseña?</a>
+                              
                             </div>
                         </div>
                     </form>
