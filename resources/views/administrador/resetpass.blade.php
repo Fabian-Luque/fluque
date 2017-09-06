@@ -24,6 +24,22 @@
     </script>
 @endif
 
+<script type="text/javascript">
+window.onload = function () {
+  document.getElementById("pass1").onchange = validatePassword;
+  document.getElementById("pass2").onchange = validatePassword;
+}
+function validatePassword(){
+var pass2=document.getElementById("pass1").value;
+var pass1=document.getElementById("pass2").value;
+if(pass1!=pass2)
+  document.getElementById("pass1").setCustomValidity("La confirmacion no coincide");
+else
+  document.getElementById("pass1").setCustomValidity('');  
+//empty string means no validation error
+}
+</script>
+
 <div class="container">
     <div id="passwordreset" style="margin-top:50px" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
       <div class="panel panel-info">
@@ -100,6 +116,7 @@
                         'name'=>'password',
                         'autocomplete'=>'new-password',
                         'minlength' => '6',
+                        'id' => 'pass1',
                         'placeholder' => 'Nueva contraseña', 
                         'type' => 'password'
                       ])!!}
@@ -115,6 +132,7 @@
                         'class' => 'form-control', 
                         'name'=>'passwordc',
                         'minlength' => '6',
+                        'id' => 'pass2',
                         'autocomplete'=>'new-password',
                         'placeholder' => 'Confirme contraseña', 
                         'type' => 'password'
