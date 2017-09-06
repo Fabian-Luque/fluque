@@ -13,6 +13,6 @@ return [
             'forbidden'   => '403', // prohibido
             'unauthorized' => '401', // no atorizado
         ],
-        'bad'    => 'Solicitud incorrecta.',
+        'bad'    => 'Bad Request.',
     ],
 ];
