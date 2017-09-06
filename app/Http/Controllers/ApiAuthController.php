@@ -51,7 +51,7 @@ class ApiAuthController extends Controller {
         	$data['msg']  	= trans('request.failure.bad');
             $status         = trans('request.failure.code.not_founded');
         } 
-        return Response::json($data); 
+        return Response::json($data, intval($status)); 
     }
 
     public function  ResetPassUser(Request $request) {
