@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "f822a9026652ec83370215ee50248c88",
+    "content-hash": "c94456c08695450490240d2afd37b01c",
     "packages": [
         {
             "name": "barryvdh/laravel-cors",
@@ -1517,6 +1517,54 @@
                 "schedule"
             ],
             "time": "2017-01-23T04:29:33+00:00"
+        },
+        {
+            "name": "myallocator/myallocator-php-sdk",
+            "version": "1.2.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/MyAllocator/myallocator-pms-php.git",
+                "reference": "101148efb1fdfd9f62f21246e1ae0b47d7183570"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/MyAllocator/myallocator-pms-php/zipball/101148efb1fdfd9f62f21246e1ae0b47d7183570",
+                "reference": "101148efb1fdfd9f62f21246e1ae0b47d7183570",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.0.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "MyAllocator\\phpsdk\\src\\": "src/MyAllocator",
+                    "MyAllocator\\phpsdk\\tests\\json\\": "tests/json",
+                    "MyAllocator\\phpsdk\\tests\\xml\\": "tests/xml"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nathan Helenihi",
+                    "email": "nathan.helenihi@cloudbeds.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "MyAllocator PHP SDK",
+            "homepage": "https://www.myallocator.com/",
+            "keywords": [
+                "channel",
+                "manager",
+                "myallocator"
+            ],
+            "time": "2015-03-11T19:17:35+00:00"
         },
         {
             "name": "namshi/jose",
