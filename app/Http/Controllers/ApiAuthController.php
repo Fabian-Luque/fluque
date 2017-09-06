@@ -14,7 +14,6 @@ use DB;
 use \Carbon\Carbon;
 
 class ApiAuthController extends Controller {
-
 	public function signin(Request $request) {
         $credentials = $request->only('email', 'password');
         $user = User::where('email', $credentials['email'])->first();
