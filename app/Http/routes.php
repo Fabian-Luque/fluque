@@ -2,30 +2,110 @@
 
 use Illuminate\Http\Response as HttpResponse;
 
-/*
-|--------------------------------------------------------------------------
-| Application Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register all of the routes for an application.
-| It's a breeze. Simply tell Laravel the URIs it should respond to
-| and give it the controller to call when that URI is requested.
-|
-*/
+Route::auth();
+
+Route::get(
+	'/', 
+	function () {
+		return view('auth.login');
+	}
+);
+
+//////////////////////// rutas dash ////////////////////////////
+
+
+Route::group(['prefix' => 'dash', 'middleware' => ['auth']], 
+	function() {
+    	Route::get(
+			'adminhome', 
+			function() {
+    			return View::make('administrador.home_admin');
+			}
+		);
 
 
 
+		Route::get(
+			'adminprop', 
+			function() {
+    			return View::make('administrador.prop');
+			}
+		);
 
-Route::group(['as' => 'api.jarvis.'], function(){
+		Route::get(
+			'adminreguser', 
+			function() {
+    			return View::make('administrador.reguser');
+			}
+		);
+		Route::get('adminreguser', 'DashControllers\UserDashController@getViewTipoPropiedad');
+
+		Route::get('adminprop', 'DashControllers\UserDashController@getViewPropiedad');
+
+		Route::get(
+			'adminuser', 
+			function() {
+    			return View::make('administrador.user');
+			}
+		);
+
+		Route::get(
+			'edituser', 
+			function() {
+    			return View::make('administrador.editmodal');
+			}
+		);
+
+		Route::get(
+			'buscauser', 
+			function() {
+    			return View::make('administrador.accionesC');
+			}
+		);
+		
+		Route::get('adminuser', 'DashControllers\UserDashController@ReadUser');
+				
+		Route::post('crear/user', 'DashControllers\UserDashController@CreateUser')->name('crear.user');
+
+		Route::post('obtener/user', 'DashControllers\UserDashController@ReadUser');
+		Route::post('actualizar/user', 'DashControllers\UserDashController@UpdateUser')->name('editar.user');
+		Route::post('eliminar/user', 'DashControllers\UserDashController@DeleteUser');
+	}
+);
+//////////////////////// rutas dash  ///////////////////////////////////////
+
+Route::post('eliminar/user', 'UserController@delete');
+
+
+
+	Route::post('reset/password', 'ApiAuthController@ResetPassword')->name('cambiar.pass');
+
+	Route::post('resetpass/email', 'CorreoController@sendmail')->name('reset.pass.sendmail');
+	
+	Route::get(
+		'sendmailreset', 
+		function() {
+    		return View::make('administrador.sendmailresetpass');
+		}
+	);
+
+	Route::get(
+		'resetpass', 
+		function() {
+    		return View::make('administrador.resetpass');
+		}
+	);
+
+	Route::get('reset/password/{token}', 'ApiAuthController@ResetPassword');
+
+Route::group(['as' => 'api.jarvis.'], function() {
 
 	Route::post('registro', 'UserController@store');
 	Route::post('/signin', 'ApiAuthController@signin');
-	Route::post('crear/pais', 'PropiedadController@crearPais');
-	Route::post('crear/zona/horaria', 'PropiedadController@crearZona');
 
 
 	Route::group(['middleware' => ['jwt.auth']], function () {
-
+		Route::post('cambio/password', 'ApiAuthController@ResetPassUser');
 		Route::post('reserva/habitacion', 'ReservaController@reserva');
 		Route::get('reserva/propiedad', 'ReservaController@getReservas');
 		Route::get('tipo-fuente', 'ReservaController@getTipoFuente');
@@ -69,12 +149,15 @@ Route::group(['as' => 'api.jarvis.'], function(){
 		Route::get('disponibilidad', 'HabitacionController@disponibilidad');
 		Route::get('editar/reserva', 'ReservaController@editarReserva');
 		Route::get('tipo-moneda', 'HabitacionController@getTipoMoneda');
+		Route::post('crear/precio/habitacion', 'HabitacionController@crearPrecio');
 		Route::post('crear/precio/servicio', 'ServicioController@crearPrecio');
 		Route::post('cambiar/habitacion', 'ReservaController@cambiarHabitacion');
 		Route::get('clasificacion/moneda', 'PropiedadController@getClasificacionMoneda');
 		Route::post('ingreso/moneda/propiedad', 'PropiedadController@ingresoMonedas');
 		Route::post('eliminar/moneda/propiedad', 'PropiedadController@eliminarMoneda');
 		Route::put('editar/moneda/{id}', 'PropiedadController@editarMoneda');
+		Route::get('reporte', 'PropiedadController@reportesDiario');
+		Route::post('crear/pais', 'PropiedadController@crearPais');
 		Route::get('paises', 'PropiedadController@getPaises');
 		Route::get('regiones', 'PropiedadController@getRegiones');
 		Route::post('calendario/temporada', 'TemporadaController@calendario');
@@ -86,6 +169,7 @@ Route::group(['as' => 'api.jarvis.'], function(){
 		Route::post('editar/temporadas', 'TemporadaController@editarTemporadas');
 		Route::get('reportes', 'PropiedadController@reportes');
 		Route::get('reportes/pago', 'PropiedadController@pagos');
+		Route::post('crear/zona/horaria', 'PropiedadController@crearZona');
 		Route::get('zonas/horarias', 'PropiedadController@getZonasHorarias');
 		Route::put('pago/{id}', 'ReservaController@editarPago');
 		Route::delete('pago/{id}', 'ReservaController@eliminarPago');
@@ -96,7 +180,10 @@ Route::group(['as' => 'api.jarvis.'], function(){
 		Route::get('reportes/financiero', 'PropiedadController@reporteFinanciero');
 		Route::get('obtener/pagos', 'PropiedadController@getPagos');
 		Route::get('obtener/reserva', 'ReservaController@getPagoReserva');
-
+		Route::get('secciones', 'RolController@getSecciones');
+		Route::get('rol/permisos', 'RolController@getPermisos');
+		Route::post('crear/usuario', 'UserController@crearUsuario');
+		Route::get('estados', 'UserController@getEstados');
 
 		Route::resource('user', 'UserController', ['except' => ['create', 'edit','store']]);
 		Route::resource('propiedad', 'PropiedadController', ['except' => ['create', 'edit', 'store']]);
@@ -108,22 +195,8 @@ Route::group(['as' => 'api.jarvis.'], function(){
 		Route::resource('temporada', 'TemporadaController', ['except' => ['create', 'edit']]);
 		Route::resource('tipo/habitacion', 'TipoHabitacionController', ['except' => ['create', 'edit']]);
 
+		Route::resource('rol', 'RolController', ['except' => ['create', 'edit']]);
 });
 
-
-
 });
 
-
-
-
-/*Route::auth();
-
-
-
-
-Route::get('/', function () {
-    return view('welcome');
-  });
-
-*/

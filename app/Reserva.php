@@ -88,9 +88,12 @@ class Reserva extends Model
 
 	public function getCreatedAtAttribute($value)
     {
-        $user 			 = JWTAuth::parseToken()->toUser();
-        $propiedad 		 = $user->propiedad;
-        $zona_horaria    = ZonaHoraria::where('id', $propiedad->zona_horaria_id)->first();
+        $user            = JWTAuth::parseToken()->toUser();
+        $propiedad       = $user->propiedad;
+        foreach ($propiedad as $prop) {
+            $zona_horaria_id = $prop->zona_horaria_id;
+        }
+        $zona_horaria    = ZonaHoraria::where('id', $zona_horaria_id)->first();
         $pais            = $zona_horaria->nombre;
         return Carbon::parse($value)->timezone($pais)->format('Y-m-d H:i:s');
     }   
