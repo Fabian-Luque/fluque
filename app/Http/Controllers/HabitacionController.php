@@ -451,7 +451,7 @@ class HabitacionController extends Controller
         $fecha_checkout = $fechaFin->format('Y-m-d');
         $fechas         = [$fecha_checkin, $fecha_checkout]; 
 
-        $reservas = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
+/*        $reservas = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
                 $query->where('propiedad_id', $propiedad_id);
         })->where('habitacion_id', $habitacion_id)->whereBetween('checkin', $fechas)->whereIn('estado_reserva_id', [1,2,3,4,5])->get();
 
@@ -461,7 +461,7 @@ class HabitacionController extends Controller
                 'errors' => true,
                     );
             return Response::json($data, 400);
-        }
+        }*/
 
         $precios                    = $habitacion->tipoHabitacion->precios;
         $tipo_habitacion_id         = $habitacion->tipo_habitacion_id;
