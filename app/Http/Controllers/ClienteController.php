@@ -25,8 +25,6 @@ use \Carbon\Carbon;
 class ClienteController extends Controller
 {
 
-
-
 	public function ingresoServicio(Request $request){
 
 		 if($request->has('venta_servicio') && $request->has('propiedad_id')){

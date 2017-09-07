@@ -15,11 +15,7 @@ use Excel;
 use DB;
 use \Carbon\Carbon;
 
-class ExcelController extends Controller
-{
-
-
-
+class ExcelController extends Controller {
 	public function importUsuarios(){
 
 		if(Input::hasFile('file')){
