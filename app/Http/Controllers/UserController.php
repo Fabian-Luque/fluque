@@ -15,18 +15,11 @@ use Illuminate\Support\Facades\Validator;
 use Response;
 use JWTAuth;
 
-class UserController extends Controller
-{
-
-    public function show($id)
-    {
-
+class UserController extends Controller {
+    public function show($id){
         try {
-
             $users = User::where('id', $id)->with('propiedad.tipoMonedas.clasificacionMonedas')->with('rol.permisos')->get();
-
             return $users;
-
         } catch (ModelNotFoundException $e) {
             $data = [
                 'errors' => true,
@@ -34,33 +27,19 @@ class UserController extends Controller
             ];
             return Response::json($data, 404);
         }
-
     }
 
-    public function store(Request $request)
-    {
-
-        $rules = array(
-            'name'                => 'required',
-            'email'               => 'required|unique:users,email',
-            'phone'               => 'required',
-            'password'            => 'required|min:6',
-            'nombre'              => 'required',
-            'tipo_propiedad_id'   => 'required|numeric',
-            'numero_habitaciones' => 'required|numeric',
-            'ciudad'              => 'required',
-            'direccion'           => 'required',
-
+    public function store(Request $request) {
+        $usuario = new User();
+        $validator = Validator::make(
+            $request->all(), 
+            $usuario->getRules()
         );
 
-        $validator = Validator::make($request->all(), $rules);
-
         if ($validator->fails()) {
-
-            return redirect()->back()->withErrors($validator->errors());
-
+            $data['errors'] = true;
+            $data['msg'] = $validator->errors();
         } else {
-
             $usuario                       = new User();
             $usuario->name                 = $request->get('name');
             $usuario->email                = $request->get('email');
@@ -79,23 +58,17 @@ class UserController extends Controller
             $propiedad->tipo_propiedad_id   = $request->get('tipo_propiedad_id');
 
             $propiedad->save();
-
             $usuario->propiedad()->attach($propiedad->id);
 
             $data = [
                 'errors' => false,
                 'msg'    => 'usuario creado satisfactoriamente',
-
             ];
-
             return Response::json($data, 201);
-
         }
-
     }
 
-    public function crearUsuario(Request $request)
-    {
+    public function crearUsuario(Request $request) {
         $rules = array(
             'name'                => 'required',
             'email'               => 'required|unique:users,email',
@@ -107,11 +80,8 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {
-
             return redirect()->back()->withErrors($validator->errors());
-
         } else {
-
             $user = JWTAuth::parseToken()->toUser();
 
             $propiedad = $user->propiedad;
@@ -129,20 +99,16 @@ class UserController extends Controller
             $usuario->save();
 
             $usuario->propiedad()->attach($propiedad_id);
-
             $data = [
                 'errors' => false,
                 'msg'    => 'usuario creado satisfactoriamente',
 
             ];
-
             return Response::json($data, 201);
-
         }
     }
 
-    public function index(Request $request)
-    {
+    public function index(Request $request) {
         if ($request->has('propiedad_id')) {
             $propiedad_id = $request->input('propiedad_id');
             $propiedad    = Propiedad::where('id', $propiedad_id)->first();
@@ -159,64 +125,68 @@ class UserController extends Controller
             return Response::json($retorno, 400);
         }
 
-        return $usuarios = User::whereHas('propiedad', function($query) use($propiedad_id){
-                $query->where('propiedades.id', $propiedad_id);
-        })->with('rol')->with('estado')->get();
-
+        return $usuarios = User::whereHas(
+            'propiedad', 
+            function($query) use($propiedad_id) {
+                $query->where(
+                    'propiedades.id', 
+                    $propiedad_id
+                );
+            }
+        )->with('rol')->with('estado')->get();
     }
 
-    public function update(Request $request, $id)
-    {
-
+    public function update(Request $request, $id) {
         $rules = array(
-
             'name'     => '',
             'email'    => 'email',
             'password' => 'min:6',
             'phone'    => '',
             'rol_id'   => 'numeric',
             'estado_id'=> 'numeric',
-
         );
 
         $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {
-
             $data = [
-
                 'errors' => true,
                 'msg'    => $validator->messages(),
-
             ];
-
-            return Response::json($data, 400);
-
+            return Response::json($data);
         } else {
-
             $user = User::findOrFail($id);
             $user->update($request->all());
             $user->touch();
 
             $data = [
-
-                'errors' => false,
+                'errors1' => false,
                 'msg'    => 'Usuario actualizado satisfactoriamente',
-
             ];
-
-            return Response::json($data, 201);
-
+            return Response::json($data);
         }
-
     }
 
-    public function getEstados()
-    {
+    public function delete(Request $request) {
+        if ($request->has('id')) {
+            if ($user = User::find($request->id)) {
+                $user->delete();
+
+                $data['errors'] = false;
+                $data['msg']    = 'Usuario eliminado satisfactoriamente';
+            } else {
+                $data['errors'] = true;
+                $data['msg']    = 'Usuario no encontrado';
+            }
+        } else {
+            $data['errors'] = true;
+            $data['msg']    = trans('requests.success.code');
+        }
+        return Response::json($data);
+    }
+
+    public function getEstados() {
         $estados = Estado::all();
-
         return $estados;
-
     }
-
 }

@@ -91,7 +91,11 @@ class PropiedadUserTableSeeder extends Seeder
      		[
      			'user_id' 		=> 20,
     			'propiedad_id'  => 20,
-     		]
+     		],
+            [
+                'user_id'       => 21,
+                'propiedad_id'  => 21,
+            ]
         ]);
     }
 }

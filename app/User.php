@@ -8,31 +8,26 @@ use \Carbon\Carbon;
 use App\ZonaHoraria;
 use JWTAuth;
 
-class User extends Authenticatable
-{
+class User extends Authenticatable {
     use SoftDeletes;
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
 
-    protected $fillable = ['name', 'email', 'password', 'phone', 'rol_id', 'estado_id'];
+    protected $fillable = [
+        'name', 'email', 'password', 'phone', 'rol_id', 'estado_id'
+    ];
 
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
     protected $hidden = [
         'password', 'remember_token',
     ];
 
-
     public function propiedad(){
-        return $this->belongsToMany('App\Propiedad', 'propiedad_user'); //relacion muchos a muchos
+        return $this->belongsToMany(
+            'App\Propiedad', 
+            'propiedad_user',
+            'user_id',
+            'propiedad_id'
+        ); //relacion muchos a muchos
     }
-
+   
     public function rol(){
         return $this->belongsTo('App\Rol', 'rol_id');
     }
@@ -41,20 +36,38 @@ class User extends Authenticatable
         return $this->belongsTo('App\Estado', 'estado_id');
     }
 
+
     public function cajas(){
         return $this->hasMany('App\Caja', 'user_id');
     }
 
-    public function setPasswordAttribute($value)
-    {
-
-        if(!empty($value))
-        {
-    
-        $this->attributes['password'] = bcrypt($value);
-    
+    public function setPasswordAttribute($value) {
+        if(!empty($value)) { 
+            $this->attributes['password'] = bcrypt($value);
         }
+    }
 
+    public function VerifyPassword($value) {
+        if (password_verify($value, $this->attributes['password'])) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    public function getRules() {
+        $rules = array(
+            'name'                => 'required',
+            'email'               => 'required|unique:users,email',
+            'phone'               => 'required',
+            'password'            => 'required|min:6',
+            'nombre'              => 'required',
+            'tipo_propiedad_id'   => 'required|numeric',
+            'numero_habitaciones' => 'required|numeric',
+            'ciudad'              => 'required',
+            'direccion'           => 'required',
+        );
+        return $rules;
     }
 
 /*    public function getCreatedAtAttribute($value)
@@ -65,7 +78,4 @@ class User extends Authenticatable
         $pais            = $zona_horaria->nombre;
         return Carbon::parse($value)->timezone($pais)->format('Y-m-d H:i:s');
     }   */
-
-
-
 }
