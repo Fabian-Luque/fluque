@@ -11,6 +11,7 @@ Route::get(
 	}
 );
 
+Route::post('guardar/ubicacion/propiedad', 'GeoController@UbicacionSave');
 //////////////////////// rutas dash ////////////////////////////
 
 

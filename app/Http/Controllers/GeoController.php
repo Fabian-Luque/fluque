@@ -12,7 +12,7 @@ class GeoController extends Controller {
 
     public function UbicacionSave(Request $request) {
     	$ubp = new UbicacionProp();
-		$ubp->prop_id = 1;
+		$ubp->prop_id = 4;
 		$ubp->location = new Point(
 			40.7484404, 
 			-73.9878441
