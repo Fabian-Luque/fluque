@@ -26,7 +26,8 @@ class Caja extends Model
         return $this->hasMany('App\Reserva', 'caja_id');
     }
 
-    public function tipoMoneda(){
-    	return $this->belongsTo('App\TipoMoneda', 'tipo_moneda_id'); 
+    public function montos(){
+        return $this->hasMany('App\MontoCaja', 'monto_caja_id');
     }
+
 }
