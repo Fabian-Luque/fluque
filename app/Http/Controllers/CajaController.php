@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\ZonaHoraria;
 use App\Caja;
+use App\TipoMonto;
+use App\MontoCaja;
 use JWTAuth;
 use \Carbon\Carbon;
 use Response;
@@ -18,63 +20,60 @@ class CajaController extends Controller
     
 	public function abrirCaja(Request $request)
 	{
-		$rules = array(
-
-            'monto'   => 'numeric',
-        );
-
-        $validator = Validator::make($request->all(), $rules);
-
-        if ($validator->fails()) {
-
-            $data = [
-                'errors' => true,
-                'msg'    => $validator->messages(),
-            ];
-
-            return Response::json($data, 400);
-
+        if ($request->has('montos')) {
+            $montos = $request->get('montos');
         } else {
-
-		$user 	   		 = JWTAuth::parseToken()->toUser();
-		$propiedad 	     = $user->propiedad[0];
-		$enUTC 	   		 = Carbon::now();
-		$zona_horaria_id = $propiedad->zona_horaria_id;
-	    $zona_horaria    = ZonaHoraria::where('id', $zona_horaria_id)->first();
-        $pais            = $zona_horaria->nombre;
-	    $fecha_actual    = $enUTC->tz($pais);
-
-	    $fecha_apertura  = $fecha_actual->format('Y-m-d');
-	    $hora_apertura   = $fecha_actual->format('H:i:s');
-	    $monto_apertura  = $request->input('monto');
-	    
-	    
-
-
-
-
-       
-
-
-
-
-
-        $data = [
-            'errors' => false,
-            'msg'    => 'Propiedad actualizada satisfactoriamente',
-        ];
-
-        return Response::json($data, 201);
-
+            $retorno = array(
+                'msj'    => "No se envia montos",
+                'errors' => true);
+            return Response::json($retorno, 400);
         }
 
+        $user                   = JWTAuth::parseToken()->toUser();
+        $propiedad              = $user->propiedad[0];
+        $fecha_actual           = Carbon::now();
+        $caja_abierta           = Caja::where('propiedad_id', $propiedad->id)->where('estado_caja_id', 1)->first();
 
+        if (is_null($caja_abierta)) {
+            $caja                   = new Caja();
+            $caja->fecha_apertura   = $fecha_actual;
+            $caja->user_id          = $user->id;
+            $caja->propiedad_id     = $propiedad->id; 
+            $caja->estado_caja_id   = 1;
+            $caja->save();
 
+            foreach ($montos as $apertura) {
+                $monto_apertura                 = new MontoCaja();
+                $monto_apertura->monto          = $apertura['monto'];
+                $monto_apertura->caja_id        = $caja->id;
+                $monto_apertura->tipo_monto_id  = $apertura['tipo_monto_id'];
+                $monto_apertura->tipo_moneda_id = $apertura['tipo_moneda_id'];
+                $monto_apertura->save();
+            }
 
+        } else {
+            $retorno = array(
+                'msj'    => "Apertura de caja no permitido",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        $retorno = [
+            'errors' => false,
+            'msj'    => 'Caja abierta satisfactoriamente',
+        ];
+
+        return Response::json($retorno, 201);
 
 	}
 
 
+    public function tipoMonto()
+    {
+
+        $tipos = TipoMonto::all();
+        return $tipos;
+    }
 
 
 }

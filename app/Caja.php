@@ -8,7 +8,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Caja extends Model
 {
     use SoftDeletes;
-    protected $table = 'propiedades';
+    protected $table = 'cajas';
+
+    protected $fillable = ['fecha_apertura', 'fecha_cierre', 'user_id', 'propiedad_id', 'estado_caja_id'];
+
 
     public function propiedad(){
     	return $this->belongsTo('App\Propiedad', 'propiedad_id'); 
@@ -22,12 +25,14 @@ class Caja extends Model
     	return $this->belongsTo('App\EstadoCaja', 'estado_caja_id'); 
     }
 
-    public function reservas(){
-        return $this->hasMany('App\Reserva', 'caja_id');
+    public function pagos(){
+        return $this->hasMany('App\Pago', 'caja_id');
     }
 
     public function montos(){
         return $this->hasMany('App\MontoCaja', 'monto_caja_id');
     }
+
+
 
 }

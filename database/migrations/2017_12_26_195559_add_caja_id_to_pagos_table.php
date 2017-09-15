@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddCajaIdToReservasTable extends Migration
+class AddCajaIdToPagosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,8 +12,8 @@ class AddCajaIdToReservasTable extends Migration
      */
     public function up()
     {
-        Schema::table('reservas', function (Blueprint $table) {
-            $table->integer('caja_id')->after('cliente_id')->nullable()->unsigned();
+        Schema::table('pagos', function (Blueprint $table) {
+            $table->integer('caja_id')->after('tipo_comprobante_id')->nullable()->unsigned();
             $table->foreign('caja_id')->references('id')->on('cajas');
         });
     }

@@ -185,6 +185,7 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::post('crear/usuario', 'UserController@crearUsuario');
 		Route::get('estados', 'UserController@getEstados');
 		Route::post('abrir/caja', 'CajaController@abrirCaja');
+		Route::get('tipo-monto', 'CajaController@tipoMonto');
 
 
 		Route::resource('user', 'UserController', ['except' => ['create', 'edit','store']]);

@@ -11,14 +11,14 @@ class EstadoCajaTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('estado')->insert([
+        DB::table('estado_caja')->insert([
     		[
-    			'nombre' => 'Abierto',
+    			'nombre' => 'Abierta',
 
     		],
     		[
 
-    			'nombre' => 'Cerrado',
+    			'nombre' => 'Cerrada',
 
     		]
 

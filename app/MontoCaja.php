@@ -8,6 +8,8 @@ class MontoCaja extends Model
 {
     protected $table = 'montos_caja';
 
+    protected $fillable = ['monto', 'caja_id', 'tipo_moneda_id', 'tipo_monto_id'];
+
     public function caja(){
     	return $this->belongsTo('App\Caja', 'monto_caja_id');
     }
