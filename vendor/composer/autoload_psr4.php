@@ -45,6 +45,7 @@ return array(
     'Grimzy\\LaravelMysqlSpatial\\' => array($vendorDir . '/grimzy/laravel-mysql-spatial/src'),
     'GeoIO\\WKB\\Parser\\' => array($vendorDir . '/geo-io/wkb-parser/src'),
     'GeoIO\\' => array($vendorDir . '/geo-io/interface/src'),
+    'GeneaLabs\\Phpgmaps\\' => array($vendorDir . '/genealabs/phpgmaps/src/GeneaLabs/Phpgmaps'),
     'Faker\\' => array($vendorDir . '/fzaninotto/faker/src/Faker'),
     'Dotenv\\' => array($vendorDir . '/vlucas/phpdotenv/src'),
     'Dompdf\\' => array($vendorDir . '/dompdf/dompdf/src'),

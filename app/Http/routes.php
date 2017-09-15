@@ -11,7 +11,16 @@ Route::get(
 	}
 );
 
-Route::post('guardar/ubicacion/propiedad', 'GeoController@UbicacionSave');
+Route::post('guardar/ubicacion/propiedad', 'GeoController@UbicacionCreate');
+
+Route::get('hotelescercanos', 'GeoController@Gmaps');
+Route::get(
+	'/gmap', 
+	function () {
+		return view('administrador.gmap');
+	}
+);
+
 //////////////////////// rutas dash ////////////////////////////
 
 

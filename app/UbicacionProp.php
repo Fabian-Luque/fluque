@@ -18,4 +18,8 @@ class UbicacionProp extends Model {
     protected $spatialFields = [
         'location',
     ];
+
+    public function propiedad() {
+  		return $this->hasOne('App\Propiedad');
+	}
 }
