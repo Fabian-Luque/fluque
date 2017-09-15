@@ -29,10 +29,10 @@ class CajaController extends Controller
             return Response::json($retorno, 400);
         }
 
-        $user                   = JWTAuth::parseToken()->toUser();
-        $propiedad              = $user->propiedad[0];
-        $fecha_actual           = Carbon::now();
-        $caja_abierta           = Caja::where('propiedad_id', $propiedad->id)->where('estado_caja_id', 1)->first();
+        $user            = JWTAuth::parseToken()->toUser();
+        $propiedad       = $user->propiedad[0];
+        $fecha_actual    = Carbon::now();
+        $caja_abierta    = Caja::where('propiedad_id', $propiedad->id)->where('estado_caja_id', 1)->first();
 
         if (is_null($caja_abierta)) {
             $caja                   = new Caja();

@@ -14,8 +14,8 @@ class CreateCajasTable extends Migration
     {
         Schema::create('cajas', function (Blueprint $table) {
             $table->increments('id');
-            $table->date('fecha_apertura');
-            $table->date('fecha_cierre')->nullable();
+            $table->timestamps('fecha_apertura');
+            $table->timestamps('fecha_cierre')->nullable();
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users');
             $table->integer('propiedad_id')->unsigned();
