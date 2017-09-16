@@ -55,7 +55,6 @@ class GeoController extends Controller {
         		}
         	}
     	}
-
         return view('administrador.gmap')->with(
         	'map', 
         	$pgm->create_map()
