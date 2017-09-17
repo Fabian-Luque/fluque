@@ -68,6 +68,7 @@ class CajaController extends Controller
 	}
 
 
+
     public function tipoMonto()
     {
 
