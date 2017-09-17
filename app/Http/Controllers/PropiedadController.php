@@ -508,7 +508,7 @@ class PropiedadController extends Controller
           $ingresos_por_habitacion = 0;
           $ingresos_por_consumos = 0;
 
-            foreach ($pagos_tipo_moneda as $pago) {
+          foreach ($pagos_tipo_moneda as $pago) {
 
               $suma_pagos += $pago->monto_equivalente;
 
@@ -527,7 +527,7 @@ class PropiedadController extends Controller
 
               }
 
-          
+          }
 
 
 
@@ -542,7 +542,7 @@ class PropiedadController extends Controller
 
 
           
-        }
+    }
 
 
          /*RESERVAS ANULADAS*/
@@ -567,17 +567,25 @@ class PropiedadController extends Controller
         $paises = [];
         foreach ($reservas as $reserva) {
             foreach ($reserva['huespedes'] as $huesped) {
-                $pais = $huesped->pais;
-                if (!is_null($pais)) {
-                    $pais_id = $huesped->pais->id;
-                    $propiead_pais_id = $propiedad->pais->id;
-                    if ($pais_id != $propiead_pais_id ) {
-                        if ($huesped->pais != null && !in_array($pais, $paises) ) {
-                            array_push($paises, $pais);
-                        }       
-                    }                        
-                }
+
+                    $pais = $huesped->pais;
+                    if (!is_null($pais)) {
+                        $pais_id = $huesped->pais->id;
+                        $propiead_pais_id = $propiedad->pais->id;
+                        
+                        if ($pais_id != $propiead_pais_id ) {
+                            if ($huesped->pais != null && !in_array($pais, $paises) ) {
+                                array_push($paises, $pais);
+                            }
+                            
+                        }
+                        
+                    }
+
+
+
             }       
+
         }
 
 
@@ -637,6 +645,29 @@ class PropiedadController extends Controller
         /*GRAFICO*/
 
        $cantidad_noches  = $fecha_inicio->diffInDays($fecha_fin); 
+
+
+/*       $auxFecha_inicio  = new Carbon($auxInicio);
+       $auxFecha_fin     = new Carbon($auxFin);
+       $suma             = 0;
+        while ($auxFecha_inicio < $auxFecha_fin) {
+            $fecha = $auxFecha_inicio->format('Y-m-d');
+
+            foreach ($reservas as $reserva) {
+                
+                if ($reserva->checkin <= $fecha && $reserva->checkout > $fecha) {
+                        
+                    if ($reserva->estado_reserva_id == 3 || $reserva->estado_reserva_id == 4 || $reserva->estado_reserva_id == 5) {
+                        
+                        $suma++;
+                    }
+                }
+            }
+
+
+         $auxFecha_inicio->addDay();
+        }*/
+
 
        $auxFecha_inicio  = new Carbon($auxInicio);
        $auxFecha_fin     = new Carbon($auxFin);
