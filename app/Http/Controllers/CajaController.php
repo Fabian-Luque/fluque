@@ -8,6 +8,7 @@ use App\ZonaHoraria;
 use App\Caja;
 use App\TipoMonto;
 use App\MontoCaja;
+use App\Propiedad;
 use JWTAuth;
 use \Carbon\Carbon;
 use Response;
@@ -67,6 +68,56 @@ class CajaController extends Controller
 
 	}
 
+    public function getCajaAbierta(Request $request)
+    {
+        if ($request->has('propiedad_id')) {
+            $propiedad_id = $request->input('propiedad_id');
+            $propiedad    = Propiedad::where('id', $propiedad_id)->with('tipoMonedas')->first();
+            if (is_null($propiedad)) {
+                $retorno = array(
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia propiedad_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        $caja_abierta  = Caja::where('propiedad_id', $propiedad_id)->where('estado_caja_id', 1)->with('user')->with('estadoCaja')->with('pagos')->first();
+
+        if (!is_null($caja_abierta)) {
+            $monedas = [];
+            foreach ($propiedad->tipoMonedas as $tipo_moneda) {
+                $ingreso = 0;
+                foreach ($caja_abierta->pagos as $pago) {
+                    if ($tipo_moneda->id == $pago->tipo_moneda_id) {
+                        $ingreso += $pago->monto_equivalente;
+                    }
+                }
+                $moneda['nombre']               = $tipo_moneda->nombre;
+                $moneda['cantidad_decimales']   = $tipo_moneda->cantidad_decimales;
+                $moneda['ingreso']              = $ingreso;
+                $moneda['grafico']              = ['parametro' => 'Ingreso', 'valor' => $ingreso];
+                array_push($monedas, $moneda);
+            }
+
+            $data['caja_abierta'] = $caja_abierta;
+            $data['monedas']      = $monedas;
+
+            return $data;
+
+        } else {
+            $retorno = array(
+                'msj'    => "No hay caja abierta",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+        
+
+    }
 
 
     public function tipoMonto()
