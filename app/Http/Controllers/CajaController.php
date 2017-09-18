@@ -115,9 +115,9 @@ class CajaController extends Controller
                 'errors' => true);
             return Response::json($retorno, 400);
         }
-        
 
     }
+
 
 
     public function tipoMonto()

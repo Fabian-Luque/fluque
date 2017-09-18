@@ -187,7 +187,7 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::post('abrir/caja', 'CajaController@abrirCaja');
 		Route::get('tipo-monto', 'CajaController@tipoMonto');
 		Route::get('caja/abierta', 'CajaController@getCajaAbierta');
-
+		Route::post('ingresar/egreso/caja', 'EgresoController@ingresarEgresoCaja');
 
 
 		Route::resource('user', 'UserController', ['except' => ['create', 'edit','store']]);
@@ -200,6 +200,7 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::resource('temporada', 'TemporadaController', ['except' => ['create', 'edit']]);
 		Route::resource('tipo/habitacion', 'TipoHabitacionController', ['except' => ['create', 'edit']]);
 		Route::resource('rol', 'RolController', ['except' => ['create', 'edit']]);
+		Route::resource('egreso', 'EgresoController', ['except' => ['create', 'edit']]);
 
 });
 

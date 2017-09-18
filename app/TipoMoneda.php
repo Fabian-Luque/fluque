@@ -25,8 +25,16 @@ class TipoMoneda extends Model
         return $this->hasMany('App\PrecioTemporada', 'tipo_moneda_id');
     }
 
-    public function MontosCaja(){
+    public function montosCaja(){
         return $this->hasMany('App\MontoCaja', 'tipo_moneda_id');
+    }
+
+    public function egresosPropiedad(){
+        return $this->hasMany('App\EgresoPropiedad', 'tipo_moneda_id');
+    }
+
+    public function egresosCaja(){
+        return $this->hasMany('App\EgresoCaja', 'tipo_moneda_id');
     }
 
 	public function propiedades(){

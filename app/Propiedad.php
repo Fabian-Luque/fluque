@@ -70,6 +70,16 @@ class Propiedad extends Model {
         return $this->hasMany('App\Caja', 'propiedad_id');
     }
 
+    public function egresos(){
+        return $this->hasMany('App\Egreso', 'propiedad_id');
+    }
+
+    public function propiedadesEgresos(){
+        return $this->belongsToMany('App\Egreso', 'egreso_propiedad')
+        ->withPivot('id', 'monto', 'descripcion')
+        ->withTimestamps();
+    }
+
     public function calificacionHuespedes() {
 
         return $this->belongsToMany('App\Huesped', 'huesped_propiedad')
