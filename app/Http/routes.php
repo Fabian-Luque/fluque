@@ -185,6 +185,7 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::post('crear/usuario', 'UserController@crearUsuario');
 		Route::get('estados', 'UserController@getEstados');
 		Route::post('abrir/caja', 'CajaController@abrirCaja');
+		Route::post('cerrar/caja', 'CajaController@cerrarCaja');
 		Route::get('tipo-monto', 'CajaController@tipoMonto');
 		Route::get('caja/abierta', 'CajaController@getCajaAbierta');
 		Route::post('ingresar/egreso/caja', 'EgresoController@ingresarEgresoCaja');

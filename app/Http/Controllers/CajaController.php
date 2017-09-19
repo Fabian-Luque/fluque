@@ -129,6 +129,83 @@ class CajaController extends Controller
 
     }
 
+    public function cerrarCaja(Request $request)
+    {
+        if ($request->has('propiedad_id')) {
+            $propiedad_id = $request->input('propiedad_id');
+            $propiedad    = Propiedad::where('id', $propiedad_id)->with('tipoMonedas')->first();
+            if (is_null($propiedad)) {
+                $retorno = array(
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia propiedad_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        $user            = JWTAuth::parseToken()->toUser();
+        $propiedad       = $user->propiedad[0];
+        $zona_horaria_id = $propiedad->zona_horaria_id;
+        $zona_horaria    = ZonaHoraria::where('id', $zona_horaria_id)->first();
+        $pais            = $zona_horaria['nombre'];
+        $fecha_servidor  = Carbon::now();
+        $fecha_actual    = $fecha_servidor->tz($pais);
+
+        $caja_abierta  = Caja::where('propiedad_id', $propiedad_id)->where('estado_caja_id', 1)->with('montos')->with('user')->with('estadoCaja')->with('pagos')->with('cajaEgresos')->first();
+
+        if (!is_null($caja_abierta)) {
+
+            foreach ($propiedad->tipoMonedas as $tipo_moneda) {
+                $ingreso = 0;
+                $egreso  = 0;
+                foreach ($caja_abierta->pagos as $pago) {
+                    if ($tipo_moneda->id == $pago->tipo_moneda_id) {
+                        $ingreso += $pago->monto_equivalente;
+                    }
+                }
+                foreach ($caja_abierta->cajaEgresos as $egreso_caja) {
+                    if ($tipo_moneda->id == $egreso_caja->pivot->tipo_moneda_id) {
+                        $egreso += $egreso_caja->pivot->monto;
+                    }
+                }
+
+                foreach ($caja_abierta->montos as $monto) {
+                    if ($monto->tipo_moneda_id == $tipo_moneda->id) {
+                        $ingreso  += $monto->monto;
+                    }
+                }
+                $monto_total  = $ingreso - $egreso;
+
+                $monto_cierre                 = new MontoCaja();
+                $monto_cierre->monto          = $monto_total;
+                $monto_cierre->caja_id        = $caja_abierta->id;
+                $monto_cierre->tipo_monto_id  = 2;
+                $monto_cierre->tipo_moneda_id = $tipo_moneda->id;
+                $monto_cierre->save();
+
+            }
+
+            $caja_abierta->update(array('estado_caja_id' => 2, 'fecha_cierre' => $fecha_actual));
+
+            $retorno = array(
+                'errors' => false,
+                'msj'    => 'Caja cerrada satisfactoriamente',);
+            return Response::json($retorno, 201);
+
+        } else {
+            $retorno = array(
+                'msj'    => "No hay caja abierta",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+
+    }
+
 
 
     public function tipoMonto()
