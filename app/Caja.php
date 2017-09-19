@@ -42,7 +42,7 @@ class Caja extends Model
         ->withTimestamps();
     }
 
-    public function getFechaAperturaAtAttribute($value)
+    public function getCreatedAtAttribute($value)
     {
         $user            = JWTAuth::parseToken()->toUser();
         $propiedad       = $user->propiedad[0];
