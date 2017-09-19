@@ -32,7 +32,12 @@ class CajaController extends Controller
 
         $user            = JWTAuth::parseToken()->toUser();
         $propiedad       = $user->propiedad[0];
-        $fecha_actual    = Carbon::now();
+        $zona_horaria_id = $propiedad->zona_horaria_id;
+        $zona_horaria    = ZonaHoraria::where('id', $zona_horaria_id)->first();
+        $pais            = $zona_horaria['nombre'];
+        $fecha_servidor  = Carbon::now();
+        $fecha_actual    = $fecha_servidor->tz($pais);
+
         $caja_abierta    = Caja::where('propiedad_id', $propiedad->id)->where('estado_caja_id', 1)->first();
 
         if (is_null($caja_abierta)) {
