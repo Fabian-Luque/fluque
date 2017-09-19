@@ -32,7 +32,7 @@ class DatabaseSeeder extends Seeder
        // $this->call(EstadosdeCuenta::class);
        // $this->call(PrimerUser::class);
        $this->call(EstadoCajaTableSeeder::class);
-       // $this->call(TipoMontoTableSeeder::class);
+       $this->call(TipoMontoTableSeeder::class);
 
     }
 }
