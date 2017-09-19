@@ -30,7 +30,7 @@ class Caja extends Model
     }
 
     public function montos(){
-        return $this->hasMany('App\MontoCaja', 'monto_caja_id');
+        return $this->hasMany('App\MontoCaja', 'caja_id');
     }
 
     public function cajaEgresos(){
