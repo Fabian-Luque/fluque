@@ -15,6 +15,7 @@ class Caja extends Model
 
     protected $fillable = ['fecha_apertura', 'fecha_cierre', 'user_id', 'propiedad_id', 'estado_caja_id'];
 
+    protected $dates = ['fecha_apertura'];
 
     public function propiedad(){
     	return $this->belongsTo('App\Propiedad', 'propiedad_id'); 
