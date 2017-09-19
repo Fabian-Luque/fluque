@@ -33,9 +33,9 @@ class Caja extends Model
         return $this->hasMany('App\MontoCaja', 'monto_caja_id');
     }
 
-    public function cajasEgresos(){
+    public function cajaEgresos(){
         return $this->belongsToMany('App\Egreso', 'egreso_caja')
-        ->withPivot('id', 'monto', 'descripcion')
+        ->withPivot('id', 'monto', 'descripcion', 'tipo_moneda_id')
         ->withTimestamps();
     }
 

@@ -14,15 +14,15 @@ class Egreso extends Model
         return $this->belongsTo('App\Propiedad', 'propiedad_id');
     }
 
-    public function egresosPropiedades(){
+    public function egresoPropiedades(){
 		return $this->belongsToMany('App\Propiedad', 'egreso_propiedad')
 		->withPivot('id', 'monto', 'descripcion')
 		->withTimestamps();
 	}
 
-	public function egresosCajas(){
+	public function egresoCajas(){
 		return $this->belongsToMany('App\Caja', 'egreso_caja')
-		->withPivot('id', 'monto', 'descripcion')
+		->withPivot('id', 'monto', 'descripcion', 'tipo_moneda_id')
 		->withTimestamps();
 	}
 }
