@@ -48,13 +48,20 @@ class CajaController extends Controller
             return Response::json($retorno, 400);
         }
 
-        $cajas = Caja::where('propiedad_id', $propiedad_id)->where('fecha_apertura', '>=' , $fecha_inicio)->where('fecha_apertura', '<=' , $fin)->with('montos.tipoMonto', 'montos.tipoMoneda')->with('user')->with('estadoCaja')->with('cajaEgresos')->get();
+        $cajas = Caja::select('cajas.id', 'cajas.fecha_apertura', 'cajas.fecha_cierre' ,'estado_caja.nombre as estado', 'users.name as nombre_usuario')
+        ->join('estado_caja', 'estado_caja.id', '=' , 'cajas.estado_caja_id')
+        ->join('users', 'users.id', '=' , 'cajas.user_id')
+        ->where('propiedad_id', $propiedad_id)
+        ->where('fecha_apertura', '>=' , $fecha_inicio)
+        ->where('fecha_apertura', '<=' , $fin)
+        ->with('montos.tipoMonto', 'montos.tipoMoneda')
+        ->with('cajaEgresos')
+        ->get();
         
         $cantidad_noches = ($fecha_inicio->diffInDays($fecha_fin));
         $fechas          = [];
         $auxFecha        = new Carbon($request->input('fecha_inicio'));
         for( $i = 0 ; $i <= $cantidad_noches; $i++){
-
             $fecha      = $auxFecha->format('Y-m-d');
             $fechas[$i] = ['fecha' => $fecha, 'cajas' => []];
 
@@ -67,7 +74,6 @@ class CajaController extends Controller
             $dif         = $fecha_inicio->diffInDays($crat); 
 
             array_push($fechas[$dif]['cajas'], $caja);
-            
         }
 
         $data = [];
