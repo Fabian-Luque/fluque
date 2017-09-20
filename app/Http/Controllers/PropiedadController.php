@@ -786,7 +786,6 @@ class PropiedadController extends Controller
 
             $auxFecha->addDay();
         }
-        return $fechas;
 
         $ini  = new Carbon($request->input('fecha_inicio'));
         $inc  = $ini->startOfDay();
