@@ -778,7 +778,6 @@ class PropiedadController extends Controller
             array_push($montos, $m);
         }
 
-
         $auxFecha  = new Carbon($request->input('fecha_inicio'));
         for( $i = 0 ; $i <= $cantidad_noches; $i++){
 
@@ -787,7 +786,7 @@ class PropiedadController extends Controller
 
             $auxFecha->addDay();
         }
-
+        return $fechas;
 
         $ini  = new Carbon($request->input('fecha_inicio'));
         $inc  = $ini->startOfDay();

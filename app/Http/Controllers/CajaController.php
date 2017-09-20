@@ -18,6 +18,68 @@ use Validator;
 
 class CajaController extends Controller
 {
+
+    public function getCajas(Request $request)
+    {
+        if ($request->has('propiedad_id')) {
+            $propiedad_id = $request->input('propiedad_id');
+            $propiedad    = Propiedad::where('id', $propiedad_id)->with('tipoMonedas')->first();
+            if (is_null($propiedad)) {
+                $retorno = array(
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia propiedad_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        if ($request->has('fecha_inicio') && $request->has('fecha_fin')) {
+            $fecha_inicio = new Carbon($request->get('fecha_inicio'));
+            $fecha_fin    = new Carbon($request->get('fecha_fin'));
+            $fin          = $fecha_fin->endOfDay();
+        } else {
+            $retorno = array(
+                'msj'    => "Solicitud incompleta",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        $cajas = Caja::where('propiedad_id', $propiedad_id)->where('fecha_apertura', '>=' , $fecha_inicio)->where('fecha_apertura', '<=' , $fin)->with('montos.tipoMonto', 'montos.tipoMoneda')->with('user')->with('estadoCaja')->with('cajaEgresos')->get();
+        
+        $cantidad_noches = ($fecha_inicio->diffInDays($fecha_fin));
+        $fechas          = [];
+        $auxFecha        = new Carbon($request->input('fecha_inicio'));
+        for( $i = 0 ; $i <= $cantidad_noches; $i++){
+
+            $fecha      = $auxFecha->format('Y-m-d');
+            $fechas[$i] = ['fecha' => $fecha, 'cajas' => []];
+
+            $auxFecha->addDay();
+        }
+
+        foreach ($cajas as $caja) {
+            $fecha_apertura  = new Carbon($caja->fecha_apertura);
+            $crat        = $fecha_apertura->startOfDay();
+            $dif         = $fecha_inicio->diffInDays($crat); 
+
+            array_push($fechas[$dif]['cajas'], $caja);
+            
+        }
+
+        $data = [];
+        foreach ($fechas as $fecha) {
+            if(count($fecha['cajas']) != 0 ){
+                array_push($data, $fecha);
+            }
+        }
+
+        return $data;
+
+    }
     
 	public function abrirCaja(Request $request)
 	{

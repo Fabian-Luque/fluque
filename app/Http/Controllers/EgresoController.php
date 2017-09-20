@@ -16,6 +16,28 @@ use Validator;
 
 class EgresoController extends Controller
 {
+    public function index(Request $request)
+    {
+        if($request->has('propiedad_id')){
+            $propiedad_id = $request->input('propiedad_id');
+            $propiedad    = Propiedad::where('id', $propiedad_id)->first();
+            if (is_null($propiedad)) {
+                $retorno  = array(
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia propiedad_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        $egresos = Egreso::where('propiedad_id', $propiedad_id)->get();
+        return $egresos;
+    }
+
     public function store(Request $request)
 	{
 		$rules = array(
