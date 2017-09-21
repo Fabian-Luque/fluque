@@ -129,9 +129,8 @@ class EgresoController extends Controller
             return Response::json($retorno, 400);
         }
 
-    	if ($request->has('monto') && $request->has('descripcion') && $request->has('tipo_moneda_id')) {
+    	if ($request->has('monto') && $request->has('tipo_moneda_id')) {
     		$monto 			= $request->get('monto');
-			$descripcion 	= $request->get('descripcion');
 			$tipo_moneda_id = $request->get('tipo_moneda_id');
     	} else {
 	        $retorno = array(
@@ -148,7 +147,11 @@ class EgresoController extends Controller
 
     		$egreso 		 		= new EgresoCaja();
     		$egreso->monto  		= $monto;
-    		$egreso->descripcion    = $descripcion;
+            if ($request->has('descripcion')) {
+    		    $egreso->descripcion    = $request->get('descripcion');
+            } else {
+                $egreso->descripcion    = null;
+            }
     		$egreso->egreso_id 		= $egreso_id;
     		$egreso->caja_id    	= $caja_abierta->id;
     		$egreso->user_id    	= $user->id;
@@ -197,9 +200,8 @@ class EgresoController extends Controller
             return Response::json($retorno, 400);
         }
 
-    	if ($request->has('monto') && $request->has('descripcion') && $request->has('tipo_moneda_id')) {
+    	if ($request->has('monto') && $request->has('tipo_moneda_id')) {
     		$monto 			= $request->get('monto');
-			$descripcion 	= $request->get('descripcion');
 			$tipo_moneda_id = $request->get('tipo_moneda_id');
     	} else {
 	        $retorno = array(
@@ -212,7 +214,11 @@ class EgresoController extends Controller
 
 		$egreso 		 		= new EgresoPropiedad();
 		$egreso->monto  		= $monto;
-		$egreso->descripcion    = $descripcion;
+        if ($request->has('descripcion')) {
+            $egreso->descripcion    = $request->get('descripcion');
+        } else {
+            $egreso->descripcion    = null;
+        }
 		$egreso->egreso_id 		= $egreso_id;
 		$egreso->propiedad_id   = $propiedad_id;
 		$egreso->user_id    	= $user->id;
