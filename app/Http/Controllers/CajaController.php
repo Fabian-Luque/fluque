@@ -37,9 +37,9 @@ class CajaController extends Controller
             return Response::json($retorno, 400);
         }
 
-        if ($request->has('fecha_inicio') && $request->has('fecha_fin')) {
+        if ($request->has('fecha_inicio')) {
             $fecha_inicio = new Carbon($request->get('fecha_inicio'));
-            $fecha_fin    = new Carbon($request->get('fecha_fin'));
+            $fecha_fin    = new Carbon($request->get('fecha_inicio'));
             $fin          = $fecha_fin->endOfDay();
         } else {
             $retorno = array(
@@ -55,35 +55,10 @@ class CajaController extends Controller
         ->where('fecha_apertura', '>=' , $fecha_inicio)
         ->where('fecha_apertura', '<=' , $fin)
         ->with('montos.tipoMonto', 'montos.tipoMoneda')
-        ->with('cajaEgresos')
+        ->with('egresosCaja.tipoMoneda', 'egresosCaja.egreso')
         ->get();
-        
-        $cantidad_noches = ($fecha_inicio->diffInDays($fecha_fin));
-        $fechas          = [];
-        $auxFecha        = new Carbon($request->input('fecha_inicio'));
-        for( $i = 0 ; $i <= $cantidad_noches; $i++){
-            $fecha      = $auxFecha->format('Y-m-d');
-            $fechas[$i] = ['fecha' => $fecha, 'cajas' => []];
 
-            $auxFecha->addDay();
-        }
-
-        foreach ($cajas as $caja) {
-            $fecha_apertura  = new Carbon($caja->fecha_apertura);
-            $crat        = $fecha_apertura->startOfDay();
-            $dif         = $fecha_inicio->diffInDays($crat); 
-
-            array_push($fechas[$dif]['cajas'], $caja);
-        }
-
-        $data = [];
-        foreach ($fechas as $fecha) {
-            if(count($fecha['cajas']) != 0 ){
-                array_push($data, $fecha);
-            }
-        }
-
-        return $data;
+        return $cajas;
 
     }
     
@@ -159,7 +134,7 @@ class CajaController extends Controller
             return Response::json($retorno, 400);
         }
 
-        $caja_abierta  = Caja::where('propiedad_id', $propiedad_id)->where('estado_caja_id', 1)->with('montos.tipoMonto', 'montos.tipoMoneda')->with('user')->with('estadoCaja')->with('pagos.tipoComprobante','pagos.metodoPago', 'pagos.tipoMoneda', 'pagos.reserva')->with('egresos.tipoMoneda', 'egresos.egreso')->first();
+        $caja_abierta  = Caja::where('propiedad_id', $propiedad_id)->where('estado_caja_id', 1)->with('montos.tipoMonto', 'montos.tipoMoneda')->with('user')->with('estadoCaja')->with('pagos.tipoComprobante','pagos.metodoPago', 'pagos.tipoMoneda', 'pagos.reserva')->with('egresosCaja.tipoMoneda', 'egresosCaja.egreso')->first();
 
         if (!is_null($caja_abierta)) {
             $monedas = [];
@@ -171,7 +146,7 @@ class CajaController extends Controller
                         $ingreso += $pago->monto_equivalente;
                     }
                 }
-                foreach ($caja_abierta->egresos as $egreso_caja) {
+                foreach ($caja_abierta->egresosCaja as $egreso_caja) {
                     if ($tipo_moneda->id == $egreso_caja->tipo_moneda_id) {
                         $egreso += $egreso_caja->monto;
                     }
