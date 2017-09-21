@@ -199,7 +199,7 @@ class CajaController extends Controller
         $fecha_servidor  = Carbon::now();
         $fecha_actual    = $fecha_servidor->tz($pais);
 
-        $caja_abierta  = Caja::where('propiedad_id', $propiedad_id)->where('estado_caja_id', 1)->with('montos')->with('user')->with('estadoCaja')->with('pagos')->with('cajaEgresos')->first();
+        $caja_abierta  = Caja::where('propiedad_id', $propiedad_id)->where('estado_caja_id', 1)->with('montos')->with('user')->with('estadoCaja')->with('pagos')->with('egresosCaja')->first();
 
         if (!is_null($caja_abierta)) {
 
@@ -211,9 +211,9 @@ class CajaController extends Controller
                         $ingreso += $pago->monto_equivalente;
                     }
                 }
-                foreach ($caja_abierta->cajaEgresos as $egreso_caja) {
-                    if ($tipo_moneda->id == $egreso_caja->pivot->tipo_moneda_id) {
-                        $egreso += $egreso_caja->pivot->monto;
+                foreach ($caja_abierta->egresosCaja as $egreso_caja) {
+                    if ($tipo_moneda->id == $egreso_caja->tipo_moneda_id) {
+                        $egreso += $egreso_caja->monto;
                     }
                 }
 
