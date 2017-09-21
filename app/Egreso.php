@@ -20,9 +20,13 @@ class Egreso extends Model
 		->withTimestamps();
 	}
 
-	public function egresoCajas(){
-		return $this->belongsToMany('App\Caja', 'egreso_caja')
-		->withPivot('id', 'monto', 'descripcion', 'tipo_moneda_id')
-		->withTimestamps();
-	}
+	// public function egresoCaja(){
+	// 	return $this->belongsToMany('App\Caja', 'egreso_caja')
+	// 	->withPivot('id', 'monto', 'descripcion', 'tipo_moneda_id')
+	// 	->withTimestamps();
+	// }
+
+    public function cajas(){
+        return $this->hasMany('App\EgresoCaja', 'egreso_id');
+    }
 }

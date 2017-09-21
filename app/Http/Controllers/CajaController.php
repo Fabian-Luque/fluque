@@ -159,7 +159,7 @@ class CajaController extends Controller
             return Response::json($retorno, 400);
         }
 
-        $caja_abierta  = Caja::where('propiedad_id', $propiedad_id)->where('estado_caja_id', 1)->with('montos.tipoMonto', 'montos.tipoMoneda')->with('user')->with('estadoCaja')->with('pagos.tipoComprobante','pagos.metodoPago', 'pagos.tipoMoneda', 'pagos.reserva')->with('cajaEgresos')->first();
+        $caja_abierta  = Caja::where('propiedad_id', $propiedad_id)->where('estado_caja_id', 1)->with('montos.tipoMonto', 'montos.tipoMoneda')->with('user')->with('estadoCaja')->with('pagos.tipoComprobante','pagos.metodoPago', 'pagos.tipoMoneda', 'pagos.reserva')->with('egresos.tipoMoneda', 'egresos.egreso')->first();
 
         if (!is_null($caja_abierta)) {
             $monedas = [];
@@ -171,11 +171,12 @@ class CajaController extends Controller
                         $ingreso += $pago->monto_equivalente;
                     }
                 }
-                foreach ($caja_abierta->cajaEgresos as $egreso_caja) {
-                    if ($tipo_moneda->id == $egreso_caja->pivot->tipo_moneda_id) {
-                        $egreso += $egreso_caja->pivot->monto;
+                foreach ($caja_abierta->egresos as $egreso_caja) {
+                    if ($tipo_moneda->id == $egreso_caja->tipo_moneda_id) {
+                        $egreso += $egreso_caja->monto;
                     }
                 }
+
                 $moneda['nombre']               = $tipo_moneda->nombre;
                 $moneda['cantidad_decimales']   = $tipo_moneda->cantidad_decimales;
                 $moneda['ingreso']              = $ingreso;
