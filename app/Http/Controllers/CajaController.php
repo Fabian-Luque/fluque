@@ -18,6 +18,72 @@ use Validator;
 
 class CajaController extends Controller
 {
+    public function getCaja(Request $request)
+    {
+        if ($request->has('caja_id')) {
+            $caja_id = $request->input('caja_id');
+            $caja    = Caja::where('id', $caja_id)->first();
+            if (is_null($caja)) {
+                $retorno = array(
+                    'msj'    => "Caja no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia caja_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        if ($request->has('propiedad_id')) {
+            $propiedad_id = $request->input('propiedad_id');
+            $propiedad    = Propiedad::where('id', $propiedad_id)->with('tipoMonedas')->first();
+            if (is_null($propiedad)) {
+                $retorno = array(
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia propiedad_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        $caja  = Caja::where('id', $caja_id)->with('montos.tipoMonto', 'montos.tipoMoneda')->with('user')->with('estadoCaja')->with('pagos.tipoComprobante','pagos.metodoPago', 'pagos.tipoMoneda', 'pagos.reserva')->with('egresosCaja.tipoMoneda', 'egresosCaja.egreso')->first();
+
+        if (!is_null($caja)) {
+            $monedas = [];
+            foreach ($propiedad->tipoMonedas as $tipo_moneda) {
+                $ingreso = 0;
+                $egreso  = 0;
+                foreach ($caja->pagos as $pago) {
+                    if ($tipo_moneda->id == $pago->tipo_moneda_id) {
+                        $ingreso += $pago->monto_equivalente;
+                    }
+                }
+                foreach ($caja->egresosCaja as $egreso_caja) {
+                    if ($tipo_moneda->id == $egreso_caja->tipo_moneda_id) {
+                        $egreso += $egreso_caja->monto;
+                    }
+                }
+
+                $moneda['nombre']               = $tipo_moneda->nombre;
+                $moneda['cantidad_decimales']   = $tipo_moneda->cantidad_decimales;
+                $moneda['ingreso']              = $ingreso;
+                $moneda['egreso']               = $egreso;
+                $moneda['grafico']              = [['parametro' => 'Ingreso', 'valor' => $ingreso], ['parametro' => 'Egreso', 'valor' => $egreso]];
+                array_push($monedas, $moneda);
+            }
+            $data['caja']     = $caja;
+            $data['monedas']  = $monedas;
+
+            return $data;
+
+        }
+    }
 
     public function getCajas(Request $request)
     {
