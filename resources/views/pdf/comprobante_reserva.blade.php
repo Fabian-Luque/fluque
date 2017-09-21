@@ -215,6 +215,10 @@
                   <th class="data-tabla-detalles borde-derecha"><p class="titulo align-right">Total</p></th>
                   <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $nombre_moneda }} ${{ number_format($total) }}</p></td>
                 </tr>
+                <tr>
+                  <th class="data-tabla-detalles borde-derecha"><p class="titulo align-right">Por pagar</p></th>
+                  <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $nombre_moneda }} ${{ number_format($por_pagar) }}</p></td>
+                </tr> 
 
                 @else
                 <tr>

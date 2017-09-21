@@ -815,6 +815,7 @@ class PDFController extends Controller
         $reservas_pdf = [];
         $monto_alojamiento = 0;
         $consumo = 0;
+        $por_pagar = 0;
         $iva_reservas            = null;
         $tipo_moneda_reservas    = null;
         foreach($reservas as $id){
@@ -862,6 +863,7 @@ class PDFController extends Controller
 
 
         foreach ($reserva as $ra) {
+            $por_pagar += $ra->monto_por_pagar;
             $monto_alojamiento += $ra->monto_alojamiento;
             foreach($ra->huespedes as $huesped){
                 $huesped->monto_consumo = 0;
@@ -887,12 +889,12 @@ class PDFController extends Controller
                 $neto          = ($total / ($propiedad_iva + 1 ));
                 $iva           = ($neto * $propiedad_iva);
 
-                $pdf = PDF::loadView('pdf.comprobante_reserva', ['propiedad' => $propiedad , 'cliente'=> $cliente ,'reservas_pdf'=> $reservas_pdf, 'nombre_moneda' => $nombre_moneda,'iva_reservas' => $iva_reservas, 'neto' => $neto , 'iva' => $iva, 'total' => $total]);
+                $pdf = PDF::loadView('pdf.comprobante_reserva', ['propiedad' => $propiedad , 'cliente'=> $cliente ,'reservas_pdf'=> $reservas_pdf, 'nombre_moneda' => $nombre_moneda,'iva_reservas' => $iva_reservas, 'neto' => $neto , 'iva' => $iva, 'total' => $total, 'por_pagar' => $por_pagar]);
             
             } else {
 
                 $total = $monto_alojamiento;
-                $pdf   = PDF::loadView('pdf.comprobante_reserva', ['propiedad' => $propiedad, 'cliente'=> $cliente ,'reservas_pdf'=> $reservas_pdf, 'nombre_moneda' => $nombre_moneda,'iva_reservas' => $iva_reservas,'total' => $total]);
+                $pdf   = PDF::loadView('pdf.comprobante_reserva', ['propiedad' => $propiedad, 'cliente'=> $cliente ,'reservas_pdf'=> $reservas_pdf, 'nombre_moneda' => $nombre_moneda,'iva_reservas' => $iva_reservas,'total' => $total,'por_pagar' => $por_pagar]);
             
             }
 
@@ -900,7 +902,7 @@ class PDFController extends Controller
 
             $total = $monto_alojamiento;
 
-            $pdf = PDF::loadView('pdf.comprobante_reserva', ['propiedad' => $propiedad , 'cliente'=> $cliente ,'reservas_pdf'=> $reservas_pdf, 'nombre_moneda' => $nombre_moneda,'iva_reservas' => $iva_reservas,'total' => $total]);
+            $pdf = PDF::loadView('pdf.comprobante_reserva', ['propiedad' => $propiedad , 'cliente'=> $cliente ,'reservas_pdf'=> $reservas_pdf, 'nombre_moneda' => $nombre_moneda,'iva_reservas' => $iva_reservas,'total' => $total,'por_pagar' => $por_pagar]);
 
         }
         
