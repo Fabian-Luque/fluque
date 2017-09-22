@@ -194,6 +194,7 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::get('reportes/cajas', 'CajaController@getCajas');
 		Route::get('obtener/caja', 'CajaController@getCaja');
 		Route::get('obtener/egresos/caja', 'EgresoController@obtenerEgresosCaja');
+		Route::get('obtener/egresos/propiedad', 'EgresoController@obtenerEgresosPropiedad');
 
 
 

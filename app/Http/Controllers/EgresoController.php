@@ -138,6 +138,39 @@ class EgresoController extends Controller
 
     }
 
+    public function obtenerEgresosPropiedad(Request $request)
+    {
+        if ($request->has('propiedad_id')) {
+            $propiedad_id = $request->input('propiedad_id');
+            $propiedad    = Propiedad::where('id', $propiedad_id)->first();
+            if (is_null($propiedad)) {
+                $retorno = array(
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia propiedad_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        if ($request->has('fecha_inicio')) {
+            $getInicio       = new Carbon($request->input('fecha_inicio'));
+            $inicio          = $getInicio->startOfDay();
+            $zona_horaria    = ZonaHoraria::where('id', $propiedad->zona_horaria_id)->first();
+            $pais            = $zona_horaria->nombre;
+            $fecha_inicio    = Carbon::createFromFormat('Y-m-d H:i:s', $inicio, $pais)->tz('UTC');
+            $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $inicio, $pais)->tz('UTC')->addDay();
+        }
+
+        $egresos = EgresoPropiedad::where('propiedad_id', $propiedad_id)->where('created_at', '>=' , $fecha_inicio)->where('created_at', '<' , $fecha_fin)->with('egreso')->with('tipoMoneda')->get();
+
+        return $egresos;
+
+    }
+
 	public function ingresarEgresoCaja(Request $request)
     {
         if ($request->has('propiedad_id')) {
