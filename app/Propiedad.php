@@ -11,6 +11,10 @@ class Propiedad extends Model {
 
 	protected $fillable = [ 'id', 'nombre','tipo', 'numero_habitaciones','region','pais','ciudad','estado','direccion', 'telefono', 'email', 'nombre_responsable', 'descripcion','iva', 'porcentaje_deposito', 'pais_id', 'estado_cuenta_id','region_id', 'tipo_propiedad_id', 'tipo_cobro_id', 'zona_horaria_id'];
 
+    public function ubicacion() {
+        return $this->hasOne('App\UbicacionProp');
+    }
+
     public function user() {
         return $this->belongsToMany(
             'App\User', 

@@ -11,6 +11,17 @@ Route::get(
 	}
 );
 
+Route::post('guardar/ubicacion/propiedad', 'GeoController@UbicacionCreate');
+
+///Route::get('hotelescercanos', 'GeoController@Gmaps');
+Route::post('hoteles/cercanos', 'GeoController@Gmaps');
+Route::get(
+	'/gmap', 
+	function () {
+		return view('administrador.gmap');
+	}
+);
+
 //////////////////////// rutas dash ////////////////////////////
 
 
@@ -74,7 +85,7 @@ Route::group(['prefix' => 'dash', 'middleware' => ['auth']],
 );
 //////////////////////// rutas dash  ///////////////////////////////////////
 
-Route::post('eliminar/user', 'UserController@delete');
+Route::post('my', 'MyAllocatorController@ejm');
 
 
 

@@ -149,6 +149,9 @@ return [
         Illuminate\View\ViewServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
         Collective\Html\HtmlServiceProvider::class,
+        Grimzy\LaravelMysqlSpatial\SpatialServiceProvider::class,
+        GeneaLabs\Phpgmaps\PhpgmapsServiceProvider::class,
+        Stevebauman\Location\LocationServiceProvider::class,
 
       
         /*
@@ -213,6 +216,7 @@ return [
         'PDF' => Barryvdh\DomPDF\Facade::class,
         'Input' => Illuminate\Support\Facades\Input::class,
         'Form' => Collective\Html\FormFacade::class,
-        'Html' => Collective\Html\HtmlFacade::class
+        'Html' => Collective\Html\HtmlFacade::class,
+        'Location' => Stevebauman\Location\Facades\Location::class,
     ],
 ];

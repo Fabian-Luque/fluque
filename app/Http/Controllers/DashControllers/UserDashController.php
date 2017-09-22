@@ -10,16 +10,18 @@ use App\TipoHabitacion;
 use App\TipoPropiedad;
 use App\Estadocuenta;
 use App\User;
+use App\UbicacionProp;
 use App\ZonaHoraria;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Response;
 use JWTAuth;
+use Grimzy\LaravelMysqlSpatial\Types\Point;
 
 class UserDashController extends Controller {
 
 	public function CreateUser(Request $request) {
-        if ($request->has('name') && $request->has('email') && $request->has('password') && $request->has('phone') && $request->has('nombre') && $request->has('direccion') && $request->has('tipo_propiedad_id') && $request->has('tipo_cuenta') && $request->has('ciudad') && $request->has('numero_habitaciones')) {
+        if ($request->has('name') && $request->has('email') && $request->has('password') && $request->has('phone') && $request->has('nombre') && $request->has('direccion') && $request->has('tipo_propiedad_id') && $request->has('tipo_cuenta') && $request->has('ciudad') && $request->has('numero_habitaciones') && $request->has('latitud') && $request->has('longitud')) {
             $us = User::where('email',$request->email)->first();
             if (!isset($us->email)) {
                 $usuario = new User();
@@ -42,6 +44,14 @@ class UserDashController extends Controller {
                 $propiedad->save();
 
                 $usuario->propiedad()->attach($propiedad->id);
+
+                $ubicacion           = new UbicacionProp();
+                $ubicacion->prop_id  = $propiedad->id;
+                $ubicacion->location = new Point(
+                    $request->latitud, 
+                    $request->longitud
+                );
+                $ubicacion->save();
 
                 $data['accion'] = 'Crear usuario';
                 $data['msg'] = 'Usuario creado satisfactoriamente';
