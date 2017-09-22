@@ -424,6 +424,98 @@ class PropiedadController extends Controller
         return $grafico;
     }
 
+    /**
+     * Reporte egresos anual de propiedad
+     *
+     * @author ALLEN
+     *
+     * @param  Request          $request (propiedad_id, $ano_actua)
+     * @return Response::json
+     */
+    public function reporteEgresoAnual(Request $request)
+    {
+        if ($request->has('propiedad_id')) {
+            $propiedad_id = $request->input('propiedad_id');
+            $propiedad    = Propiedad::where('id', $propiedad_id)->first();
+            if (is_null($propiedad)) {
+                $retorno = array(
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia propiedad_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        if ($request->has('ano_actual')) {
+            $ano_actual = $request->input('ano_actual');
+        } else {
+            $retorno = array(
+               'msj'    => "No se envia año actual",
+               'errors' => true);
+            return Response::json($retorno, 404);
+        }
+
+        $moneda_propiedad = $propiedad->tipoMonedas;
+        $cantidad_monedas = count($moneda_propiedad);
+        $años             = Config::get('reportes.años');
+        $meses            = Config::get('reportes.meses');
+        $ingresos_mes     = [];
+
+        foreach ($meses as $mes) {
+            $mes_año = $mes;    
+            foreach ($años as $año) {
+                foreach ($año[$ano_actual] as $m) {
+                    $fecha_inicio = $m[$mes_año]['inicio'];
+                    $fecha_fin    = $m[$mes_año]['fin'];
+
+                    if ($fecha_inicio) {
+                        $getInicio       = new Carbon($fecha_inicio);
+                        $inicio          = $getInicio->startOfDay();
+                        $zona_horaria    = ZonaHoraria::where('id', $propiedad->zona_horaria_id)->first();
+                        $pais            = $zona_horaria->nombre;
+                        $fecha_inicio    = Carbon::createFromFormat('Y-m-d H:i:s', $inicio, $pais)->tz('UTC');
+                    }
+
+                    if ($fecha_fin) {
+                        $fin             = new Carbon($fecha_fin);
+                        $fechaFin        = $fin->addDay();
+                        $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $fechaFin, $pais)->tz('UTC');
+                    }
+
+                    $pagos = Pago::where('created_at','>=' , $fecha_inicio)->where('created_at', '<' , $fecha_fin)
+                        ->whereHas('reserva.habitacion', function($query) use($propiedad_id){
+                            $query->where('propiedad_id', $propiedad_id);
+                    })->with('tipoComprobante', 'metodoPago', 'tipoMoneda')->with('reserva')->get();
+
+                    $i = 1;
+                    foreach ($moneda_propiedad as $moneda) {
+                        $suma_pagos = 0;
+                        foreach ($pagos as $pago) { 
+                            if ($moneda->id == $pago->tipo_moneda_id) {
+                                $suma_pagos += $pago->monto_equivalente;
+                            }
+                        }
+                        $ingreso['moneda-'.$i]      = $moneda->nombre;
+                        $ingreso['monto-'.$i]       = $suma_pagos;
+                        $ingreso['mes']             = $mes_año;
+                        $ingreso['fecha_inicio']    = $m[$mes_año]['inicio'];
+                        $ingreso['fecha_fin']       = $m[$mes_año]['fin'];
+                        $i++;
+                    }
+                    $montos = $ingreso;
+                }
+            }
+            array_push($ingresos_mes, $montos);
+        }
+
+        $grafico =[ 'grafico_1' => $ingresos_mes];
+        return $grafico;
+    }
+
     public function reportes(Request $request){
 
         if ($request->has('propiedad_id')) {
