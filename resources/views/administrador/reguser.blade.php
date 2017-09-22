@@ -13,7 +13,6 @@
     @endforeach
 </ul>
 
-
 {!! Form::open(['route' => array('crear.user', ), 'autocomplete' => 'off']) !!}
 <div class="container" style="padding-top: 6%;">   
   <div class="row">
@@ -85,6 +84,11 @@
             'name'=>'nombre', 
             'placeholder'=>'Nombre Propiedad')) 
         !!}
+      </div>
+
+      <div class="form-group has-feedback">
+        {!! Form::label('Latitud') !!}
+        <input type="number" name="latitud" class="form-control" step="any" placeholder="Latitud Propiedad" required/>
       </div>
     
       </div>
@@ -158,6 +162,11 @@
                 </option>
           </select>
         </div>
+
+        <div class="form-group has-feedback">
+        {!! Form::label('Longitud') !!}
+        <input type="number" name="longitud" class="form-control" step="any" placeholder="Longitud Propiedad" required/>
+      </div>
       </div>
     </div>
   </div>
