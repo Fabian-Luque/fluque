@@ -177,7 +177,7 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::get('tipo/cobros', 'PropiedadController@getTipoCobro');
 		Route::post('editar/precios', 'TipoHabitacionController@editarPrecios');
 		Route::get('reportes/financiero/anual', 'PropiedadController@reporteFinancieroAnual');
-		Route::get('reportes/egresos/anual', 'PropiedadController@reporteFinancieroAnual');
+		Route::get('reportes/egresos/anual', 'PropiedadController@reporteEgresoAnual');
 		Route::get('reportes/financiero', 'PropiedadController@reporteFinanciero');
 		Route::get('obtener/pagos', 'PropiedadController@getPagos');
 		Route::get('obtener/reserva', 'ReservaController@getPagoReserva');

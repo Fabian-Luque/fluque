@@ -22,6 +22,8 @@ use App\TipoComprobante;
 use App\MetodoPago;
 use App\TipoFuente;
 use App\TipoCliente;
+use App\EgresoCaja;
+use App\EgresoPropiedad;
 use Illuminate\Support\Facades\Config;
 use Input;
 use Illuminate\Http\Request;
@@ -486,21 +488,27 @@ class PropiedadController extends Controller
                         $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $fechaFin, $pais)->tz('UTC');
                     }
 
-                    $pagos = Pago::where('created_at','>=' , $fecha_inicio)->where('created_at', '<' , $fecha_fin)
-                        ->whereHas('reserva.habitacion', function($query) use($propiedad_id){
+                    $egresos_caja = EgresoCaja::whereHas('caja', function($query) use($propiedad_id){
                             $query->where('propiedad_id', $propiedad_id);
-                    })->with('tipoComprobante', 'metodoPago', 'tipoMoneda')->with('reserva')->get();
+                    })->where('created_at', '>=' , $fecha_inicio)->where('created_at', '<' , $fecha_fin)->get();
+
+                    $egresos_propiedad = EgresoPropiedad::where('propiedad_id', $propiedad_id)->where('created_at', '>=' , $fecha_inicio)->where('created_at', '<' , $fecha_fin)->get();
 
                     $i = 1;
                     foreach ($moneda_propiedad as $moneda) {
-                        $suma_pagos = 0;
-                        foreach ($pagos as $pago) { 
-                            if ($moneda->id == $pago->tipo_moneda_id) {
-                                $suma_pagos += $pago->monto_equivalente;
+                        $suma_egresos = 0;
+                        foreach ($egresos_caja as $egreso) { 
+                            if ($moneda->id == $egreso->tipo_moneda_id) {
+                                $suma_egresos += $egreso->monto;
+                            }
+                        }
+                        foreach ($egresos_propiedad as $egreso) { 
+                            if ($moneda->id == $egreso->tipo_moneda_id) {
+                                $suma_egresos += $egreso->monto;
                             }
                         }
                         $ingreso['moneda-'.$i]      = $moneda->nombre;
-                        $ingreso['monto-'.$i]       = $suma_pagos;
+                        $ingreso['monto-'.$i]       = $suma_egresos;
                         $ingreso['mes']             = $mes_año;
                         $ingreso['fecha_inicio']    = $m[$mes_año]['inicio'];
                         $ingreso['fecha_fin']       = $m[$mes_año]['fin'];
