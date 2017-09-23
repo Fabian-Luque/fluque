@@ -35,6 +35,7 @@
             			<th>CIUDAD</th>
             			<th>DIRECCION</th>
             			<th>CUENTA</th>
+                        <th>CREADO</th>
         			</thead>
         			<tbody>
         				@if(!empty($props[0]['id']))
@@ -47,6 +48,11 @@
 									<td> {{ $prop->ciudad }} </td>
 									<td> {{ $prop->direccion }} </td>
                                     <td> {{ $prop->estado_cuenta }} </td>
+                                    <td> {{ $prop->created }} </td>
+                                    <td> 
+                                        <a href="upr" name="b-lista" value="{{ $prop->id }}" class="btn btn-info btn-xs">Editar</a>
+           
+                                    </td>
    								</tr>
    							@endforeach
 						@endif

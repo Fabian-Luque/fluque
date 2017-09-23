@@ -95,40 +95,41 @@ class UserDashController extends Controller {
     }
 
 	public function UpdateUser(Request $request)  {
-        if ($request->has('id') && $request->has('name') && $request->has('email') && $request->has('phone') && $request->has('nombre') && $request->has('direccion') && $request->has('tipo_propiedad_id') && $request->has('tipo_cuenta')) {
+        $rules = array(
+            'nombre'     => '',
+            'direccion'     => '',
+            'ciudad'     => '',
+            'numero_habitaciones'     => 'numeric',
+            'tipo_propiedad_id'     => 'numeric',
+            'estado_cuenta_id'     => 'numeric',
+            'name'     => '',
+            'email'    => 'email',
+            'phone'    => '',
+            'rol_id'   => 'numeric',
+            'estado_id'=> 'numeric',
+            'latitud'  => 'numeric',
+            'longitud' => 'numeric',
+        );
+
+        $validator = Validator::make($request->all(), $rules);
+        $data['accion'] = 'Actualizar Registro';
+
+        if (!$validator->fails()) {
             $usuario = User::find($request->id);
             if (!isset($us->email)) {
-                $usuario->name                  = $request->name;
-                $usuario->email                 = $request->email;
-                $usuario->phone                 = $request->phone;
-                $usuario->rol_id                = 1;
-                $usuario->estado_id             = 1;
-                $usuario->save();
-                $usuario->propiedad()->detach($usuario->id);
-                $propiedad                      = Propiedad::where(
-                    'id',
-                    $usuario->id
-                )->first();
+                $usuario->update($request->all());
+                $propiedad = Propiedad::find($request->id);
+                $propiedad->update($request->all());    
                 
-                $propiedad->nombre              = $request->nombre;
-                $propiedad->direccion           = $request->direccion;
-                $propiedad->ciudad              = $request->ciudad;
-                $propiedad->numero_habitaciones = $request->numero_habitaciones;
-                $propiedad->tipo_propiedad_id   = $request->tipo_propiedad_id;
-                $propiedad->estado_cuenta_id    = $request->tipo_cuenta;
-                $propiedad->save();
-
-                $usuario->propiedad()->attach($propiedad->id);
-                
-                $data['accion'] = 'Actualizar usuario';
-                $data['msg'] = 'Usuario Actualizado satisfactoriamente';
+                $data['msg'] = 'Registro Actualizado Satisfactoriamente';
             } else {
-                $data['accion'] = 'Actualizar usuario';
                 $data['msg'] = 'Error. El correo ingresado ya esta en uso';
             }
         } else {
-            $data['accion'] = 'Actualizar usuario';
-            $data['msg'] = 'Datos requeridos';
+            $data['msg'] = "";
+            foreach ($validator->messages()->all() as $msg) {
+                $data['msg'] .= $msg;
+            }
         }
         return redirect('dash/adminuser')->with(
             'respuesta', 
@@ -163,8 +164,26 @@ class UserDashController extends Controller {
     }
 
     public function getViewPropiedad(Request $request) {
-        $propiedades = Propiedad::all();        
-        foreach ($propiedades as $prop) {
+        $propiedades = Propiedad::all(); 
+        setlocale(LC_ALL,"es_CO.utf8");   
+
+        foreach ($propiedades as $prop) {    
+            $aux = str_replace(":", " ", $prop->created_at);
+            $aux = str_replace("-", " ", $aux);
+            $arr = (explode(' ', $aux));
+       
+            $prop->created = strftime(
+                "%A %d de %B del %Y",
+                mktime(
+                    $arr[5],
+                    $arr[4],
+                    $arr[3],
+                    $arr[2],
+                    $arr[1],
+                    $arr[0]
+                )
+            );
+
             if (isset($prop)) {
                 $prop->tipo_propiedad = TipoPropiedad::find(
                     $prop->tipo_propiedad_id

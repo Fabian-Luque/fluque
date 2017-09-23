@@ -13,7 +13,7 @@ Route::get(
 
 Route::post('guardar/ubicacion/propiedad', 'GeoController@UbicacionCreate');
 
-///Route::get('hotelescercanos', 'GeoController@Gmaps');
+Route::get('hotelescercanos', 'GeoController@Gmaps');
 Route::post('hoteles/cercanos', 'GeoController@Gmaps');
 Route::get(
 	'/gmap', 
@@ -64,6 +64,13 @@ Route::group(['prefix' => 'dash', 'middleware' => ['auth']],
 			'edituser', 
 			function() {
     			return View::make('administrador.editmodal');
+			}
+		);
+
+		Route::get(
+			'edituserp', 
+			function() {
+    			return View::make('administrador.editmodalp');
 			}
 		);
 

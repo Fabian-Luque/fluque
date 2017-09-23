@@ -58,12 +58,12 @@ class GeoController extends Controller {
 
         $mapa['mapa'] = $pgm->create_map();
 
-        return Response::json($mapa, 200);
-        /*return view('administrador.gmap')->with(
+        //return Response::json($mapa, 200);
+        return view('administrador.gmap')->with(
         	'map', 
-        	$pgm->create_map()
+        	$mapa['mapa']
         );
-        */
+        
 	}
 
     public function UbicacionCreate(Request $request) {
