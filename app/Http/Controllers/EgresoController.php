@@ -81,12 +81,9 @@ class EgresoController extends Controller
         $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {
-
             $data = [
                 'errors' => true,
-                'msg'    => $validator->messages(),
-            ];
-
+                'msg'    => $validator->messages(),];
             return Response::json($data, 400);
 
         } else {
@@ -102,6 +99,70 @@ class EgresoController extends Controller
 
         }
 	}
+
+    public function editarEgresoCaja(Request $request,$id)
+    {
+        $rules = array(
+            'monto'          => 'numeric', 
+            'descripcion'    => '',
+            'egreso_id'      => 'numeric',
+            'tipo_moneda_id' => 'numeric',
+        );
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            $data = [
+                'errors' => true,
+                'msg'    => $validator->messages(),];
+            return Response::json($data, 400);
+
+        } else {
+
+            $egreso = EgresoCaja::findOrFail($id);
+            $egreso->update($request->all());
+            $egreso->touch();
+
+            $data = [
+                'errors' => false,
+                'msg'    => 'Egreso actualizado satisfactoriamente',];
+            return Response::json($data, 201);
+
+        }
+
+    }
+
+    public function editarEgresoPropiedad(Request $request,$id)
+    {
+        $rules = array(
+            'monto'          => 'numeric',
+            'descripcion'    => '',
+            'egreso_id'      => 'numeric',
+            'tipo_moneda_id' => 'numeric',
+        );
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            $data = [
+                'errors' => true,
+                'msg'    => $validator->messages(),];
+            return Response::json($data, 400);
+
+        } else {
+
+            $egreso = EgresoPropiedad::findOrFail($id);
+            $egreso->update($request->all());
+            $egreso->touch();
+
+            $data = [
+                'errors' => false,
+                'msg'    => 'Egreso actualizado satisfactoriamente',];
+            return Response::json($data, 201);
+
+        }
+
+    }
 
     public function obtenerEgresosCaja(Request $request)
     {

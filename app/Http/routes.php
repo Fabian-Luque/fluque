@@ -178,6 +178,7 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::post('editar/precios', 'TipoHabitacionController@editarPrecios');
 		Route::get('reportes/financiero/anual', 'PropiedadController@reporteFinancieroAnual');
 		Route::get('reportes/egresos/anual', 'PropiedadController@reporteEgresoAnual');
+		Route::get('reportes/egresos', 'PropiedadController@reporteEgresos');
 		Route::get('reportes/financiero', 'PropiedadController@reporteFinanciero');
 		Route::get('obtener/pagos', 'PropiedadController@getPagos');
 		Route::get('obtener/reserva', 'ReservaController@getPagoReserva');
@@ -195,6 +196,8 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::get('obtener/caja', 'CajaController@getCaja');
 		Route::get('obtener/egresos/caja', 'EgresoController@obtenerEgresosCaja');
 		Route::get('obtener/egresos/propiedad', 'EgresoController@obtenerEgresosPropiedad');
+		Route::put('editar/egreso/caja/{id}', 'EgresoController@editarEgresoCaja');
+		Route::put('editar/egreso/propiedad/{id}', 'EgresoController@editarEgresoPropiedad');
 
 
 

@@ -24,6 +24,7 @@ use App\TipoFuente;
 use App\TipoCliente;
 use App\EgresoCaja;
 use App\EgresoPropiedad;
+use App\Egreso;
 use Illuminate\Support\Facades\Config;
 use Input;
 use Illuminate\Http\Request;
@@ -524,6 +525,94 @@ class PropiedadController extends Controller
         return $grafico;
     }
 
+    /**
+     * Reporte egresos de propiedad y caja por fechas
+     *
+     * @author ALLEN
+     *
+     * @param  Request          $request (propiedad_id, $fecha_inicio, $fecha_fin)
+     * @return Response::json
+     */
+    public function reporteEgresos(Request $request)
+    {
+        if ($request->has('propiedad_id')) {
+            $propiedad_id = $request->input('propiedad_id');
+            $propiedad    = Propiedad::where('id', $propiedad_id)->first();
+            if (is_null($propiedad)) {
+                $retorno = array(
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia propiedad_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        if ($request->has('fecha_inicio')) {
+            $getInicio       = new Carbon($request->input('fecha_inicio'));
+            $inicio          = $getInicio->startOfDay();
+            $zona_horaria    = ZonaHoraria::where('id', $propiedad->zona_horaria_id)->first();
+            $pais            = $zona_horaria->nombre;
+            $fecha_inicio    = Carbon::createFromFormat('Y-m-d H:i:s', $inicio, $pais)->tz('UTC');
+        }
+
+        if ($request->has('fecha_fin')) {
+            $fin             = new Carbon($request->input('fecha_fin'));
+            $fechaFin        = $fin->addDay();
+            $fin_fecha       = $fechaFin->startOfDay();
+            $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $fechaFin, $pais)->tz('UTC');
+        } else {
+            $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $inicio, $pais)->tz('UTC')->addDay();
+        }
+
+        $moneda_propiedad    = $propiedad->tipoMonedas;
+        $propiedad_egresos   = Egreso::where('propiedad_id', $propiedad_id)->get();
+
+        $egresos_caja = EgresoCaja::whereHas('caja', function($query) use($propiedad_id){
+                $query->where('propiedad_id', $propiedad_id);
+        })->where('created_at', '>=' , $fecha_inicio)->where('created_at', '<' , $fecha_fin)->get();
+
+        $egresos_propiedad = EgresoPropiedad::where('propiedad_id', $propiedad_id)->where('created_at', '>=' , $fecha_inicio)->where('created_at', '<' , $fecha_fin)->get();
+
+        $egresos_caja_propiedad = [];
+        $tipo_egresos           = [];
+        foreach ($propiedad_egresos as $egreso) {
+            $egresos_moneda = [];
+            foreach ($moneda_propiedad as $moneda) {
+                $suma_egreso   = 0;
+                foreach ($egresos_caja as $egreso_caja) {
+                    if ($moneda->id == $egreso_caja->tipo_moneda_id) {
+                        if ($egreso->id == $egreso_caja->egreso_id) {
+                            $suma_egreso += $egreso_caja->monto;
+                        }
+                    }
+                }
+                foreach ($egresos_propiedad as $egreso_propiedad) {
+                    if ($moneda->id == $egreso_propiedad->tipo_moneda_id) {
+                        if ($egreso->id == $egreso_propiedad->egreso_id) {
+                            $suma_egreso += $egreso_propiedad->monto;
+                        }
+                    }
+                }
+                $egresos['monto']                   = $suma_egreso;
+                $egresos['tipo_moneda_id']          = $moneda->id;
+                $egresos['nombre_moneda']           = $moneda->nombre;
+                $egresos['cantidad_decimales']      = $moneda->cantidad_decimales;  
+                array_push($egresos_moneda, $egresos);
+            }
+            $auxEgresos['id']           = $egreso->id;
+            $auxEgresos['nombre']       = $egreso->nombre;
+            $auxEgresos['egresos']      = $egresos_moneda;
+            array_push($egresos_caja_propiedad, $auxEgresos);
+        }
+
+        return $egresos_caja_propiedad;
+
+    }
+
     public function reportes(Request $request){
 
         if ($request->has('propiedad_id')) {
@@ -745,30 +834,6 @@ class PropiedadController extends Controller
         /*GRAFICO*/
 
        $cantidad_noches  = $fecha_inicio->diffInDays($fecha_fin); 
-
-
-/*       $auxFecha_inicio  = new Carbon($auxInicio);
-       $auxFecha_fin     = new Carbon($auxFin);
-       $suma             = 0;
-        while ($auxFecha_inicio < $auxFecha_fin) {
-            $fecha = $auxFecha_inicio->format('Y-m-d');
-
-            foreach ($reservas as $reserva) {
-                
-                if ($reserva->checkin <= $fecha && $reserva->checkout > $fecha) {
-                        
-                    if ($reserva->estado_reserva_id == 3 || $reserva->estado_reserva_id == 4 || $reserva->estado_reserva_id == 5) {
-                        
-                        $suma++;
-                    }
-                }
-            }
-
-
-         $auxFecha_inicio->addDay();
-        }*/
-
-
        $auxFecha_inicio  = new Carbon($auxInicio);
        $auxFecha_fin     = new Carbon($auxFin);
        $suma             = 0;
