@@ -310,7 +310,12 @@ class PropiedadController extends Controller
 
         $precio             = $total_habitacion[0];
         $monto_habitacion   = $precio['monto'];
-        $ADR                = ($monto_habitacion / $suma );
+
+        if ($suma != 0 && $monto_habitacion != 0) {
+            $ADR            = ($monto_habitacion / $suma );
+        } else {
+            $ADR            = 0;
+        }
         $ocupacion          = $suma / $total_noches; 
         $REVPAR             = $ocupacion * $ADR;
 
@@ -572,32 +577,35 @@ class PropiedadController extends Controller
         $moneda_propiedad    = $propiedad->tipoMonedas;
         $propiedad_egresos   = Egreso::where('propiedad_id', $propiedad_id)->get();
 
-        $egresos_caja = EgresoCaja::whereHas('caja', function($query) use($propiedad_id){
+        $caja_egresos = EgresoCaja::whereHas('caja', function($query) use($propiedad_id){
                 $query->where('propiedad_id', $propiedad_id);
         })->where('created_at', '>=' , $fecha_inicio)->where('created_at', '<' , $fecha_fin)->get();
 
-        $egresos_propiedad = EgresoPropiedad::where('propiedad_id', $propiedad_id)->where('created_at', '>=' , $fecha_inicio)->where('created_at', '<' , $fecha_fin)->get();
+        $propiedad_egresos = EgresoPropiedad::where('propiedad_id', $propiedad_id)->where('created_at', '>=' , $fecha_inicio)->where('created_at', '<' , $fecha_fin)->get();
 
         $egresos_caja_propiedad = [];
         $tipo_egresos           = [];
+        $egresos_caja           = [];
+        $egresos_propiedad      = [];
         foreach ($propiedad_egresos as $egreso) {
             $egresos_moneda = [];
             foreach ($moneda_propiedad as $moneda) {
-                $suma_egreso   = 0;
-                foreach ($egresos_caja as $egreso_caja) {
+                $suma_egreso            = 0;
+                foreach ($caja_egresos as $egreso_caja) {
                     if ($moneda->id == $egreso_caja->tipo_moneda_id) {
                         if ($egreso->id == $egreso_caja->egreso_id) {
                             $suma_egreso += $egreso_caja->monto;
                         }
                     }
                 }
-                foreach ($egresos_propiedad as $egreso_propiedad) {
+                foreach ($propiedad_egresos as $egreso_propiedad) {
                     if ($moneda->id == $egreso_propiedad->tipo_moneda_id) {
                         if ($egreso->id == $egreso_propiedad->egreso_id) {
                             $suma_egreso += $egreso_propiedad->monto;
                         }
                     }
                 }
+
                 $egresos['monto']                   = $suma_egreso;
                 $egresos['tipo_moneda_id']          = $moneda->id;
                 $egresos['nombre_moneda']           = $moneda->nombre;
@@ -610,7 +618,37 @@ class PropiedadController extends Controller
             array_push($egresos_caja_propiedad, $auxEgresos);
         }
 
-        return $egresos_caja_propiedad;
+        foreach ($moneda_propiedad as $moneda) {
+            $suma_egresos_caja      = 0;
+            $suma_egresos_propiedad = 0;
+            foreach ($caja_egresos as $egreso_caja) {
+                if ($moneda->id == $egreso_caja->tipo_moneda_id) {
+                    $suma_egresos_caja += $egreso_caja->monto;
+                }
+            }
+            foreach ($propiedad_egresos as $egreso_propiedad) {
+                if ($moneda->id == $egreso_propiedad->tipo_moneda_id) {
+                    $suma_egresos_propiedad += $egreso_propiedad->monto;
+                }
+            }
+            $aux_egresos_caja['monto']                   = $suma_egresos_caja;
+            $aux_egresos_caja['tipo_moneda_id']          = $moneda->id;
+            $aux_egresos_caja['nombre_moneda']           = $moneda->nombre;
+            $aux_egresos_caja['cantidad_decimales']      = $moneda->cantidad_decimales;  
+            array_push($egresos_caja, $aux_egresos_caja);
+
+            $aux_egresos_propiedad['monto']                   = $suma_egresos_propiedad;
+            $aux_egresos_propiedad['tipo_moneda_id']          = $moneda->id;
+            $aux_egresos_propiedad['nombre_moneda']           = $moneda->nombre;
+            $aux_egresos_propiedad['cantidad_decimales']      = $moneda->cantidad_decimales; 
+            array_push($egresos_propiedad, $aux_egresos_propiedad);
+        }
+
+        $data['egresos_total_caja']        = $egresos_caja;
+        $data['egresos_total_propiedad']   = $egresos_propiedad;
+        $data['egresos']                   = $egresos_caja_propiedad;
+        
+        return $data;
 
     }
 
