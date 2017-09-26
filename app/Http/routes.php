@@ -198,6 +198,9 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::get('obtener/egresos/propiedad', 'EgresoController@obtenerEgresosPropiedad');
 		Route::put('editar/egreso/caja/{id}', 'EgresoController@editarEgresoCaja');
 		Route::put('editar/egreso/propiedad/{id}', 'EgresoController@editarEgresoPropiedad');
+		Route::post('crear/politicas', 'PropiedadController@crearPoliticas');
+		Route::get('obtener/politicas', 'PropiedadController@getPoliticasPropiedad');
+
 
 
 

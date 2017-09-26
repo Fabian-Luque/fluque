@@ -50,6 +50,10 @@ class Propiedad extends Model {
     	return $this->hasMany('App\Habitacion', 'propiedad_id');
     }
 
+    public function politicas() {
+        return $this->hasMany('App\Politica', 'propiedad_id');
+    }
+
     public function servicios() {
     	return $this->hasMany('App\Servicio', 'propiedad_id');
     }

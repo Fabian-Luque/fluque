@@ -25,6 +25,7 @@ use App\TipoCliente;
 use App\EgresoCaja;
 use App\EgresoPropiedad;
 use App\Egreso;
+use App\Politica;
 use Illuminate\Support\Facades\Config;
 use Input;
 use Illuminate\Http\Request;
@@ -1045,6 +1046,70 @@ class PropiedadController extends Controller
 
     }
 
+    public function crearPoliticas(Request $request)
+    {
+        if ($request->has('propiedad_id')) {
+            $propiedad_id = $request->input('propiedad_id');
+            $propiedad    = Propiedad::where('id', $propiedad_id)->first();
+            if (is_null($propiedad)) {
+                $retorno = array(
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia propiedad_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        if ($request->has('politicas')) {
+            $politicas = $request->input('politicas');
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia propiedad_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        foreach ($politicas as $pt) {
+            $politica                  = new Politica();
+            $politica->descripcion     = $pt['descripcion'];
+            $politica->propiedad_id    = $propiedad_id;
+            $politica->save();
+        }
+
+        $retorno = array(
+            'msj'   => "Políticas ingresadas satisfactoriamente",
+            'erros' => false,);
+        return Response::json($retorno, 201);
+
+    }
+
+    public function getPoliticasPropiedad(Request $request)
+    {
+        if ($request->has('propiedad_id')) {
+            $propiedad_id = $request->input('propiedad_id');
+            $propiedad    = Propiedad::where('id', $propiedad_id)->first();
+            if (is_null($propiedad)) {
+                $retorno = array(
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia propiedad_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        $politicas = Politica::where('propiedad_id', $propiedad_id)->get();
+        return $politicas;
+
+    }
+
 
 
     public function ingresoServicio(Request $request)
@@ -1346,7 +1411,6 @@ class PropiedadController extends Controller
     {
 
         if ($request->has('propiedad_id') && $request->has('monedas')) {
-
             $propiedad             = Propiedad::where('id', $request->input('propiedad_id'))->first();
             $tipos_habitacion      = $propiedad->tiposHabitacion;
             $servicios             = $propiedad->servicios;
@@ -1355,7 +1419,6 @@ class PropiedadController extends Controller
             if (!is_null($propiedad)) {
 
                 $monedas = $request->input('monedas');
-
                 foreach ($monedas as $moneda) {
                     $clasificacion_moneda = $moneda['clasificacion_moneda_id'];
                     $tipo_moneda          = $moneda['tipo_moneda_id'];
@@ -1375,14 +1438,11 @@ class PropiedadController extends Controller
                                     $precio_temporada->save();
                                 }
                             }
-                            
                         }else{
-
                             foreach ($tipos_habitacion as $tipo) {
                                 $capacidad = $tipo->capacidad;
                                 foreach ($temporadas as $temporada) {
                                     for ($i=1; $i <= $capacidad  ; $i++) {
-
                                         $precio_temporada                     = new PrecioTemporada();
                                         $precio_temporada->cantidad_huespedes = $i;
                                         $precio_temporada->precio             = 0;
@@ -1398,11 +1458,8 @@ class PropiedadController extends Controller
                     }
 
                     if (count($servicios) > 0) {
-
                         foreach ($servicios as $servicio) {
-
                             $servicio_id = $servicio->id;
-
                             $precio                  = new PrecioServicio();
                             $precio->precio_servicio = null;
                             $precio->tipo_moneda_id  = $tipo_moneda;
@@ -1410,44 +1467,25 @@ class PropiedadController extends Controller
                             $precio->save();
 
                             $servicio->update(array('estado_servicio_id' => 2));
-
                         }
-
                     }
-
                 }
 
                 $retorno = array(
-
                     'msj'   => "Moneda ingresada correctamente",
-                    'erros' => false,
-                );
-
+                    'erros' => false,);
                 return Response::json($retorno, 201);
-
             } else {
-
                 $retorno = array(
-
                     'msj'    => "Propiedad no encontrada",
-                    'errors' => true,
-
-                );
-
+                    'errors' => true,);
                 return Response::json($retorno, 404);
-
             }
-
         } else {
-
             $retorno = array(
-
                 'msj'    => "La solicitud esta incompleta",
-                'errors' => true,
-            );
-
+                'errors' => true,);
             return Response::json($retorno, 400);
-
         }
 
     }
