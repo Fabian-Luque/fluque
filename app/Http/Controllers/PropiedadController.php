@@ -644,8 +644,24 @@ class PropiedadController extends Controller
             array_push($egresos_propiedad, $aux_egresos_propiedad);
         }
 
+        $total_egresos = [];
+        foreach ($moneda_propiedad as $moneda) {
+            $aux_total = 0;
+            foreach ($egresos_caja as $egreso) {
+                if ($egreso['tipo_moneda_id'] == $moneda->id) {
+                    $aux_total += $egreso['monto'];
+                }
+            }
+            $total['monto']              = $aux_total;
+            $total['tipo_moneda_id']     = $moneda->id;
+            $total['nombre_moneda']      = $moneda->nombre;
+            $total['cantidad_decimales'] = $moneda->cantidad_decimales;
+            array_push($total_egresos, $total);
+        }
+
         $data['egresos_total_caja']        = $egresos_caja;
         $data['egresos_total_propiedad']   = $egresos_propiedad;
+        $data['total_egresos']             = $total_egresos;
         $data['egresos']                   = $egresos_caja_propiedad;
         
         return $data;
