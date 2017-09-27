@@ -82,12 +82,6 @@ class Propiedad extends Model {
         return $this->hasMany('App\EgresoPropiedad', 'propiedad_id');
     }
 
-    // public function propiedadEgresos(){
-    //     return $this->belongsToMany('App\Egreso', 'egreso_propiedad')
-    //     ->withPivot('id', 'monto', 'descripcion')
-    //     ->withTimestamps();
-    // }
-
     public function calificacionHuespedes() {
 
         return $this->belongsToMany('App\Huesped', 'huesped_propiedad')
