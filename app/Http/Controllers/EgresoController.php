@@ -363,6 +363,30 @@ class EgresoController extends Controller
 
     }
 
+    public function eliminarEgresoCaja($id)
+    {
+        $egreso = EgresoCaja::findOrFail($id);
+        $egreso->delete();
+
+        $retorno = array(
+            'errors' => false,
+            'msj'    => 'Egreso eliminado satisfactoriamente',);
+        return Response::json($retorno, 202);
+
+    }
+
+    public function eliminarEgresoPropiedad($id)
+    {
+        $egreso = EgresoPropiedad::findOrFail($id);
+        $egreso->delete();
+
+        $retorno = array(
+            'errors' => false,
+            'msj'    => 'Egreso eliminado satisfactoriamente',);
+        return Response::json($retorno, 202);
+
+    }
+
 
 
 
