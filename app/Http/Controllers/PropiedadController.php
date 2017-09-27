@@ -652,6 +652,11 @@ class PropiedadController extends Controller
                     $aux_total += $egreso['monto'];
                 }
             }
+            foreach ($egresos_propiedad as $egreso) {
+                if ($egreso['tipo_moneda_id'] == $moneda->id) {
+                    $aux_total += $egreso['monto'];
+                }
+            }
             $total['monto']              = $aux_total;
             $total['tipo_moneda_id']     = $moneda->id;
             $total['nombre_moneda']      = $moneda->nombre;
