@@ -43,7 +43,7 @@ class Propiedad extends Model {
     }
 
     public function zonaHoraria() {
-        return $this->belongsTo('App\zonaHoraria', 'zona_horaria_id'); 
+        return $this->belongsTo('App\ZonaHoraria', 'zona_horaria_id'); 
     }
 
     public function habitaciones() {
