@@ -575,7 +575,7 @@ class PropiedadController extends Controller
         }
 
         $moneda_propiedad    = $propiedad->tipoMonedas;
-        $propiedad_egresos   = Egreso::where('propiedad_id', $propiedad_id)->get();
+        $prop_egresos        = Egreso::where('propiedad_id', $propiedad_id)->get();
 
         $caja_egresos = EgresoCaja::whereHas('caja', function($query) use($propiedad_id){
                 $query->where('propiedad_id', $propiedad_id);
@@ -587,7 +587,7 @@ class PropiedadController extends Controller
         $tipo_egresos           = [];
         $egresos_caja           = [];
         $egresos_propiedad      = [];
-        foreach ($propiedad_egresos as $egreso) {
+        foreach ($prop_egresos as $egreso) {
             $egresos_moneda = [];
             foreach ($moneda_propiedad as $moneda) {
                 $suma_egreso            = 0;
