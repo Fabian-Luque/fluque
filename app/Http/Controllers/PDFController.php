@@ -801,7 +801,7 @@ class PDFController extends Controller
         $reservas     = $request['reservas'];
         $propiedad_id = $request->input('propiedad_id');
         $cliente_id   = $request->input('cliente_id');
-        return $propiedad    = Propiedad::where('id', $propiedad_id)->with('pais', 'region')->with('politicas')->get();
+        $propiedad    = Propiedad::where('id', $propiedad_id)->with('pais', 'region')->with('politicas')->get();
         $cliente      = Cliente::where('id', $cliente_id)->with('pais', 'region')->get();
 
         $propiedad_iva = 0;
