@@ -1169,7 +1169,45 @@ class PropiedadController extends Controller
 
     }
 
+    public function editarPolitica(Request $request,$id)
+    {
+        $rules = array(
+            'descripcion'     => 'required',
+        );
 
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            $data = [
+                'errors' => true,
+                'msg'    => $validator->messages(),];
+            return Response::json($data, 400);
+
+        } else {
+
+            $politica = Politica::findOrFail($id);
+            $politica->update($request->all());
+            $politica->touch();
+
+            $data = [
+                'errors' => false,
+                'msj'    => 'Politica actualizada satisfactoriamente',];
+            return Response::json($data, 201);
+        }
+
+    }
+
+    public function eliminarPolitica($id)
+    {
+        $politica = Politica::findOrFail($id);
+        $politica->delete();
+
+        $retorno = array(
+            'errors' => false,
+            'msj'    => 'Politica eliminado satisfactoriamente',);
+        return Response::json($retorno, 202);
+
+    }
 
     public function ingresoServicio(Request $request)
     {

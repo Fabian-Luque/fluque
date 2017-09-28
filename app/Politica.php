@@ -8,7 +8,7 @@ class Politica extends Model
 {
     protected $table = 'politicas';
 
-	protected $fillable = [ 'descripcion', 'propiedad_id'];
+	protected $fillable = ['descripcion'];
 
     public function propiedad() {
         return $this->belongsTo('App\Propiedad', 'propiedad_id'); 
