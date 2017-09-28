@@ -4,6 +4,8 @@ use Illuminate\Http\Response as HttpResponse;
 
 Route::auth();
 
+Route::get('crear/permisos/roles', 'RolController@crearPermisos');
+
 Route::get(
 	'/', 
 	function () {
@@ -103,6 +105,7 @@ Route::group(['as' => 'api.jarvis.'], function() {
 	Route::post('registro', 'UserController@store');
 	Route::post('/signin', 'ApiAuthController@signin');
 
+		
 
 	Route::group(['middleware' => ['jwt.auth']], function () {
 		Route::post('cambio/password', 'ApiAuthController@ResetPassUser');
