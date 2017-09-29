@@ -22,6 +22,10 @@ use App\TipoComprobante;
 use App\MetodoPago;
 use App\TipoFuente;
 use App\TipoCliente;
+use App\EgresoCaja;
+use App\EgresoPropiedad;
+use App\Egreso;
+use App\Politica;
 use Illuminate\Support\Facades\Config;
 use Input;
 use Illuminate\Http\Request;
@@ -306,7 +310,12 @@ class PropiedadController extends Controller
 
         $precio             = $total_habitacion[0];
         $monto_habitacion   = $precio['monto'];
-        $ADR                = ($monto_habitacion / $suma );
+
+        if ($suma != 0 && $monto_habitacion != 0) {
+            $ADR            = ($monto_habitacion / $suma );
+        } else {
+            $ADR            = 0;
+        }
         $ocupacion          = $suma / $total_noches; 
         $REVPAR             = $ocupacion * $ADR;
 
@@ -422,6 +431,246 @@ class PropiedadController extends Controller
 
         $grafico =[ 'grafico_1' => $ingresos_mes];
         return $grafico;
+    }
+
+    /**
+     * Reporte egresos anual de propiedad
+     *
+     * @author ALLEN
+     *
+     * @param  Request          $request (propiedad_id, $ano_actua)
+     * @return Response::json
+     */
+    public function reporteEgresoAnual(Request $request)
+    {
+        if ($request->has('propiedad_id')) {
+            $propiedad_id = $request->input('propiedad_id');
+            $propiedad    = Propiedad::where('id', $propiedad_id)->first();
+            if (is_null($propiedad)) {
+                $retorno = array(
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia propiedad_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        if ($request->has('ano_actual')) {
+            $ano_actual = $request->input('ano_actual');
+        } else {
+            $retorno = array(
+               'msj'    => "No se envia año actual",
+               'errors' => true);
+            return Response::json($retorno, 404);
+        }
+
+        $moneda_propiedad = $propiedad->tipoMonedas;
+        $cantidad_monedas = count($moneda_propiedad);
+        $años             = Config::get('reportes.años');
+        $meses            = Config::get('reportes.meses');
+        $ingresos_mes     = [];
+
+        foreach ($meses as $mes) {
+            $mes_año = $mes;    
+            foreach ($años as $año) {
+                foreach ($año[$ano_actual] as $m) {
+                    $fecha_inicio = $m[$mes_año]['inicio'];
+                    $fecha_fin    = $m[$mes_año]['fin'];
+
+                    if ($fecha_inicio) {
+                        $getInicio       = new Carbon($fecha_inicio);
+                        $inicio          = $getInicio->startOfDay();
+                        $zona_horaria    = ZonaHoraria::where('id', $propiedad->zona_horaria_id)->first();
+                        $pais            = $zona_horaria->nombre;
+                        $fecha_inicio    = Carbon::createFromFormat('Y-m-d H:i:s', $inicio, $pais)->tz('UTC');
+                    }
+
+                    if ($fecha_fin) {
+                        $fin             = new Carbon($fecha_fin);
+                        $fechaFin        = $fin->addDay();
+                        $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $fechaFin, $pais)->tz('UTC');
+                    }
+
+                    $egresos_caja = EgresoCaja::whereHas('caja', function($query) use($propiedad_id){
+                            $query->where('propiedad_id', $propiedad_id);
+                    })->where('created_at', '>=' , $fecha_inicio)->where('created_at', '<' , $fecha_fin)->get();
+
+                    $egresos_propiedad = EgresoPropiedad::where('propiedad_id', $propiedad_id)->where('created_at', '>=' , $fecha_inicio)->where('created_at', '<' , $fecha_fin)->get();
+
+                    $i = 1;
+                    foreach ($moneda_propiedad as $moneda) {
+                        $suma_egresos = 0;
+                        foreach ($egresos_caja as $egreso) { 
+                            if ($moneda->id == $egreso->tipo_moneda_id) {
+                                $suma_egresos += $egreso->monto;
+                            }
+                        }
+                        foreach ($egresos_propiedad as $egreso) { 
+                            if ($moneda->id == $egreso->tipo_moneda_id) {
+                                $suma_egresos += $egreso->monto;
+                            }
+                        }
+                        $ingreso['moneda-'.$i]      = $moneda->nombre;
+                        $ingreso['monto-'.$i]       = $suma_egresos;
+                        $ingreso['mes']             = $mes_año;
+                        $ingreso['fecha_inicio']    = $m[$mes_año]['inicio'];
+                        $ingreso['fecha_fin']       = $m[$mes_año]['fin'];
+                        $i++;
+                    }
+                    $montos = $ingreso;
+                }
+            }
+            array_push($ingresos_mes, $montos);
+        }
+
+        $grafico =[ 'grafico_1' => $ingresos_mes];
+        return $grafico;
+    }
+
+    /**
+     * Reporte egresos de propiedad y caja por fechas
+     *
+     * @author ALLEN
+     *
+     * @param  Request          $request (propiedad_id, $fecha_inicio, $fecha_fin)
+     * @return Response::json
+     */
+    public function reporteEgresos(Request $request)
+    {
+        if ($request->has('propiedad_id')) {
+            $propiedad_id = $request->input('propiedad_id');
+            $propiedad    = Propiedad::where('id', $propiedad_id)->first();
+            if (is_null($propiedad)) {
+                $retorno = array(
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia propiedad_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        if ($request->has('fecha_inicio')) {
+            $getInicio       = new Carbon($request->input('fecha_inicio'));
+            $inicio          = $getInicio->startOfDay();
+            $zona_horaria    = ZonaHoraria::where('id', $propiedad->zona_horaria_id)->first();
+            $pais            = $zona_horaria->nombre;
+            $fecha_inicio    = Carbon::createFromFormat('Y-m-d H:i:s', $inicio, $pais)->tz('UTC');
+        }
+
+        if ($request->has('fecha_fin')) {
+            $fin             = new Carbon($request->input('fecha_fin'));
+            $fechaFin        = $fin->addDay();
+            $fin_fecha       = $fechaFin->startOfDay();
+            $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $fechaFin, $pais)->tz('UTC');
+        } else {
+            $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $inicio, $pais)->tz('UTC')->addDay();
+        }
+
+        $moneda_propiedad    = $propiedad->tipoMonedas;
+        $prop_egresos        = Egreso::where('propiedad_id', $propiedad_id)->get();
+
+        $caja_egresos = EgresoCaja::whereHas('caja', function($query) use($propiedad_id){
+                $query->where('propiedad_id', $propiedad_id);
+        })->where('created_at', '>=' , $fecha_inicio)->where('created_at', '<' , $fecha_fin)->get();
+
+        $propiedad_egresos = EgresoPropiedad::where('propiedad_id', $propiedad_id)->where('created_at', '>=' , $fecha_inicio)->where('created_at', '<' , $fecha_fin)->get();
+
+        $egresos_caja_propiedad = [];
+        $tipo_egresos           = [];
+        $egresos_caja           = [];
+        $egresos_propiedad      = [];
+        foreach ($prop_egresos as $egreso) {
+            $egresos_moneda = [];
+            foreach ($moneda_propiedad as $moneda) {
+                $suma_egreso            = 0;
+                foreach ($caja_egresos as $egreso_caja) {
+                    if ($moneda->id == $egreso_caja->tipo_moneda_id) {
+                        if ($egreso->id == $egreso_caja->egreso_id) {
+                            $suma_egreso += $egreso_caja->monto;
+                        }
+                    }
+                }
+                foreach ($propiedad_egresos as $egreso_propiedad) {
+                    if ($moneda->id == $egreso_propiedad->tipo_moneda_id) {
+                        if ($egreso->id == $egreso_propiedad->egreso_id) {
+                            $suma_egreso += $egreso_propiedad->monto;
+                        }
+                    }
+                }
+
+                $egresos['monto']                   = $suma_egreso;
+                $egresos['tipo_moneda_id']          = $moneda->id;
+                $egresos['nombre_moneda']           = $moneda->nombre;
+                $egresos['cantidad_decimales']      = $moneda->cantidad_decimales;  
+                array_push($egresos_moneda, $egresos);
+            }
+            $auxEgresos['id']           = $egreso->id;
+            $auxEgresos['nombre']       = $egreso->nombre;
+            $auxEgresos['egresos']      = $egresos_moneda;
+            array_push($egresos_caja_propiedad, $auxEgresos);
+        }
+
+        foreach ($moneda_propiedad as $moneda) {
+            $suma_egresos_caja      = 0;
+            $suma_egresos_propiedad = 0;
+            foreach ($caja_egresos as $egreso_caja) {
+                if ($moneda->id == $egreso_caja->tipo_moneda_id) {
+                    $suma_egresos_caja += $egreso_caja->monto;
+                }
+            }
+            foreach ($propiedad_egresos as $egreso_propiedad) {
+                if ($moneda->id == $egreso_propiedad->tipo_moneda_id) {
+                    $suma_egresos_propiedad += $egreso_propiedad->monto;
+                }
+            }
+            $aux_egresos_caja['monto']                   = $suma_egresos_caja;
+            $aux_egresos_caja['tipo_moneda_id']          = $moneda->id;
+            $aux_egresos_caja['nombre_moneda']           = $moneda->nombre;
+            $aux_egresos_caja['cantidad_decimales']      = $moneda->cantidad_decimales;  
+            array_push($egresos_caja, $aux_egresos_caja);
+
+            $aux_egresos_propiedad['monto']                   = $suma_egresos_propiedad;
+            $aux_egresos_propiedad['tipo_moneda_id']          = $moneda->id;
+            $aux_egresos_propiedad['nombre_moneda']           = $moneda->nombre;
+            $aux_egresos_propiedad['cantidad_decimales']      = $moneda->cantidad_decimales; 
+            array_push($egresos_propiedad, $aux_egresos_propiedad);
+        }
+
+        $total_egresos = [];
+        foreach ($moneda_propiedad as $moneda) {
+            $aux_total = 0;
+            foreach ($egresos_caja as $egreso) {
+                if ($egreso['tipo_moneda_id'] == $moneda->id) {
+                    $aux_total += $egreso['monto'];
+                }
+            }
+            foreach ($egresos_propiedad as $egreso) {
+                if ($egreso['tipo_moneda_id'] == $moneda->id) {
+                    $aux_total += $egreso['monto'];
+                }
+            }
+            $total['monto']              = $aux_total;
+            $total['tipo_moneda_id']     = $moneda->id;
+            $total['nombre_moneda']      = $moneda->nombre;
+            $total['cantidad_decimales'] = $moneda->cantidad_decimales;
+            array_push($total_egresos, $total);
+        }
+
+        $data['egresos_total_caja']        = $egresos_caja;
+        $data['egresos_total_propiedad']   = $egresos_propiedad;
+        $data['total_egresos']             = $total_egresos;
+        $data['egresos']                   = $egresos_caja_propiedad;
+        
+        return $data;
+
     }
 
     public function reportes(Request $request){
@@ -645,30 +894,6 @@ class PropiedadController extends Controller
         /*GRAFICO*/
 
        $cantidad_noches  = $fecha_inicio->diffInDays($fecha_fin); 
-
-
-/*       $auxFecha_inicio  = new Carbon($auxInicio);
-       $auxFecha_fin     = new Carbon($auxFin);
-       $suma             = 0;
-        while ($auxFecha_inicio < $auxFecha_fin) {
-            $fecha = $auxFecha_inicio->format('Y-m-d');
-
-            foreach ($reservas as $reserva) {
-                
-                if ($reserva->checkin <= $fecha && $reserva->checkout > $fecha) {
-                        
-                    if ($reserva->estado_reserva_id == 3 || $reserva->estado_reserva_id == 4 || $reserva->estado_reserva_id == 5) {
-                        
-                        $suma++;
-                    }
-                }
-            }
-
-
-         $auxFecha_inicio->addDay();
-        }*/
-
-
        $auxFecha_inicio  = new Carbon($auxInicio);
        $auxFecha_fin     = new Carbon($auxFin);
        $suma             = 0;
@@ -778,7 +1003,6 @@ class PropiedadController extends Controller
             array_push($montos, $m);
         }
 
-
         $auxFecha  = new Carbon($request->input('fecha_inicio'));
         for( $i = 0 ; $i <= $cantidad_noches; $i++){
 
@@ -787,7 +1011,6 @@ class PropiedadController extends Controller
 
             $auxFecha->addDay();
         }
-
 
         $ini  = new Carbon($request->input('fecha_inicio'));
         $inc  = $ini->startOfDay();
@@ -806,9 +1029,10 @@ class PropiedadController extends Controller
             }
         }
 
+
         $fechas_montos = [];
         foreach ($fechas as $fecha) {
-            $largo = count($fecha);
+            $largo = count($fecha['moneda']);
             for( $i = 0 ; $i < $largo ; $i++){
                 if ($fecha['moneda'][$i]['suma'] != 0 ){
                     if (!in_array($fecha, $fechas_montos)) {
@@ -882,7 +1106,109 @@ class PropiedadController extends Controller
 
     }
 
+    public function crearPoliticas(Request $request)
+    {
+        if ($request->has('propiedad_id')) {
+            $propiedad_id = $request->input('propiedad_id');
+            $propiedad    = Propiedad::where('id', $propiedad_id)->first();
+            if (is_null($propiedad)) {
+                $retorno = array(
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia propiedad_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
 
+        if ($request->has('politicas')) {
+            $politicas = $request->input('politicas');
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia propiedad_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        foreach ($politicas as $pt) {
+            $politica                  = new Politica();
+            $politica->descripcion     = $pt['descripcion'];
+            $politica->propiedad_id    = $propiedad_id;
+            $politica->save();
+        }
+
+        $retorno = array(
+            'msj'   => "Políticas ingresadas satisfactoriamente",
+            'erros' => false,);
+        return Response::json($retorno, 201);
+
+    }
+
+    public function getPoliticasPropiedad(Request $request)
+    {
+        if ($request->has('propiedad_id')) {
+            $propiedad_id = $request->input('propiedad_id');
+            $propiedad    = Propiedad::where('id', $propiedad_id)->first();
+            if (is_null($propiedad)) {
+                $retorno = array(
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia propiedad_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        $politicas = Politica::where('propiedad_id', $propiedad_id)->get();
+        return $politicas;
+
+    }
+
+    public function editarPolitica(Request $request,$id)
+    {
+        $rules = array(
+            'descripcion'     => 'required',
+        );
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            $data = [
+                'errors' => true,
+                'msg'    => $validator->messages(),];
+            return Response::json($data, 400);
+
+        } else {
+
+            $politica = Politica::findOrFail($id);
+            $politica->update($request->all());
+            $politica->touch();
+
+            $data = [
+                'errors' => false,
+                'msj'    => 'Politica actualizada satisfactoriamente',];
+            return Response::json($data, 201);
+        }
+
+    }
+
+    public function eliminarPolitica($id)
+    {
+        $politica = Politica::findOrFail($id);
+        $politica->delete();
+
+        $retorno = array(
+            'errors' => false,
+            'msj'    => 'Politica eliminado satisfactoriamente',);
+        return Response::json($retorno, 202);
+
+    }
 
     public function ingresoServicio(Request $request)
     {
@@ -1023,12 +1349,10 @@ class PropiedadController extends Controller
 
     public function index(Request $request)
     {
-
         if ($request->has('id')) {
 
-            $propiedad = Propiedad::where('id', $request->input('id'))->with('tipoPropiedad')->with('tipoMonedas.clasificacionMonedas')->get();
+            $propiedad = Propiedad::where('id', $request->input('id'))->with('tipoPropiedad','pais','region','zonaHoraria' ,'tipoMonedas.clasificacionMonedas', 'tipoCobro', 'politicas')->get();
             return $propiedad;
-
         }
 
     }
@@ -1183,7 +1507,6 @@ class PropiedadController extends Controller
     {
 
         if ($request->has('propiedad_id') && $request->has('monedas')) {
-
             $propiedad             = Propiedad::where('id', $request->input('propiedad_id'))->first();
             $tipos_habitacion      = $propiedad->tiposHabitacion;
             $servicios             = $propiedad->servicios;
@@ -1192,7 +1515,6 @@ class PropiedadController extends Controller
             if (!is_null($propiedad)) {
 
                 $monedas = $request->input('monedas');
-
                 foreach ($monedas as $moneda) {
                     $clasificacion_moneda = $moneda['clasificacion_moneda_id'];
                     $tipo_moneda          = $moneda['tipo_moneda_id'];
@@ -1212,14 +1534,11 @@ class PropiedadController extends Controller
                                     $precio_temporada->save();
                                 }
                             }
-                            
                         }else{
-
                             foreach ($tipos_habitacion as $tipo) {
                                 $capacidad = $tipo->capacidad;
                                 foreach ($temporadas as $temporada) {
                                     for ($i=1; $i <= $capacidad  ; $i++) {
-
                                         $precio_temporada                     = new PrecioTemporada();
                                         $precio_temporada->cantidad_huespedes = $i;
                                         $precio_temporada->precio             = 0;
@@ -1235,11 +1554,8 @@ class PropiedadController extends Controller
                     }
 
                     if (count($servicios) > 0) {
-
                         foreach ($servicios as $servicio) {
-
                             $servicio_id = $servicio->id;
-
                             $precio                  = new PrecioServicio();
                             $precio->precio_servicio = null;
                             $precio->tipo_moneda_id  = $tipo_moneda;
@@ -1247,44 +1563,25 @@ class PropiedadController extends Controller
                             $precio->save();
 
                             $servicio->update(array('estado_servicio_id' => 2));
-
                         }
-
                     }
-
                 }
 
                 $retorno = array(
-
                     'msj'   => "Moneda ingresada correctamente",
-                    'erros' => false,
-                );
-
+                    'erros' => false,);
                 return Response::json($retorno, 201);
-
             } else {
-
                 $retorno = array(
-
                     'msj'    => "Propiedad no encontrada",
-                    'errors' => true,
-
-                );
-
+                    'errors' => true,);
                 return Response::json($retorno, 404);
-
             }
-
         } else {
-
             $retorno = array(
-
                 'msj'    => "La solicitud esta incompleta",
-                'errors' => true,
-            );
-
+                'errors' => true,);
             return Response::json($retorno, 400);
-
         }
 
     }

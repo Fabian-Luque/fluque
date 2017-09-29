@@ -10,6 +10,7 @@ use App\TipoHabitacion;
 use App\User;
 use App\ZonaHoraria;
 use App\Estado;
+use App\Caja;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Response;
@@ -18,8 +19,19 @@ use JWTAuth;
 class UserController extends Controller {
     public function show($id){
         try {
-            $users = User::where('id', $id)->with('propiedad.tipoMonedas.clasificacionMonedas')->with('rol.permisos')->get();
+            $users = User::where('id', $id)->with('propiedad.tipoPropiedad','propiedad.pais','propiedad.region','propiedad.zonaHoraria' ,'propiedad.tipoMonedas.clasificacionMonedas', 'propiedad.tipoCobro')->with('rol.permisos')->get();
+            foreach ($users as $user) {
+                foreach ($user['propiedad'] as $propiedad) {
+                    $caja_abierta    = Caja::where('propiedad_id', $propiedad->id)->where('estado_caja_id', 1)->first();
+                    if (!is_null($caja_abierta)) {
+                        $propiedad->caja_abierta = 1;
+                    } else {
+                        $propiedad->caja_abierta = 0;
+                    }
+                }
+            }
             return $users;
+            
         } catch (ModelNotFoundException $e) {
             $data = [
                 'errors' => true,

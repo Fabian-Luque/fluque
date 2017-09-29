@@ -36,6 +36,11 @@ class User extends Authenticatable {
         return $this->belongsTo('App\Estado', 'estado_id');
     }
 
+
+    public function cajas(){
+        return $this->hasMany('App\Caja', 'user_id');
+    }
+
     public function setPasswordAttribute($value) {
         if(!empty($value)) { 
             $this->attributes['password'] = bcrypt($value);

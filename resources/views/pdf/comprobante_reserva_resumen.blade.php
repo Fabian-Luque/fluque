@@ -296,8 +296,6 @@
         <!--  Fin detalles  -->
 
 
-
-
       </div>
       <!--  Fin estado-cuenta  -->
     </div>
@@ -317,27 +315,6 @@
       </div>
     </div>
 
-        <div class="page-break"></div>
-
-    <div class="contenedor">
-
-      <div class="detalle-consumo">
-        <h2 class="titulo">Políticas de la propiedad</h2>
-
-        <ul>
-        @foreach($propiedad as $prop)
-          @foreach($prop['politicas'] as $politica)
-            <li>{{ $politica->descripcion }}</li>
-          @endforeach
-        @endforeach
-        </ul>
-
-
-
-      </div>
-
-    </div>
-
-
   </body>
 </html>
+
