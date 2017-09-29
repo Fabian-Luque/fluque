@@ -4,6 +4,8 @@ use Illuminate\Http\Response as HttpResponse;
 
 Route::auth();
 
+Route::get('crear/permisos/roles', 'RolController@crearPermisos');
+
 Route::get(
 	'/', 
 	function () {
@@ -103,6 +105,7 @@ Route::group(['as' => 'api.jarvis.'], function() {
 	Route::post('registro', 'UserController@store');
 	Route::post('/signin', 'ApiAuthController@signin');
 
+		
 
 	Route::group(['middleware' => ['jwt.auth']], function () {
 		Route::post('cambio/password', 'ApiAuthController@ResetPassUser');
@@ -139,6 +142,7 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::post('pdf/pagos', 'PDFController@pagos');
 		Route::post('pdf/reservas', 'PDFController@reservas');
 		Route::post('pdf/comprobante/reserva', 'PDFController@comprobanteReserva');
+		Route::post('pdf/comprobante/reserva/resumen', 'PDFController@comprobanteReservaResumen');
 		Route::post('ingreso/servicio', 'PropiedadController@ingresoServicio');
 		Route::post('ingreso/servicio/cliente', 'ClienteController@ingresoServicio');
 		Route::get('cliente/empresa', 'ClienteController@getClientes');
@@ -177,6 +181,8 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::get('tipo/cobros', 'PropiedadController@getTipoCobro');
 		Route::post('editar/precios', 'TipoHabitacionController@editarPrecios');
 		Route::get('reportes/financiero/anual', 'PropiedadController@reporteFinancieroAnual');
+		Route::get('reportes/egresos/anual', 'PropiedadController@reporteEgresoAnual');
+		Route::get('reportes/egresos', 'PropiedadController@reporteEgresos');
 		Route::get('reportes/financiero', 'PropiedadController@reporteFinanciero');
 		Route::get('obtener/pagos', 'PropiedadController@getPagos');
 		Route::get('obtener/reserva', 'ReservaController@getPagoReserva');
@@ -184,6 +190,26 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::get('rol/permisos', 'RolController@getPermisos');
 		Route::post('crear/usuario', 'UserController@crearUsuario');
 		Route::get('estados', 'UserController@getEstados');
+		Route::post('abrir/caja', 'CajaController@abrirCaja');
+		Route::post('cerrar/caja', 'CajaController@cerrarCaja');
+		Route::get('tipo-monto', 'CajaController@tipoMonto');
+		Route::get('caja/abierta', 'CajaController@getCajaAbierta');
+		Route::post('ingresar/egreso/caja', 'EgresoController@ingresarEgresoCaja');
+		Route::post('ingresar/egreso/propiedad', 'EgresoController@ingresarEgresoPropiedad');
+		Route::get('reportes/cajas', 'CajaController@getCajas');
+		Route::get('obtener/caja', 'CajaController@getCaja');
+		Route::get('obtener/egresos/caja', 'EgresoController@obtenerEgresosCaja');
+		Route::get('obtener/egresos/propiedad', 'EgresoController@obtenerEgresosPropiedad');
+		Route::put('editar/egreso/caja/{id}', 'EgresoController@editarEgresoCaja');
+		Route::put('editar/egreso/propiedad/{id}', 'EgresoController@editarEgresoPropiedad');
+		Route::post('crear/politicas', 'PropiedadController@crearPoliticas');
+		Route::delete('egreso/caja/{id}', 'EgresoController@eliminarEgresoCaja');
+		Route::delete('egreso/propiedad/{id}', 'EgresoController@eliminarEgresoPropiedad');
+		Route::put('editar/politica/{id}', 'PropiedadController@editarPolitica');
+		Route::delete('eliminar/politica/{id}', 'PropiedadController@eliminarPolitica');
+
+
+
 
 		Route::resource('user', 'UserController', ['except' => ['create', 'edit','store']]);
 		Route::resource('propiedad', 'PropiedadController', ['except' => ['create', 'edit', 'store']]);
@@ -194,8 +220,9 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::resource('huesped', 'HuespedController', ['except' => ['create', 'edit']]);
 		Route::resource('temporada', 'TemporadaController', ['except' => ['create', 'edit']]);
 		Route::resource('tipo/habitacion', 'TipoHabitacionController', ['except' => ['create', 'edit']]);
-
 		Route::resource('rol', 'RolController', ['except' => ['create', 'edit']]);
+		Route::resource('egreso', 'EgresoController', ['except' => ['create', 'edit']]);
+
 });
 
 });

@@ -43,11 +43,15 @@ class Propiedad extends Model {
     }
 
     public function zonaHoraria() {
-        return $this->belongsTo('App\zonaHoraria', 'zona_horaria_id'); 
+        return $this->belongsTo('App\ZonaHoraria', 'zona_horaria_id'); 
     }
 
     public function habitaciones() {
     	return $this->hasMany('App\Habitacion', 'propiedad_id');
+    }
+
+    public function politicas() {
+        return $this->hasMany('App\Politica', 'propiedad_id');
     }
 
     public function servicios() {
@@ -66,7 +70,20 @@ class Propiedad extends Model {
         return $this->belongsTo('App\TipoCobro', 'tipo_cobro_id');
     }
 
+    public function cajas(){
+        return $this->hasMany('App\Caja', 'propiedad_id');
+    }
+
+    public function egresos(){
+        return $this->hasMany('App\Egreso', 'propiedad_id');
+    }
+
+    public function egresosPropiedad(){
+        return $this->hasMany('App\EgresoPropiedad', 'propiedad_id');
+    }
+
     public function calificacionHuespedes() {
+
         return $this->belongsToMany('App\Huesped', 'huesped_propiedad')
         ->withPivot('comentario', 'calificacion')
         ->withTimestamps();

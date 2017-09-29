@@ -17,6 +17,7 @@ use App\Propiedad;
 use App\Servicio;
 use App\Temporada;
 use App\TipoComprobante;
+use App\Caja;
 use App\HuespedReservaServicio;
 use Illuminate\Http\Request;
 use Response;
@@ -153,7 +154,7 @@ class ReservaController extends Controller
 
         }
 
-        $reservas = $reserva->select('reservas.id', 'numero_reserva' ,'checkin', 'habitacion_id', 'estado_reserva_id' ,'checkout', 'monto_total','estado_reserva.nombre as estado' ,'cliente_id', 'clientes.nombre as nombre_cliente', 'clientes.apellido as apellido_cliente', 'noches', 'tipo_moneda.nombre as nombre_moneda', 'cantidad_decimales')
+        $reservas = $reserva->select('reservas.id', 'numero_reserva' ,'checkin', 'habitacion_id', 'estado_reserva_id' ,'checkout', 'monto_total','estado_reserva.nombre as estado', 'ocupacion','cliente_id', 'clientes.nombre as nombre_cliente', 'clientes.apellido as apellido_cliente', 'noches', 'tipo_moneda.nombre as nombre_moneda', 'cantidad_decimales')
         ->whereHas('habitacion', function($query) use($propiedad_id){
         $query->where('propiedad_id', $propiedad_id);})
         ->with(['huespedes' => function ($q){
@@ -1201,552 +1202,442 @@ class ReservaController extends Controller
     }
 
 
-  public function getReservas(Request $request)
-  {
-    if($request->has('propiedad_id')){
-      $id        = $request->input('propiedad_id');
-      $propiedad = Propiedad::where('id', $id)->first();
-      if(is_null($propiedad)){
-        $retorno = array(
-           'msj'    => "Propiedad no encontrada",
-           'errors' => true);
-        return Response::json($retorno, 404);
-      }
-    }else{
-      $retorno = array(
-          'msj'    => "No se envia propiedad_id",
-          'errors' => true);
-      return Response::json($retorno, 400);
-    }
+    public function getReservas(Request $request)
+    {
+        if ($request->has('propiedad_id')) {
+            $id        = $request->input('propiedad_id');
+            $propiedad = Propiedad::where('id', $id)->first();
+            if(is_null($propiedad)){
+                $retorno = array(
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+          $retorno = array(
+              'msj'    => "No se envia propiedad_id",
+              'errors' => true);
+          return Response::json($retorno, 400);
+        }
     
-    $reservas = Reserva::select('reservas.id', 'numero_reserva' ,'checkin', 'habitacion_id', 'estado_reserva_id' ,'checkout','ocupacion', 'monto_total','estado_reserva.nombre as estado' ,'cliente_id', 'clientes.nombre as nombre_cliente', 'clientes.apellido as apellido_cliente', 'noches', 'tipo_moneda.nombre as nombre_moneda', 'cantidad_decimales')
-    ->whereHas('habitacion', function($query) use($id){
-        $query->where('propiedad_id', $id);})
-    ->with(['huespedes' => function ($q){
-        $q->select('huespedes.id', 'nombre', 'apellido');}])
-    ->with('habitacion.tipoHabitacion')
-    ->with('cliente.pais', 'cliente.region')
-    ->join('clientes', 'clientes.id','=','cliente_id')
-    ->join('tipo_moneda', 'tipo_moneda.id', '=', 'tipo_moneda_id')
-    ->join('estado_reserva', 'estado_reserva.id', '=', 'estado_reserva_id')
-    ->orderBy('reservas.id', 'desc')
-    ->take(50)
-    ->get();
-
-    $data = ['reservas' => $reservas,];
-
-    return $data;      
-  }
-
-
-    public function pagoReserva(Request $request){
-
-     
-      foreach ($request['pagos'] as $pago){
-
-      $metodo_pago = $pago['metodo_pago_id'];
-      $monto_pago =  $pago['monto_pago'];
-      $numero_operacion = $pago['numero_operacion'];
-      $tipo_comprobante_id = $pago['tipo_comprobante_id'];
-      $tipo_pago = $pago['tipo_pago'];
-      $reserva_id = $pago['reserva_id'];
-      $tipo_moneda_id = $pago['tipo_moneda_id'];
-      $monto_equivalente = $pago['monto_equivalente'];
-      
-
-      if(isset($pago['numero_cheque'])){
-      $numero_cheque = $pago['numero_cheque'];
-      }
-
-
-      $reserva = Reserva::where('id', $reserva_id)->first();
-
-
-      if($tipo_pago == "Confirmacion de reserva"){
-
-            if($reserva->estado_reserva_id == 1){
-
-               $monto = $reserva->monto_por_pagar;
-               $monto -= $monto_pago;
-
-               if(isset($pago['monto_pago']) && !is_null($monto_equivalente)){
-  
-               $pago                        = new Pago();
-               $pago->monto_pago            = $monto_pago;
-               $pago->monto_equivalente     = $monto_equivalente; 
-               $pago->tipo                  = $tipo_pago;
-               $pago->numero_operacion      = $numero_operacion;
-               $pago->tipo_comprobante_id   = $tipo_comprobante_id;
-               $pago->metodo_pago_id        = $metodo_pago;
-               $pago->tipo_moneda_id        = $tipo_moneda_id;
-               if($metodo_pago == 4){
-               $pago->numero_cheque         = $numero_cheque;
-               }
-               $pago->reserva_id            = $reserva->id;
-               $pago->save();
-                
-               }else{
-
-               $pago                        = new Pago();
-               $pago->monto_pago            = $monto_pago;
-               $pago->monto_equivalente     = $monto_pago; 
-               $pago->tipo                  = $tipo_pago;
-               $pago->numero_operacion      = $numero_operacion;
-               $pago->tipo_comprobante_id   = $tipo_comprobante_id;
-               $pago->metodo_pago_id        = $metodo_pago;
-               $pago->tipo_moneda_id        = $tipo_moneda_id;
-               if($metodo_pago == 4){
-               $pago->numero_cheque         = $numero_cheque;
-               }
-               $pago->reserva_id            = $reserva->id;
-               $pago->save();
-
-
-
-               }
-
-               $reserva->update(array('monto_por_pagar' => $monto , 'estado_reserva_id' => 2));
-
-               $data = array(
-
-                'msj' => "Deposito sugerido ingresado satisfactoriamente",
-                'errors' =>false
-               );
-
-                return Response::json($data, 200);
-
-
-
-            }else{
-
-                $data = array(
-
-                'msj' => "No permitido",
-                'errors' =>true
-                );
-
-                return Response::json($data, 400);
-
-
-
-            }
-
-
-      }else{
-
-
-          $monto = $reserva->monto_por_pagar;
-          $monto -= $monto_pago;
-
-           if($tipo_pago == "Pago habitacion"){
-
-           $pago_habitacion =  Pago::where('reserva_id', $reserva_id)->where('tipo', 'Pago habitacion')->get();
-
-           if(empty($pago_habitacion)) {
-              
-              $total_habitacion_pago = 0;
-
-           }else{
-
-
-           $total_habitacion_pago = 0;
-           foreach ($pago_habitacion as $pago) {
-
-              $total_habitacion_pago += $pago->monto_pago;
-
-            
-           }
-            
-           }
-
-
-              if($total_habitacion_pago != $reserva->monto_alojamiento){
-
-        
-                if($monto_pago <= $reserva->monto_por_pagar){
-
-
-                     if(isset($pago['monto_pago']) && !is_null($monto_equivalente)){
-
-                     $pago                        = new Pago();
-                     $pago->monto_pago            = $monto_pago;
-                     $pago->monto_equivalente     = $monto_equivalente; 
-                     $pago->tipo                  = $tipo_pago;
-                     $pago->numero_operacion      = $numero_operacion;
-                     $pago->tipo_comprobante_id   = $tipo_comprobante_id;
-                     $pago->metodo_pago_id        = $metodo_pago;
-                     $pago->tipo_moneda_id        = $tipo_moneda_id;
-                     if($metodo_pago == 4){
-                     $pago->numero_cheque         = $numero_cheque;
-                     }
-                     $pago->reserva_id            = $reserva->id;
-                     $pago->save();
-                      
-                     }else{
-                      
-                     $pago                        = new Pago();
-                     $pago->monto_pago            = $monto_pago;
-                     $pago->monto_equivalente     = $monto_pago; 
-                     $pago->tipo                  = $tipo_pago;
-                     $pago->numero_operacion      = $numero_operacion;
-                     $pago->tipo_comprobante_id   = $tipo_comprobante_id;
-                     $pago->metodo_pago_id        = $metodo_pago;
-                     $pago->tipo_moneda_id        = $tipo_moneda_id;
-                     if($metodo_pago == 4){
-                     $pago->numero_cheque         = $numero_cheque;
-                     }
-                     $pago->reserva_id            = $reserva->id;
-                     $pago->save();
-
-                   }
-
-                      if ($reserva->estado_reserva_id == 1 ) {
-                        $reserva->update(array('estado_reserva_id' => $monto, 'estado_reserva_id' => 2));
-                      }
-
-                      if($reserva->estado_reserva_id == 5 && $monto == 0){
-
-                        $reserva->update(array('monto_por_pagar' => $monto, 'estado_reserva_id' => 4));
-
-                      }else{
-
-                        $reserva->update(array('monto_por_pagar' => $monto));
-
-                      }
-
-
-
-
-                }else{
-
-
-                    $data = array(
-
-                    'msj' => "El monto a pagar no corresponde",
-                    'errors' =>true
-                    );
-
-                    return Response::json($data, 400);
-
-
-                }
-
-
-              }else{
-
-
-                    $data = array(
-
-                    'msj' => "La habitacion ya fue pagada",
-                    'errors' =>true
-                    );
-
-                    return Response::json($data, 400);
-
-
-
-              }
-
-
-            }
-
-            if($tipo_pago == "Pago consumos"){
-
-            $consumos = HuespedReservaServicio::where('reserva_id', $reserva_id)->where('estado', 'Por pagar')->get();
-
-                  if(!empty($consumos)){
-
-                      $monto_consumos = 0;  // total monto consumos por pagar
-                      foreach ($consumos as $consumo){
-                        $monto_consumos += $consumo->precio_total;
-                            
-                     }
-
-                  
-
-                  if($monto_consumos <= $reserva->monto_por_pagar){
-
-
-                     if(isset($pago['monto_pago']) && !is_null($monto_equivalente)){
-                     
-                     $pago                        = new Pago();
-                     $pago->monto_pago            = $monto_pago;
-                     $pago->monto_equivalente     = $monto_equivalente; 
-                     $pago->tipo                  = $tipo_pago;
-                     $pago->numero_operacion      = $numero_operacion;
-                     $pago->tipo_comprobante_id   = $tipo_comprobante_id;
-                     $pago->metodo_pago_id        = $metodo_pago;
-                     $pago->tipo_moneda_id        = $tipo_moneda_id;
-                     if($metodo_pago == 4){
-                     $pago->numero_cheque         = $numero_cheque;
-                     }
-                     $pago->reserva_id            = $reserva->id;
-                     $pago->save();
-                      
-                     }else{
-
-                     $pago                        = new Pago();
-                     $pago->monto_pago            = $monto_pago;
-                     $pago->monto_equivalente     = $monto_pago; 
-                     $pago->tipo                  = $tipo_pago;
-                     $pago->numero_operacion      = $numero_operacion;
-                     $pago->tipo_comprobante_id   = $tipo_comprobante_id;
-                     $pago->metodo_pago_id        = $metodo_pago;
-                     $pago->tipo_moneda_id        = $tipo_moneda_id;
-                     if($metodo_pago == 4){
-                     $pago->numero_cheque         = $numero_cheque;
-                     }
-                     $pago->reserva_id            = $reserva->id;
-                     $pago->save();
-
-                   }
-
-                    foreach ($consumos as $consumo){
- 
-                      $consumo->update(array('estado' => 'Pagado', 'pago_id' => $pago->id));
-
-                    }
-
-                      if($reserva->estado_reserva_id == 5 && $monto == 0){
-
-                        $reserva->update(array('monto_por_pagar' => $monto, 'estado_reserva_id' => 4));
-
-                      }else{
-
-                        $reserva->update(array('monto_por_pagar' => $monto));
-
-                      }
-
-
-                    }else{
-
-                    $data = array(
-
-                      'msj' => "El monto a pagar no corresponde",
-                      'errors' =>true
-                      );
-
-                      return Response::json($data, 400);
-
-
-                    }
-
-
-
-                }else{
-
-
-                    $data = array(
-
-                    'msj' => "No hay consumos por pagar",
-                    'errors' =>true
-                    );
-
-                    return Response::json($data, 400);
-
-
-                }
-
-
-            }
-
-
-      }
-
-      }
-
-                   $data = array(
-
-                    'msj' => "Pago ingresado satisfactoriamente",
-                    'errors' =>false
-                   );
-
-                    return Response::json($data, 201);
-
-
+        $reservas = Reserva::select('reservas.id', 'numero_reserva' ,'checkin', 'habitacion_id', 'estado_reserva_id' ,'checkout','ocupacion', 'monto_total','estado_reserva.nombre as estado' ,'cliente_id', 'clientes.nombre as nombre_cliente', 'clientes.apellido as apellido_cliente', 'noches', 'tipo_moneda.nombre as nombre_moneda', 'cantidad_decimales')
+        ->whereHas('habitacion', function($query) use($id){
+            $query->where('propiedad_id', $id);})
+        ->with(['huespedes' => function ($q){
+            $q->select('huespedes.id', 'nombre', 'apellido');}])
+        ->with('habitacion.tipoHabitacion')
+        ->with('cliente.pais', 'cliente.region')
+        ->join('clientes', 'clientes.id','=','cliente_id')
+        ->join('tipo_moneda', 'tipo_moneda.id', '=', 'tipo_moneda_id')
+        ->join('estado_reserva', 'estado_reserva.id', '=', 'estado_reserva_id')
+        ->orderBy('reservas.id', 'desc')
+        ->take(50)
+        ->get();
+
+        $data = ['reservas' => $reservas,];
+
+        return $data;      
     }
 
 
-    public function pagoConsumo(Request $request){
-
-
-
-        if($request->has('servicio_id') && $request->has('reserva_id')){
-
-        $servicios = $request->input('servicio_id');
-        $monto_pago = $request->input('monto_pago');
-        $tipo_comprobante_id = $request->input('tipo_comprobante_id');
-        $numero_operacion = $request->input('numero_operacion');
-        $metodo_pago = $request->input('metodo_pago_id');
-        $numero_cheque = $request->input('numero_cheque');
-        $tipo_moneda_id = $request->input('tipo_moneda_id');
-
-
-        $reserva_id = $request->input('reserva_id');
-
-        $reserva = Reserva::where('id', $reserva_id)->first();
-
-        if(!is_null($reserva)){
-
-        $total_consumos = 0;
-        $monto_por_pagar = $reserva->monto_por_pagar;
-
-        $consumos_por_pagar = [];
-        foreach($servicios as $servicio){
-            $consumo =  HuespedReservaServicio::where('id', $servicio)->first();
-
-            if($consumo->estado == 'Por pagar'){
-
-                array_push($consumos_por_pagar, $consumo);
-
-
-
-            }
-
-        }
-
-        if(count($consumos_por_pagar) > 0){
-
-          foreach ($consumos_por_pagar as  $consumo) {
-              
-                $total_consumos += $consumo->precio_total;
-
-
-          }
-
-        }else{
-
-
-                $retorno = array(
-
-                'msj'    => "Los consumos ya fueron pagados",
-                'errors' => true
-                );
-
-                return Response::json($retorno, 400);
-
-
-        }
-
-
-        $total = $monto_por_pagar - $monto_pago;
-
-        if($monto_pago <= $reserva->monto_por_pagar){
-
-
-                if($reserva->estado_reserva_id == 5 && $total == 0){
-
-                  $reserva->update(array('monto_por_pagar' => $total, 'estado_reserva_id' => 4));
-
-                }else{
-
-                  $reserva->update(array('monto_por_pagar' => $total));
-
-                }
-
-
-                if($request->has('monto_pago') && $request->has('monto_equivalente')){
-                    $monto_equivalente = $request->input('monto_equivalente');
-
-
-                    $pago                        = new Pago();
-                    $pago->monto_pago            = $monto_pago;
-                    $pago->monto_equivalente     = $monto_equivalente; 
-                    $pago->tipo                  = "Pago consumos";
-                    $pago->numero_operacion      = $numero_operacion;
-                    $pago->tipo_comprobante_id   = $tipo_comprobante_id;
-                    $pago->metodo_pago_id        = $metodo_pago;
-                    $pago->tipo_moneda_id        = $tipo_moneda_id;
-                    if($metodo_pago == 4){
-                    $pago->numero_cheque         = $numero_cheque;
-                    }
-                    $pago->reserva_id            = $reserva->id;
-                    $pago->save();
-                      
-                    }else{
-
-                    $pago                        = new Pago();
-                    $pago->monto_pago            = $monto_pago;
-                    $pago->monto_equivalente     = $monto_pago; 
-                    $pago->tipo                  = "Pago consumos";
-                    $pago->numero_operacion      = $numero_operacion;
-                    $pago->tipo_comprobante_id   = $tipo_comprobante_id;
-                    $pago->metodo_pago_id        = $metodo_pago;
-                    $pago->tipo_moneda_id        = $tipo_moneda_id;
-                    if($metodo_pago == 4){
-                    $pago->numero_cheque         = $numero_cheque;
-                    }
-                    $pago->reserva_id            = $reserva->id;
-                    $pago->save();
-
-                   }
-
-            foreach ($servicios as $servicio) {
-            
-               $consumo =  HuespedReservaServicio::where('id', $servicio)->first();
-               $consumo->update(array('estado' => 'Pagado', 'pago_id' => $pago->id));
-
-
-            }
-
-                $retorno = array(
-
-                    'msj' => "Pago realizado correctamente",
-                    'errors' =>false
-                );
-
-                return Response::json($retorno, 201);
-
-
-        }else{
-
-
-                $retorno = array(
-
-                'msj'    => "No se puede realizar el pago",
-                'errors' => true
-                );
-
-                return Response::json($retorno, 400);
-
-
-        }
-
-       
-
-         }else{
-
-
-                $data = array(
-
-                    'msj' => "Reserva no encontrada",
-                    'errors' => true
-
-
-                );
-
-            return Response::json($data, 404);
-
-
-        }
-
-            
-        }else{
-
-
+    public function pagoReserva(Request $request)
+    {
+        if ($request->has('pagos')) {
+            $pagos = $request->get('pagos');
+        } else {
             $retorno = array(
-
-                'msj'    => "La solicitud esta incompleta",
-                'errors' => true
-            );
-
+                'msj'    => "No se envia pagos",
+                'errors' => true);
             return Response::json($retorno, 400);
-
         }
 
+        if ($request->has('propiedad_id')) {
+            $propiedad_id = $request->get('propiedad_id');
+            $propiedad    = Propiedad::where('id', $propiedad_id)->first();
+            if(is_null($propiedad)){
+                $retorno = array(
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia propiedad_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        $caja_abierta  = Caja::where('propiedad_id', $propiedad->id)->where('estado_caja_id', 1)->first();
+        if (!is_null($caja_abierta)) {
+            foreach ($request['pagos'] as $pago){
+                $metodo_pago         = $pago['metodo_pago_id'];
+                $monto_pago          = $pago['monto_pago'];
+                $numero_operacion    = $pago['numero_operacion'];
+                $tipo_comprobante_id = $pago['tipo_comprobante_id'];
+                $tipo_pago           = $pago['tipo_pago'];
+                $reserva_id          = $pago['reserva_id'];
+                $tipo_moneda_id      = $pago['tipo_moneda_id'];
+                $monto_equivalente   = $pago['monto_equivalente'];
+
+                $reserva = Reserva::where('id', $reserva_id)->first();
+                if (!is_null($reserva)) {
+                    
+                    if (isset($pago['numero_cheque'])) {
+                    $numero_cheque = $pago['numero_cheque'];
+                    }
+                    
+                    if ($tipo_pago == "Confirmacion de reserva") {
+                        if ($reserva->estado_reserva_id == 1) {
+                            $monto = $reserva->monto_por_pagar;
+                            $monto -= $monto_pago;
+
+                            if (isset($pago['monto_pago']) && !is_null($monto_equivalente)) {
+                                $pago                        = new Pago();
+                                $pago->monto_pago            = $monto_pago;
+                                $pago->monto_equivalente     = $monto_equivalente; 
+                                $pago->tipo                  = $tipo_pago;
+                                $pago->numero_operacion      = $numero_operacion;
+                                $pago->tipo_comprobante_id   = $tipo_comprobante_id;
+                                $pago->metodo_pago_id        = $metodo_pago;
+                                $pago->tipo_moneda_id        = $tipo_moneda_id;
+                                if ($metodo_pago == 4) {
+                                $pago->numero_cheque         = $numero_cheque;
+                                }
+                                $pago->reserva_id            = $reserva->id;
+                                $pago->caja_id               = $caja_abierta->id;
+                                $pago->save();
+                                
+                            } else {
+                                $pago                        = new Pago();
+                                $pago->monto_pago            = $monto_pago;
+                                $pago->monto_equivalente     = $monto_pago; 
+                                $pago->tipo                  = $tipo_pago;
+                                $pago->numero_operacion      = $numero_operacion;
+                                $pago->tipo_comprobante_id   = $tipo_comprobante_id;
+                                $pago->metodo_pago_id        = $metodo_pago;
+                                $pago->tipo_moneda_id        = $tipo_moneda_id;
+                                if($metodo_pago == 4){
+                                $pago->numero_cheque         = $numero_cheque;
+                                }
+                                $pago->reserva_id            = $reserva->id;
+                                $pago->caja_id               = $caja_abierta->id;
+                                $pago->save();
+                            }
+
+                            $reserva->update(array('monto_por_pagar' => $monto , 'estado_reserva_id' => 2));
+
+                            $data = array(
+                                'msj' => "Deposito sugerido ingresado satisfactoriamente",
+                                'errors' =>false);
+                            return Response::json($data, 200);
+
+                        } else {
+                            $data = array(
+                                'msj' => "No permitido",
+                                'errors' =>true);
+                            return Response::json($data, 400);
+                        }
+
+                    } else {
+                        $monto = $reserva->monto_por_pagar;
+                        $monto -= $monto_pago;
+                        if ($tipo_pago == "Pago habitacion") {
+                            $pago_habitacion =  Pago::where('reserva_id', $reserva_id)->where('tipo', 'Pago habitacion')->get();
+                            if (empty($pago_habitacion)) {
+                                $total_habitacion_pago = 0;
+
+                            } else {
+                                $total_habitacion_pago = 0;
+                                foreach ($pago_habitacion as $pago) {
+                                $total_habitacion_pago += $pago->monto_pago;
+                                }
+                            }
+
+                            if ($total_habitacion_pago != $reserva->monto_alojamiento) {
+                                if ($monto_pago <= $reserva->monto_por_pagar) {
+                                    if(isset($pago['monto_pago']) && !is_null($monto_equivalente)){
+                                        $pago                        = new Pago();
+                                        $pago->monto_pago            = $monto_pago;
+                                        $pago->monto_equivalente     = $monto_equivalente; 
+                                        $pago->tipo                  = $tipo_pago;
+                                        $pago->numero_operacion      = $numero_operacion;
+                                        $pago->tipo_comprobante_id   = $tipo_comprobante_id;
+                                        $pago->metodo_pago_id        = $metodo_pago;
+                                        $pago->tipo_moneda_id        = $tipo_moneda_id;
+                                        if ($metodo_pago == 4) {
+                                            $pago->numero_cheque     = $numero_cheque;
+                                        }
+                                        $pago->reserva_id            = $reserva->id;
+                                        $pago->caja_id               = $caja_abierta->id;
+                                        $pago->save();
+                                  
+                                    } else {
+                                        $pago                        = new Pago();
+                                        $pago->monto_pago            = $monto_pago;
+                                        $pago->monto_equivalente     = $monto_pago; 
+                                        $pago->tipo                  = $tipo_pago;
+                                        $pago->numero_operacion      = $numero_operacion;
+                                        $pago->tipo_comprobante_id   = $tipo_comprobante_id;
+                                        $pago->metodo_pago_id        = $metodo_pago;
+                                        $pago->tipo_moneda_id        = $tipo_moneda_id;
+                                        if($metodo_pago == 4){
+                                            $pago->numero_cheque     = $numero_cheque;
+                                        }
+                                        $pago->reserva_id            = $reserva->id;
+                                        $pago->caja_id               = $caja_abierta->id;
+                                        $pago->save();
+                                    }
+
+                                    if ($reserva->estado_reserva_id == 1 ) {
+                                        $reserva->update(array('estado_reserva_id' => $monto, 'estado_reserva_id' => 2));
+                                    }
+
+                                    if ($reserva->estado_reserva_id == 5 && $monto == 0) {
+                                        $reserva->update(array('monto_por_pagar' => $monto, 'estado_reserva_id' => 4));
+                                    } else {
+                                        $reserva->update(array('monto_por_pagar' => $monto));
+                                    }
+                                } else {
+                                    $data = array(
+                                        'msj' => "El monto a pagar no corresponde",
+                                        'errors' =>true);
+                                    return Response::json($data, 400);
+                                }
+                            } else {
+                                $data = array(
+                                    'msj' => "La habitacion ya fue pagada",
+                                    'errors' =>true);
+                                return Response::json($data, 400);
+                            }
+                        }
+                    }
+
+                    if ($tipo_pago == "Pago consumos") {
+                        $consumos = HuespedReservaServicio::where('reserva_id', $reserva_id)->where('estado', 'Por pagar')->get();
+                        if (!empty($consumos)) {
+                            $monto_consumos = 0;  // total monto consumos por pagar
+                            foreach ($consumos as $consumo){
+                                $monto_consumos += $consumo->precio_total;    
+                            }
+
+                            if ($monto_consumos <= $reserva->monto_por_pagar) {
+                                if (isset($pago['monto_pago']) && !is_null($monto_equivalente)) {
+                                    $pago                        = new Pago();
+                                    $pago->monto_pago            = $monto_pago;
+                                    $pago->monto_equivalente     = $monto_equivalente; 
+                                    $pago->tipo                  = $tipo_pago;
+                                    $pago->numero_operacion      = $numero_operacion;
+                                    $pago->tipo_comprobante_id   = $tipo_comprobante_id;
+                                    $pago->metodo_pago_id        = $metodo_pago;
+                                    $pago->tipo_moneda_id        = $tipo_moneda_id;
+                                    if ($metodo_pago == 4) {
+                                        $pago->numero_cheque     = $numero_cheque;
+                                    }
+                                    $pago->reserva_id            = $reserva->id;
+                                    $pago->caja_id               = $caja_abierta->id;
+                                    $pago->save();
+                                      
+                                } else {
+                                    $pago                        = new Pago();
+                                    $pago->monto_pago            = $monto_pago;
+                                    $pago->monto_equivalente     = $monto_pago; 
+                                    $pago->tipo                  = $tipo_pago;
+                                    $pago->numero_operacion      = $numero_operacion;
+                                    $pago->tipo_comprobante_id   = $tipo_comprobante_id;
+                                    $pago->metodo_pago_id        = $metodo_pago;
+                                    $pago->tipo_moneda_id        = $tipo_moneda_id;
+                                    if ($metodo_pago == 4) {
+                                        $pago->numero_cheque     = $numero_cheque;
+                                    }
+                                    $pago->reserva_id            = $reserva->id;
+                                    $pago->caja_id               = $caja_abierta->id;
+                                    $pago->save();
+                                }
+
+                                foreach ($consumos as $consumo){
+                                    $consumo->update(array('estado' => 'Pagado', 'pago_id' => $pago->id));
+                                }
+                                if ($reserva->estado_reserva_id == 5 && $monto == 0) {
+                                    $reserva->update(array('monto_por_pagar' => $monto, 'estado_reserva_id' => 4));
+                                } else {
+                                    $reserva->update(array('monto_por_pagar' => $monto));
+                                }
+
+                            } else {
+                                $data = array(
+                                    'msj' => "El monto a pagar no corresponde",
+                                    'errors' =>true);
+                                return Response::json($data, 400);
+                            }
+                        } else {
+                            $data = array(
+                                'msj' => "No hay consumos por pagar",
+                                'errors' =>true);
+                            return Response::json($data, 400);
+                        }
+                    } 
+                } else {
+                    $retorno = array(
+                        'msj'    => "Reserva no encontrada",
+                        'errors' => true);
+                    return Response::json($retorno, 404);
+                }
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No hay caja abierta",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+        $data = array(
+            'msj' => "Pago ingresado satisfactoriamente",
+            'errors' =>false);
+        return Response::json($data, 201);
     }
 
 
+    public function pagoConsumo(Request $request)
+    {
+        if ($request->has('propiedad_id')) {
+            $propiedad_id = $request->get('propiedad_id');
+            $propiedad    = Propiedad::where('id', $propiedad_id)->first();
+            if(is_null($propiedad)){
+                $retorno = array(
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia propiedad_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        if ($request->has('reserva_id')) {
+            $reserva_id    = $request->input('reserva_id');
+            $reserva       = Reserva::where('id', $reserva_id)->first();
+            if(is_null($reserva)){
+                $retorno = array(
+                    'msj'    => "Reserva no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+          $retorno = array(
+              'msj'    => "No se envia reserva_id",
+              'errors' => true);
+          return Response::json($retorno, 400);
+        }
+
+        $caja_abierta  = Caja::where('propiedad_id', $propiedad->id)->where('estado_caja_id', 1)->first();
+        if (!is_null($caja_abierta)) {
+            if ($request->has('servicio_id') && $request->has('monto_pago') && $request->has('tipo_moneda_id')) {
+                $servicios           = $request->input('servicio_id');
+                $monto_pago          = $request->input('monto_pago');
+                $tipo_comprobante_id = $request->input('tipo_comprobante_id');
+                $numero_operacion    = $request->input('numero_operacion');
+                $metodo_pago         = $request->input('metodo_pago_id');
+                $numero_cheque       = $request->input('numero_cheque');
+                $tipo_moneda_id      = $request->input('tipo_moneda_id');
+
+                $total_consumos      = 0;
+                $monto_por_pagar     = $reserva->monto_por_pagar;
+                $consumos_por_pagar  = [];
+                foreach($servicios as $servicio){
+                    $consumo =  HuespedReservaServicio::where('id', $servicio)->first();
+                    if($consumo->estado == 'Por pagar'){
+                        array_push($consumos_por_pagar, $consumo);
+                    }
+                }
+
+                if (count($consumos_por_pagar) > 0) {
+                    foreach ($consumos_por_pagar as  $consumo) {
+                        $total_consumos += $consumo->precio_total;
+                    }
+                } else {
+                    $retorno = array(
+                        'msj'    => "Los consumos ya fueron pagados",
+                        'errors' => true);
+                    return Response::json($retorno, 400);
+                }
+
+                $total = $monto_por_pagar - $monto_pago;
+                if ($monto_pago <= $reserva->monto_por_pagar) {
+                    if ($reserva->estado_reserva_id == 5 && $total == 0) {
+                        $reserva->update(array('monto_por_pagar' => $total, 'estado_reserva_id' => 4));
+                    } else {
+                        $reserva->update(array('monto_por_pagar' => $total));
+                    }
+
+                    if ($request->has('monto_pago') && $request->has('monto_equivalente')) {
+                        $monto_equivalente           = $request->input('monto_equivalente');
+
+                        $pago                        = new Pago();
+                        $pago->monto_pago            = $monto_pago;
+                        $pago->monto_equivalente     = $monto_equivalente; 
+                        $pago->tipo                  = "Pago consumos";
+                        $pago->numero_operacion      = $numero_operacion;
+                        $pago->tipo_comprobante_id   = $tipo_comprobante_id;
+                        $pago->metodo_pago_id        = $metodo_pago;
+                        $pago->tipo_moneda_id        = $tipo_moneda_id;
+                        if ($metodo_pago == 4) {
+                            $pago->numero_cheque     = $numero_cheque;
+                        }
+                        $pago->reserva_id            = $reserva->id;
+                        $pago->caja_id               = $caja_abierta->id;
+                        $pago->save();
+                          
+                    } else {
+                        $pago                        = new Pago();
+                        $pago->monto_pago            = $monto_pago;
+                        $pago->monto_equivalente     = $monto_pago; 
+                        $pago->tipo                  = "Pago consumos";
+                        $pago->numero_operacion      = $numero_operacion;
+                        $pago->tipo_comprobante_id   = $tipo_comprobante_id;
+                        $pago->metodo_pago_id        = $metodo_pago;
+                        $pago->tipo_moneda_id        = $tipo_moneda_id;
+                        if ($metodo_pago == 4) {
+                            $pago->numero_cheque     = $numero_cheque;
+                        }
+                        $pago->reserva_id            = $reserva->id;
+                        $pago->caja_id               = $caja_abierta->id;
+                        $pago->save();
+
+                    }
+
+                    foreach ($servicios as $servicio) {
+                       $consumo =  HuespedReservaServicio::where('id', $servicio)->first();
+                       $consumo->update(array('estado' => 'Pagado', 'pago_id' => $pago->id));
+                    }
+
+                    $retorno = array(
+                        'msj' => "Pago realizado correctamente",
+                        'errors' =>false);
+                    return Response::json($retorno, 201);
+
+                } else {
+                    $retorno = array(
+                        'msj'    => "No se puede realizar el pago",
+                        'errors' => true);
+                    return Response::json($retorno, 400);
+                }
+                
+            } else {
+                $retorno = array(
+                    'msj'    => "La solicitud esta incompleta",
+                    'errors' => true);
+                return Response::json($retorno, 400);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No hay caja abierta",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+        
+
+    }
 
 
     public function panel(Request $request)
