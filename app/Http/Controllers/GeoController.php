@@ -42,6 +42,8 @@ class GeoController extends Controller {
         $marker['onclick'] = '';
 		$marker['infowindow_content'] = 'Mi Ubicacion';
 		$marker['icon'] = url('assets/img/marker_miposision.png');
+        $marker['label'] = 0;
+        $marker['id'] = 0;
 		$pgm->add_marker($marker);
 
         if ($hoteles->count() != 0) {
@@ -49,21 +51,22 @@ class GeoController extends Controller {
         		if (isset($hotel->id)) {
         			$marker = array();
         			$marker['position'] = ''.$hotel->location->getLat().', '.$hotel->location->getLng().'';
-					$marker['onclick'] = 'mostrar();';
+					$marker['onclick'] = 'mostrar('.$hotel->id.');';
 					$marker['icon'] = url('assets/img/marker_hotel.png');
+                    $marker['label'] = $hotel->id;
+                    $marker['id'] = $hotel->id;
 					$pgm->add_marker($marker);
         		}
         	}
     	}
 
-        $mapa['mapa'] = $pgm->create_map();
-
-        //return Response::json($mapa, 200);
-        return view('administrador.gmap')->with(
-        	'map', 
-        	$mapa['mapa']
-        );
+        return Response::json($mapa, 200);
         
+        /*return view('administrador.gmap')->with(
+        	'map', 
+        	$pgm->create_map()
+        );
+        */
 	}
 
     public function UbicacionCreate(Request $request) {

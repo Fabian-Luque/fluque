@@ -116,6 +116,8 @@ Route::post('my', 'MyAllocatorController@ejm');
 
 	Route::get('reset/password/{token}', 'ApiAuthController@ResetPassword');
 
+	Route::post('enviar/correo', 'CorreoController@SendFileByEmail');
+
 Route::group(['as' => 'api.jarvis.'], function() {
 
 	Route::post('registro', 'UserController@store');

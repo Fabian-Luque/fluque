@@ -89,4 +89,21 @@ class CorreoController extends Controller {
             )->with('respuesta', $data);
         }
     }
+
+
+    public function SendFileByEmail(Request $request) {
+        $path = 'auth.emails.password';
+        
+        Mail::send(
+            $path, 
+            ['request' => $request],
+            function($message) use ($request) {
+                $message->to(
+                    $request->destino, 
+                    $request->destino
+                )->subject('Mensaje de GoFeels');
+            }
+        );
+
+    }
 }

@@ -2,14 +2,14 @@
 {!! Html::script('assets/js/jquery-3.2.1.js'); !!}
 {!! Html::script('assets/js/bootstrap.min.js'); !!}
 {!! Html::style('assets/css/perfil_en_mapa.css'); !!}
-
-<div id="js"></div>
+{!! $map['js'] !!}
 
 <script type="text/javascript">
-  function mostrar() {
+  function mostrar(id) {
       document.getElementById('light').style.display='block';
       document.getElementById('fade').style.display='block';
   }
+
   $(document).ready(
       function(e) {
           $("#cerrar").click(
@@ -18,29 +18,6 @@
                 document.getElementById('fade').style.display='none';
             }
           );
-
-              $.ajax({
-            type: 'POST',
-            url:  'http://demo-api.gofeels.com/hoteles/cercanos',
-            headers: {'X-CSRF-TOKEN': "<?php echo csrf_token(); ?>"},
-            data: "",
-                  
-            success: function(data) {
-            
-              console.log(data);
-              $("#js").append("echo "+data.mapa.js);
-              $("#mapa").append(data.mapa.html);
-            },
-          error: function(xhr, textStatus, thrownError) {
-
-            }
-        });
-
-
-          
-
-
-
       }
   );
 </script>
@@ -49,10 +26,9 @@
 	var centreGot = false;
 </script>
 
-<script type="text/javascript">
-  
-</script>
 
+
+{!! $map['html'] !!}
 
 <div id="mapa" ></div>
   
