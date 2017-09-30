@@ -11,6 +11,7 @@ use Password;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\PasswordBroker;
 use Illuminate\Foundation\Auth\ResetsPasswords;
+use Illuminate\Support\Facades\Validator;
 use App\User;   
 use App\ResetPass; 
 
@@ -92,18 +93,46 @@ class CorreoController extends Controller {
 
 
     public function SendFileByEmail(Request $request) {
-        $path = 'auth.emails.password';
-        
-        Mail::send(
-            $path, 
-            ['request' => $request],
-            function($message) use ($request) {
-                $message->to(
-                    $request->destino, 
-                    $request->destino
-                )->subject('Mensaje de GoFeels');
-            }
+        $rules = array(
+            'destino'                => 'required',
+            'pdf'               => 'required',
+            'namefile'               => 'required',
+            'user_name'            => 'required',
         );
 
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+
+            $data['errors'] = true;
+            $data['msg']    = $validator->messages();
+        } else {
+
+            try {
+                $path = 'auth.emails.correo';
+
+                Mail::send(
+                    $path, 
+                    ['request' => $request],
+                    function($message) use ($request) {
+                        $message->to(
+                            $request->destino, 
+                            $request->destino
+                        )->subject('Mensaje de GoFeels');
+                        $message->attach(
+                            $request->pdf,
+                            ['as' => $request->namefile]
+                        );
+                    }
+                );
+                
+                $data['errors'] = false;
+                $data['msg']    = 'Correo enviado de forma exitoso';
+            } catch (Exception $e) {
+                $data['errors'] = true;
+                $data['msg']    = 'Error al enviar datos';
+            }
+        }
+        return Response::json($data); 
     }
 }
