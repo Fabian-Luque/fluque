@@ -98,6 +98,8 @@ Route::post('eliminar/user', 'UserController@delete');
 		}
 	);
 
+	Route::get('init', 'MotorController@getInicio');
+
 	Route::get('reset/password/{token}', 'ApiAuthController@ResetPassword');
 
 Route::group(['as' => 'api.jarvis.'], function() {
