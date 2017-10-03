@@ -98,7 +98,9 @@ Route::post('eliminar/user', 'UserController@delete');
 		}
 	);
 
-	Route::get('init', 'MotorController@getInicio');
+//// motor de reserva
+Route::get('motor/reserva', 'MotorController@getMotor');
+
 
 	Route::get('reset/password/{token}', 'ApiAuthController@ResetPassword');
 
@@ -107,8 +109,7 @@ Route::group(['as' => 'api.jarvis.'], function() {
 	Route::post('registro', 'UserController@store');
 	Route::post('/signin', 'ApiAuthController@signin');
 
-		
-
+	
 	Route::group(['middleware' => ['jwt.auth']], function () {
 		Route::post('cambio/password', 'ApiAuthController@ResetPassUser');
 		Route::post('reserva/habitacion', 'ReservaController@reserva');
