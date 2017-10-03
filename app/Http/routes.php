@@ -4,8 +4,6 @@ use Illuminate\Http\Response as HttpResponse;
 
 Route::auth();
 
-Route::get('crear/permisos/roles', 'RolController@crearPermisos');
-
 Route::get(
 	'/', 
 	function () {
