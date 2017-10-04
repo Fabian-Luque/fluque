@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitc1fe5929575e5be60601419d9476fa49
+class ComposerStaticInitf472018fd4750ce954b8e25ddf0c4e01
 {
     public static $files = array (
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
@@ -12,12 +12,12 @@ class ComposerStaticInitc1fe5929575e5be60601419d9476fa49
         '667aeda72477189d0494fecd327c3641' => __DIR__ . '/..' . '/symfony/var-dumper/Resources/functions/dump.php',
         'bd9634f2d41831496de0d3dfe4c94881' => __DIR__ . '/..' . '/symfony/polyfill-php56/bootstrap.php',
         '2c102faa651ef8ea5874edb585946bce' => __DIR__ . '/..' . '/swiftmailer/swiftmailer/lib/swift_required.php',
-        '5255c38a0faeba867671b61dfda6d864' => __DIR__ . '/..' . '/paragonie/random_compat/lib/random.php',
         'e7223560d890eab89cda23685e711e2c' => __DIR__ . '/..' . '/psy/psysh/src/Psy/functions.php',
-        'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
-        'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
+        '5255c38a0faeba867671b61dfda6d864' => __DIR__ . '/..' . '/paragonie/random_compat/lib/random.php',
         'f0906e6318348a765ffb6eb24e0d0938' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Foundation/helpers.php',
         '58571171fd5812e6e447dce228f52f4d' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Support/helpers.php',
+        'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
+        'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
         'f18cc91337d49233e5754e93f3ed9ec3' => __DIR__ . '/..' . '/laravelcollective/html/src/helpers.php',
     );
@@ -74,9 +74,6 @@ class ComposerStaticInitc1fe5929575e5be60601419d9476fa49
         ),
         'M' => 
         array (
-            'MyAllocator\\phpsdk\\tests\\xml\\' => 29,
-            'MyAllocator\\phpsdk\\tests\\json\\' => 30,
-            'MyAllocator\\phpsdk\\src\\' => 23,
             'Monolog\\' => 8,
             'MaxMind\\Db\\' => 11,
             'MaxMind\\' => 8,
@@ -246,18 +243,6 @@ class ComposerStaticInitc1fe5929575e5be60601419d9476fa49
         'Namshi\\JOSE\\' => 
         array (
             0 => __DIR__ . '/..' . '/namshi/jose/src/Namshi/JOSE',
-        ),
-        'MyAllocator\\phpsdk\\tests\\xml\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/xml',
-        ),
-        'MyAllocator\\phpsdk\\tests\\json\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/json',
-        ),
-        'MyAllocator\\phpsdk\\src\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/src/MyAllocator',
         ),
         'Monolog\\' => 
         array (
@@ -497,11 +482,9 @@ class ComposerStaticInitc1fe5929575e5be60601419d9476fa49
         'App\\Http\\Controllers\\CorreoController' => __DIR__ . '/../..' . '/app/Http/Controllers/CorreoController.php',
         'App\\Http\\Controllers\\DashControllers\\UserDashController' => __DIR__ . '/../..' . '/app/Http/Controllers/DashControllers/UserDashController.php',
         'App\\Http\\Controllers\\ExcelController' => __DIR__ . '/../..' . '/app/Http/Controllers/ExcelController.php',
-        'App\\Http\\Controllers\\GeoController' => __DIR__ . '/../..' . '/app/Http/Controllers/GeoController.php',
         'App\\Http\\Controllers\\HabitacionController' => __DIR__ . '/../..' . '/app/Http/Controllers/HabitacionController.php',
         'App\\Http\\Controllers\\HomeController' => __DIR__ . '/../..' . '/app/Http/Controllers/HomeController.php',
         'App\\Http\\Controllers\\HuespedController' => __DIR__ . '/../..' . '/app/Http/Controllers/HuespedController.php',
-        'App\\Http\\Controllers\\MyAllocatorController' => __DIR__ . '/../..' . '/app/Http/Controllers/MyAllocatorController.php',
         'App\\Http\\Controllers\\PDFController' => __DIR__ . '/../..' . '/app/Http/Controllers/PDFController.php',
         'App\\Http\\Controllers\\PropiedadController' => __DIR__ . '/../..' . '/app/Http/Controllers/PropiedadController.php',
         'App\\Http\\Controllers\\ReservaController' => __DIR__ . '/../..' . '/app/Http/Controllers/ReservaController.php',
@@ -2602,102 +2585,6 @@ class ComposerStaticInitc1fe5929575e5be60601419d9476fa49
         'Monolog\\Processor\\UidProcessor' => __DIR__ . '/..' . '/monolog/monolog/src/Monolog/Processor/UidProcessor.php',
         'Monolog\\Processor\\WebProcessor' => __DIR__ . '/..' . '/monolog/monolog/src/Monolog/Processor/WebProcessor.php',
         'Monolog\\Registry' => __DIR__ . '/..' . '/monolog/monolog/src/Monolog/Registry.php',
-        'MyAllocator\\phpsdk\\src\\Api\\ARIRulesList' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/src/MyAllocator/Api/ARIRulesList.php',
-        'MyAllocator\\phpsdk\\src\\Api\\ARIRulesUpdate' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/src/MyAllocator/Api/ARIRulesUpdate.php',
-        'MyAllocator\\phpsdk\\src\\Api\\ARIUpdate' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/src/MyAllocator/Api/ARIUpdate.php',
-        'MyAllocator\\phpsdk\\src\\Api\\ARIUpdateStatus' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/src/MyAllocator/Api/ARIUpdateStatus.php',
-        'MyAllocator\\phpsdk\\src\\Api\\AssociatePropertyToPMS' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/src/MyAllocator/Api/AssociatePropertyToPMS.php',
-        'MyAllocator\\phpsdk\\src\\Api\\AssociateUserToPMS' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/src/MyAllocator/Api/AssociateUserToPMS.php',
-        'MyAllocator\\phpsdk\\src\\Api\\BookingList' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/src/MyAllocator/Api/BookingList.php',
-        'MyAllocator\\phpsdk\\src\\Api\\BookingPaymentDownload' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/src/MyAllocator/Api/BookingPaymentDownload.php',
-        'MyAllocator\\phpsdk\\src\\Api\\ChannelList' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/src/MyAllocator/Api/ChannelList.php',
-        'MyAllocator\\phpsdk\\src\\Api\\HelloUser' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/src/MyAllocator/Api/HelloUser.php',
-        'MyAllocator\\phpsdk\\src\\Api\\HelloVendor' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/src/MyAllocator/Api/HelloVendor.php',
-        'MyAllocator\\phpsdk\\src\\Api\\HelloVendorUser' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/src/MyAllocator/Api/HelloVendorUser.php',
-        'MyAllocator\\phpsdk\\src\\Api\\HelloWorld' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/src/MyAllocator/Api/HelloWorld.php',
-        'MyAllocator\\phpsdk\\src\\Api\\LoopARIList' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/src/MyAllocator/Api/LoopARIList.php',
-        'MyAllocator\\phpsdk\\src\\Api\\LoopBookingAction' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/src/MyAllocator/Api/LoopBookingAction.php',
-        'MyAllocator\\phpsdk\\src\\Api\\LoopBookingCreate' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/src/MyAllocator/Api/LoopBookingCreate.php',
-        'MyAllocator\\phpsdk\\src\\Api\\LoopBookingList' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/src/MyAllocator/Api/LoopBookingList.php',
-        'MyAllocator\\phpsdk\\src\\Api\\MaApi' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/src/MyAllocator/Api/MaApi.php',
-        'MyAllocator\\phpsdk\\src\\Api\\PropertyChannelList' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/src/MyAllocator/Api/PropertyChannelList.php',
-        'MyAllocator\\phpsdk\\src\\Api\\PropertyCreate' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/src/MyAllocator/Api/PropertyCreate.php',
-        'MyAllocator\\phpsdk\\src\\Api\\PropertyList' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/src/MyAllocator/Api/PropertyList.php',
-        'MyAllocator\\phpsdk\\src\\Api\\PropertyModify' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/src/MyAllocator/Api/PropertyModify.php',
-        'MyAllocator\\phpsdk\\src\\Api\\RoomAvailabilityList' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/src/MyAllocator/Api/RoomAvailabilityList.php',
-        'MyAllocator\\phpsdk\\src\\Api\\RoomCreate' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/src/MyAllocator/Api/RoomCreate.php',
-        'MyAllocator\\phpsdk\\src\\Api\\RoomList' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/src/MyAllocator/Api/RoomList.php',
-        'MyAllocator\\phpsdk\\src\\Api\\RoomRemove' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/src/MyAllocator/Api/RoomRemove.php',
-        'MyAllocator\\phpsdk\\src\\Api\\RoomUpdate' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/src/MyAllocator/Api/RoomUpdate.php',
-        'MyAllocator\\phpsdk\\src\\Api\\UserCreate' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/src/MyAllocator/Api/UserCreate.php',
-        'MyAllocator\\phpsdk\\src\\Api\\UserExists' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/src/MyAllocator/Api/UserExists.php',
-        'MyAllocator\\phpsdk\\src\\Api\\VendorSet' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/src/MyAllocator/Api/VendorSet.php',
-        'MyAllocator\\phpsdk\\src\\Exception\\ApiAuthenticationException' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/src/MyAllocator/Exception/ApiAuthenticationException.php',
-        'MyAllocator\\phpsdk\\src\\Exception\\ApiConnectionException' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/src/MyAllocator/Exception/ApiConnectionException.php',
-        'MyAllocator\\phpsdk\\src\\Exception\\ApiException' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/src/MyAllocator/Exception/ApiException.php',
-        'MyAllocator\\phpsdk\\src\\Exception\\InvalidRequestException' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/src/MyAllocator/Exception/InvalidRequestException.php',
-        'MyAllocator\\phpsdk\\src\\Exception\\MaException' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/src/MyAllocator/Exception/MaException.php',
-        'MyAllocator\\phpsdk\\src\\MaBaseClass' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/src/MyAllocator/MaBaseClass.php',
-        'MyAllocator\\phpsdk\\src\\Object\\Auth' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/src/MyAllocator/Object/Auth.php',
-        'MyAllocator\\phpsdk\\src\\Util\\Common' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/src/MyAllocator/Util/Common.php',
-        'MyAllocator\\phpsdk\\src\\Util\\Requestor' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/src/MyAllocator/Util/Requestor.php',
-        'MyAllocator\\phpsdk\\tests\\json\\ARIRulesListTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/json/Api/ARIRulesListTest.php',
-        'MyAllocator\\phpsdk\\tests\\json\\ARIRulesUpdateTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/json/Api/ARIRulesUpdateTest.php',
-        'MyAllocator\\phpsdk\\tests\\json\\ARIUpdateStatusTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/json/Api/ARIUpdateStatusTest.php',
-        'MyAllocator\\phpsdk\\tests\\json\\ARIUpdateTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/json/Api/ARIUpdateTest.php',
-        'MyAllocator\\phpsdk\\tests\\json\\AssociatePropertyToPMSTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/json/Api/AssociatePropertyToPMSTest.php',
-        'MyAllocator\\phpsdk\\tests\\json\\AssociateUserToPMSTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/json/Api/AssociateUserToPMSTest.php',
-        'MyAllocator\\phpsdk\\tests\\json\\BookingListTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/json/Api/BookingListTest.php',
-        'MyAllocator\\phpsdk\\tests\\json\\BookingPaymentDownloadTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/json/Api/BookingPaymentDownloadTest.php',
-        'MyAllocator\\phpsdk\\tests\\json\\ChannelListTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/json/Api/ChannelListTest.php',
-        'MyAllocator\\phpsdk\\tests\\json\\HelloUserTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/json/Api/HelloUserTest.php',
-        'MyAllocator\\phpsdk\\tests\\json\\HelloVendorTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/json/Api/HelloVendorTest.php',
-        'MyAllocator\\phpsdk\\tests\\json\\HelloVendorUserTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/json/Api/HelloVendorUserTest.php',
-        'MyAllocator\\phpsdk\\tests\\json\\HelloWorldTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/json/Api/HelloWorldTest.php',
-        'MyAllocator\\phpsdk\\tests\\json\\LoopARIListTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/json/Api/LoopARIListTest.php',
-        'MyAllocator\\phpsdk\\tests\\json\\LoopBookingActionTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/json/Api/LoopBookingActionTest.php',
-        'MyAllocator\\phpsdk\\tests\\json\\LoopBookingCreateTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/json/Api/LoopBookingCreateTest.php',
-        'MyAllocator\\phpsdk\\tests\\json\\LoopBookingListTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/json/Api/LoopBookingListTest.php',
-        'MyAllocator\\phpsdk\\tests\\json\\PropertyChannelListTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/json/Api/PropertyChannelListTest.php',
-        'MyAllocator\\phpsdk\\tests\\json\\PropertyCreateTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/json/Api/PropertyCreateTest.php',
-        'MyAllocator\\phpsdk\\tests\\json\\PropertyListTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/json/Api/PropertyListTest.php',
-        'MyAllocator\\phpsdk\\tests\\json\\PropertyModifyTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/json/Api/PropertyModifyTest.php',
-        'MyAllocator\\phpsdk\\tests\\json\\RoomAvailabilityListTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/json/Api/RoomAvailabilityListTest.php',
-        'MyAllocator\\phpsdk\\tests\\json\\RoomCreateTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/json/Api/RoomCreateTest.php',
-        'MyAllocator\\phpsdk\\tests\\json\\RoomListTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/json/Api/RoomListTest.php',
-        'MyAllocator\\phpsdk\\tests\\json\\RoomRemoveTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/json/Api/RoomRemoveTest.php',
-        'MyAllocator\\phpsdk\\tests\\json\\RoomUpdateTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/json/Api/RoomUpdateTest.php',
-        'MyAllocator\\phpsdk\\tests\\json\\UserCreateTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/json/Api/UserCreateTest.php',
-        'MyAllocator\\phpsdk\\tests\\json\\UserExistsTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/json/Api/UserExistsTest.php',
-        'MyAllocator\\phpsdk\\tests\\json\\VendorSetTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/json/Api/VendorSetTest.php',
-        'MyAllocator\\phpsdk\\tests\\xml\\ARIRulesListTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/xml/Api/ARIRulesListTest.php',
-        'MyAllocator\\phpsdk\\tests\\xml\\ARIUpdateStatusTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/xml/Api/ARIUpdateStatusTest.php',
-        'MyAllocator\\phpsdk\\tests\\xml\\ARIUpdateTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/xml/Api/ARIUpdateTest.php',
-        'MyAllocator\\phpsdk\\tests\\xml\\AssociatePropertyToPMSTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/xml/Api/AssociatePropertyToPMSTest.php',
-        'MyAllocator\\phpsdk\\tests\\xml\\AssociateUserToPMSTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/xml/Api/AssociateUserToPMSTest.php',
-        'MyAllocator\\phpsdk\\tests\\xml\\BookingListTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/xml/Api/BookingListTest.php',
-        'MyAllocator\\phpsdk\\tests\\xml\\BookingPaymentDownloadTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/xml/Api/BookingPaymentDownloadTest.php',
-        'MyAllocator\\phpsdk\\tests\\xml\\ChannelListTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/xml/Api/ChannelListTest.php',
-        'MyAllocator\\phpsdk\\tests\\xml\\HelloUserTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/xml/Api/HelloUserTest.php',
-        'MyAllocator\\phpsdk\\tests\\xml\\HelloVendorTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/xml/Api/HelloVendorTest.php',
-        'MyAllocator\\phpsdk\\tests\\xml\\HelloVendorUserTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/xml/Api/HelloVendorUserTest.php',
-        'MyAllocator\\phpsdk\\tests\\xml\\HelloWorldTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/xml/Api/HelloWorldTest.php',
-        'MyAllocator\\phpsdk\\tests\\xml\\LoopARIListTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/xml/Api/LoopARIListTest.php',
-        'MyAllocator\\phpsdk\\tests\\xml\\LoopBookingActionTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/xml/Api/LoopBookingActionTest.php',
-        'MyAllocator\\phpsdk\\tests\\xml\\LoopBookingCreateTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/xml/Api/LoopBookingCreateTest.php',
-        'MyAllocator\\phpsdk\\tests\\xml\\LoopBookingListTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/xml/Api/LoopBookingListTest.php',
-        'MyAllocator\\phpsdk\\tests\\xml\\PropertyChannelListTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/xml/Api/PropertyChannelListTest.php',
-        'MyAllocator\\phpsdk\\tests\\xml\\PropertyCreateTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/xml/Api/PropertyCreateTest.php',
-        'MyAllocator\\phpsdk\\tests\\xml\\PropertyListTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/xml/Api/PropertyListTest.php',
-        'MyAllocator\\phpsdk\\tests\\xml\\PropertyModifyTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/xml/Api/PropertyModifyTest.php',
-        'MyAllocator\\phpsdk\\tests\\xml\\RoomAvailabilityListTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/xml/Api/RoomAvailabilityListTest.php',
-        'MyAllocator\\phpsdk\\tests\\xml\\RoomCreateTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/xml/Api/RoomCreateTest.php',
-        'MyAllocator\\phpsdk\\tests\\xml\\RoomListTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/xml/Api/RoomListTest.php',
-        'MyAllocator\\phpsdk\\tests\\xml\\RoomRemoveTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/xml/Api/RoomRemoveTest.php',
-        'MyAllocator\\phpsdk\\tests\\xml\\RoomUpdateTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/xml/Api/RoomUpdateTest.php',
-        'MyAllocator\\phpsdk\\tests\\xml\\UserCreateTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/xml/Api/UserCreateTest.php',
-        'MyAllocator\\phpsdk\\tests\\xml\\UserExistsTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/xml/Api/UserExistsTest.php',
-        'MyAllocator\\phpsdk\\tests\\xml\\VendorSetTest' => __DIR__ . '/..' . '/myallocator/myallocator-php-sdk/tests/xml/Api/VendorSetTest.php',
         'Namshi\\JOSE\\Base64\\Base64Encoder' => __DIR__ . '/..' . '/namshi/jose/src/Namshi/JOSE/Base64/Base64Encoder.php',
         'Namshi\\JOSE\\Base64\\Base64UrlSafeEncoder' => __DIR__ . '/..' . '/namshi/jose/src/Namshi/JOSE/Base64/Base64UrlSafeEncoder.php',
         'Namshi\\JOSE\\Base64\\Encoder' => __DIR__ . '/..' . '/namshi/jose/src/Namshi/JOSE/Base64/Encoder.php',
@@ -4463,10 +4350,10 @@ class ComposerStaticInitc1fe5929575e5be60601419d9476fa49
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitc1fe5929575e5be60601419d9476fa49::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitc1fe5929575e5be60601419d9476fa49::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInitc1fe5929575e5be60601419d9476fa49::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInitc1fe5929575e5be60601419d9476fa49::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitf472018fd4750ce954b8e25ddf0c4e01::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitf472018fd4750ce954b8e25ddf0c4e01::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInitf472018fd4750ce954b8e25ddf0c4e01::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInitf472018fd4750ce954b8e25ddf0c4e01::$classMap;
 
         }, null, ClassLoader::class);
     }

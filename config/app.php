@@ -151,8 +151,6 @@ return [
         Collective\Html\HtmlServiceProvider::class,
         Grimzy\LaravelMysqlSpatial\SpatialServiceProvider::class,
         GeneaLabs\Phpgmaps\PhpgmapsServiceProvider::class,
-        Stevebauman\Location\LocationServiceProvider::class,
-
       
         /*
          * Application Service Providers...
