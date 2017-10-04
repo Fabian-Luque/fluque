@@ -99,8 +99,8 @@ Route::post('eliminar/user', 'UserController@delete');
 	);
 
 //// motor de reserva
-Route::get('motor/reserva', 'MotorController@getMotor');
-Route::get('motor/disponibilidad', 'MotorController@getDisponibilidad');
+Route::get('motor/reserva', 'MotorWidgetControllers\MotorController@getMotor');
+Route::get('motor/disponibilidad', 'MotorWidgetControllers\MotorController@getDisponibilidad');
 
 
 	Route::get('reset/password/{token}', 'ApiAuthController@ResetPassword');
