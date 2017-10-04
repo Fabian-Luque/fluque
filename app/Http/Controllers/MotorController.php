@@ -32,4 +32,14 @@ class MotorController extends Controller {
 		</div>
 ';
 	}
+
+	public function getDisponibilidad(Request $request) {
+		return '
+		<div class="contenedor-motor-reserva" layout="row" layout-align="center center" ng-cloak>
+
+		</div>
+';
+	}
+
+
 }
