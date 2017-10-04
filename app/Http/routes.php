@@ -92,7 +92,7 @@ Route::group(['prefix' => 'dash', 'middleware' => ['auth']],
 );
 //////////////////////// rutas dash  ///////////////////////////////////////
 
-Route::post('my', 'MyAllocatorController@ejm');
+
 
 
 
