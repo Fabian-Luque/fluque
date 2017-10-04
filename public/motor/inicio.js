@@ -126,24 +126,21 @@
   }
 
   function estilosAngularMaterial() {
-    if(typeof window.ngMaterial === 'undefined'){
-      console.log('No esta cargado Material');
-        var angularMaterial = getAngularMaterial();
-        document.getElementsByTagName("head")[0].appendChild(angularMaterial);
+    if(angular_js_cargado){
+        var angulaEstilosrMaterial = getEstilosMaterial();
+        document.getElementsByTagName("head")[0].appendChild(angulaEstilosrMaterial);
 
-        if(angularMaterial.complete){
+        if(angulaEstilosrMaterial.complete){
             document.write = document._write;
         }else{
-            angularMaterial.onload = function(){
+            angulaEstilosrMaterial.onload = function(){
                 setTimeout(function(){
                     document.write = document._write;
                 }, 0);
-                console.log(window.ngMaterial);
                 main();
             }
         }
     }else{
-      console.log("Material esta cargado");
         main();
     }
   }
@@ -212,9 +209,11 @@
   }
 
   function getEstilosMaterial() {
-      var script = document.createElement("script");
-      script.src = "https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js";
-      return script;
+      var link = document.createElement("link");
+      link.rel  = 'stylesheet';
+      link.href = "https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css";
+      console.log(link);
+      return link;
   }
 
 
@@ -226,7 +225,7 @@
           var widgetJS = document.createElement("script");
           widgetJS.type = "text/javascript";
           // widgetJS.src = "http://findeck.es/widgetGithubRepos.js"; //widgetURL
-          widgetJS.src = "widgetCtrl.js"; //widgetURL
+          widgetJS.src = "http://localhost:8000/motor/controlador.js"; //widgetURL
           (document.getElementsByTagName("body")[0] || document.documentElement).appendChild(widgetJS);
       });
   }
@@ -246,15 +245,15 @@
   //Carga la vista al div creado con id "MotorReservaCtrl"
   function loadTemplate(callback) {
     var ajax = new XMLHttpRequest();
-    ajax.open("GET","http://findeck.es/getWidgetTemplate.php");
+    ajax.open("GET","http://localhost:8000/motor/reserva");
     ajax.send();
     ajax.onreadystatechange=function(){
   		if(ajax.readyState == 4 && ajax.status == 200){
   			var response = ajax.responseText;
   			// document.getElementById("MotorReservaCtrl").innerHTML = response;
-        document.getElementById("MotorReservaCtrl").innerHTML =
+        document.getElementById("MotorReservaCtrl").innerHTML = response;
 
-        "<h1>Motor de reserva</h1> <p>{{nombre}}</p> <section layout='row' layout-sm='column' layout-align='center center' layout-wrap><md-button class='md-raised'>Button</md-button><md-button class='md-raised md-primary'>Primary</md-button><md-button ng-disabled='true' class='md-raised md-primary'>Disabled</md-button><md-button class='md-raised md-warn'>Warn</md-button><div class='label'>Raised</div></section>";
+        // "<h1>Motor de reserva</h1> <p>{{nombre}}</p> <section layout='row' layout-sm='column' layout-align='center center' layout-wrap><md-button class='md-raised'>Button</md-button><md-button class='md-raised md-primary'>Primary</md-button><md-button ng-disabled='true' class='md-raised md-primary'>Disabled</md-button><md-button class='md-raised md-warn'>Warn</md-button><div class='label'>Raised</div></section>";
 
         callback();
   		}

@@ -9,17 +9,27 @@ use Response;
 
 class MotorController extends Controller {
 	public function getMotor(Request $request) {
-		return "<h1>Motor de reserva</h1> 
-<p>{{nombre}}</p>
-<section layout='row' layout-sm='column' layout-align='center center' layout-wrap>
-	<md-button class='md-raised'>Button</md-button>
-	<md-button class='md-raised md-primary'>Primary</md-button>
-	<md-button ng-disabled='true' class='md-raised md-primary'>Disabled</md-button>
-	<md-button class='md-raised md-warn'>Warn</md-button>
-	<div class='label'>Raised</div>
-</section>";
+		return '
+		<style media="screen">
+			.contenedor-motor-reserva {
+				height: 200px;
+				background-color: #d1d1d1;
+			}
+			.md-datepicker-input-mask {
+				overflow: hidden;
+			}
+		</style>
+
+
+		<div class="contenedor-motor-reserva" layout="row" layout-align="center center" ng-cloak>
+			<form name="motorReservaForm">
+				<md-datepicker name="checkin" ng-model="check_in" md-placeholder="Check in" required style="width:100px;"></md-datepicker>
+				<md-datepicker name="checkout" ng-model="check_out" md-placeholder="Check out" required></md-datepicker>
+			</form>
+
+			<md-button class="md-raised md-primary" ng-click="buscarDisponibilidad(motorReservaForm);" ng-disabled="motorReservaForm.$invalid">{{buscar}}</md-button>
+
+		</div>
+';
 	}
 }
-
-
-
