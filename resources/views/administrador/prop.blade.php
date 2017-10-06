@@ -51,7 +51,6 @@
                                     <td> {{ $prop->created }} </td>
                                     <td> 
                                         <a href="upr" name="b-lista" value="{{ $prop->id }}" class="btn btn-info btn-xs">Editar</a>
-           
                                     </td>
    								</tr>
    							@endforeach

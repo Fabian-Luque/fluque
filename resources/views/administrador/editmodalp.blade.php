@@ -101,8 +101,8 @@
       </div>
     </div>
   </div>
-</div>
-<div class="form-group has-feedback" style="padding-left:3%; padding-right:35%; padding-top: 1%">
+  <div class="col-xs-4 col-sm-4 text-center">
+  <div class="form-group has-feedback text-center" style="width: 250px;">
     {!! Form::submit(
       'Actualizar', 
       array(
@@ -110,4 +110,7 @@
       ))
     !!}
 </div>
+</div>
+</div>
+
 {!! Form::close() !!}
