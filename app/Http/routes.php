@@ -101,10 +101,10 @@ Route::post('eliminar/user', 'UserController@delete');
 //// motor de reserva
 Route::get('motor/reserva', 'MotorWidgetControllers\MotorController@getMotor');
 Route::get('motor/disponibilidad', 'MotorWidgetControllers\MotorController@getDisponibilidad');
-Route::get('motor/disponibilidad/habitacion', 'MotorController@getDisponibilidad');
+Route::get('motor/disponibilidad/habitacion', 'motorController@getDisponibilidad');
 
 
-	Route::get('reset/password/{token}', 'ApiAuthController@ResetPassword');
+Route::get('reset/password/{token}', 'ApiAuthController@ResetPassword');
 
 Route::group(['as' => 'api.jarvis.'], function() {
 
