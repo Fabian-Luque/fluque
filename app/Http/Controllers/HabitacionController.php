@@ -67,7 +67,9 @@ class HabitacionController extends Controller
                         $query->where('checkout', '>', $inicio);
                         $query->where('checkout', '<=',  $fin);
                     });
-                });
+                })
+                ->where('estado_reserva_id', '!=', 6)
+                ->where('estado_reserva_id', '!=', 7);
             })
             ->with('tipoHabitacion')
             ->get();
@@ -185,7 +187,7 @@ class HabitacionController extends Controller
 
             $data = ['tipos_habitaciones' => $habitaciones_tipo];
             return $data;
-            
+
         } else {
             $retorno = array(
                 'msj'    => "Las fechas no corresponden",
