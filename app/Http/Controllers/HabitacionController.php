@@ -23,8 +23,8 @@ class HabitacionController extends Controller
     public function disponibilidad(Request $request)
     {
         if ($request->has('fecha_inicio') && $request->has('fecha_fin')) {
-            $fecha_inicio = new Carbon($request->input('fecha_inicio'));
-            $fecha_fin    = new Carbon($request->input('fecha_fin'));
+            $inicio = new Carbon($request->input('fecha_inicio'));
+            $fin    = new Carbon($request->input('fecha_fin'));
         } else {
             $data = array(
                 'msj'    => "Propiedad no encontrada",
@@ -51,25 +51,24 @@ class HabitacionController extends Controller
         $propiedad_monedas         = $propiedad->tipoMonedas; // monedas propiedad
         $tipo_habitacion_propiedad = $propiedad->tiposHabitacion;
 
-        $inicio = $fecha_inicio->format('Y-m-d');
-        $fin    = $fecha_fin->format('Y-m-d');
-
         if ($inicio < $fin) {
+            
+            $fecha_inicio = $inicio->startOfDay()->format('Y-m-d');
+            $fecha_fin    = $fin->startOfDay()->format('Y-m-d');
 
             $habitaciones_disponibles = Habitacion::where('propiedad_id', $request->input('propiedad_id'))
-            ->whereDoesntHave('reservas', function ($query) use ($inicio, $fin) {
-                $query->where(function ($query) use ($inicio, $fin) {
-                    $query->where(function ($query) use ($inicio, $fin) {
-                        $query->where('checkin', '>=', $inicio);
-                        $query->where('checkin', '<',  $fin);
+            ->whereDoesntHave('reservas', function ($query) use ($fecha_inicio, $fecha_fin) {
+                $query->whereIn('estado_reserva_id', [1,2,3,4,5])
+                ->where(function ($query) use ($fecha_inicio, $fecha_fin) {
+                    $query->where(function ($query) use ($fecha_inicio, $fecha_fin) {
+                        $query->where('checkin', '>=', $fecha_inicio);
+                        $query->where('checkin', '<',  $fecha_fin);
                     });
-                    $query->orWhere(function ($query) use ($inicio, $fin) {
-                        $query->where('checkout', '>', $inicio);
-                        $query->where('checkout', '<=',  $fin);
-                    });
-                })
-                ->where('estado_reserva_id', '!=', 6)
-                ->where('estado_reserva_id', '!=', 7);
+                    $query->orWhere(function($query) use ($fecha_inicio,$fecha_fin){
+                        $query->where('checkin', '<=', $fecha_inicio);
+                        $query->where('checkout', '>',  $fecha_inicio);
+                    });                
+                });
             })
             ->with('tipoHabitacion')
             ->get();
