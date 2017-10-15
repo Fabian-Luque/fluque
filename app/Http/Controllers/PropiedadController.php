@@ -260,8 +260,10 @@ class PropiedadController extends Controller
                         if ($servicio->nombre == $serv->nombre) {
                             $id = $serv->pivot->id;
                             if (!in_array($id, $servicios_vendidos)) {
-                                $cantidad_vendido += $serv->pivot->cantidad;
-                                array_push($servicios_vendidos, $id);
+                                if ($serv->pivot->estado == "Pagado") {
+                                    $cantidad_vendido += $serv->pivot->cantidad;
+                                    array_push($servicios_vendidos, $id);
+                                }
                             }
                         }
                     }
