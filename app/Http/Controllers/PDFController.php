@@ -454,13 +454,20 @@ class PDFController extends Controller
         $servicios = Servicio::where('propiedad_id', $propiedad_id)->get();
 
         $cantidad_servicios = [];
-        $cantidad_vendido   = 0;
+        $servicios_vendidos = [];
         foreach ($servicios as $servicio) {
+        $cantidad_vendido   = 0;
             foreach ($pagos as $pago) {
                 foreach ($pago->reserva->huespedes as $huesped) {
                     foreach ($huesped->servicios as $serv) {
                         if ($servicio->nombre == $serv->nombre) {
-                            $cantidad += $serv->pivot->cantidad;
+                            $id = $serv->pivot->id;
+                            if (!in_array($id, $servicios_vendidos)) {
+                                if ($serv->pivot->estado == "Pagado") {
+                                    $cantidad_vendido += $serv->pivot->cantidad;
+                                    array_push($servicios_vendidos, $id);
+                                }
+                            }
                         }
                     }
                 }
