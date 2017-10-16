@@ -454,13 +454,20 @@ class PDFController extends Controller
         $servicios = Servicio::where('propiedad_id', $propiedad_id)->get();
 
         $cantidad_servicios = [];
-        $cantidad_vendido   = 0;
+        $servicios_vendidos = [];
         foreach ($servicios as $servicio) {
+        $cantidad_vendido   = 0;
             foreach ($pagos as $pago) {
                 foreach ($pago->reserva->huespedes as $huesped) {
                     foreach ($huesped->servicios as $serv) {
                         if ($servicio->nombre == $serv->nombre) {
-                            $cantidad += $serv->pivot->cantidad;
+                            $id = $serv->pivot->id;
+                            if (!in_array($id, $servicios_vendidos)) {
+                                if ($serv->pivot->estado == "Pagado") {
+                                    $cantidad_vendido += $serv->pivot->cantidad;
+                                    array_push($servicios_vendidos, $id);
+                                }
+                            }
                         }
                     }
                 }
@@ -1312,9 +1319,10 @@ class PDFController extends Controller
 
             if ($request->has('fecha_fin')) {
             
-            $fin          = new Carbon($request->input('fecha_fin'));
-            $fechaFin     = $fin->addDay();
-            $fecha_fin    = Carbon::createFromFormat('Y-m-d H:i:s', $fechaFin, $pais)->tz('UTC');
+            $fin             = new Carbon($request->input('fecha_fin'));
+            $fechaFin        = $fin->addDay();
+            $fin_fecha       = $fechaFin->startOfDay();
+            $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $fechaFin, $pais)->tz('UTC');
 
 
             }else{
