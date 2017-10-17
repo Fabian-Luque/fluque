@@ -14,17 +14,16 @@ class QVOController extends Controller {
     public function ClienteCreate(Request $request) {
     	if ($request->has('correo') && $request->has('nombre')) {
     		$client = new Client();
-
     		try {
     			$response = $client->request(
-					'POST', 
-					'https://playground.qvo.cl/customers', [
+					'POST',  
+					config('app.qvo_url_base').'/customers', [
   						'json' => [
     						'email' => $request->correo,
     						'name'  => $request->nombre
   						],
   						'headers' => [
-    						'Authorization' => 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJjb21tZXJjZV9pZCI6ImNvbV9NZXdiQ2JoNkwwRUk2WXA3d2VDTFBnIiwiYXBpX3Rva2VuIjp0cnVlfQ.E4o_dCiIwwqg1ccaCz_SweajtYaNMjK9Gs9haXpE18E'
+    						'Authorization' => 'Bearer '.config('app.qvo_key')
   						]
 					]
 				);
@@ -41,10 +40,34 @@ class QVOController extends Controller {
     	}
 		return Response::json($retorno);
     }
+
+    public function ClienteRead(Request $request) {
+    	if ($request->has('qvo_id')) {
+    		$client = new Client();
+
+    		try {
+    			$response = $client->request(
+					'GET',  
+					config('app.qvo_url_base').'/customers/'.$request->qvo_id, [
+  						'headers' => [
+    						'Authorization' => 'Bearer '.config('app.qvo_key')
+  						]
+					]
+				);
+
+    			$status            = trans('request.success.code');
+    			$retorno['errors'] = false;
+				$retorno['msj']    = $response->json();
+    		} catch (GuzzleException $e) {
+    			$status            = trans('request.failure.code.not_founded');
+    			$retorno['errors'] = true;
+    			$retorno['msj']    = json_decode((string)$e->getResponse()->getBody());
+    		}
+    	} else {
+    		$status            = trans('request.failure.code.bad_request');
+    		$retorno['errors'] = true;
+			$retorno['msj']    = "Datos requeridos";
+    	}
+		return Response::json($retorno, $status);
+    }
 }
-
-
-
-
-
-

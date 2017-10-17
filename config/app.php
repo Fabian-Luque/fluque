@@ -15,6 +15,10 @@ return [
 
     'env' => env('APP_ENV', 'production'),
 
+    'qvo_key' => env('APIKEY_QVO', null),
+    
+    'qvo_url_base' => env('URL_QVO', null),
+
     /*
     |--------------------------------------------------------------------------
     | Application Debug Mode
