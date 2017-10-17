@@ -62,6 +62,7 @@ return array(
     'App\\Http\\Controllers\\HuespedController' => $baseDir . '/app/Http/Controllers/HuespedController.php',
     'App\\Http\\Controllers\\PDFController' => $baseDir . '/app/Http/Controllers/PDFController.php',
     'App\\Http\\Controllers\\PropiedadController' => $baseDir . '/app/Http/Controllers/PropiedadController.php',
+    'App\\Http\\Controllers\\QVOController' => $baseDir . '/app/Http/Controllers/QVOController.php',
     'App\\Http\\Controllers\\ReservaController' => $baseDir . '/app/Http/Controllers/ReservaController.php',
     'App\\Http\\Controllers\\RolController' => $baseDir . '/app/Http/Controllers/RolController.php',
     'App\\Http\\Controllers\\ServicioController' => $baseDir . '/app/Http/Controllers/ServicioController.php',

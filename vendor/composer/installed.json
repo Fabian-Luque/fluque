@@ -4868,7 +4868,8 @@
             "googlemaps",
             "laravel",
             "phpgmaps"
-        ]
+        ],
+        "abandoned": "GeneaLabs/laravel-maps"
     },
     {
         "name": "geo-io/interface",

@@ -778,6 +778,7 @@
                 "laravel",
                 "phpgmaps"
             ],
+            "abandoned": "GeneaLabs/laravel-maps",
             "time": "2017-05-16T18:50:20+00:00"
         },
         {

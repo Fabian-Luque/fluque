@@ -492,6 +492,7 @@ class ComposerStaticInit7468b2d861f6e9881ae96a8e5f1aa9d3
         'App\\Http\\Controllers\\HuespedController' => __DIR__ . '/../..' . '/app/Http/Controllers/HuespedController.php',
         'App\\Http\\Controllers\\PDFController' => __DIR__ . '/../..' . '/app/Http/Controllers/PDFController.php',
         'App\\Http\\Controllers\\PropiedadController' => __DIR__ . '/../..' . '/app/Http/Controllers/PropiedadController.php',
+        'App\\Http\\Controllers\\QVOController' => __DIR__ . '/../..' . '/app/Http/Controllers/QVOController.php',
         'App\\Http\\Controllers\\ReservaController' => __DIR__ . '/../..' . '/app/Http/Controllers/ReservaController.php',
         'App\\Http\\Controllers\\RolController' => __DIR__ . '/../..' . '/app/Http/Controllers/RolController.php',
         'App\\Http\\Controllers\\ServicioController' => __DIR__ . '/../..' . '/app/Http/Controllers/ServicioController.php',

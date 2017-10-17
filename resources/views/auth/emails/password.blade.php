@@ -21,7 +21,7 @@
               <img src="https://www.gofeels.com/wp-content/uploads/2017/07/logodark.png" width="110" height="40" border="0">
 
             </tr>
-            <div style="color: #fcfcfc;">
+            <div style="color: #fcfcfc; text-align: center;">
                           <tr>
               <td>
            <td style="
@@ -54,6 +54,7 @@
 
 
 
+
     <a style="
     text-decoration: none; 
     height: 50px;
@@ -67,13 +68,13 @@
     padding-top: 10px; 
     padding-bottom: 10px;
     border: 5px outset #006cbf;
-    " href="https://www.facebook.com/"> Crea una nueva contraseña</a>
+    " href="{{ url('reset/password', $request->token).'?email='.urlencode($request->destino) }}"> Crea una nueva contraseña</a>
 
     <br><br><br>
 
-    <div style="font-size: 18px; color: #000000; padding-right: 35px; text-align: center; letter-spacing: normal">
+    <div style="font-size: 18px; color: #000000; padding-right: 35px; text-align: justify; letter-spacing: normal">
       
-          Tú nos dijiste que acabas de perder tu contraseña sí tu realmente lo hiciste, haz click en el siguiente boton para cambiar la contraseña.
+          Si tu no haz solicitado cambiar tu contraseña, tú puedes ignorar este email; tu clave de ingreso al sistema no cambiara.
       
       </div>
 
@@ -89,58 +90,12 @@
             height: 5px;
           background-color: #ffaa00;
         ">
-            Desarrollado por HolaJarvis Spa
+            Desarrollado por HolaJarvis Spa. Nuestro Blog
+            Torre molinos 320, Piso 8 Temuco
           </center>
         </footer>
     </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
