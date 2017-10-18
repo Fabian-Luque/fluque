@@ -224,3 +224,5 @@ Route::group(['as' => 'api.jarvis.'], function() {
 
 Route::post('cliente/qvo/crear', 'QVOController@ClienteCreate');
 Route::post('cliente/qvo/obtener', 'QVOController@ClienteRead');
+
+Route::post('plan/qvo/crear', 'QVOController@PlanCreate');

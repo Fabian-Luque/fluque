@@ -28,15 +28,18 @@ class QVOController extends Controller {
 					]
 				);
 
+    			$status            = trans('request.success.code');
     			$retorno['errors'] = false;
-				$retorno['msj'] = $response->json();
+				$retorno['msj']    = $response->json();
     		} catch (GuzzleException $e) {
+    			$status            = trans('request.failure.code.bad_request');
     			$retorno['errors'] = true;
-    			$retorno['msj'] = json_decode((string)$e->getResponse()->getBody());
+    			$retorno['msj']    = json_decode((string)$e->getResponse()->getBody());
     		}
     	} else {
+    		$status            = trans('request.failure.code.bad_request');
     		$retorno['errors'] = true;
-			$retorno['msj'] = "Datos requeridos";
+			$retorno['msj']    = "Datos requeridos";
     	}
 		return Response::json($retorno);
     }
@@ -44,7 +47,6 @@ class QVOController extends Controller {
     public function ClienteRead(Request $request) {
     	if ($request->has('qvo_id')) {
     		$client = new Client();
-
     		try {
     			$response = $client->request(
 					'GET',  
@@ -57,7 +59,7 @@ class QVOController extends Controller {
 
     			$status            = trans('request.success.code');
     			$retorno['errors'] = false;
-				$retorno['msj']    = $response->json();
+				$retorno['msj']    = $response;
     		} catch (GuzzleException $e) {
     			$status            = trans('request.failure.code.not_founded');
     			$retorno['errors'] = true;
@@ -70,4 +72,39 @@ class QVOController extends Controller {
     	}
 		return Response::json($retorno, $status);
     }
+
+   	public function PlanCreate(Request $request) {
+   		if ($request->has('nombre') && $request->has('n_hab')) {
+   			$client = new Client();
+   			try {
+   				$response = $client->request('POST', 
+        			config('app.qvo_url_base').'/plans', [
+            			'json' => [
+            				'id' => $request->nombre,
+        					'name' => $request->nombre,
+    						'price' => 150*$request->n_hab,
+    						'currency' => 'CLP',
+      						'trial_period_days' => 15
+    					],
+        				'headers' => [
+     						'Authorization' => 'Bearer '.config('app.qvo_key')
+                		]
+            		]
+        		);
+
+   				$status            = trans('request.success.code');
+        		$retorno['errors'] = false;
+				$retorno['msj'] = $response->json();
+   			} catch (GuzzleException $e) {
+   				$status            = trans('request.failure.code.bad_request');
+    			$retorno['errors'] = true;
+    			$retorno['msj']    = json_decode((string)$e->getResponse()->getBody());
+   			}
+   		} else {
+   			$status            = trans('request.failure.code.bad_request');
+    		$retorno['errors'] = true;
+			$retorno['msj']    = "Datos requeridos";
+   		}
+   		return Response::json($retorno, $status);
+   	}
 }

@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\Validator;
 use Response;
 use JWTAuth;
 use Grimzy\LaravelMysqlSpatial\Types\Point;
+use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Client;
 
 class UserDashController extends Controller {
 
@@ -53,6 +55,41 @@ class UserDashController extends Controller {
                 );
                 $ubicacion->save();
 
+                $client = new Client();
+                
+                try {
+                    $response = $client->request(
+                        'POST',  
+                        config('app.qvo_url_base').'/customers', [
+                            'json' => [
+                                'email' => $usuario->email,
+                                'name'  => $propiedad->nombre
+                            ],
+                            'headers' => [
+                                'Authorization' => 'Bearer '.config('app.qvo_key')
+                            ]
+                        ]
+                    );
+
+                    $client = new Client();
+                    
+                    $response = $client->request('POST', 
+                        config('app.qvo_url_base').'/plans', [
+                            'json' => [
+                                'id' => $usuario->email,
+                                'name' => $propiedad->nombre,
+                                'price' => 150*$propiedad->numero_habitaciones,
+                                'currency' => 'CLP',
+                                'trial_period_days' => 15
+                            ],
+                            'headers' => [
+                                'Authorization' => 'Bearer '.config('app.qvo_key')
+                            ]
+                        ]
+                    );
+                } catch (GuzzleException $e) {
+                                        
+                }
                 $data['accion'] = 'Crear usuario';
                 $data['msg'] = 'Usuario creado satisfactoriamente';
             } else {
