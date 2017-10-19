@@ -6,6 +6,7 @@ use Grimzy\LaravelMysqlSpatial\Schema\Blueprint;
 class CreateUbicacionPropiedad extends Migration {
 
     public function up() {
+        if (!Schema::hasTable('ubicacion_propiedad')) {
         Schema::create(
             'ubicacion_propiedad', 
             function(Blueprint $table) {
@@ -18,6 +19,7 @@ class CreateUbicacionPropiedad extends Migration {
                 $table->timestamps();
             }
         );
+        }
     }
 
     public function down() {

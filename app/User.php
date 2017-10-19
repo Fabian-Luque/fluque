@@ -19,6 +19,10 @@ class User extends Authenticatable {
         'password', 'remember_token',
     ];
 
+    public function QVO() {
+        return $this->hasOne('App\QvoUser');
+    }
+
     public function propiedad(){
         return $this->belongsToMany(
             'App\Propiedad', 
