@@ -1255,49 +1255,45 @@ class PDFController extends Controller
 
     }
 
-      public function huesped(Request $request)
-      {
-
-            if ($request->has('propiedad_id')) {
-
-              $fecha = Carbon::today()->format('d-m-Y');
-
-              $fecha_actual = Carbon::today()->format('Y-m-d');
-
-                
-              $propiedad_id = $request->input('propiedad_id');
-              $propiedad = Propiedad::where('id', $request->input('propiedad_id'))->with('pais')->first();
-
-              if (!is_null($propiedad)){
-
-                $habitaciones = Habitacion::where('propiedad_id', $propiedad_id)->whereHas('reservas', function($query){
-
-                            $query->where('estado_reserva_id', 3);
-
-                  })->with(['reservas' => function ($q) use($fecha_actual){
-
-                  $q->where('estado_reserva_id', 3)->where('checkin', '<=', $fecha_actual)->where('checkout', '>=', $fecha_actual)->with('huespedes');}])->get();
-
-                  $pdf = PDF::loadView('pdf.huesped', ['propiedad' => [$propiedad], 'fecha' =>  $fecha ,'habitaciones' => $habitaciones]);
-
-                  return $pdf->download('archivo.pdf');
-
-
-              }else{
-
-                    $retorno = array(
-
-                        'msj'    => "Propiedad no encontrada",
-                        'errors' => true,
-
-                    );
-
-                    return Response::json($retorno, 404);
-
-
-              }
-
+    public function huesped(Request $request)
+    {
+        if ($request->has('propiedad_id')) {
+            $propiedad_id = $request->input('propiedad_id');
+            $propiedad    = Propiedad::where('id', $propiedad_id)->first();
+            if (is_null($propiedad)) {
+                $retorno = array(
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia propiedad_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
         }
+
+        $fecha        = Carbon::today()->format('d-m-Y');
+        $fecha_actual = Carbon::today()->format('Y-m-d');
+        $propiedad_id = $request->input('propiedad_id');
+        $propiedad    = Propiedad::where('id', $request->input('propiedad_id'))->with('pais')->first();
+
+        $habitaciones = Habitacion::where('propiedad_id', $propiedad_id)->with(['reservas' => function ($q) use($fecha_actual){
+            $q->where('estado_reserva_id', 3)->where('checkin', '<=', $fecha_actual)->where('checkout', '>=', $fecha_actual)->with('huespedes');
+        }])->get();
+
+        foreach ($habitaciones as $habitacion) {
+            if (count($habitacion->reservas) == 0) {
+                $habitacion->estado = "Disponible";
+            } else {
+                $habitacion->estado = "Ocupada";
+            }
+        }
+
+        $pdf = PDF::loadView('pdf.huesped', ['propiedad' => [$propiedad], 'fecha' =>  $fecha ,'habitaciones' => $habitaciones]);
+
+        return $pdf->download('archivo.pdf');
+        
     } 
 
 
