@@ -9,6 +9,7 @@ use App\Caja;
 use App\TipoMonto;
 use App\MontoCaja;
 use App\Propiedad;
+use App\MetodoPago;
 use JWTAuth;
 use \Carbon\Carbon;
 use Response;
@@ -225,8 +226,35 @@ class CajaController extends Controller
                 $moneda['grafico']              = [['parametro' => 'Ingreso', 'valor' => $ingreso], ['parametro' => 'Egreso', 'valor' => $egreso]];
                 array_push($monedas, $moneda);
             }
+
+            $metodo_pagos              = MetodoPago::all();
+            $ingresos_metodo_pago      = [];
+            foreach ($metodo_pagos as $metodo) {
+                $ingresos_moneda = [];
+                foreach ($propiedad->tipoMonedas as $moneda) {
+                    $suma_ingreso   = 0;
+                    foreach ($caja_abierta->pagos  as $pago) {
+                        if ($moneda->id == $pago->tipo_moneda_id) {
+                            if ($metodo->nombre == $pago->MetodoPago->nombre) {
+                                $suma_ingreso += $pago->monto_equivalente;
+                            }
+                        }
+                    }
+                    $ingresos['monto']                   = $suma_ingreso;
+                    $ingresos['tipo_moneda_id']          = $moneda->id;
+                    $ingresos['nombre_moneda']           = $moneda->nombre;
+                    $ingresos['cantidad_decimales']      = $moneda->cantidad_decimales;  
+                    array_push($ingresos_moneda, $ingresos);
+                }
+                $ingresos_pago['id']           = $metodo->id;
+                $ingresos_pago['nombre']       = $metodo->nombre;
+                $ingresos_pago['ingresos']     = $ingresos_moneda;
+                array_push($ingresos_metodo_pago, $ingresos_pago);
+            }
+
             $data['caja_abierta'] = $caja_abierta;
             $data['monedas']      = $monedas;
+            $data['metodos_pago'] = $ingresos_metodo_pago;
 
             return $data;
 
