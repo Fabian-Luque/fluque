@@ -48,14 +48,16 @@ class QVOController extends Controller {
     	if ($request->has('qvo_id')) {
     		$client = new Client();
     		try {
-    			$response = $client->request(
+    			$body = $client->request(
 					'GET',  
 					config('app.qvo_url_base').'/customers/'.$request->qvo_id, [
   						'headers' => [
     						'Authorization' => 'Bearer '.config('app.qvo_key')
   						]
 					]
-				);
+				)->getBody(); 
+
+				$response = json_decode($body); 
 
     			$status            = trans('request.success.code');
     			$retorno['errors'] = false;
