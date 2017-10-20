@@ -72,14 +72,20 @@ class MotorController extends Controller
 
             $tipos_habitacion = [];
             foreach ($tipo_habitacion_propiedad as $tipo) {
+                $disponible_venta = $tipo->disponible_venta;
                 $cantidad_disponibles = 0;
                 foreach ($habitaciones_disponibles as $habitacion) {
                     if ($habitacion->tipo_habitacion_id == $tipo->id) {
                         $cantidad_disponibles += 1;
                     }
                 }
-                if ($cantidad_disponibles > 0) {
-                    $tipo->cantidad_disponible = $cantidad_disponibles;
+                if ($disponible_venta <= $cantidad_disponibles) {
+                    $disponibles = $disponible_venta;
+                } else {
+                    $disponibles = $cantidad_disponibles;
+                }
+                if ($disponibles > 0) {
+                    $tipo->cantidad_disponible = $disponibles;
                 }
                 array_push($tipos_habitacion, $tipo);
             }

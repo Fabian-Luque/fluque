@@ -18,73 +18,53 @@ class Reserva extends Model
 
 	protected $dates = ['checkin', 'checkout'];
 
-
 	public function habitacion(){
-
 		return $this->belongsTo('App\Habitacion', 'habitacion_id');
-
 	}
 
-
 	public function cliente(){
-
 		return $this->belongsTo('App\Cliente', 'cliente_id');
-
 	}
 
 	public function huespedes(){
-
 		return $this->belongsToMany('App\Huesped', 'huesped_reserva');
-
 	}
 
 	public function tipoFuente(){
-
 		return $this->belongsTo('App\TipoFuente', 'tipo_fuente_id');
-
 	}
 
 	public function metodoPago(){
-
 		return $this->belongsTo('App\MetodoPago', 'metodo_pago_id');
-
 	}
 
 	public function estadoReserva(){
-
 		return $this->belongsTo('App\EstadoReserva', 'estado_reserva_id');
-
 	}
 
-
 	public function pagos(){
-
 		return $this->hasMany('App\Pago', 'reserva_id');
+	}
 
+	public function tipoHabitacion()
+	{
+		return $this->belongsTo('App\TipoHabitacion', 'tipo_habitacion_id');
 	}
 
 	public function tipoMoneda(){
-
 		return $this->belongsTo('App\TipoMoneda', 'tipo_moneda_id');
-
 	}
 
 	public function reservasHuespedes(){
-
-
 		return $this->belongsToMany('App\Huesped', 'huesped_reserva_servicio')
 				->withPivot('servicio_id','cantidad', 'precio_total', 'estado')
 				->withTimestamps();
-
 	}
 
 	public function servicios(){
-
 		return $this->belongsToMany('App\Servicio', 'huesped_reserva_servicio')
 				->withPivot('huesped_id','cantidad', 'precio_total', 'estado')
 				->withTimestamps();
-				
-
 	}
 
 	public function getCreatedAtAttribute($value)

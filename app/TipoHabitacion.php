@@ -13,27 +13,20 @@ class TipoHabitacion extends Model
 
 
 	public function habitaciones(){
-
-
 		return $this->hasMany('App\Habitacion', 'tipo_habitacion_id');
-
-
 	}
 
 	public function precios(){
-
 		return $this->hasMany('App\PrecioTemporada', 'tipo_habitacion_id');
-
-
 	}
 
 	public function propiedad(){
-
-
         return $this->belongsTo('App\Propiedad', 'propiedad_id'); 
-
-
     }
+
+    public function reservas(){
+		return $this->hasMany('App\Reserva', 'tipo_habitacion_id');
+	}
 
 
 }
