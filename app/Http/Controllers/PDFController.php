@@ -256,12 +256,13 @@ class PDFController extends Controller
                 array_push($ingresos_metodo_pago, $ingresos_pago);
             }
 
-            $data['caja']         = $caja;
+            // $data['caja']         = $caja;
             $data['monedas']      = $monedas;
             $data['metodos_pago'] = $ingresos_metodo_pago;
 
-            return ['propiedad' => [$propiedad], 'detalle_caja' => $data];
-            $pdf = PDF::loadView('pdf.caja', ['propiedad' => [$propiedad], 'detalle_caja' => $data]);
+            return ['propiedad' => [$propiedad], 'caja' => [$caja]];
+
+            $pdf = PDF::loadView('pdf.caja', ['propiedad' => [$propiedad], 'caja' => $caja]);
 
             return $pdf->download('archivo.pdf');
 
