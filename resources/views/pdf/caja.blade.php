@@ -31,60 +31,61 @@
         <div class="cliente">
                 <table class="tabla-cliente">
 
-                @foreach($detalle_caja as $detalle)
-                  @foreach($detalle['caja'] as $caja)
+                @foreach($detalle_caja as $caja)
+                  
                     <tr>
                         <th class="head-tabla-cliente"><p class="align-left">Responsable</p></th>
-                        <td class="data-tabla-cliente"><p class="nombre">{{ $caja->user->nombre }}</p></td>
+                        <td class="data-tabla-cliente"><p class="nombre">{{ $caja->user->name }}</p></td>
                     </tr>
                     <tr>
                         <th class="head-tabla-cliente"><p class="align-left">Fecha de apertura</p></th>
-                        <td class="data-tabla-cliente"><p class="nombre">{{ $caja->user->fecha_apertura }}</p></td>
+                        <td class="data-tabla-cliente"><p class="nombre">{{ $caja->fecha_apertura }}</p></td>
                     </tr>
                     <tr>
                         <th class="head-tabla-cliente"><p class="align-left">Fecha de cierre</p></th>
-                        <td class="data-tabla-cliente"><p class="nombre">{{ $fecha->user->fecha_cierre }}</p></td>
+                        <td class="data-tabla-cliente"><p class="nombre">{{ $caja->fecha_cierre }}</p></td>
                     </tr>
-                  @endforeach
+
+
+                  
                 @endforeach
 
                 </table>
         </div>
 
 
-
         <div class="detalles" style="margin:20px 0px;">
           <table class="tabla-detalles">
 
-          @foreach($monedas as $moneda)
             <tr>
               <td class="data-tabla-detalles borde-derecha"><p>Ingreso</p></td>
+          @foreach($monedas as $moneda)
 
-              <td class="data-tabla-detalles borde-derecha"><p>{{ $moneda->nombre }} {{ $moneda->ingreso }}</p></td>
+              <td class="data-tabla-detalles borde-derecha"><p>{{ $moneda['nombre'] }} ${{ $moneda['ingreso'] }}</p></td>
+          @endforeach
             </tr>
 
             <tr>
               <td class="data-tabla-detalles borde-derecha"><p>Egreso</p></td>
+          @foreach($monedas as $moneda)
 
-              <td class="data-tabla-detalles borde-derecha"><p>{{ $moneda->nombre }} {{ $moneda->egreso }}</p></td>
+              <td class="data-tabla-detalles borde-derecha"><p>{{ $moneda['nombre'] }} ${{ $moneda['egreso'] }}</p></td>
+          @endforeach
             </tr>
 
             <tr>
               <td class="data-tabla-detalles borde-derecha"><p>Saldo</p></td>
+          @foreach($monedas as $moneda)
 
-              <td class="data-tabla-detalles borde-derecha"><p>{{ $moneda->nombre }} {{ $moneda->saldo }}</p></td>
-            </tr>
+              <td class="data-tabla-detalles borde-derecha"><p>{{ $moneda['nombre'] }} ${{ $moneda['saldo'] }}</p></td>
           @endforeach
+            </tr>
+
 
 
 
           </table>
         </div>
-
-
-
-
-
 
         <div class="titulo" style="text-align:left;">
           <h4 class="">Ingresos por métodos de pago</h4>
@@ -96,10 +97,10 @@
           @foreach($metodos_pago as $metodo)
 
             <tr>
-              <td class="data-tabla-detalles borde-derecha"><p>{{ $metodo->nombre }}</p></td>
+              <td class="data-tabla-detalles borde-derecha"><p>{{ $metodo['nombre'] }}</p></td>
 
               @foreach($metodo['ingresos'] as $ingreso)
-              <td class="data-tabla-detalles borde-derecha"><p>{{ $ingreso->nombre_moneda }} {{ $ingreso->monto }}</p></td>
+              <td class="data-tabla-detalles borde-derecha"><p>{{ $ingreso['nombre_moneda'] }} ${{ $ingreso['monto'] }}</p></td>
               @endforeach
 
             </tr>
@@ -109,8 +110,6 @@
 
           </table>
         </div>
-
-
 
 
 
