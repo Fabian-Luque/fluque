@@ -256,7 +256,7 @@ class PDFController extends Controller
                 array_push($ingresos_metodo_pago, $ingresos_pago);
             }
 
-            $data['caja']         = $caja;
+            $data['detalle_caja'] = $caja;
             $data['monedas']      = $monedas;
             $data['metodos_pago'] = $ingresos_metodo_pago;
 
