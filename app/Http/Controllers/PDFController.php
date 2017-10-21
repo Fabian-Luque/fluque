@@ -260,7 +260,7 @@ class PDFController extends Controller
             $data['monedas']      = $monedas;
             $data['metodos_pago'] = $ingresos_metodo_pago;
 
-            return ['propiedad' => [$propiedad], 'detalle_caja' => $data];
+            return ['propiedad' => [$propiedad], 'caja' => $data];
             $pdf = PDF::loadView('pdf.caja', ['propiedad' => [$propiedad], 'caja' => $data]);
 
             return $pdf->download('archivo.pdf');
