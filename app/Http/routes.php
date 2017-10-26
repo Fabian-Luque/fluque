@@ -102,6 +102,7 @@ Route::post('eliminar/user', 'UserController@delete');
 Route::get('motor/reserva', 'MotorWidgetControllers\MotorController@getMotor');
 Route::get('motor/disponibilidad', 'MotorWidgetControllers\MotorController@getDisponibilidad');
 Route::get('motor/disponibilidad/habitacion', 'motorController@getDisponibilidad');
+Route::post('motor/reserva/habitacion', 'motorController@reserva');
 
 
 Route::get('reset/password/{token}', 'ApiAuthController@ResetPassword');
@@ -212,9 +213,6 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::delete('egreso/propiedad/{id}', 'EgresoController@eliminarEgresoPropiedad');
 		Route::put('editar/politica/{id}', 'PropiedadController@editarPolitica');
 		Route::delete('eliminar/politica/{id}', 'PropiedadController@eliminarPolitica');
-
-
-
 
 		Route::resource('user', 'UserController', ['except' => ['create', 'edit','store']]);
 		Route::resource('propiedad', 'PropiedadController', ['except' => ['create', 'edit', 'store']]);

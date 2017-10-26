@@ -11,14 +11,22 @@ use App\TipoMoneda;
 use App\Calendario;
 use App\Reserva;
 use App\Habitacion;
+use App\Cliente;
 use Response;
 use Validator;
 use \Carbon\Carbon;
+use App\ZonaHoraria;
+use JWTAuth;
+
 
 class MotorController extends Controller
 {
 	public function getDisponibilidad(Request $request)
 	{
+        
+        return $tipos_habitacion = TipoHabitacion::where('propiedad_id', 10)->with('reservas')->get();
+
+
 		if ($request->has('fecha_inicio') && $request->has('fecha_fin')) {
             $inicio = new Carbon($request->input('fecha_inicio'));
             $fin    = new Carbon($request->input('fecha_fin'));
@@ -72,6 +80,9 @@ class MotorController extends Controller
 
             $tipos_habitacion = [];
             foreach ($tipo_habitacion_propiedad as $tipo) {
+
+
+
                 $disponible_venta = $tipo->disponible_venta;
                 $cantidad_disponibles = 0;
                 foreach ($habitaciones_disponibles as $habitacion) {
@@ -79,11 +90,13 @@ class MotorController extends Controller
                         $cantidad_disponibles += 1;
                     }
                 }
+
                 if ($disponible_venta <= $cantidad_disponibles) {
                     $disponibles = $disponible_venta;
-                } else {
+                } elseif($disponible_venta > $cantidad_disponibles) {
                     $disponibles = $cantidad_disponibles;
                 }
+
                 if ($disponibles > 0) {
                     $tipo->cantidad_disponible = $disponibles;
                 }
@@ -212,5 +225,111 @@ class MotorController extends Controller
         }
 
     }
+
+    public function reserva(Request $request)
+    {
+        if ($request->has('tipo_moneda_id') && $request->has('fecha_inicio') && $request->has('fecha_fin') && $request->has('iva') && $request->has('noches') && $request->has('habitaciones') && $request->has('cliente')) {
+            $tipo_moneda_id = $request->get('tipo_moneda_id');
+            $fecha_inicio   = $request->get('fecha_inicio');
+            $fecha_fin      = $request->get('fecha_fin');
+            $iva            = $request->get('iva');
+            $noches         = $request->get('noches');
+            $clientes       = $request['cliente'];
+            $habitaciones   = $request['habitaciones'];
+
+            if (!is_array($habitaciones)) {
+                $habitaciones = [];
+                $habitaciones . push($request['habitaciones']);
+            }
+
+            if ($clientes['tipo_cliente_id'] == 1) {
+                if ($request->has('cliente.rut')) {
+                    $cliente                         = Cliente::firstOrNew($request['cliente']);
+                    $cliente->tipo_cliente_id        = $clientes['tipo_cliente_id'];
+                    $cliente->nombre                 = $clientes['nombre'];
+                    $cliente->apellido               = $clientes['apellido'];
+                    $cliente->giro                   = null;
+                    $cliente->save();
+                } else {
+                    $cliente                         = new Cliente();
+                    $cliente->nombre                 = $clientes['nombre'];
+                    $cliente->apellido               = $clientes['apellido'];
+                    if ($request->has('cliente.direccion')) {
+                        $cliente->direccion          = $clientes['direccion'];
+                    } else {
+                        $cliente->direccion          = null;
+                    }
+                    if ($request->has('cliente.ciudad')) {
+                        $cliente->ciudad             = $clientes['ciudad'];
+                    } else {
+                        $cliente->ciudad             = null;
+                    }
+                    if ($request->has('cliente.telefono')) {
+                        $cliente->telefono           = $clientes['telefono'];
+                    } else {
+                        $cliente->telefono           = null;
+                    }
+                    if ($request->has('cliente.email')) {
+                        $cliente->email              = $clientes['email'];
+                    } else {
+                        $cliente->email              = null;
+                    }
+                    if ($request->has('cliente.pais_id')) {
+                        $cliente->pais_id            = $clientes['pais_id'];
+                    } else {
+                        $cliente->pais_id            = null;
+                    }
+                    if ($request->has('cliente.region_id')) {
+                        $cliente->region_id          = $clientes['region_id'];
+                    } else {
+                        $cliente->region_id          = null;
+                    }
+                    $cliente->tipo_cliente_id        = $clientes['tipo_cliente_id'];
+                    $cliente->save();
+                }
+            } else {
+                if ($clientes['tipo_cliente_id'] == 2) {
+                    $cliente                    = Cliente::firstOrNew($request['cliente']);
+                    $cliente->rut               = $clientes['rut'];
+                    $cliente->nombre            = $clientes['nombre'];
+                    $cliente->tipo_cliente_id   = $clientes['tipo_cliente_id'];
+                    $cliente->save();
+                }
+            }
+
+            foreach ($habitaciones as $habitacion) {
+                $reserva                        = new Reserva();
+                $reserva->monto_alojamiento     = $habitacion['monto_alojamiento'];
+                $reserva->monto_total           = $habitacion['monto_alojamiento'];
+                $reserva->monto_consumo         = 0;
+                $reserva->monto_por_pagar       = $habitacion['monto_alojamiento'];
+                $reserva->ocupacion             = $habitacion['ocupacion'];
+                $reserva->tipo_fuente_id        = 1;
+                $reserva->cliente_id            = $cliente->id;
+                $reserva->checkin               = $fecha_inicio;
+                $reserva->checkout              = $fecha_fin;
+                $reserva->tipo_moneda_id        = $tipo_moneda_id;
+                $reserva->iva                   = $iva;
+                $reserva->estado_reserva_id     = 1;
+                $reserva->noches                = $request['noches'];
+                $reserva->tipo_habitacion_id    = $habitacion['tipo_habitacion_id'];
+                $reserva->save();
+            }
+
+        } else {
+            $retorno = array(
+                'msj'    => "Incompleto",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+        
+        $retorno = array(
+            'msj'       => "Reserva creada satisfactoriamente",
+            'errors'    => false);
+        return Response::json($retorno, 201);
+
+    }
+
+
 
 }
