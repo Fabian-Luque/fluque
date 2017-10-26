@@ -23,11 +23,7 @@ class MotorController extends Controller
 {
 	public function getDisponibilidad(Request $request)
 	{
-        
-        return $tipos_habitacion = TipoHabitacion::where('propiedad_id', 10)->with('reservas')->get();
-
-
-		if ($request->has('fecha_inicio') && $request->has('fecha_fin')) {
+        if ($request->has('fecha_inicio') && $request->has('fecha_fin')) {
             $inicio = new Carbon($request->input('fecha_inicio'));
             $fin    = new Carbon($request->input('fecha_fin'));
         } else {
@@ -81,7 +77,8 @@ class MotorController extends Controller
             $tipos_habitacion = [];
             foreach ($tipo_habitacion_propiedad as $tipo) {
 
-
+                $reservas = Reserva::where('tipo_habitacion_id', $tipo->id)->where('habitacion_id', null)->get();
+                // $cantidad_reservas_motor = count($reservas);
 
                 $disponible_venta = $tipo->disponible_venta;
                 $cantidad_disponibles = 0;
@@ -98,7 +95,8 @@ class MotorController extends Controller
                 }
 
                 if ($disponibles > 0) {
-                    $tipo->cantidad_disponible = $disponibles;
+                    // $tipo->cantidad_disponible = $disponibles;
+                    $tipo->cantidad_disponible = ($disponibles - count($reservas));
                 }
                 array_push($tipos_habitacion, $tipo);
             }
