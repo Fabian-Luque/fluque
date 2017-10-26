@@ -9,7 +9,7 @@ class Propiedad extends Model {
 	use SoftDeletes;
     protected $table = 'propiedades';
 
-	protected $fillable = [ 'id', 'nombre','tipo', 'numero_habitaciones','region','pais','ciudad','estado','direccion', 'telefono', 'email', 'nombre_responsable', 'descripcion','iva', 'porcentaje_deposito', 'pais_id', 'estado_cuenta_id','region_id', 'tipo_propiedad_id', 'tipo_cobro_id', 'zona_horaria_id'];
+	protected $fillable = [ 'id', 'nombre','tipo', 'numero_habitaciones','region','pais','ciudad','estado','direccion', 'telefono', 'email', 'nombre_responsable', 'descripcion','iva', 'porcentaje_deposito', 'pais_id', 'estado_cuenta_id','region_id', 'tipo_propiedad_id', 'tipo_cobro_id', 'zona_horaria_id', 'codigo'];
 
     public function user() {
         return $this->belongsToMany(

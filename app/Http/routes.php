@@ -101,7 +101,7 @@ Route::get('motor/reserva', 'MotorWidgetControllers\MotorController@getMotor');
 Route::get('motor/disponibilidad', 'MotorWidgetControllers\MotorController@getDisponibilidad');
 Route::get('motor/disponibilidad/habitacion', 'motorController@getDisponibilidad');
 Route::post('motor/reserva/habitacion', 'motorController@reserva');
-
+Route::get('crear/codigo', 'PropiedadController@crearCodigo');
 
 Route::get('reset/password/{token}', 'ApiAuthController@ResetPassword');
 

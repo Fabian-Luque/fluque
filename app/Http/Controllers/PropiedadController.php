@@ -1780,8 +1780,6 @@ class PropiedadController extends Controller
 
     public function crearZona(Request $request)
     {
-
-
         foreach ($request['zonas_horarias'] as $zona) {
 
             $zona_horaria               = new ZonaHoraria();
@@ -1793,9 +1791,21 @@ class PropiedadController extends Controller
 
         return "zonas horarias creadas";
 
+    }
 
+    public function CrearCodigo()
+    {
+        $propiedades = Propiedad::all();
+        foreach ($propiedades as $propiedad) {
+            $propiedad = Propiedad::where('id', $propiedad->id)->first();
+            $propiedad->update(array('codigo' => str_random(100)));
+
+        }
+
+        return "creados";
 
     }
+
 
 
 }
