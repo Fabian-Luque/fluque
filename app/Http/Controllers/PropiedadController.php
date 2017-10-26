@@ -251,13 +251,20 @@ class PropiedadController extends Controller
         $servicios = Servicio::where('propiedad_id', $propiedad_id)->get();
 
         $cantidad_servicios = [];
-        $cantidad_vendido   = 0;
+        $servicios_vendidos = [];
         foreach ($servicios as $servicio) {
+        $cantidad_vendido   = 0;
             foreach ($pagos as $pago) {
                 foreach ($pago->reserva->huespedes as $huesped) {
                     foreach ($huesped->servicios as $serv) {
                         if ($servicio->nombre == $serv->nombre) {
-                            $cantidad += $serv->pivot->cantidad;
+                            $id = $serv->pivot->id;
+                            if (!in_array($id, $servicios_vendidos)) {
+                                if ($serv->pivot->estado == "Pagado") {
+                                    $cantidad_vendido += $serv->pivot->cantidad;
+                                    array_push($servicios_vendidos, $id);
+                                }
+                            }
                         }
                     }
                 }
@@ -270,62 +277,62 @@ class PropiedadController extends Controller
         }
 
 
-        $auxInicio = $fecha_inicio->format('Y-m-d');
-        $auxFin    = $fecha_fin->format('Y-m-d');
+        // $auxInicio = $fecha_inicio->format('Y-m-d');
+        // $auxFin    = $fecha_fin->format('Y-m-d');
 
-        $reservas = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
-            $query->where('propiedad_id', $propiedad_id);
-        })->where(function ($query) use ($auxInicio, $auxFin) {
-            $query->where(function ($query) use ($auxInicio, $auxFin) {
-                $query->where('checkin', '>=', $auxInicio);
-                $query->where('checkin', '<',  $auxFin);
-                        });
-            $query->orWhere(function($query) use ($auxInicio,$auxFin){
-                $query->where('checkin', '<=', $auxInicio);
-                $query->where('checkout', '>',  $auxInicio);
-        });                
-        })->select('checkin', 'checkout', 'estado_reserva_id')->get();
+        // $reservas = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
+        //     $query->where('propiedad_id', $propiedad_id);
+        // })->where(function ($query) use ($auxInicio, $auxFin) {
+        //     $query->where(function ($query) use ($auxInicio, $auxFin) {
+        //         $query->where('checkin', '>=', $auxInicio);
+        //         $query->where('checkin', '<',  $auxFin);
+        //                 });
+        //     $query->orWhere(function($query) use ($auxInicio,$auxFin){
+        //         $query->where('checkin', '<=', $auxInicio);
+        //         $query->where('checkout', '>',  $auxInicio);
+        // });                
+        // })->select('checkin', 'checkout', 'estado_reserva_id')->get();
 
-        $cantidad_noches        = ($fecha_inicio->diffInDays($fecha_fin)) + 1; 
-        $cantidad_habitaciones  = count($propiedad->habitaciones);
-        $total_noches           = $cantidad_habitaciones * $cantidad_noches;
+        // $cantidad_noches        = ($fecha_inicio->diffInDays($fecha_fin)) + 1; 
+        // $cantidad_habitaciones  = count($propiedad->habitaciones);
+        // $total_noches           = $cantidad_habitaciones * $cantidad_noches;
 
-        $auxFecha_inicio        = new Carbon($auxInicio);
-        $auxFecha_fin           = new Carbon($auxFin);
-        $suma                   = 0;
-        while ($auxFecha_inicio < $auxFecha_fin) {
-            $fecha = $auxFecha_inicio->format('Y-m-d');
+        // $auxFecha_inicio        = new Carbon($auxInicio);
+        // $auxFecha_fin           = new Carbon($auxFin);
+        // $suma                   = 0;
+        // while ($auxFecha_inicio < $auxFecha_fin) {
+        //     $fecha = $auxFecha_inicio->format('Y-m-d');
 
-            foreach ($reservas as $reserva) {
-                if ($reserva->checkin <= $fecha && $reserva->checkout > $fecha) {
-                    if ($reserva->estado_reserva_id == 3 || $reserva->estado_reserva_id == 4 || $reserva->estado_reserva_id == 5) {
+        //     foreach ($reservas as $reserva) {
+        //         if ($reserva->checkin <= $fecha && $reserva->checkout > $fecha) {
+        //             if ($reserva->estado_reserva_id == 3 || $reserva->estado_reserva_id == 4 || $reserva->estado_reserva_id == 5) {
                         
-                        $suma++;
-                    }
-                }
-            }
+        //                 $suma++;
+        //             }
+        //         }
+        //     }
 
-            $auxFecha_inicio->addDay();
-        }
+        //     $auxFecha_inicio->addDay();
+        // }
 
-        $precio             = $total_habitacion[0];
-        $monto_habitacion   = $precio['monto'];
+        // $precio             = $total_habitacion[0];
+        // $monto_habitacion   = $precio['monto'];
 
-        if ($suma != 0 && $monto_habitacion != 0) {
-            $ADR            = ($monto_habitacion / $suma );
-        } else {
-            $ADR            = 0;
-        }
-        $ocupacion          = $suma / $total_noches; 
-        $REVPAR             = $ocupacion * $ADR;
+        // if ($suma != 0 && $monto_habitacion != 0) {
+        //     $ADR            = ($monto_habitacion / $suma );
+        // } else {
+        //     $ADR            = 0;
+        // }
+        // $ocupacion          = $suma / $total_noches; 
+        // $REVPAR             = $ocupacion * $ADR;
 
-        $rendimiento['adr']                   = $ADR;
-        $rendimiento['revpar']                = $REVPAR;
-        $rendimiento['ocupacion']             = $ocupacion;
-        $rendimiento['habitaciones_ocupadas'] = $suma;
-        $rendimiento['tipo_moneda_id']        = $precio['tipo_moneda_id'];
-        $rendimiento['nombre_moneda']         = $precio['nombre_moneda'];
-        $rendimiento['cantidad_decimales']    = $precio['cantidad_decimales'];
+        // $rendimiento['adr']                   = $ADR;
+        // $rendimiento['revpar']                = $REVPAR;
+        // $rendimiento['ocupacion']             = $ocupacion;
+        // $rendimiento['habitaciones_ocupadas'] = $suma;
+        // $rendimiento['tipo_moneda_id']        = $precio['tipo_moneda_id'];
+        // $rendimiento['nombre_moneda']         = $precio['nombre_moneda'];
+        // $rendimiento['cantidad_decimales']    = $precio['cantidad_decimales'];
 
         $ingresos_total['ingresos_totales']         = $total_ingresos;
         $ingresos_total['ingresos_por_habitacion']  = $total_habitacion;
@@ -335,7 +342,7 @@ class PropiedadController extends Controller
         $ingresos_total['tipos_fuentes']            = $ingresos_tipo_fuente;
         $ingresos_total['tipos_clientes']           = $ingresos_tipo_cliente;
         $ingresos_total['metodos_pagos']            = $ingresos_metodo_pago;
-        $ingresos_total['rendimiento']              = $rendimiento;
+        // $ingresos_total['rendimiento']              = $rendimiento;
  
 
         return $ingresos_total;

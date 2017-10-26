@@ -4,8 +4,6 @@ use Illuminate\Http\Response as HttpResponse;
 
 Route::auth();
 
-Route::get('crear/permisos/roles', 'RolController@crearPermisos');
-
 Route::get(
 	'/', 
 	function () {
@@ -149,6 +147,7 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::post('pdf/reservas', 'PDFController@reservas');
 		Route::post('pdf/comprobante/reserva', 'PDFController@comprobanteReserva');
 		Route::post('pdf/comprobante/reserva/resumen', 'PDFController@comprobanteReservaResumen');
+		Route::post('pdf/caja', 'PDFController@caja');
 		Route::post('ingreso/servicio', 'PropiedadController@ingresoServicio');
 		Route::post('ingreso/servicio/cliente', 'ClienteController@ingresoServicio');
 		Route::get('cliente/empresa', 'ClienteController@getClientes');
