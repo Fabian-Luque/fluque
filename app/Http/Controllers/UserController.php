@@ -68,6 +68,7 @@ class UserController extends Controller {
             $propiedad->ciudad              = $request->get('ciudad');
             $propiedad->direccion           = $request->get('direccion');
             $propiedad->tipo_propiedad_id   = $request->get('tipo_propiedad_id');
+            $propiedad->codigo              = str_random(100);
 
             $propiedad->save();
             $usuario->propiedad()->attach($propiedad->id);

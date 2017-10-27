@@ -9,7 +9,7 @@ class TipoHabitacion extends Model
     
 	protected $table = 'tipo_habitacion';
 
-	protected $fillable = ['nombre', 'capacidad', 'propiedad_id'];
+	protected $fillable = ['nombre', 'capacidad', 'cantidad', 'disponible_venta', 'propiedad_id'];
 
 
 	public function habitaciones(){

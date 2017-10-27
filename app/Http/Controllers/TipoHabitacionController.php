@@ -42,9 +42,11 @@ class TipoHabitacionController extends Controller
 	{
 		$rules = array(
 
-            'nombre'       => 'required',
-            'capacidad'    => 'required|numeric',
-            'propiedad_id' => 'required|numeric',
+            'nombre'           => 'required',
+            'capacidad'        => 'required|numeric',
+            'cantidad'         => 'required|numeric',
+            'disponible_venta' => 'required|numeric',
+            'propiedad_id'     => 'required|numeric',
         );
 
         $validator = Validator::make($request->all(), $rules);
@@ -146,8 +148,10 @@ class TipoHabitacionController extends Controller
 
 		$validator = Validator::make($request->all(),
             [
-                'nombre'	 => '',
-                'capacidad'  => '',
+                'nombre'	       => '',
+                'capacidad'        => '',
+                'cantidad'         => '',
+                'disponible_venta' => ''
             ]
         );
 

@@ -76,7 +76,6 @@ class MotorController extends Controller
 
             $tipos_habitacion = [];
             foreach ($tipo_habitacion_propiedad as $tipo) {
-
                 $reservas = Reserva::where('tipo_habitacion_id', $tipo->id)->where('habitacion_id', null)->get();
                 // $cantidad_reservas_motor = count($reservas);
 
