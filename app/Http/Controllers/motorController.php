@@ -104,10 +104,11 @@ class MotorController extends Controller
             $fechaFin               = new Carbon($request->input('fecha_fin'));
             $propiedad_monedas      = $propiedad->tipoMonedas; // monedas propiedad
 
-            foreach ($habitaciones_disponibles as $habitacion) {
-                $precios                    = $habitacion->tipoHabitacion->precios;
-                $tipo_habitacion_id         = $habitacion->tipo_habitacion_id;
-                $capacidad                  = $habitacion->tipoHabitacion->capacidad;
+
+            foreach ($tipos_habitacion as $tipo_habitacion) {
+                $precios                    = $tipo_habitacion->precios;
+                $tipo_habitacion_id         = $tipo_habitacion->id;
+                $capacidad                  = $tipo_habitacion->capacidad;
                 $precio_promedio_habitacion = [];
                 $auxPrecio                  = [];
                 $auxFecha                   = new Carbon($fechaInicio);
@@ -119,7 +120,7 @@ class MotorController extends Controller
 
                     if (!is_null($temporada)) {
                         $temporada_id      = $temporada->id;
-                        $precios_temporada = $precios->where('temporada_id', $temporada_id)->where('tipo_habitacion_id', $habitacion->tipo_habitacion_id);
+                        $precios_temporada = $precios->where('temporada_id', $temporada_id)->where('tipo_habitacion_id', $tipo_habitacion_id);
                         if ($propiedad->tipo_cobro_id != 3) {
                             foreach ($propiedad_monedas as $moneda) {
                                 $tipo_moneda = $moneda->id;
@@ -195,23 +196,23 @@ class MotorController extends Controller
                     }
                 }
 
-                $habitacion->precios = $precio_promedio_habitacion;
+                $tipo_habitacion->precio = $precio_promedio_habitacion;
 
             }
 
-            $habitaciones_tipo = [];
-            foreach ($tipos_habitacion as $tipo) {
-                $habitaciones = [];
-                foreach ($habitaciones_disponibles as $habitacion) {
-                    if ($tipo->id == $habitacion->tipo_habitacion_id) {
-                        array_push($habitaciones, $habitacion);
-                    }
-                }
-                $auxTipo = ['id' => $tipo->id, 'nombre' => $tipo->nombre, 'cantidad_disponible' => $tipo->cantidad_disponible ,'habitaciones' => $habitaciones];
-                array_push($habitaciones_tipo, $auxTipo);  
-            }
+            // $habitaciones_tipo = [];
+            // foreach ($tipos_habitacion as $tipo) {
+            //     $habitaciones = [];
+            //     foreach ($habitaciones_disponibles as $habitacion) {
+            //         if ($tipo->id == $habitacion->tipo_habitacion_id) {
+            //             array_push($habitaciones, $habitacion);
+            //         }
+            //     }
+            //     $auxTipo = ['id' => $tipo->id, 'nombre' => $tipo->nombre, 'cantidad_disponible' => $tipo->cantidad_disponible ,'habitaciones' => $habitaciones];
+            //     array_push($habitaciones_tipo, $auxTipo);  
+            // }
 
-            $data = ['tipos_habitaciones' => $habitaciones_tipo];
+            $data = ['tipos_habitaciones' => $tipos_habitacion ];
             return $data;
 
         } else {
