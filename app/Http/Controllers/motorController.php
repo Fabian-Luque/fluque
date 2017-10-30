@@ -33,9 +33,10 @@ class MotorController extends Controller
             return Response::json($data, 404);
         }
 
-        if ($request->has('propiedad_id')) {
+        if ($request->has('propiedad_id') && $request->has('codigo')) {
             $propiedad_id   = $request->input('propiedad_id');
-            $propiedad      = Propiedad::where('id', $propiedad_id)->with('tiposHabitacion')->first();
+            $codigo         = $request->input('codigo');
+            $propiedad      = Propiedad::where('id', $propiedad_id)->where('codigo', $codigo)->with('tiposHabitacion')->first();
             if (is_null($propiedad)) {
                 $retorno  = array(
                     'msj'    => "Propiedad no encontrada",
