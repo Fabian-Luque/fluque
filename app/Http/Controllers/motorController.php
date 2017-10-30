@@ -28,11 +28,10 @@ class MotorController extends Controller
             $fin    = new Carbon($request->input('fecha_fin'));
         } else {
             $data = array(
-                'msj'    => "Propiedad no encontrada",
+                'msj'    => "No se envian fechas",
                 'errors' => true,);
-            return Response::json($data, 404);
+            return Response::json($data, 400);
         }
-
         if ($request->has('propiedad_id') && $request->has('codigo')) {
             $propiedad_id   = $request->input('propiedad_id');
             $codigo         = $request->input('codigo');
