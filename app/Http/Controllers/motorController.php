@@ -77,7 +77,6 @@ class MotorController extends Controller
             $tipos_habitacion = [];
             foreach ($tipo_habitacion_propiedad as $tipo) {
                 $reservas = Reserva::where('tipo_habitacion_id', $tipo->id)->where('habitacion_id', null)->get();
-                // $cantidad_reservas_motor = count($reservas);
 
                 $disponible_venta = $tipo->disponible_venta;
                 $cantidad_disponibles = 0;
@@ -94,7 +93,6 @@ class MotorController extends Controller
                 }
 
                 if ($disponibles > 0) {
-                    // $tipo->cantidad_disponible = $disponibles;
                     $tipo->cantidad_disponible = ($disponibles - count($reservas));
                 }
                 array_push($tipos_habitacion, $tipo);
@@ -199,20 +197,9 @@ class MotorController extends Controller
                 $tipo_habitacion->precio = $precio_promedio_habitacion;
 
             }
-
-            // $habitaciones_tipo = [];
-            // foreach ($tipos_habitacion as $tipo) {
-            //     $habitaciones = [];
-            //     foreach ($habitaciones_disponibles as $habitacion) {
-            //         if ($tipo->id == $habitacion->tipo_habitacion_id) {
-            //             array_push($habitaciones, $habitacion);
-            //         }
-            //     }
-            //     $auxTipo = ['id' => $tipo->id, 'nombre' => $tipo->nombre, 'cantidad_disponible' => $tipo->cantidad_disponible ,'habitaciones' => $habitaciones];
-            //     array_push($habitaciones_tipo, $auxTipo);  
-            // }
-
-            $data = ['tipos_habitaciones' => $tipos_habitacion ];
+            $data['id']                 = $propiedad->id;
+            $data['nombre']             = $propiedad->nombre;
+            $data['tipos_habitaciones'] = $tipos_habitacion;
             return $data;
 
         } else {
