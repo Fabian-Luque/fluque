@@ -197,9 +197,16 @@ class MotorController extends Controller
                 $tipo_habitacion->precio = $precio_promedio_habitacion;
 
             }
+
+            $hab_disponibles = [];
+            foreach ($tipos_habitacion as $tipo) {
+                if ($tipo->disponible_venta > 0) {
+                    array_push($hab_disponibles, $tipo);
+                }
+            }
             $data['nombre']             = $propiedad->nombre;
             $data['tipo_cobro_id']      = $propiedad->tipo_cobro_id;
-            $data['tipos_habitaciones'] = $tipos_habitacion;
+            $data['tipos_habitaciones'] = $hab_disponibles;
             return $data;
 
         } else {
