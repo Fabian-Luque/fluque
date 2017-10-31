@@ -16,6 +16,9 @@ use Response;
 use JWTAuth;
 
 class UserController extends Controller {
+    public function read(Request $request){
+        return Response::json(User::all());
+    }
     public function show($id){
         try {
             $users = User::where('id', $id)->with('propiedad.tipoMonedas.clasificacionMonedas')->with('rol.permisos')->get();

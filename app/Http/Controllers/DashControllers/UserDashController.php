@@ -10,6 +10,7 @@ use App\TipoHabitacion;
 use App\TipoPropiedad;
 use App\Estadocuenta;
 use App\User;
+use App\QvoUser;
 use App\UbicacionProp;
 use App\ZonaHoraria;
 use Illuminate\Http\Request;
@@ -58,7 +59,7 @@ class UserDashController extends Controller {
                 $client = new Client();
                 
                 try {
-                    $response = $client->request(
+                    $body = $client->request(
                         'POST',  
                         config('app.qvo_url_base').'/customers', [
                             'json' => [
@@ -69,14 +70,21 @@ class UserDashController extends Controller {
                                 'Authorization' => 'Bearer '.config('app.qvo_key')
                             ]
                         ]
-                    );
+                    )->getBody(); 
+
+                    $response = json_decode($body);
+
+                    $qvo          = new QvoUser();
+                    $qvo->qvo_id  = $response->id;
+                    $qvo->user_id = $usuario->id;
+                    $qvo->save();
 
                     $client = new Client();
                     
                     $response = $client->request('POST', 
                         config('app.qvo_url_base').'/plans', [
                             'json' => [
-                                'id' => $usuario->email,
+                                'id' => $qvo->qvo_id,
                                 'name' => $propiedad->nombre,
                                 'price' => 150*$propiedad->numero_habitaciones,
                                 'currency' => 'CLP',

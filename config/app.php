@@ -18,6 +18,9 @@ return [
     'qvo_key' => env('APIKEY_QVO', null),
     
     'qvo_url_base' => env('URL_QVO', null),
+    
+    'default' => env('QUEUE_DRIVER', 'redis'),
+    'driver' => env('SESSION_DRIVER', 'redis'),
 
     /*
     |--------------------------------------------------------------------------
