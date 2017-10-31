@@ -44,8 +44,8 @@ class TipoHabitacionController extends Controller
 
             'nombre'           => 'required',
             'capacidad'        => 'required|numeric',
-            'cantidad'         => 'required|numeric',
-            'disponible_venta' => 'required|numeric',
+            'cantidad'         => 'numeric',
+            'disponible_venta' => 'numeric',
             'propiedad_id'     => 'required|numeric',
         );
 
