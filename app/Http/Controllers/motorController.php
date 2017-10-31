@@ -197,8 +197,8 @@ class MotorController extends Controller
                 $tipo_habitacion->precio = $precio_promedio_habitacion;
 
             }
-            $data['id']                 = $propiedad->id;
             $data['nombre']             = $propiedad->nombre;
+            $data['tipo_cobro_id']      = $propiedad->tipo_cobro_id;
             $data['tipos_habitaciones'] = $tipos_habitacion;
             return $data;
 
