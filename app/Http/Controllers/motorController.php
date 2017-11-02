@@ -35,7 +35,7 @@ class MotorController extends Controller
         if ($request->has('propiedad_id') && $request->has('codigo')) {
             $propiedad_id   = $request->input('propiedad_id');
             $codigo         = $request->input('codigo');
-            $propiedad      = Propiedad::where('id', $propiedad_id)->where('codigo', $codigo)->with('tiposHabitacion')->first();
+            $propiedad      = Propiedad::where('id', $propiedad_id)->where('codigo', $codigo)->with('tiposHabitacion')->with('tipoMonedas')->first();
             if (is_null($propiedad)) {
                 $retorno  = array(
                     'msj'    => "Propiedad no encontrada",
@@ -206,6 +206,7 @@ class MotorController extends Controller
             }
             $data['nombre']             = $propiedad->nombre;
             $data['tipo_cobro_id']      = $propiedad->tipo_cobro_id;
+            $data['tipo_monedas']      = $propiedad->tipoMonedas;
             $data['tipos_habitaciones'] = $hab_disponibles;
             return $data;
 
