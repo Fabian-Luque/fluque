@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Jobs\Job;
+use App\Jobs\CrearSubscripcionQVO;
 use Illuminate\Contracts\Mail\Mailer;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -19,22 +20,21 @@ class CrearPlanQVO extends Job implements SelfHandling, ShouldQueue {
     use InteractsWithQueue, SerializesModels;
     public $user;
 
-    public function __construct(User $user) {
-        $this->user = $user;       
+    public function __construct($user) {
+        $this->user = $user;    
     }
 
     public function handle() {
         echo "\n";
         $client = new Client();
-        $user = User::find($this->user["id"]);
 
         try {
             $body = $client->request('POST', 
                 config('app.qvo_url_base').'/plans', [
                     'json' => [
-                        'id' => $user->propiedad[0]->id,
-                        'name' => $user->propiedad[0]->nombre,
-                        'price' => $user->propiedad[0]->numero_habitaciones*,// realizar calculo
+                        'id' => $this->user->propiedad[0]->id,
+                        'name' => $this->user->propiedad[0]->nombre,
+                        'price' => $this->user->propiedad[0]->numero_habitaciones,// realizar calculo
                         'currency' => 'CLP',
                         'trial_period_days' => 15
                     ],
@@ -45,11 +45,13 @@ class CrearPlanQVO extends Job implements SelfHandling, ShouldQueue {
             )->getBody();
             $response = json_decode($body);
 
+            $job = (new CrearSubscripcionQVO($user))->delay(5);
+            dispatch($job);
+
             $retorno["msj"]    = $response;
         } catch (GuzzleException $e) {
             $retorno["msj"]    = json_decode((string)$e->getResponse()->getBody());
         }
-
     }
 
     public function failed() {

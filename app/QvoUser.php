@@ -9,8 +9,9 @@ class QvoUser extends Model {
 
     protected $fillable = [ 
     	'id', 
-    	'user_id', 
+    	'prop_id', 
     	'qvo_id',
+        'solsub_id',
     	'created_at', 
     	'updated_at'
     ];

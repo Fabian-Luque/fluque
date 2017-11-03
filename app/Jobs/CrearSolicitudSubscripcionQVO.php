@@ -3,7 +3,7 @@
 namespace App\Jobs;
 
 use App\Jobs\Job;
-use App\Jobs\CrearPlanQVO;
+use Illuminate\Contracts\Mail\Mailer;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -15,7 +15,7 @@ use App\Http\Requests;
 use App\User;
 use App\QvoUser;
 
-class CrearClienteQVO extends Job implements SelfHandling, ShouldQueue {
+class CrearSolicitudSubscripcionQVO extends Job implements SelfHandling, ShouldQueue {
     use InteractsWithQueue, SerializesModels;
     public $user;
 
@@ -24,16 +24,22 @@ class CrearClienteQVO extends Job implements SelfHandling, ShouldQueue {
     }
 
     public function handle() {
-    	echo "\n";
-    	$client = new Client();
-        echo "ujuuooooooooooooooooo";
+        echo "\n";
+        $client = new Client();
+        
+        $user = User::find($this->user["id"]);
+        $qvo_user = QvoUser::where(
+            'prop_id',
+            $user->propiedad[0]->id
+        )->first();
+
         try {
             $body = $client->request(
-                'POST',  
-                config('app.qvo_url_base').'/customers', [
+                'POST', 
+                config('app.qvo_url_base').'/subscription_requests', [
                     'json' => [
-                        'email' => $this->user->propiedad[0]->email,
-                        'name'  => $this->user->propiedad[0]->nombre
+                        'customer_id' => $qvo_user->qvo_id,
+                        'plan_id' => $user->propiedad[0]->id
                     ],
                     'headers' => [
                         'Authorization' => 'Bearer '.config('app.qvo_key')
@@ -41,20 +47,15 @@ class CrearClienteQVO extends Job implements SelfHandling, ShouldQueue {
                 ]
             )->getBody();
             $response = json_decode($body);
-            echo "nooooooo!!!!!!!!!!!!!!!!";
-            $retorno["msj"] = $response;
 
-            $qvo_user = new QvoUser();
-            $qvo_user->prop_id = $user->propiedad[0]->id;
-            $qvo_user->qvo_id  = $response->id;
-            $qvo_user->save(); 
+            $retorno["msj"]    = $response;
 
-            $job = (new CrearPlanQVO($user))->delay(5);
-            dispatch($job);
-            echo "ujuu";
+            $qvo_user->solsub_id = $response->id;
+            $qvo_user->save();
         } catch (GuzzleException $e) {
             $retorno["msj"]    = json_decode((string)$e->getResponse()->getBody());
         }
+        echo $retorno["msj"];
     }
 
     public function failed() {

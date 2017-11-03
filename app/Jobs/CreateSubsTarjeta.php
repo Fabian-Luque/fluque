@@ -15,7 +15,7 @@ use App\Http\Requests;
 use App\User;
 use App\QvoUser;
 
-class CrearSubscripcionQVO extends Job implements SelfHandling, ShouldQueue {
+class CreateSubsTarjeta extends Job implements SelfHandling, ShouldQueue {
     use InteractsWithQueue, SerializesModels;
     public $user;
 
@@ -35,10 +35,9 @@ class CrearSubscripcionQVO extends Job implements SelfHandling, ShouldQueue {
             try {
                 $body = $client->request(
                     'POST', 
-                    config('app.qvo_url_base').'/subscriptions', [
+                    config('app.qvo_url_base').'/customers/'.$qvo_user->qvo_id.'/cards/inscriptions', [
                         'json' => [
-                            'customer_id' => $qvo_user->qvo_id,
-                            'plan_id' => $this->user->propiedad[0]->id
+                            'return_url' => 'http://www.google.com',
                         ],
                         'headers' => [
                             'Authorization' => 'Bearer '.config('app.qvo_key')
@@ -59,7 +58,7 @@ class CrearSubscripcionQVO extends Job implements SelfHandling, ShouldQueue {
                 $retorno["msj"]    = json_decode((string)$e->getResponse()->getBody());
             } 
         } else {
-            echo "No existe el cliente para la subscripcion";
+            echo "No existe el cliente para la subscripcion de tarjeta";
         }
         echo $retorno;
     }

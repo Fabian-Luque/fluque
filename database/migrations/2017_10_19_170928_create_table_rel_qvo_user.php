@@ -10,9 +10,10 @@ class CreateTableRelQvoUser extends Migration {
             'qvousers', 
             function (Blueprint $table) {
                 $table->increments('id');
-                $table->integer('user_id')->unsigned()->index();
+                $table->integer('prop_id')->unsigned()->index();
                 $table->string('qvo_id');
-                $table->foreign('user_id')
+                $table->string('solsub_id')->nullable();
+                $table->foreign('prop_id')
                     ->references('id')
                 ->on('users');
                 $table->timestamps();
