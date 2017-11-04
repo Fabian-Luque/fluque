@@ -26,7 +26,7 @@ class CrearClienteQVO extends Job implements SelfHandling, ShouldQueue {
     public function handle() {
     	echo "\n";
     	$client = new Client();
-        echo "ujuuooooooooooooooooo";
+
         try {
             $body = $client->request(
                 'POST',  
@@ -41,7 +41,7 @@ class CrearClienteQVO extends Job implements SelfHandling, ShouldQueue {
                 ]
             )->getBody();
             $response = json_decode($body);
-            echo "nooooooo!!!!!!!!!!!!!!!!";
+      
             $retorno["msj"] = $response;
 
             $qvo_user = new QvoUser();
@@ -49,11 +49,15 @@ class CrearClienteQVO extends Job implements SelfHandling, ShouldQueue {
             $qvo_user->qvo_id  = $response->id;
             $qvo_user->save(); 
 
+            echo "\nCliente creado con exito\n";
             $job = (new CrearPlanQVO($user))->delay(5);
             dispatch($job);
-            echo "ujuu";
+            
         } catch (GuzzleException $e) {
+            echo $retorno["msj"];
             $retorno["msj"]    = json_decode((string)$e->getResponse()->getBody());
+            $job = (new CrearPlanQVO($user))->delay(5);
+            dispatch($job);
         }
     }
 

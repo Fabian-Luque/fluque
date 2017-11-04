@@ -45,12 +45,24 @@ class CrearPlanQVO extends Job implements SelfHandling, ShouldQueue {
             )->getBody();
             $response = json_decode($body);
 
-            $job = (new CrearSubscripcionQVO($user))->delay(5);
-            dispatch($job);
+            $qvo_user = QvoUser::where(
+                'prop_id',
+                $user->propiedad[0]->id
+            )->first();
+
+            if ($qvo_user->solsub_id == null) {
+                $job = (new CrearSubscripcionQVO($user))->delay(5);
+                dispatch($job);
+            }
 
             $retorno["msj"]    = $response;
+            echo "\n";
+            echo $retorno["msj"];
         } catch (GuzzleException $e) {
+            $job = (new CrearSubscripcionQVO($user))->delay(5);
+            dispatch($job);
             $retorno["msj"]    = json_decode((string)$e->getResponse()->getBody());
+            echo $retorno["msj"];
         }
     }
 
