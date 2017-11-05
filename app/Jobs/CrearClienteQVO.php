@@ -32,7 +32,7 @@ class CrearClienteQVO extends Job implements SelfHandling, ShouldQueue {
                 'POST',  
                 config('app.qvo_url_base').'/customers', [
                     'json' => [
-                        'email' => $this->user->propiedad[0]->email,
+                        'email' => $this->user->email,
                         'name'  => $this->user->propiedad[0]->nombre
                     ],
                     'headers' => [
@@ -45,19 +45,15 @@ class CrearClienteQVO extends Job implements SelfHandling, ShouldQueue {
             $retorno["msj"] = $response;
 
             $qvo_user = new QvoUser();
-            $qvo_user->prop_id = $user->propiedad[0]->id;
+            $qvo_user->prop_id = $this->user->propiedad[0]->id;
             $qvo_user->qvo_id  = $response->id;
             $qvo_user->save(); 
 
-            echo "\nCliente creado con exito\n";
-            $job = (new CrearPlanQVO($user))->delay(5);
+            $job = (new CrearPlanQVO($this->user))->delay(5);
             dispatch($job);
             
         } catch (GuzzleException $e) {
-            echo $retorno["msj"];
-            $retorno["msj"]    = json_decode((string)$e->getResponse()->getBody());
-            $job = (new CrearPlanQVO($user))->delay(5);
-            dispatch($job);
+            $retorno["msj"] = json_decode((string)$e->getResponse()->getBody());
         }
     }
 

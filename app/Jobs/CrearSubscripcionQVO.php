@@ -31,7 +31,7 @@ class CrearSubscripcionQVO extends Job implements SelfHandling, ShouldQueue {
             $this->user->propiedad[0]->id
         )->first();
 
-        if (isset($qvo_user->prop_id)) {
+        if (isset($qvo_user->prop_id) && isset($qvo_user->solsub_id) == true) {
             try {
                 $body = $client->request(
                     'POST', 

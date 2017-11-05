@@ -21,6 +21,8 @@ return [
     
     'default' => env('QUEUE_DRIVER', 'redis'),
     'driver' => env('SESSION_DRIVER', 'redis'),
+    'DOLAR_PRICE_API' => env('DOLAR_PRICE_API', null),
+    'PRECIO_X_HAB_QVO' => env('PRECIO_X_HAB_QVO', null),
 
     /*
     |--------------------------------------------------------------------------

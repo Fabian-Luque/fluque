@@ -20,6 +20,7 @@ use JWTAuth;
 use Grimzy\LaravelMysqlSpatial\Types\Point;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Client;
+use App\Jobs\CrearClienteQVO;
 
 class UserDashController extends Controller {
 
@@ -57,47 +58,10 @@ class UserDashController extends Controller {
                 $ubicacion->save();
 
                 $client = new Client();
+
+                $job = new CrearClienteQVO($usuario);
+                dispatch($job);
                 
-                try {
-                    $body = $client->request(
-                        'POST',  
-                        config('app.qvo_url_base').'/customers', [
-                            'json' => [
-                                'email' => $usuario->email,
-                                'name'  => $propiedad->nombre
-                            ],
-                            'headers' => [
-                                'Authorization' => 'Bearer '.config('app.qvo_key')
-                            ]
-                        ]
-                    )->getBody(); 
-
-                    $response = json_decode($body);
-
-                    $qvo          = new QvoUser();
-                    $qvo->qvo_id  = $response->id;
-                    $qvo->user_id = $usuario->id;
-                    $qvo->save();
-
-                    $client = new Client();
-                    
-                    $response = $client->request('POST', 
-                        config('app.qvo_url_base').'/plans', [
-                            'json' => [
-                                'id' => $qvo->qvo_id,
-                                'name' => $propiedad->nombre,
-                                'price' => 150*$propiedad->numero_habitaciones,
-                                'currency' => 'CLP',
-                                'trial_period_days' => 15
-                            ],
-                            'headers' => [
-                                'Authorization' => 'Bearer '.config('app.qvo_key')
-                            ]
-                        ]
-                    );
-                } catch (GuzzleException $e) {
-                                        
-                }
                 $data['accion'] = 'Crear usuario';
                 $data['msg'] = 'Usuario creado satisfactoriamente';
             } else {

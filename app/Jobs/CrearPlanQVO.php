@@ -29,13 +29,32 @@ class CrearPlanQVO extends Job implements SelfHandling, ShouldQueue {
         $client = new Client();
 
         try {
-            $body = $client->request('POST', 
+            $body = $client->request(
+                'POST', 
+                config('app.DOLAR_PRICE_API')
+            )->getBody();
+            $dolar_price = json_decode($body); 
+            $dolar_price = intval($dolar_price->quotes->USDCLP);
+        } catch (GuzzleException $e) {
+            $dolar_price = 600;
+        }
+
+        if ($this->user->propiedad[0]->numero_habitaciones > 27) {
+            $precio = round($dolar_price * 27);    
+        } else {
+            $precio = round($dolar_price * $this->user->propiedad[0]->numero_habitaciones);
+        }
+
+        try {
+            $body = $client->request(
+                'POST', 
                 config('app.qvo_url_base').'/plans', [
                     'json' => [
                         'id' => $this->user->propiedad[0]->id,
                         'name' => $this->user->propiedad[0]->nombre,
-                        'price' => $this->user->propiedad[0]->numero_habitaciones,// realizar calculo
+                        'price' => $precio * intval(config('app.PRECIO_X_HAB_QVO')),
                         'currency' => 'CLP',
+                        'interval' => 'year',
                         'trial_period_days' => 15
                     ],
                     'headers' => [
@@ -47,23 +66,19 @@ class CrearPlanQVO extends Job implements SelfHandling, ShouldQueue {
 
             $qvo_user = QvoUser::where(
                 'prop_id',
-                $user->propiedad[0]->id
+                $this->user->propiedad[0]->id
             )->first();
 
-            if ($qvo_user->solsub_id == null) {
-                $job = (new CrearSubscripcionQVO($user))->delay(5);
+            if ($qvo_user != null) {
+                $job = (new CrearSubscripcionQVO($this->user))->delay(5);
                 dispatch($job);
-            }
+            } 
 
             $retorno["msj"]    = $response;
-            echo "\n";
-            echo $retorno["msj"];
+    
         } catch (GuzzleException $e) {
-            $job = (new CrearSubscripcionQVO($user))->delay(5);
-            dispatch($job);
             $retorno["msj"]    = json_decode((string)$e->getResponse()->getBody());
-            echo $retorno["msj"];
-        }
+        }   
     }
 
     public function failed() {
