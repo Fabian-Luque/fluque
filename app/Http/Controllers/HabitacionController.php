@@ -229,24 +229,17 @@ class HabitacionController extends Controller
         if ($validator->fails()) {
 
             $data = [
-
                 'errors' => true,
-                'msg'    => $validator->messages(),
-
-            ];
-
+                'msg'    => $validator->messages(),];
             return Response::json($data, 400);
 
         } else {
-
-            $propiedad_id          = $request->get('propiedad_id');
-            $propiedad             = Propiedad::where('id', $propiedad_id)->first();
-            $cantidad_habitaciones = $propiedad->numero_habitaciones;
-
+            $propiedad_id            = $request->get('propiedad_id');
+            $propiedad               = Propiedad::where('id', $propiedad_id)->first();
+            $cantidad_habitaciones   = $propiedad->numero_habitaciones;
             $habitaciones_ingresadas = $propiedad->habitaciones->count();
 
             if ($cantidad_habitaciones > $habitaciones_ingresadas) {
-
                 $habitacion                      = new Habitacion();
                 $habitacion->nombre              = $request->get('nombre');
                 $habitacion->piso                = $request->get('piso');
@@ -262,26 +255,21 @@ class HabitacionController extends Controller
                 $equipamiento->habitacion_id = $habitacion->id;
                 $equipamiento->save();
 
-                $hab = Habitacion::where('id', $habitacion->id)->first();
+                $tipo_habitacion = TipoHabitacion::where('id', $request->get('tipo_habitacion_id'))->first();
+                $cantidad = $tipo_habitacion->cantidad;
+
+                $tipo_habitacion->update(array('cantidad' => $cantidad + 1));
 
                 $data = [
                     'errors' => false,
-                    'msg'    => 'Habitacion creado satisfactoriamente',
-
-                ];
-
+                    'msg'    => 'Habitacion creado satisfactoriamente',];
                 return Response::json($data, 201);
 
             } else {
-
                 $data = [
                     'errors' => true,
-                    'msg'    => 'Habitaciones ya creadas',
-
-                ];
-
+                    'msg'    => 'Habitaciones ya creadas',];
                 return Response::json($data, 400);
-
             }
 
         }
@@ -294,7 +282,6 @@ class HabitacionController extends Controller
         $rules = array(
 
             'nombre'              => '',
-            /* 'precios'               => 'array',*/
             'piso'                => 'numeric',
             'tipo_habitacion_id'  => 'numeric',
             'bano'                => '',
@@ -309,38 +296,32 @@ class HabitacionController extends Controller
         if ($validator->fails()) {
 
             $data = [
-
                 'errors' => true,
                 'msg'    => $validator->messages(),
-
             ];
-
             return Response::json($data, 400);
 
         } else {
 
-            $propiedad = Propiedad::whereHas('habitaciones', function ($query) use ($id) {
-
-                $query->where('id', $id);
-
-            })->first();
-
-            $habitacion = Habitacion::findOrFail($id);
+            $habitacion      = Habitacion::findOrFail($id);
+            $tipo_habitacion = TipoHabitacion::where('id', $habitacion->tipo_habitacion_id)->first();
+            $cantidad        = $tipo_habitacion->cantidad;
+            $tipo_habitacion->update(array('cantidad' => $cantidad - 1));
             $habitacion->update($request->all());
             $habitacion->touch();
 
-            $equipamiento = Equipamiento::findOrFail($id);
+            $tipo_hab        = TipoHabitacion::where('id', $request->input('tipo_habitacion_id'))->first();
+            $cant            = $tipo_hab->cantidad;
+            $tipo_hab->update(array('cantidad' => $cant + 1));
 
+            $equipamiento = Equipamiento::findOrFail($id);
             $equipamiento->update($request->all());
             $equipamiento->touch();
 
             $data = [
-
                 'errors' => false,
                 'msg'    => 'Habitacion actualizada satisfactoriamente',
-
             ];
-
             return Response::json($data, 201);
 
         }
