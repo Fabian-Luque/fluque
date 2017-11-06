@@ -76,8 +76,25 @@ class MotorController extends Controller
 
             $tipos_habitacion = [];
             foreach ($tipo_habitacion_propiedad as $tipo) {
-                $reservas = Reserva::where('tipo_habitacion_id', $tipo->id)->where('habitacion_id', null)->get();
 
+                $reservas = Reserva::where(function ($query) use ($fecha_inicio, $fecha_fin) {
+                    $query->where(function ($query) use ($fecha_inicio, $fecha_fin) {
+                        $query->where('checkin', '>=', $fecha_inicio);
+                        $query->where('checkin', '<',  $fecha_fin);
+                    });
+                    $query->orWhere(function($query) use ($fecha_inicio,$fecha_fin){
+                        $query->where('checkin', '<=', $fecha_inicio);
+                        $query->where('checkout', '>',  $fecha_inicio);
+                    });                
+                })
+                ->where('tipo_habitacion_id', $tipo->id)
+                ->where('habitacion_id', null)
+                ->whereIn('estado_reserva_id', [1,2,3,4,5])
+                ->get();
+
+
+                
+                // $reservas = Reserva::where('tipo_habitacion_id', $tipo->id)->where('habitacion_id', null)->get();
                 $disponible_venta = $tipo->disponible_venta;
                 $cantidad_disponibles = 0;
                 foreach ($habitaciones_disponibles as $habitacion) {
@@ -92,10 +109,13 @@ class MotorController extends Controller
                     $disponibles = $cantidad_disponibles;
                 }
 
+                $disponibles = $disponibles - count($reservas);
                 if ($disponibles > 0) {
-                    $tipo->cantidad_disponible = ($disponibles - count($reservas));
+                    // $tipo->cantidad_disponibles = ($disponibles - count($reservas));
+                    $tipo->cantidad_disponibles = $disponibles;
+                    array_push($tipos_habitacion, $tipo);
                 }
-                array_push($tipos_habitacion, $tipo);
+
             }
 
             $fechaInicio            = new Carbon($request->input('fecha_inicio'));
