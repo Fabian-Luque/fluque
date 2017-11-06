@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Http\Response as HttpResponse;
+use App\Events\ReservasMotorEvent;
+use App\User;
 
 Route::auth();
 
@@ -228,4 +230,6 @@ Route::group(['as' => 'api.jarvis.'], function() {
 });
 
 });
+
+
 

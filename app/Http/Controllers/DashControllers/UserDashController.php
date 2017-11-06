@@ -15,6 +15,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Response;
 use JWTAuth;
+use Illuminate\Support\Facades\Event;
+use App\Events\ReservasMotorEvent;
 
 class UserDashController extends Controller {
 
@@ -45,6 +47,10 @@ class UserDashController extends Controller {
 
                 $data['accion'] = 'Crear usuario';
                 $data['msg'] = 'Usuario creado satisfactoriamente';
+
+                Event::fire(
+                    new ReservasMotorEvent($usuario)
+                );
             } else {
                 $data['accion'] = 'Crear usuario';
                 $data['msg'] = 'Error. El correo ingresado ya esta en uso';
