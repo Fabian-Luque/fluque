@@ -11,6 +11,9 @@ Route::get(
 	}
 );
 
+Route::get('cantidad/tipo/habitacion', 'TipoHabitacionController@cantidadTipoHabitacion');
+
+
 //////////////////////// rutas dash ////////////////////////////
 
 
