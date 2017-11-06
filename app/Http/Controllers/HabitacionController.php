@@ -303,10 +303,14 @@ class HabitacionController extends Controller
 
         } else {
 
-            $habitacion      = Habitacion::findOrFail($id);
-            $tipo_habitacion = TipoHabitacion::where('id', $habitacion->tipo_habitacion_id)->first();
-            $cantidad        = $tipo_habitacion->cantidad;
+            $habitacion       = Habitacion::findOrFail($id);
+            $tipo_habitacion  = TipoHabitacion::where('id', $habitacion->tipo_habitacion_id)->first();
+            $cantidad         = $tipo_habitacion->cantidad;
+            $disponible_venta = $tipo_habitacion->disponible_venta;
             $tipo_habitacion->update(array('cantidad' => $cantidad - 1));
+            if ($cantidad - 1 < $disponible_venta) {
+                $tipo_habitacion->update(array('disponible_venta' => $tipo_habitacion->disponible_venta - 1));
+            }
             $habitacion->update($request->all());
             $habitacion->touch();
 
