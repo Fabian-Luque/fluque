@@ -57,7 +57,7 @@ class MotorController extends Controller
             $fecha_inicio = $inicio->startOfDay()->format('Y-m-d');
             $fecha_fin    = $fin->startOfDay()->format('Y-m-d');
 
-            $habitaciones_disponibles = Habitacion::where('propiedad_id', $request->input('propiedad_id'))
+            return $habitaciones_disponibles = Habitacion::where('propiedad_id', $request->input('propiedad_id'))
             ->whereDoesntHave('reservas', function ($query) use ($fecha_inicio, $fecha_fin) {
                 $query->whereIn('estado_reserva_id', [1,2,3,4,5])
                 ->where(function ($query) use ($fecha_inicio, $fecha_fin) {
@@ -226,7 +226,7 @@ class MotorController extends Controller
             }
             $data['nombre']             = $propiedad->nombre;
             $data['tipo_cobro_id']      = $propiedad->tipo_cobro_id;
-            $data['tipo_monedas']      = $propiedad->tipoMonedas;
+            $data['tipo_monedas']       = $propiedad->tipoMonedas;
             $data['tipos_habitaciones'] = $hab_disponibles;
             return $data;
 
