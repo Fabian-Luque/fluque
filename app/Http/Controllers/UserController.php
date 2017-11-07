@@ -11,6 +11,7 @@ use App\User;
 use App\ZonaHoraria;
 use App\Estado;
 use App\Caja;
+use App\Reserva;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Response;
@@ -21,6 +22,12 @@ class UserController extends Controller {
         try {
             $users = User::where('id', $id)->with('propiedad.tipoPropiedad','propiedad.pais','propiedad.region','propiedad.zonaHoraria' ,'propiedad.tipoMonedas', 'propiedad.tipoCobro')->with('rol.permisos')->get();
 
+            $reservas = Reserva::whereHas('tipoHabitacion', function ($query) use ($id) {
+                        $query->where('propiedad_id', $id);})
+                        ->where('habitacion_id', null)
+                        ->whereIn('estado_reserva_id', [1,2,3,4,5])
+                        ->get();
+
             foreach ($users as $user) {
                 foreach ($user['propiedad'] as $propiedad) {
                     $caja_abierta    = Caja::where('propiedad_id', $propiedad->id)->where('estado_caja_id', 1)->first();
@@ -29,8 +36,10 @@ class UserController extends Controller {
                     } else {
                         $propiedad->caja_abierta = 0;
                     }
+                    $propiedad->reservas_motor = count($reservas);
                 }
             }
+
             return $users;
             
         } catch (ModelNotFoundException $e) {

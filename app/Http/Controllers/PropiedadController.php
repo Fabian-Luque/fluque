@@ -1743,7 +1743,7 @@ class PropiedadController extends Controller
         $propiedades = Propiedad::all();
         foreach ($propiedades as $propiedad) {
             $propiedad = Propiedad::where('id', $propiedad->id)->first();
-            $propiedad->update(array('codigo' => str_random(100)));
+            $propiedad->update(array('codigo' => str_random(20)));
 
         }
 
