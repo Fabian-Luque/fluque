@@ -1219,9 +1219,7 @@ class PropiedadController extends Controller
 
     public function ingresoServicio(Request $request)
     {
-
         if ($request->has('venta_servicio') && $request->has('propiedad_id') && $request->has('metodo_pago_id')) {
-
             $propiedad           = Propiedad::where('id', $request->input('propiedad_id'))->first();
             $metodo_pago_id      = $request->input('metodo_pago_id');
             $numero_operacion    = $request->input('numero_operacion');
@@ -1229,127 +1227,74 @@ class PropiedadController extends Controller
             $numero_cheque       = $request->input('numero_cheque');
 
             if (!is_null($propiedad)) {
-
                 $servicios = $request->input('venta_servicio');
-
                 foreach ($servicios as $servicio) {
-
-                    $servicio_id  = $servicio['servicio_id'];
-                    $cantidad     = $servicio['cantidad'];
-                    $precio_total = $servicio['precio_total'];
-
+                    $servicio_id         = $servicio['servicio_id'];
+                    $cantidad            = $servicio['cantidad'];
+                    $precio_total        = $servicio['precio_total'];
                     $serv                = Servicio::where('id', $servicio_id)->where('propiedad_id', $request->input('propiedad_id'))->first();
                     $cantidad_disponible = $serv->cantidad_disponible;
 
                     if (!is_null($serv)) {
-
                         if ($serv->categoria_id == 2) {
-
                             if ($cantidad >= 1) {
-
                                 if ($serv->cantidad_disponible > 0) {
-
                                     if ($cantidad <= $serv->cantidad_disponible) {
-
-                                        $servicio_id     = $serv->id;
-                                        $servicio_nombre = $serv->nombre;
-
+                                        $servicio_id         = $serv->id;
+                                        $servicio_nombre     = $serv->nombre;
                                         $cantidad_disponible = $cantidad_disponible - $cantidad;
-
                                         $serv->update(array('cantidad_disponible' => $cantidad_disponible));
-
                                         $propiedad->vendeServicios()->attach($servicio_id, ['metodo_pago_id' => $metodo_pago_id, 'cantidad' => $cantidad, 'precio_total' => $precio_total, 'numero_operacion' => $numero_operacion, 'tipo_comprobante_id' => $tipo_comprobante_id, 'numero_cheque' => $numero_cheque]);
 
                                     } else {
-
                                         $data = array(
-
                                             'msj'    => " La cantidad ingresada es mayor al stock del producto",
-                                            'errors' => true,
-
-                                        );
-
+                                            'errors' => true,);
                                         return Response::json($data, 400);
-
                                     }
 
                                 } else {
-
                                     $data = array(
-
                                         'msj'    => " El servicio no tiene stock",
-                                        'errors' => true,
-
-                                    );
-
+                                        'errors' => true,);
                                     return Response::json($data, 400);
-
                                 }
 
                             } else {
-
                                 $data = array(
-
                                     'msj'    => " La cantidad ingresada no corresponde",
-                                    'errors' => true,
-
-                                );
-
+                                    'errors' => true,);
                                 return Response::json($data, 400);
-
                             }
 
                         } elseif ($serv->categoria_id == 1) {
-
                             $propiedad->vendeServicios()->attach($servicio_id, ['metodo_pago_id' => $metodo_pago_id, 'cantidad' => $cantidad, 'precio_total' => $precio_total, 'numero_operacion' => $numero_operacion, 'tipo_comprobante_id' => $tipo_comprobante_id, 'numero_cheque' => $numero_cheque]);
-
                         }
 
                     } else {
-
                         $retorno = array(
-
                             'msj'    => "El servicio no pertenece a la propiedad",
-                            'errors' => true,
-                        );
-
+                            'errors' => true,);
                         return Response::json($retorno, 400);
-
                     }
-
                 }
-
                 $retorno = array(
-
                     'msj'   => "Servicios ingresados correctamente",
-                    'erros' => false,
-                );
-
+                    'erros' => false,);
                 return Response::json($retorno, 201);
 
             } else {
-
                 $data = array(
-
                     'msj'    => "Propiedad no encontrada",
-                    'errors' => true,
-
-                );
-
+                    'errors' => true,);
                 return Response::json($data, 404);
-
             }
 
         } else {
-
             $retorno = array(
-
                 'msj'    => "La solicitud esta incompleta",
-                'errors' => true,
-            );
-
+                'errors' => true,);
             return Response::json($retorno, 400);
-
         }
 
     }
