@@ -239,6 +239,108 @@ class MotorController extends Controller
 
     }
 
+    public function habitacionesDisponibles(Request $request)
+    {
+        if ($request->has('propiedad_id')) {
+            $propiedad_id = $request->input('propiedad_id');
+            $propiedad    = Propiedad::where('id', $propiedad_id)->first();
+            if (is_null($propiedad)) {
+                $retorno = array(
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia propiedad_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+
+        if ($request->has('reserva_id')) {
+            $reserva_id = $request->input('reserva_id');
+            $reserva = Reserva::where('id', $reserva_id)->first();
+            if (is_null($reserva)) {
+                $retorno = array(
+                    'msj'    => "Reserva no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia reserva_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        $tipo_hab_id  = $reserva->tipo_habitacion_id;
+        $inicio       = $reserva->checkin;
+        $fin          = $reserva->checkout;
+        $fecha_inicio = $inicio->startOfDay()->format('Y-m-d');
+        $fecha_fin    = $fin->startOfDay()->format('Y-m-d');
+
+        $habitaciones_disponibles = Habitacion::where('propiedad_id', $request->input('propiedad_id'))
+        ->whereDoesntHave('reservas', function ($query) use ($fecha_inicio, $fecha_fin) {
+            $query->whereIn('estado_reserva_id', [1,2,3,4,5])
+            ->where(function ($query) use ($fecha_inicio, $fecha_fin) {
+                $query->where(function ($query) use ($fecha_inicio, $fecha_fin) {
+                    $query->where('checkin', '>=', $fecha_inicio);
+                    $query->where('checkin', '<',  $fecha_fin);
+                });
+                $query->orWhere(function($query) use ($fecha_inicio,$fecha_fin){
+                    $query->where('checkin', '<=', $fecha_inicio);
+                    $query->where('checkout', '>',  $fecha_inicio);
+                });                
+            });
+        })
+        ->with('tipoHabitacion')
+        ->get();
+
+        $habitaciones = [];
+        foreach ($habitaciones_disponibles as $habitacion) {
+            if ($habitacion->tipo_habitacion_id == $tipo_hab_id) {
+                array_push($habitaciones, $habitacion);                        
+
+            }
+        }
+
+        return $habitaciones;
+
+    }
+
+    public function getReservasMotor(Request $request)
+    {
+        if ($request->has('propiedad_id')) {
+            $propiedad_id = $request->input('propiedad_id');
+            $propiedad    = Propiedad::where('id', $propiedad_id)->first();
+            if (is_null($propiedad)) {
+                $retorno = array(
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia propiedad_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        return $reservas = Reserva::whereHas('tipoHabitacion', function($query) use($propiedad_id){
+            $query->where('propiedad_id', $propiedad_id);
+        })
+        ->with('tipoHabitacion', 'cliente.tipoCliente', 'tipoFuente', 'estadoReserva')
+        ->where('habitacion_id', null)
+        ->where('tipo_fuente_id', 1)
+        ->whereIn('estado_reserva_id', [1,2,3,4,5])
+        ->get();
+
+
+
+
+    }
+
     public function reserva(Request $request)
     {
         if ($request->has('tipo_moneda_id') && $request->has('fecha_inicio') && $request->has('fecha_fin') && $request->has('iva') && $request->has('noches') && $request->has('habitaciones') && $request->has('cliente')) {
