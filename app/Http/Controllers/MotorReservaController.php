@@ -494,7 +494,7 @@ class MotorReservaController extends Controller
         if (!is_null($reservas)) {
             $numero = $reservas->numero_reserva + 1;
         } else {
-            $numero = 0;    
+            $numero = 1;    
         }
 
         $reserva->update(array('numero_reserva' => $numero , 'habitacion_id' => $habitacion_id));
