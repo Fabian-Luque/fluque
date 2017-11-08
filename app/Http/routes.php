@@ -102,8 +102,8 @@ Route::post('eliminar/user', 'UserController@delete');
 //// motor de reserva
 Route::get('motor/reserva', 'MotorWidgetControllers\MotorController@getMotor');
 Route::get('motor/disponibilidad', 'MotorWidgetControllers\MotorController@getDisponibilidad');
-Route::get('motor/disponibilidad/habitacion', 'motorController@getDisponibilidad');
-Route::post('motor/reserva/habitacion', 'motorController@reserva');
+Route::get('motor/disponibilidad/habitacion', 'MotorController@getDisponibilidad');
+Route::post('motor/reserva/habitacion', 'MotorController@reserva');
 Route::get('crear/codigo', 'PropiedadController@crearCodigo');
 Route::get('tipo/cliente/motor', 'ClienteController@getTipoCliente');
 Route::get('paises/motor', 'PropiedadController@getPaises');
