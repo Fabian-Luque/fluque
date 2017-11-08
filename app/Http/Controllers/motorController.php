@@ -257,7 +257,6 @@ class MotorController extends Controller
             return Response::json($retorno, 400);
         }
 
-
         if ($request->has('reserva_id')) {
             $reserva_id = $request->input('reserva_id');
             $reserva = Reserva::where('id', $reserva_id)->first();
@@ -294,18 +293,11 @@ class MotorController extends Controller
                 });                
             });
         })
+        ->where('tipo_habitacion_id', $tipo_hab_id)
         ->with('tipoHabitacion')
         ->get();
 
-        $habitaciones = [];
-        foreach ($habitaciones_disponibles as $habitacion) {
-            if ($habitacion->tipo_habitacion_id == $tipo_hab_id) {
-                array_push($habitaciones, $habitacion);                        
-
-            }
-        }
-
-        return $habitaciones;
+        return $habitaciones_disponibles;
 
     }
 
