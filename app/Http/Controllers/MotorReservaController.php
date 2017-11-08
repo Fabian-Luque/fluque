@@ -491,8 +491,8 @@ class MotorReservaController extends Controller
         ->take(1)
         ->first();
 
-        if (!empty($reservas)) {
-            $numero = $reservas->numero_reserva;
+        if (!is_null($reservas)) {
+            $numero = $reservas->numero_reserva + 1;
         } else {
             $numero = 0;    
         }
