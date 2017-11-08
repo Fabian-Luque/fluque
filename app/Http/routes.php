@@ -218,7 +218,7 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::delete('egreso/propiedad/{id}', 'EgresoController@eliminarEgresoPropiedad');
 		Route::put('editar/politica/{id}', 'PropiedadController@editarPolitica');
 		Route::delete('eliminar/politica/{id}', 'PropiedadController@eliminarPolitica');
-		Route::get('habitaciones/disponibles/motor', 'MotorReservaController@habitacionesDisponibles');
+		Route::get('habitaciones/disponibles', 'MotorReservaController@habitacionesDisponibles');
 		Route::get('obtener/reservas/motor', 'MotorReservaController@getReservasMotor');
 
 		Route::resource('user', 'UserController', ['except' => ['create', 'edit','store']]);
