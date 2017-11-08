@@ -328,9 +328,6 @@ class MotorReservaController extends Controller
         ->whereIn('estado_reserva_id', [1,2,3,4,5])
         ->get();
 
-
-
-
     }
 
     public function reserva(Request $request)
@@ -433,6 +430,78 @@ class MotorReservaController extends Controller
         $retorno = array(
             'msj'       => "Reserva creada satisfactoriamente",
             'errors'    => false);
+        return Response::json($retorno, 201);
+
+    }
+
+    public function asignarHabitacion(Request $request)
+    {
+        if ($request->has('reserva_id')) {
+            $reserva_id = $request->input('reserva_id');
+            $reserva = Reserva::where('id', $reserva_id)->first();
+            if (is_null($reserva)) {
+                $retorno = array(
+                    'msj'    => "Reserva no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia reserva_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        if ($request->has('habitacion_id')) {
+            $habitacion_id = $request->input('habitacion_id');
+            $habitacion = Habitacion::where('id', $habitacion_id)->first();
+            if (is_null($habitacion)) {
+                $retorno = array(
+                    'msj'    => "Habitacion no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia habitacion_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        if ($request->has('propiedad_id')) {
+            $propiedad_id = $request->input('propiedad_id');
+            $propiedad    = Propiedad::where('id', $propiedad_id)->first();
+            if (is_null($propiedad)) {
+                $retorno = array(
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia propiedad_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        $reservas = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
+            $query->where('propiedad_id', $propiedad_id);})
+        ->orderby('id','DESC')
+        ->where('numero_reserva', '!=', null)
+        ->take(1)
+        ->first();
+
+        if (!empty($reservas)) {
+            $numero = $reservas->numero_reserva;
+        } else {
+            $numero = 0;    
+        }
+
+        $reserva->update(array('numero_reserva' => $numero + 1 , 'habitacion_id' => $habitacion_id));
+
+        $retorno = [
+            'errors' => false,
+            'msj'    => 'Habitación asignada',];
         return Response::json($retorno, 201);
 
     }
