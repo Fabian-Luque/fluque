@@ -497,7 +497,7 @@ class MotorReservaController extends Controller
             $numero = 0;    
         }
 
-        $reserva->update(array('numero_reserva' => $numero + 1 , 'habitacion_id' => $habitacion_id));
+        $reserva->update(array('numero_reserva' => $numero , 'habitacion_id' => $habitacion_id));
 
         $retorno = [
             'errors' => false,
