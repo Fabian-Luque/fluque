@@ -19,7 +19,7 @@ use App\ZonaHoraria;
 use JWTAuth;
 
 
-class MotorController extends Controller
+class MotorReservaController extends Controller
 {
 	public function getDisponibilidad(Request $request)
 	{

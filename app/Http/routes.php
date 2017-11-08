@@ -102,8 +102,8 @@ Route::post('eliminar/user', 'UserController@delete');
 //// motor de reserva
 Route::get('motor/reserva', 'MotorWidgetControllers\MotorController@getMotor');
 Route::get('motor/disponibilidad', 'MotorWidgetControllers\MotorController@getDisponibilidad');
-Route::get('motor/disponibilidad/habitacion', 'MotorController@getDisponibilidad');
-Route::post('motor/reserva/habitacion', 'MotorController@reserva');
+Route::get('motor/disponibilidad/habitacion', 'MotorReservaController@getDisponibilidad');
+Route::post('motor/reserva/habitacion', 'MotorReservaController@reserva');
 Route::get('crear/codigo', 'PropiedadController@crearCodigo');
 Route::get('tipo/cliente/motor', 'ClienteController@getTipoCliente');
 Route::get('paises/motor', 'PropiedadController@getPaises');
@@ -218,8 +218,8 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::delete('egreso/propiedad/{id}', 'EgresoController@eliminarEgresoPropiedad');
 		Route::put('editar/politica/{id}', 'PropiedadController@editarPolitica');
 		Route::delete('eliminar/politica/{id}', 'PropiedadController@eliminarPolitica');
-		Route::get('habitaciones/disponibles/motor', 'MotorController@habitacionesDisponibles');
-		Route::get('obtener/reservas/motor', 'MotorController@getReservasMotor');
+		Route::get('habitaciones/disponibles/motor', 'MotorReservaController@habitacionesDisponibles');
+		Route::get('obtener/reservas/motor', 'MotorReservaController@getReservasMotor');
 
 		Route::resource('user', 'UserController', ['except' => ['create', 'edit','store']]);
 		Route::resource('propiedad', 'PropiedadController', ['except' => ['create', 'edit', 'store']]);
