@@ -225,6 +225,9 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::put('editar/cuenta/bancaria/{id}', 'PropiedadController@editarCuentaBancaria');
 		Route::delete('eliminar/cuenta/bancaria/{id}', 'PropiedadController@eliminarCuentaBancaria');
 		Route::get('tipo/cuenta', 'PropiedadController@getTipoCuenta');
+		Route::post('tipo/deposito/propiedad', 'PropiedadController@crearTipoDepositoPropiedad');
+		Route::put('tipo/deposito/propiedad/{id}', 'PropiedadController@editarTipoDepositoPropiedad');
+		Route::delete('tipo/deposito/propiedad/{id}', 'PropiedadController@eliminarTipoDepositoPropiedad');
 
 		Route::resource('user', 'UserController', ['except' => ['create', 'edit','store']]);
 		Route::resource('propiedad', 'PropiedadController', ['except' => ['create', 'edit', 'store']]);

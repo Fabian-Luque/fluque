@@ -30,6 +30,10 @@ class Propiedad extends Model {
         return $this->belongsTo('App\Pais', 'pais_id'); 
     }
 
+    public function tipoDepositoPropiedad(){
+        return $this->hasOne('App\PropiedadTipoDeposito', 'propiedad_id');
+    }
+
     public function region() {
         return $this->belongsTo('App\Region', 'region_id'); 
     }

@@ -28,6 +28,7 @@ use App\Egreso;
 use App\Politica;
 use App\CuentaBancaria;
 use App\TipoCuenta;
+use App\PropiedadTipoDeposito;
 use Illuminate\Support\Facades\Config;
 use Input;
 use Illuminate\Http\Request;
@@ -1305,7 +1306,7 @@ class PropiedadController extends Controller
     {
         if ($request->has('id')) {
 
-            $propiedad = Propiedad::where('id', $request->input('id'))->with('tipoPropiedad','pais','region','zonaHoraria' ,'tipoMonedas.clasificacionMonedas', 'tipoCobro', 'politicas', 'cuentasBancaria')->get();
+            $propiedad = Propiedad::where('id', $request->input('id'))->with('tipoPropiedad','pais','region','zonaHoraria' ,'tipoMonedas.clasificacionMonedas', 'tipoCobro', 'politicas', 'cuentasBancaria.tipoCuenta', 'tipoDepositoPropiedad.tipoDeposito')->get();
             return $propiedad;
         }
 
@@ -1730,6 +1731,88 @@ class PropiedadController extends Controller
 
     }
 
+    public function crearTipoDepositoPropiedad(Request $request)
+    {
+        $rules = array(
+            'valor'            => 'numeric', 
+            'propiedad_id'     => 'required|numeric',
+            'tipo_deposito_id' => 'required|numeric',
+        );
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            $data = [
+                'errors' => true,
+                'msj'    => $validator->messages(),];
+            return Response::json($data, 400);
+
+        } else {
+
+            $propiedad_id = $request->input('propiedad_id');
+            $propiedad    = Propiedad::where('id', $propiedad_id)->first();
+            if (!is_null($propiedad)) {
+                $tipo_deposito                   = new PropiedadTipoDeposito();
+                $tipo_deposito->valor            = $request->input('valor');
+                $tipo_deposito->propiedad_id     = $request->input('propiedad_id');
+                $tipo_deposito->tipo_deposito_id = $request->input('tipo_deposito_id');
+                $tipo_deposito->save(); 
+            } else {
+                $retorno = array(
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+
+            $data = [
+                'errors' => false,
+                'msj'    => 'Tipo deposito creado satisfactoriamente',];
+            return Response::json($data, 201);
+        }
+
+    }
+
+    public function editarTipoDepositoPropiedad(Request $request, $id)
+    {
+        $rules = array(
+            'valor'              => 'numeric', 
+            'tipo_deposito_id'   => 'numeric',
+        );
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            $data = [
+                'errors' => true,
+                'msg'    => $validator->messages(),];
+            return Response::json($data, 400);
+
+        } else {
+
+            $tipo_deposito = PropiedadTipoDeposito::findOrFail($id);
+            $tipo_deposito->update($request->all());
+            $tipo_deposito->touch();
+
+            $data = [
+                'errors' => false,
+                'msg'    => 'Tipo deposito actualizado satisfactoriamente',];
+            return Response::json($data, 201);
+        }
+
+    }
+
+    public function eliminarTipoDepositoPropiedad($id)
+    {
+        $tipo_deposito = PropiedadTipoDeposito::findOrFail($id);
+        $tipo_deposito->delete();
+
+        $data = [
+            'errors' => false,
+            'msg'    => 'Tipo deposito eliminado satisfactoriamente',];
+        return Response::json($data, 202);
+
+    }
+
     public function eliminarCuentaBancaria($id)
     {
         $cuenta = CuentaBancaria::findOrFail($id);
@@ -1742,7 +1825,8 @@ class PropiedadController extends Controller
 
     }
 
-    public function getTipoPropiedad(){
+    public function getTipoPropiedad()
+    {
         $TipoPropiedad = TipoPropiedad::all();
         return $TipoPropiedad;
     }
@@ -1755,13 +1839,10 @@ class PropiedadController extends Controller
 
     }
 
-    public function getPaises(){
-
+    public function getPaises()
+    {
         $paises = Pais::all();
-
         return $paises;
-
-
     }
 
     public function getRegiones(Request $request){
