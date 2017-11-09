@@ -26,6 +26,7 @@ use App\EgresoCaja;
 use App\EgresoPropiedad;
 use App\Egreso;
 use App\Politica;
+use App\CuentaBancaria;
 use Illuminate\Support\Facades\Config;
 use Input;
 use Illuminate\Http\Request;
@@ -1643,6 +1644,56 @@ class PropiedadController extends Controller
             return Response::json($data, 201);
 
         }
+    }
+
+    public function crearCuentaBancaria(Request $request)
+    {
+        if ($request->has('propiedad_id')) {
+            $propiedad_id = $request->input('propiedad_id');
+            $propiedad    = Propiedad::where('id', $propiedad_id)->first();
+            if (is_null($propiedad)) {
+                $retorno = array(
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia propiedad_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        if ($request->has('nombre_banco') && $request->has('numero_cuenta') && $request->has('titular') && $request->has('rut') && $request->has('email') && $request->has('tipo_cuenta_id')) {
+            $nombre_banco   = $request->input('nombre_banco');
+            $numero_cuenta  = $request->input('numero_cuenta');
+            $titular        = $request->input('titular');
+            $rut            = $request->input('rut');
+            $email          = $request->input('email');
+            $tipo_cuenta_id = $request->input('tipo_cuenta_id');
+
+            $cuenta                     = new CuentaBancaria();
+            $cuenta->nombre_banco       = $nombre_banco;
+            $cuenta->numero_cuenta      = $numero_cuenta;
+            $cuenta->titular            = $titular;
+            $cuenta->rut                = $rut;
+            $cuenta->email              = $email;
+            $cuenta->tipo_cuenta_id     = $tipo_cuenta_id;
+            $cuenta->propiedad_id       = $propiedad_id;
+            $cuenta->save();    
+
+            $retorno = array(
+                'msj'   => "Cuenta creada satisfactoriamente",
+                'erros' => false,);
+            return Response::json($retorno, 201);
+
+        } else {
+            $retorno = array(
+                'msj'    => "La solicitud esta incompleta",
+                'errors' => true,);
+            return Response::json($retorno, 400);
+        }
+
     }
 
     public function getTipoPropiedad(){
