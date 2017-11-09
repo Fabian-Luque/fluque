@@ -417,6 +417,7 @@ class MotorReservaController extends Controller
                 $reserva->estado_reserva_id     = 1;
                 $reserva->noches                = $request['noches'];
                 $reserva->tipo_habitacion_id    = $habitacion['tipo_habitacion_id'];
+                $reserva->observacion           = $request['observacion'];
                 $reserva->save();
             }
 

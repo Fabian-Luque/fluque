@@ -11,7 +11,6 @@ Route::get(
 	}
 );
 
-Route::get('cantidad/tipo/habitacion', 'TipoHabitacionController@cantidadTipoHabitacion');
 
 
 //////////////////////// rutas dash ////////////////////////////
@@ -108,6 +107,7 @@ Route::get('crear/codigo', 'PropiedadController@crearCodigo');
 Route::get('tipo/cliente/motor', 'ClienteController@getTipoCliente');
 Route::get('paises/motor', 'PropiedadController@getPaises');
 Route::get('regiones/motor', 'PropiedadController@getRegiones');
+Route::get('cantidad/tipo/habitacion', 'TipoHabitacionController@cantidadTipoHabitacion');
 
 Route::get('reset/password/{token}', 'ApiAuthController@ResetPassword');
 
