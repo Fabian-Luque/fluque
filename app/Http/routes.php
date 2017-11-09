@@ -222,6 +222,8 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::get('obtener/reservas/motor', 'MotorReservaController@getReservasMotor');
 		Route::post('asignar/habitacion', 'MotorReservaController@asignarHabitacion');
 		Route::post('crear/cuenta/bancaria', 'PropiedadController@crearCuentaBancaria');
+		Route::put('editar/cuenta/bancaria/{id}', 'PropiedadController@editarCuentaBancaria');
+		Route::delete('eliminar/cuenta/bancaria/{id}', 'PropiedadController@eliminarCuentaBancaria');
 
 		Route::resource('user', 'UserController', ['except' => ['create', 'edit','store']]);
 		Route::resource('propiedad', 'PropiedadController', ['except' => ['create', 'edit', 'store']]);

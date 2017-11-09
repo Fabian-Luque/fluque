@@ -1696,6 +1696,51 @@ class PropiedadController extends Controller
 
     }
 
+    public function editarCuentaBancaria(Request $request,$id)
+    {
+        $rules = array(
+            'nombre_banco'    => '', 
+            'numero_cuenta'   => '',
+            'titular'         => '',
+            'rut'             => '',
+            'email'           => '',
+            'tipo_cuenta_id'  => 'numeric',
+        );
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            $data = [
+                'errors' => true,
+                'msg'    => $validator->messages(),];
+            return Response::json($data, 400);
+
+        } else {
+
+            $cuenta = CuentaBancaria::findOrFail($id);
+            $cuenta->update($request->all());
+            $cuenta->touch();
+
+            $data = [
+                'errors' => false,
+                'msg'    => 'Cuenta actualizada satisfactoriamente',];
+            return Response::json($data, 201);
+        }
+
+    }
+
+    public function eliminarCuentaBancaria($id)
+    {
+        $cuenta = CuentaBancaria::findOrFail($id);
+        $cuenta->delete();
+
+        $data = [
+            'errors' => false,
+            'msg'    => 'Cuenta eliminada satisfactoriamente',];
+        return Response::json($data, 202);
+
+    }
+
     public function getTipoPropiedad(){
         $TipoPropiedad = TipoPropiedad::all();
         return $TipoPropiedad;

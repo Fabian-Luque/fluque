@@ -35,7 +35,7 @@ class MotorReservaController extends Controller
         if ($request->has('propiedad_id') && $request->has('codigo')) {
             $propiedad_id   = $request->input('propiedad_id');
             $codigo         = $request->input('codigo');
-            $propiedad      = Propiedad::where('id', $propiedad_id)->where('codigo', $codigo)->with('tiposHabitacion')->with('tipoMonedas')->first();
+            $propiedad      = Propiedad::where('id', $propiedad_id)->where('codigo', $codigo)->with('tiposHabitacion')->with('tipoMonedas')->with('cuentasBancaria.tipoCuenta')->with('politicas')->first();
             if (is_null($propiedad)) {
                 $retorno  = array(
                     'msj'    => "Propiedad no encontrada",
@@ -92,9 +92,6 @@ class MotorReservaController extends Controller
                 ->whereIn('estado_reserva_id', [1,2,3,4,5])
                 ->get();
 
-
-                
-                // $reservas = Reserva::where('tipo_habitacion_id', $tipo->id)->where('habitacion_id', null)->get();
                 $disponible_venta = $tipo->disponible_venta;
                 $cantidad_disponibles = 0;
                 foreach ($habitaciones_disponibles as $habitacion) {
@@ -227,6 +224,8 @@ class MotorReservaController extends Controller
             $data['nombre']             = $propiedad->nombre;
             $data['tipo_cobro_id']      = $propiedad->tipo_cobro_id;
             $data['tipo_monedas']       = $propiedad->tipoMonedas;
+            $data['cuentas_bancaria']   = $propiedad->cuentasBancaria;
+            $data['politicas']          = $propiedad->politicas;
             $data['tipos_habitaciones'] = $hab_disponibles;
             return $data;
 
