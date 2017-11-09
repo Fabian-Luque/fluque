@@ -29,6 +29,7 @@ use App\Politica;
 use App\CuentaBancaria;
 use App\TipoCuenta;
 use App\PropiedadTipoDeposito;
+use App\TipoDeposito;
 use Illuminate\Support\Facades\Config;
 use Input;
 use Illuminate\Http\Request;
@@ -1877,6 +1878,13 @@ class PropiedadController extends Controller
     {
         $tipoCuenta = TipoCuenta::all();
         return $tipoCuenta;
+
+    }
+
+    public function getTipoDeposito()
+    {
+        $tipoDeposito = TipoDeposito::all();
+        return $tipoDeposito;
 
     }
 
