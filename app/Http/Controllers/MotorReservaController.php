@@ -322,7 +322,7 @@ class MotorReservaController extends Controller
         return $reservas = Reserva::whereHas('tipoHabitacion', function($query) use($propiedad_id){
             $query->where('propiedad_id', $propiedad_id);
         })
-        ->with('tipoHabitacion', 'cliente.tipoCliente', 'tipoFuente', 'estadoReserva')
+        ->with('tipoHabitacion', 'cliente.tipoCliente', 'cliente.pais', 'cliente.region', 'tipoFuente', 'estadoReserva', 'tipoMoneda')
         ->where('habitacion_id', null)
         ->where('tipo_fuente_id', 1)
         ->whereIn('estado_reserva_id', [1,2,3,4,5])
