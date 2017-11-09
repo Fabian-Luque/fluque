@@ -27,6 +27,7 @@ use App\EgresoPropiedad;
 use App\Egreso;
 use App\Politica;
 use App\CuentaBancaria;
+use App\TipoCuenta;
 use Illuminate\Support\Facades\Config;
 use Input;
 use Illuminate\Http\Request;
@@ -1789,6 +1790,12 @@ class PropiedadController extends Controller
         $tipoCobros = TipoCobro::all();
         return $tipoCobros;
 
+    }
+
+    public function getTipoCuenta()
+    {
+        $tipoCuenta = TipoCuenta::all();
+        return $tipoCuenta;
 
     }
 
