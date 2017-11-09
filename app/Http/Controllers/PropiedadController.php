@@ -1304,7 +1304,7 @@ class PropiedadController extends Controller
     {
         if ($request->has('id')) {
 
-            $propiedad = Propiedad::where('id', $request->input('id'))->with('tipoPropiedad','pais','region','zonaHoraria' ,'tipoMonedas.clasificacionMonedas', 'tipoCobro', 'politicas')->get();
+            $propiedad = Propiedad::where('id', $request->input('id'))->with('tipoPropiedad','pais','region','zonaHoraria' ,'tipoMonedas.clasificacionMonedas', 'tipoCobro', 'politicas', 'cuentasBancaria')->get();
             return $propiedad;
         }
 
