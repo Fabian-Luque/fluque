@@ -16,7 +16,7 @@ class PropiedadTipoDeposito extends Model
     }
 
     public function tipoDeposito() {
-        return $this->belongsTo('App\tipoDeposito', 'tipo_deposito_id'); 
+        return $this->belongsTo('App\TipoDeposito', 'tipo_deposito_id'); 
     }
 
 }
