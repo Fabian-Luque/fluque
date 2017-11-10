@@ -177,4 +177,12 @@ class UserDashController extends Controller {
             $propiedades
         );
     }
+
+    public function evento(Request $request) {
+        $usuario = User::find(1);
+
+        Event::fire(
+            new ReservasMotorEvent($usuario)
+        );
+    }
 }

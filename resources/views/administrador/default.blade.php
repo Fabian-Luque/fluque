@@ -16,6 +16,18 @@
     {!! HTML::script('assets/js/bootstrap.min.js'); !!}
 
     <link rel="shortcut icon" href="{{ asset('assets/img/hotel.png') }}">
+        <script src="growl/javascripts/jquery.growl.js" type="text/javascript"></script>
+    <link href="growl/stylesheets/jquery.growl.css" rel="stylesheet" type="text/css" />
+    {!! Html::script('assets/js/socketio.js'); !!}
+
+<script>
+  var socket = io.connect('http://localhost:3000');
+  socket.on('message', function(msg){
+    console.log(msg);
+    $.growl.notice({ title: "Nuevo Mensaje", message: msg.mensaje });    
+  });
+</script>
+
 </head>
 <body>
 

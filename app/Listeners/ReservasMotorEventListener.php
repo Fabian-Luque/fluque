@@ -10,8 +10,8 @@ use Response;
 
 class ReservasMotorEventListener {
 
-    CONST EVENT = 'reservas-motor';
-    CONST CHANNEL = 'reservas-motor';
+    CONST EVENT = 'message';
+    CONST CHANNEL = 'message';
 
     public function __construct() {
     }

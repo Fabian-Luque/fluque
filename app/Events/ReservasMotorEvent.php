@@ -22,6 +22,6 @@ class ReservasMotorEvent extends Event {
     }
 
     public function broadcastOn() {
-        return ['reservas-motor'];
+        return ['message'];
     }
 }

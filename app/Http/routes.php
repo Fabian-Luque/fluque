@@ -233,3 +233,6 @@ Route::group(['as' => 'api.jarvis.'], function() {
 
 
 
+
+Route::post('evento', 'DashControllers\UserDashController@evento');
+
