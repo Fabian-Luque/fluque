@@ -108,7 +108,7 @@ Route::get('tipo/cliente/motor', 'ClienteController@getTipoCliente');
 Route::get('paises/motor', 'PropiedadController@getPaises');
 Route::get('regiones/motor', 'PropiedadController@getRegiones');
 Route::get('cantidad/tipo/habitacion', 'TipoHabitacionController@cantidadTipoHabitacion');
-Route::get('buscar/rut/motor', 'ClienteController@buscarRut');
+Route::get('cliente/motor', 'ClienteController@index');
 Route::put('cliente/motor/{id}', 'ClienteController@update');
 
 
