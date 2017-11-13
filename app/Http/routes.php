@@ -108,6 +108,9 @@ Route::get('tipo/cliente/motor', 'ClienteController@getTipoCliente');
 Route::get('paises/motor', 'PropiedadController@getPaises');
 Route::get('regiones/motor', 'PropiedadController@getRegiones');
 Route::get('cantidad/tipo/habitacion', 'TipoHabitacionController@cantidadTipoHabitacion');
+Route::get('buscar/rut/motor', 'ClienteController@buscarRut');
+Route::put('cliente/motor/{id}', 'ClienteController@update');
+
 
 Route::get('reset/password/{token}', 'ApiAuthController@ResetPassword');
 
