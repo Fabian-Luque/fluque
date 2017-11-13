@@ -319,7 +319,7 @@ class MotorReservaController extends Controller
             return Response::json($retorno, 400);
         }
 
-        return $reservas = Reserva::whereHas('tipoHabitacion', function($query) use($propiedad_id){
+        $reservas = Reserva::whereHas('tipoHabitacion', function($query) use($propiedad_id){
             $query->where('propiedad_id', $propiedad_id);
         })
         ->with('tipoHabitacion', 'cliente.tipoCliente', 'cliente.pais', 'cliente.region', 'tipoFuente', 'estadoReserva', 'tipoMoneda')
@@ -332,6 +332,22 @@ class MotorReservaController extends Controller
 
     public function reserva(Request $request)
     {
+        if ($request->has('propiedad_id')) {
+            $propiedad_id = $request->input('propiedad_id');
+            $propiedad    = Propiedad::where('id', $propiedad_id)->first();
+            if (is_null($propiedad)) {
+                $retorno = array(
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia propiedad_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
         if ($request->has('tipo_moneda_id') && $request->has('fecha_inicio') && $request->has('fecha_fin') && $request->has('iva') && $request->has('noches') && $request->has('habitaciones') && $request->has('cliente')) {
             $tipo_moneda_id = $request->get('tipo_moneda_id');
             $fecha_inicio   = $request->get('fecha_inicio');
@@ -345,6 +361,18 @@ class MotorReservaController extends Controller
                 $habitaciones = [];
                 $habitaciones . push($request['habitaciones']);
             }
+
+            $reservas = Reserva::whereHas('tipoHabitacion', function($query) use($propiedad_id){
+                $query->where('propiedad_id', $propiedad_id);
+            })
+            ->where('habitacion_id', null)
+            ->where('tipo_fuente_id', 1)
+            ->whereIn('estado_reserva_id', [1,2,3,4,5])
+            ->orderby('n_reserva_motor', 'DESC')
+            ->get();
+
+            $reserva         = $reservas->first();
+            $n_reserva_motor = $reserva->n_reserva_motor;
 
             if ($clientes['tipo_cliente_id'] == 1) {
                 if ($request->has('cliente.rut')) {
@@ -418,6 +446,7 @@ class MotorReservaController extends Controller
                 $reserva->noches                = $request['noches'];
                 $reserva->tipo_habitacion_id    = $habitacion['tipo_habitacion_id'];
                 $reserva->observacion           = $request['observacion'];
+                $reserva->n_reserva_motor       = $n_reserva_motor + 1;
                 $reserva->save();
             }
 
