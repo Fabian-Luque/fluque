@@ -222,9 +222,12 @@ class ReservaController extends Controller
         $pago = Pago::findOrFail($id);
         $reserva_id = $pago->reserva_id;
         $reserva = Reserva::where('id', $reserva_id)->first();
-        if ($pago->tipo == 'Pago habitacion') {
+        if ($pago->tipo == 'Pago habitacion' || $pago->tipo == "Confirmacion de reserva") {
             $monto_por_pagar = $reserva->monto_por_pagar + $pago->monto_pago;
             $reserva->update(array('monto_por_pagar' => $monto_por_pagar));
+            if ($reserva->monto_total == $reserva->monto_por_pagar && $reserva->estado_reserva_id ==2) {
+                $reserva->update(array('estado_reserva_id' => 1));
+            }
         }
         if ($pago->tipo == 'Pago consumos') {
             $servicios = $pago->servicios;
