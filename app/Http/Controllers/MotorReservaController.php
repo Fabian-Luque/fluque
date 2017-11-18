@@ -436,7 +436,6 @@ class MotorReservaController extends Controller
                         $aux_cliente['suma_deposito']  = $suma_deposito;
                         $aux_cliente['monto_total']    = $total;
                         $aux_cliente['habitaciones_reservadas'] = count($aux_reservas);
-                        $aux_cliente['numero_habitaciones'] = count($aux_reservas);
                         $aux_cliente['reservas']       = $aux_reservas;
 
                         array_push($data, $aux_cliente);
