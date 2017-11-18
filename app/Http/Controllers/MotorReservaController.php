@@ -330,6 +330,7 @@ class MotorReservaController extends Controller
 
         foreach ($clientes as $cliente) {
             $suma_deposito = 0;
+            $total    = 0;
             $aux_reservas = []; //Arreglo aux de reserva del mismo cliente y misma operacion desde el motor
 
                 $reservas = $cliente->reservas; 
@@ -346,16 +347,20 @@ class MotorReservaController extends Controller
                         $aux_cliente['checkin']  = $reserva->checkin->format('Y-m-d');
                         $aux_cliente['checkout'] = $reserva->checkout->format('Y-m-d');
                         $aux_cliente['suma_deposito'] = $suma_deposito;
+                        $aux_cliente['monto_total']    = $total;
                         $aux_cliente['nombre_moneda'] = $reserva->tipoMoneda->nombre;
                         $aux_cliente['cantidad_decimales'] = $reserva->tipoMoneda->cantidad_decimales;
                         $aux_cliente['tipo_moneda_id'] = $reserva->tipo_moneda_id;
+                        $aux_cliente['habitaciones_reservadas'] = count($aux_reservas);
                         $aux_cliente['reservas']  = $aux_reservas;
 
                         array_push($data, $aux_cliente);
                         $aux_reservas  = [];
                         $suma_deposito = 0;
+                        $total         = 0;
                         array_push($aux_reservas, $reserva);
                         $suma_deposito += $reserva->monto_deposito;
+                        $total         += $reserva->monto_total;
 
                         if ($reservas[$cantidad] == $reserva) {
                             $aux_cliente['id']       = $cliente->id;
@@ -369,6 +374,8 @@ class MotorReservaController extends Controller
                             $aux_cliente['cantidad_decimales'] = $reserva->tipoMoneda->cantidad_decimales;
                             $aux_cliente['tipo_moneda_id'] = $reserva->tipo_moneda_id;
                             $aux_cliente['suma_deposito'] = $suma_deposito;
+                            $aux_cliente['monto_total']    = $total;
+                             $aux_cliente['habitaciones_reservadas'] = count($aux_reservas);
                             $aux_cliente['reservas']  = $aux_reservas;
 
                             array_push($data, $aux_cliente);
@@ -379,7 +386,9 @@ class MotorReservaController extends Controller
 
                         if ($reservas[$cantidad] == $reserva) {
                             $suma_deposito = 0;
+                            $total         = 0;
                             $suma_deposito += $reserva->monto_deposito;
+                            $total         += $reserva->monto_total;
                             array_push($aux_reservas, $reserva);
                             $aux_cliente['id']       = $cliente->id;
                             $aux_cliente['nombre']   = $cliente->nombre;
@@ -392,14 +401,18 @@ class MotorReservaController extends Controller
                             $aux_cliente['cantidad_decimales'] = $reserva->tipoMoneda->cantidad_decimales;
                             $aux_cliente['tipo_moneda_id'] = $reserva->tipo_moneda_id;
                             $aux_cliente['suma_deposito'] = $suma_deposito;
+                            $aux_cliente['monto_total']    = $total;
+                            $aux_cliente['habitaciones_reservadas'] = count($aux_reservas);
                             $aux_cliente['reservas']  = $aux_reservas;
 
                             array_push($data, $aux_cliente);
                             $suma_deposito = 0;
+                            $total         = 0;
                             $aux_reservas = [];
                         } else {
 
                             $suma_deposito += $reserva->monto_deposito;
+                            $total         += $reserva->monto_total;
                             array_push($aux_reservas, $reserva);
                         }
                     } 
@@ -408,6 +421,7 @@ class MotorReservaController extends Controller
 
                     if ($reservas[$cantidad] == $reserva) {
                         $suma_deposito += $reserva->monto_deposito;
+                        $total         += $reserva->monto_total;
                         array_push($aux_reservas, $reserva);
                         $aux_cliente['id']            = $cliente->id;
                         $aux_cliente['nombre']        = $cliente->nombre;
@@ -419,14 +433,19 @@ class MotorReservaController extends Controller
                         $aux_cliente['nombre_moneda'] = $reserva->tipoMoneda->nombre;
                         $aux_cliente['cantidad_decimales'] = $reserva->tipoMoneda->cantidad_decimales;
                         $aux_cliente['tipo_moneda_id'] = $reserva->tipo_moneda_id;
-                        $aux_cliente['suma_deposito'] = $suma_deposito;
+                        $aux_cliente['suma_deposito']  = $suma_deposito;
+                        $aux_cliente['monto_total']    = $total;
+                        $aux_cliente['habitaciones_reservadas'] = count($aux_reservas);
+                        $aux_cliente['numero_habitaciones'] = count($aux_reservas);
                         $aux_cliente['reservas']       = $aux_reservas;
 
                         array_push($data, $aux_cliente);
                         $aux_reservas = [];
                         $suma_deposito = 0;
+                        $total         = 0;
                     } else {
                         $suma_deposito += $reserva->monto_deposito;
+                        $total         += $reserva->monto_total;
                         array_push($aux_reservas, $reserva);
                     }
                 }
