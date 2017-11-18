@@ -349,7 +349,7 @@ class MotorReservaController extends Controller
                         $aux_cliente['nombre_moneda'] = $reserva->tipoMoneda->nombre;
                         $aux_cliente['cantidad_decimales'] = $reserva->tipoMoneda->cantidad_decimales;
                         $aux_cliente['tipo_moneda_id'] = $reserva->tipo_moneda_id;
-                        $aux_cliente['reserva']  = $aux_reservas;
+                        $aux_cliente['reservas']  = $aux_reservas;
 
                         array_push($data, $aux_cliente);
                         $aux_reservas  = [];
@@ -369,7 +369,7 @@ class MotorReservaController extends Controller
                             $aux_cliente['cantidad_decimales'] = $reserva->tipoMoneda->cantidad_decimales;
                             $aux_cliente['tipo_moneda_id'] = $reserva->tipo_moneda_id;
                             $aux_cliente['suma_deposito'] = $suma_deposito;
-                            $aux_cliente['reserva']  = $aux_reservas;
+                            $aux_cliente['reservas']  = $aux_reservas;
 
                             array_push($data, $aux_cliente);
                             $aux_reservas = [];
@@ -392,7 +392,7 @@ class MotorReservaController extends Controller
                             $aux_cliente['cantidad_decimales'] = $reserva->tipoMoneda->cantidad_decimales;
                             $aux_cliente['tipo_moneda_id'] = $reserva->tipo_moneda_id;
                             $aux_cliente['suma_deposito'] = $suma_deposito;
-                            $aux_cliente['reserva']  = $aux_reservas;
+                            $aux_cliente['reservas']  = $aux_reservas;
 
                             array_push($data, $aux_cliente);
                             $suma_deposito = 0;
@@ -420,7 +420,7 @@ class MotorReservaController extends Controller
                         $aux_cliente['cantidad_decimales'] = $reserva->tipoMoneda->cantidad_decimales;
                         $aux_cliente['tipo_moneda_id'] = $reserva->tipo_moneda_id;
                         $aux_cliente['suma_deposito'] = $suma_deposito;
-                        $aux_cliente['reserva']       = $aux_reservas;
+                        $aux_cliente['reservas']       = $aux_reservas;
 
                         array_push($data, $aux_cliente);
                         $aux_reservas = [];
