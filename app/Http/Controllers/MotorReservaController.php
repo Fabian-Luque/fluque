@@ -440,9 +440,10 @@ class MotorReservaController extends Controller
 
     public function reserva(Request $request)
     {
-        if ($request->has('propiedad_id')) {
-            $propiedad_id = $request->input('propiedad_id');
-            $propiedad    = Propiedad::where('id', $propiedad_id)->first();
+        if ($request->has('codigo')) {
+            $codigo = $request->input('codigo');
+            $propiedad    = Propiedad::where('codigo', $codigo)->first();
+            $propiedad_id = $propiedad->id;
             if (is_null($propiedad)) {
                 $retorno = array(
                     'msj'    => "Propiedad no encontrada",
