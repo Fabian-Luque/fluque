@@ -319,14 +319,122 @@ class MotorReservaController extends Controller
             return Response::json($retorno, 400);
         }
 
-        $reservas = Reserva::whereHas('tipoHabitacion', function($query) use($propiedad_id){
+        $clientes = Cliente::whereHas('reservas.tipoHabitacion', function($query) use($propiedad_id){
             $query->where('propiedad_id', $propiedad_id);
-        })
-        ->with('tipoHabitacion', 'cliente.tipoCliente', 'cliente.pais', 'cliente.region', 'tipoFuente', 'estadoReserva', 'tipoMoneda')
-        ->where('habitacion_id', null)
-        ->where('tipo_fuente_id', 1)
-        ->whereIn('estado_reserva_id', [1,2,3,4,5])
+        })->with(['reservas' => function ($q){
+            $q->where('habitacion_id', null)->whereIn('estado_reserva_id', [1,2,3,4,5])->orderby('n_reserva_motor')->with('TipoMoneda');}])
         ->get();
+
+        $data = []; //Arreglo principal
+        $aux = 0; //aux de n_reserva_motor
+
+        foreach ($clientes as $cliente) {
+            $suma_deposito = 0;
+            $aux_reservas = []; //Arreglo aux de reserva del mismo cliente y misma operacion desde el motor
+
+                $reservas = $cliente->reservas; 
+                $cantidad = count($reservas) - 1;
+                foreach ($reservas as $reserva) {
+
+                if ($aux != $reserva->n_reserva_motor) {
+                    $aux = $reserva->n_reserva_motor; //Lo igualo por si existe otra reserva con el mismo n_reserva_motor
+                    if (count($aux_reservas) != 0) {
+                        $aux_cliente['id']       = $cliente->id;
+                        $aux_cliente['nombre']   = $cliente->nombre;
+                        $aux_cliente['apellido'] = $cliente->apellido;
+                        $aux_cliente['rut']      = $cliente->rut;
+                        $aux_cliente['checkin']  = $reserva->checkin->format('Y-m-d');
+                        $aux_cliente['checkout'] = $reserva->checkout->format('Y-m-d');
+                        $aux_cliente['suma_deposito'] = $suma_deposito;
+                        $aux_cliente['nombre_moneda'] = $reserva->tipoMoneda->nombre;
+                        $aux_cliente['cantidad_decimales'] = $reserva->tipoMoneda->cantidad_decimales;
+                        $aux_cliente['tipo_moneda_id'] = $reserva->tipo_moneda_id;
+                        $aux_cliente['reserva']  = $aux_reservas;
+
+                        array_push($data, $aux_cliente);
+                        $aux_reservas  = [];
+                        $suma_deposito = 0;
+                        array_push($aux_reservas, $reserva);
+                        $suma_deposito += $reserva->monto_deposito;
+
+                        if ($reservas[$cantidad] == $reserva) {
+                            $aux_cliente['id']       = $cliente->id;
+                            $aux_cliente['nombre']   = $cliente->nombre;
+                            $aux_cliente['apellido'] = $cliente->apellido;
+                            $aux_cliente['rut']      = $cliente->rut;
+                            $aux_cliente['checkin']  = $reserva->checkin->format('Y-m-d');
+                            $aux_cliente['checkout'] = $reserva->checkout->format('Y-m-d');
+                            $aux_cliente['suma_deposito'] = $suma_deposito;
+                            $aux_cliente['nombre_moneda'] = $reserva->tipoMoneda->nombre;
+                            $aux_cliente['cantidad_decimales'] = $reserva->tipoMoneda->cantidad_decimales;
+                            $aux_cliente['tipo_moneda_id'] = $reserva->tipo_moneda_id;
+                            $aux_cliente['suma_deposito'] = $suma_deposito;
+                            $aux_cliente['reserva']  = $aux_reservas;
+
+                            array_push($data, $aux_cliente);
+                            $aux_reservas = [];
+
+                        }
+                    } elseif (count($aux_reservas) == 0) {
+
+                        if ($reservas[$cantidad] == $reserva) {
+                            $suma_deposito = 0;
+                            $suma_deposito += $reserva->monto_deposito;
+                            array_push($aux_reservas, $reserva);
+                            $aux_cliente['id']       = $cliente->id;
+                            $aux_cliente['nombre']   = $cliente->nombre;
+                            $aux_cliente['apellido'] = $cliente->apellido;
+                            $aux_cliente['rut']      = $cliente->rut;
+                            $aux_cliente['checkin']  = $reserva->checkin->format('Y-m-d');
+                            $aux_cliente['checkout'] = $reserva->checkout->format('Y-m-d');
+                            $aux_cliente['suma_deposito'] = $suma_deposito;
+                            $aux_cliente['nombre_moneda'] = $reserva->tipoMoneda->nombre;
+                            $aux_cliente['cantidad_decimales'] = $reserva->tipoMoneda->cantidad_decimales;
+                            $aux_cliente['tipo_moneda_id'] = $reserva->tipo_moneda_id;
+                            $aux_cliente['suma_deposito'] = $suma_deposito;
+                            $aux_cliente['reserva']  = $aux_reservas;
+
+                            array_push($data, $aux_cliente);
+                            $suma_deposito = 0;
+                            $aux_reservas = [];
+                        } else {
+
+                            $suma_deposito += $reserva->monto_deposito;
+                            array_push($aux_reservas, $reserva);
+                        }
+                    } 
+
+                } elseif($aux == $reserva->n_reserva_motor) {
+
+                    if ($reservas[$cantidad] == $reserva) {
+                        $suma_deposito += $reserva->monto_deposito;
+                        array_push($aux_reservas, $reserva);
+                        $aux_cliente['id']            = $cliente->id;
+                        $aux_cliente['nombre']        = $cliente->nombre;
+                        $aux_cliente['apellido']      = $cliente->apellido;
+                        $aux_cliente['rut']           = $cliente->rut;
+                        $aux_cliente['checkin']       = $reserva->checkin->format('Y-m-d');
+                        $aux_cliente['checkout']      = $reserva->checkout->format('Y-m-d');
+                        $aux_cliente['suma_deposito'] = $suma_deposito;
+                        $aux_cliente['nombre_moneda'] = $reserva->tipoMoneda->nombre;
+                        $aux_cliente['cantidad_decimales'] = $reserva->tipoMoneda->cantidad_decimales;
+                        $aux_cliente['tipo_moneda_id'] = $reserva->tipo_moneda_id;
+                        $aux_cliente['suma_deposito'] = $suma_deposito;
+                        $aux_cliente['reserva']       = $aux_reservas;
+
+                        array_push($data, $aux_cliente);
+                        $aux_reservas = [];
+                        $suma_deposito = 0;
+                    } else {
+                        $suma_deposito += $reserva->monto_deposito;
+                        array_push($aux_reservas, $reserva);
+                    }
+                }
+            }
+        }
+
+
+        return $data;
 
     }
 
@@ -371,8 +479,12 @@ class MotorReservaController extends Controller
             ->orderby('n_reserva_motor', 'DESC')
             ->get();
 
-            $reserva         = $reservas->first();
-            $n_reserva_motor = $reserva->n_reserva_motor;
+            $reserva  = $reservas->first();
+            if (!is_null($reserva)) {
+                $n_reserva_motor = $reserva->n_reserva_motor;
+            } else {
+                $n_reserva_motor = 0;
+            }
 
             if ($clientes['tipo_cliente_id'] == 1) {
                 if ($request->has('cliente.rut')) {
@@ -446,6 +558,7 @@ class MotorReservaController extends Controller
                 $reserva->noches                = $request['noches'];
                 $reserva->tipo_habitacion_id    = $habitacion['tipo_habitacion_id'];
                 $reserva->observacion           = $request['observacion'];
+                $reserva->monto_deposito        = $habitacion['monto_deposito'];
                 $reserva->n_reserva_motor       = $n_reserva_motor + 1;
                 $reserva->save();
             }
