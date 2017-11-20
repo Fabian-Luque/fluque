@@ -62,32 +62,43 @@ class UserController extends Controller {
             $data['errors'] = true;
             $data['msg'] = $validator->errors();
         } else {
-            $usuario                       = new User();
-            $usuario->name                 = $request->get('name');
-            $usuario->email                = $request->get('email');
-            $usuario->password             = $request->get('password');
-            $usuario->phone                = $request->get('phone');
-            $usuario->rol_id               = 1;
-            $usuario->estado_id            = 1;
 
-            $usuario->save();
+            $codigo = str_random(50);
+            $prop   = Propiedad::where('codigo', $codigo)->first();
 
-            $propiedad                      = new Propiedad();
-            $propiedad->nombre              = $request->get('nombre');
-            $propiedad->numero_habitaciones = $request->get('numero_habitaciones');
-            $propiedad->ciudad              = $request->get('ciudad');
-            $propiedad->direccion           = $request->get('direccion');
-            $propiedad->tipo_propiedad_id   = $request->get('tipo_propiedad_id');
-            $propiedad->codigo              = str_random(100);
+            if (is_null($prop)) {
+                $usuario                       = new User();
+                $usuario->name                 = $request->get('name');
+                $usuario->email                = $request->get('email');
+                $usuario->password             = $request->get('password');
+                $usuario->phone                = $request->get('phone');
+                $usuario->rol_id               = 1;
+                $usuario->estado_id            = 1;
 
-            $propiedad->save();
-            $usuario->propiedad()->attach($propiedad->id);
+                $usuario->save();
 
-            $data = [
-                'errors' => false,
-                'msg'    => 'usuario creado satisfactoriamente',
-            ];
-            return Response::json($data, 201);
+                $propiedad                      = new Propiedad();
+                $propiedad->nombre              = $request->get('nombre');
+                $propiedad->numero_habitaciones = $request->get('numero_habitaciones');
+                $propiedad->ciudad              = $request->get('ciudad');
+                $propiedad->direccion           = $request->get('direccion');
+                $propiedad->tipo_propiedad_id   = $request->get('tipo_propiedad_id');
+                $propiedad->codigo              = $codigo;
+
+                $propiedad->save();
+                $usuario->propiedad()->attach($propiedad->id);
+
+                $data = [
+                    'errors' => false,
+                    'msg'    => 'usuario creado satisfactoriamente',
+                ];
+                return Response::json($data, 201);
+            } else {
+                $retorno = array(
+                    'msj'    => "No se pudo crear cuenta",
+                    'errors' => true,);
+                return Response::json($retorno, 400);
+            }
         }
     }
 

@@ -137,4 +137,20 @@ class Propiedad extends Model {
             ->withPivot('tipo_moneda_id')
             ->withTimestamps();
     }
+
+    public function coloresMotor(){
+        return $this->belongsToMany('App\ColorMotor', 'motor_propiedad')
+            ->withPivot('id','clasificacion_color_id')
+            ->withTimestamps();
+    }
+
+    public function clasificacionColores(){
+        return $this->belongsToMany('App\ClasificacionColor', 'motor_propiedad')
+            ->withPivot('color_motor_id')
+            ->withTimestamps();
+    }
+
+
+
+
 }

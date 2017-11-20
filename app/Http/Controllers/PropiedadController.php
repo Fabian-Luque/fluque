@@ -1307,7 +1307,7 @@ class PropiedadController extends Controller
     {
         if ($request->has('id')) {
 
-            $propiedad = Propiedad::where('id', $request->input('id'))->with('tipoPropiedad','pais','region','zonaHoraria' ,'tipoMonedas.clasificacionMonedas', 'tipoCobro', 'politicas', 'cuentasBancaria.tipoCuenta', 'tipoDepositoPropiedad.tipoDeposito')->get();
+            $propiedad = Propiedad::where('id', $request->input('id'))->with('tipoPropiedad','pais','region','zonaHoraria' ,'tipoMonedas','coloresMotor' ,'tipoCobro', 'politicas', 'cuentasBancaria.tipoCuenta', 'tipoDepositoPropiedad.tipoDeposito')->get();
             return $propiedad;
         }
 
@@ -1475,7 +1475,7 @@ class PropiedadController extends Controller
                     $clasificacion_moneda = $moneda['clasificacion_moneda_id'];
                     $tipo_moneda          = $moneda['tipo_moneda_id'];
 
-                    $propiedad->clasificacionMonedas()->attach($clasificacion_moneda, ['tipo_moneda_id' => $tipo_moneda]);
+                    $propiedad->clasificacionColores()->attach($clasificacion_moneda, ['tipo_moneda_id' => $tipo_moneda]);
 
                     if (count($tipos_habitacion) > 0) {
                         if ($propiedad->tipo_cobro_id != 3) {
@@ -1935,7 +1935,7 @@ class PropiedadController extends Controller
         $propiedades = Propiedad::all();
         foreach ($propiedades as $propiedad) {
             $propiedad = Propiedad::where('id', $propiedad->id)->first();
-            $propiedad->update(array('codigo' => str_random(20)));
+            $propiedad->update(array('codigo' => str_random(50)));
 
         }
 

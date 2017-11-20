@@ -12,6 +12,9 @@ use App\Calendario;
 use App\Reserva;
 use App\Habitacion;
 use App\Cliente;
+use App\ColorMotor;
+use App\ClasificacionColor;
+use App\MotorPropiedad;
 use Response;
 use Validator;
 use \Carbon\Carbon;
@@ -322,7 +325,8 @@ class MotorReservaController extends Controller
         $clientes = Cliente::whereHas('reservas.tipoHabitacion', function($query) use($propiedad_id){
             $query->where('propiedad_id', $propiedad_id);
         })->with(['reservas' => function ($q){
-            $q->where('habitacion_id', null)->whereIn('estado_reserva_id', [1,2,3,4,5])->orderby('n_reserva_motor')->with('TipoMoneda');}])
+            $q->where('habitacion_id', null)->whereIn('estado_reserva_id', [1,2,3,4,5])->orderby('n_reserva_motor')->with('TipoMoneda')->with('tipoHabitacion');}])
+        ->with('tipoCliente')
         ->get();
 
         $data = []; //Arreglo principal
@@ -344,6 +348,7 @@ class MotorReservaController extends Controller
                         $aux_cliente['nombre']   = $cliente->nombre;
                         $aux_cliente['apellido'] = $cliente->apellido;
                         $aux_cliente['rut']      = $cliente->rut;
+                        $aux_cliente['tipo_cliente']      = $cliente->tipoCliente;
                         $aux_cliente['checkin']  = $reserva->checkin->format('Y-m-d');
                         $aux_cliente['checkout'] = $reserva->checkout->format('Y-m-d');
                         $aux_cliente['suma_deposito'] = $suma_deposito;
@@ -367,6 +372,7 @@ class MotorReservaController extends Controller
                             $aux_cliente['nombre']   = $cliente->nombre;
                             $aux_cliente['apellido'] = $cliente->apellido;
                             $aux_cliente['rut']      = $cliente->rut;
+                            $aux_cliente['tipo_cliente']      = $cliente->tipoCliente;
                             $aux_cliente['checkin']  = $reserva->checkin->format('Y-m-d');
                             $aux_cliente['checkout'] = $reserva->checkout->format('Y-m-d');
                             $aux_cliente['suma_deposito'] = $suma_deposito;
@@ -394,6 +400,7 @@ class MotorReservaController extends Controller
                             $aux_cliente['nombre']   = $cliente->nombre;
                             $aux_cliente['apellido'] = $cliente->apellido;
                             $aux_cliente['rut']      = $cliente->rut;
+                            $aux_cliente['tipo_cliente']      = $cliente->tipoCliente;
                             $aux_cliente['checkin']  = $reserva->checkin->format('Y-m-d');
                             $aux_cliente['checkout'] = $reserva->checkout->format('Y-m-d');
                             $aux_cliente['suma_deposito'] = $suma_deposito;
@@ -427,6 +434,7 @@ class MotorReservaController extends Controller
                         $aux_cliente['nombre']        = $cliente->nombre;
                         $aux_cliente['apellido']      = $cliente->apellido;
                         $aux_cliente['rut']           = $cliente->rut;
+                        $aux_cliente['tipo_cliente']      = $cliente->tipoCliente;
                         $aux_cliente['checkin']       = $reserva->checkin->format('Y-m-d');
                         $aux_cliente['checkout']      = $reserva->checkout->format('Y-m-d');
                         $aux_cliente['suma_deposito'] = $suma_deposito;
@@ -666,6 +674,98 @@ class MotorReservaController extends Controller
             'msj'    => 'Habitación asignada',];
         return Response::json($retorno, 201);
 
+    }
+
+    public function asignarColorMotor(Request $request)
+    {
+        if ($request->has('propiedad_id')) {
+            $propiedad_id = $request->input('propiedad_id');
+            $propiedad    = Propiedad::where('id', $propiedad_id)->first();
+            if (is_null($propiedad)) {
+                $retorno = array(
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia propiedad_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        if ($request->has('colores')) {
+            $colores = $request->input('colores');
+
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia colores",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        foreach ($colores as $color) {
+            $color_motor          = $color['color_motor_id'];
+            $clasificacion_color  = $color['clasificacion_color_id'];
+
+            $propiedad->clasificacionColores()->attach($clasificacion_color, ['color_motor_id' => $color_motor]);
+
+        }
+
+        $retorno = array(
+            'msj'   => "colores ingresados correctamente",
+            'erros' => false,);
+        return Response::json($retorno, 201);
+
+    }
+
+    public function editarColor(Request $request, $id)
+    {
+        $rules = array(
+            'clasificacion_color_id' => 'numeric',
+            'color_motor_id'         => 'numeric',
+        );
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+
+            $data = [
+
+                'errors' => true,
+                'msg'    => $validator->messages(),
+
+            ];
+
+            return Response::json($data, 400);
+
+        } else {
+
+            $color_motor = MotorPropiedad::findOrFail($id);
+            $color_motor->update($request->all());
+            $color_motor->touch();
+
+            $data = [
+                'errors' => false,
+                'msg'    => 'Color actualizado satisfactoriamente',
+            ];
+            return Response::json($data, 201);
+
+        }
+
+    }
+
+    public function getColores()
+    {
+        $colores = ColorMotor::all();
+        return $colores;
+
+    }
+
+    public function getClasificacionColores()
+    {
+        $clasificacion = ClasificacionColor::all();
+        return $clasificacion;
     }
 
 

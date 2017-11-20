@@ -232,6 +232,10 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::put('tipo/deposito/propiedad/{id}', 'PropiedadController@editarTipoDepositoPropiedad');
 		Route::delete('tipo/deposito/propiedad/{id}', 'PropiedadController@eliminarTipoDepositoPropiedad');
 		Route::get('tipo/deposito', 'PropiedadController@getTipoDeposito');
+		Route::get('colores/motor', 'MotorReservaController@getColores');
+		Route::get('clasificacion/color', 'MotorReservaController@getClasificacionColores');
+		Route::post('asignar/color/motor', 'MotorReservaController@asignarColorMotor');
+		Route::put('editar/color/motor/{id}', 'MotorReservaController@editarColor');
 
 		Route::resource('user', 'UserController', ['except' => ['create', 'edit','store']]);
 		Route::resource('propiedad', 'PropiedadController', ['except' => ['create', 'edit', 'store']]);
