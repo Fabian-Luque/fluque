@@ -741,38 +741,33 @@ class MotorReservaController extends Controller
 
     }
 
-    public function editarColor(Request $request, $id)
+    public function editarColor(Request $request)
     {
-        $rules = array(
-            'clasificacion_color_id' => 'numeric',
-            'color_motor_id'         => 'numeric',
-        );
+        if ($request->has('colores')) {
+            $colores = $request->get('colores');
+            foreach ($colores as $color) {
+                $color_motor_id         = $color['color_motor_id'];
+                $clasificacion_color_id = $color['clasificacion_color_id'];
+                $color = MotorPropiedad::where('id', $color['color_id'])->first();
+                if (!is_null($color)) {
+                    $color->update(array('color_motor_id' => $color_motor_id, 'clasificacion_color_id' => $clasificacion_color_id));
 
-        $validator = Validator::make($request->all(), $rules);
-
-        if ($validator->fails()) {
-
-            $data = [
-
-                'errors' => true,
-                'msg'    => $validator->messages(),
-
-            ];
-
-            return Response::json($data, 400);
-
-        } else {
-
-            $color_motor = MotorPropiedad::findOrFail($id);
-            $color_motor->update($request->all());
-            $color_motor->touch();
-
-            $data = [
+                } else {
+                    $retorno = array(
+                        'msj'    => "Color no encontrada",
+                        'errors' => true);
+                    return Response::json($retorno, 404);
+                }
+            }
+            $retorno = [
                 'errors' => false,
-                'msg'    => 'Color actualizado satisfactoriamente',
-            ];
-            return Response::json($data, 201);
-
+                'msj'    => 'Color actualizada satisfactoriamente',];
+            return Response::json($retorno, 201);
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia colores",
+                'errors' => true);
+            return Response::json($retorno, 400);
         }
 
     }
