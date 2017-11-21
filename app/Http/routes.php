@@ -236,6 +236,8 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::get('clasificacion/color', 'MotorReservaController@getClasificacionColores');
 		Route::post('asignar/color/motor', 'MotorReservaController@asignarColorMotor');
 		Route::post('editar/color/motor', 'MotorReservaController@editarColor');
+		Route::post('anular/reservas', 'ReservaController@anularReservas');
+
 
 		Route::resource('user', 'UserController', ['except' => ['create', 'edit','store']]);
 		Route::resource('propiedad', 'PropiedadController', ['except' => ['create', 'edit', 'store']]);

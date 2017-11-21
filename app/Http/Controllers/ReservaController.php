@@ -1911,6 +1911,45 @@ class ReservaController extends Controller
 
 
 
+    }
+
+    public function anularReservas(Request $request)
+    {
+        if ($request->has('reservas')) {
+            $reservas = $request->get('reservas');
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia propiedad_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        if ($request->has('observacion')) {
+            $observacion = $request->get('observacion');
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia observación",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        foreach ($reservas as $reserva) {
+            $id      = $reserva;
+            $reserva = Reserva::where('id', $id)->first();
+            if (!is_null($reserva)) {
+                $reserva->update(array('estado_reserva_id' => 6, 'observacion' => $observacion));
+            } else {
+                $retorno  = array(
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        }
+
+          $retorno = [
+              'errors' => false,
+              'msj'    => 'Reservas anuladas satisfactoriamente',];
+          return Response::json($retorno, 201);
     }   
 
 
