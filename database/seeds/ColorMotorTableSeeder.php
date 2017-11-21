@@ -87,7 +87,7 @@ class ColorMotorTableSeeder extends Seeder
     		[
     			'nombre' =>  'yellow',
     			'color' =>  '#212121',
-    			'background_color' =>  '##FFEB3B',
+    			'background_color' =>  '#FFEB3B',
 
     		],
     		[
