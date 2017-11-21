@@ -358,8 +358,6 @@ class MotorReservaController extends Controller
                         $aux_cliente['pais']        = $cliente->pais;
                         $aux_cliente['region']      = $cliente->region;
                         $aux_cliente['tipo_cliente']      = $cliente->tipoCliente;
-                        $aux_cliente['checkin']           = $reserva->checkin->format('Y-m-d');
-                        $aux_cliente['checkout']          = $reserva->checkout->format('Y-m-d');
                         $aux_cliente['suma_deposito']     = $suma_deposito;
                         $aux_cliente['monto_total']       = $total;
                         $aux_cliente['nombre_moneda']     = $reserva->tipoMoneda->nombre;
@@ -389,16 +387,14 @@ class MotorReservaController extends Controller
                             $aux_cliente['pais']        = $cliente->pais;
                             $aux_cliente['region']      = $cliente->region;
                             $aux_cliente['tipo_cliente']      = $cliente->tipoCliente;
-                            $aux_cliente['checkin']           = $reserva->checkin->format('Y-m-d');
-                            $aux_cliente['checkout']          = $reserva->checkout->format('Y-m-d');
                             $aux_cliente['suma_deposito']     = $suma_deposito;
                             $aux_cliente['nombre_moneda']     = $reserva->tipoMoneda->nombre;
                             $aux_cliente['cantidad_decimales'] = $reserva->tipoMoneda->cantidad_decimales;
                             $aux_cliente['tipo_moneda_id']     = $reserva->tipo_moneda_id;
                             $aux_cliente['suma_deposito']      = $suma_deposito;
                             $aux_cliente['monto_total']        = $total;
-                             $aux_cliente['habitaciones_reservadas'] = count($aux_reservas);
-                            $aux_cliente['reservas']                 = $aux_reservas;
+                            $aux_cliente['habitaciones_reservadas'] = count($aux_reservas);
+                            $aux_cliente['reservas']                = $aux_reservas;
 
                             array_push($data, $aux_cliente);
                             $aux_reservas = [];
@@ -424,8 +420,6 @@ class MotorReservaController extends Controller
                             $aux_cliente['pais']        = $cliente->pais;
                             $aux_cliente['region']      = $cliente->region;
                             $aux_cliente['tipo_cliente']            = $cliente->tipoCliente;
-                            $aux_cliente['checkin']                 = $reserva->checkin->format('Y-m-d');
-                            $aux_cliente['checkout']                = $reserva->checkout->format('Y-m-d');
                             $aux_cliente['suma_deposito']           = $suma_deposito;
                             $aux_cliente['nombre_moneda']           = $reserva->tipoMoneda->nombre;
                             $aux_cliente['cantidad_decimales']      = $reserva->tipoMoneda->cantidad_decimales;
@@ -465,8 +459,6 @@ class MotorReservaController extends Controller
                         $aux_cliente['pais']        = $cliente->pais;
                         $aux_cliente['region']      = $cliente->region;
                         $aux_cliente['tipo_cliente']        = $cliente->tipoCliente;
-                        $aux_cliente['checkin']             = $reserva->checkin->format('Y-m-d');
-                        $aux_cliente['checkout']            = $reserva->checkout->format('Y-m-d');
                         $aux_cliente['suma_deposito']       = $suma_deposito;
                         $aux_cliente['nombre_moneda']       = $reserva->tipoMoneda->nombre;
                         $aux_cliente['cantidad_decimales']  = $reserva->tipoMoneda->cantidad_decimales;
