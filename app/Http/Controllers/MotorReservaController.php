@@ -772,6 +772,35 @@ class MotorReservaController extends Controller
 
     }
 
+    /**
+     * Obtiene coloresde la propiedad para motor de reserva
+     *
+     * @author ALLEN
+     *
+     * @param  Request          $request (codigo)
+     * @return Response::json
+     */
+    public function getColoresPropiedad(Request $request)
+    {
+        if ($request->has('codigo')) {
+            $codigo     = $request->input('codigo');
+            $propiedad  = Propiedad::where('codigo', $codigo)->with('coloresMotor')->first();
+            if (is_null($propiedad)) {
+                $retorno = array(
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia codigo",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        return $propiedad;
+    }
+
     public function getColores()
     {
         $colores = ColorMotor::all();
