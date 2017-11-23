@@ -30,6 +30,10 @@ class Propiedad extends Model {
         return $this->belongsTo('App\Pais', 'pais_id'); 
     }
 
+    public function tipoDepositoPropiedad(){
+        return $this->hasOne('App\PropiedadTipoDeposito', 'propiedad_id');
+    }
+
     public function region() {
         return $this->belongsTo('App\Region', 'region_id'); 
     }
@@ -78,12 +82,15 @@ class Propiedad extends Model {
         return $this->hasMany('App\Egreso', 'propiedad_id');
     }
 
+    public function cuentasBancaria() {
+        return $this->hasMany('App\CuentaBancaria', 'propiedad_id');
+    }
+
     public function egresosPropiedad(){
         return $this->hasMany('App\EgresoPropiedad', 'propiedad_id');
     }
 
     public function calificacionHuespedes() {
-
         return $this->belongsToMany('App\Huesped', 'huesped_propiedad')
         ->withPivot('comentario', 'calificacion')
         ->withTimestamps();
@@ -130,4 +137,20 @@ class Propiedad extends Model {
             ->withPivot('tipo_moneda_id')
             ->withTimestamps();
     }
+
+    public function coloresMotor(){
+        return $this->belongsToMany('App\ColorMotor', 'motor_propiedad')
+            ->withPivot('id','clasificacion_color_id')
+            ->withTimestamps();
+    }
+
+    public function clasificacionColores(){
+        return $this->belongsToMany('App\ClasificacionColor', 'motor_propiedad')
+            ->withPivot('color_motor_id')
+            ->withTimestamps();
+    }
+
+
+
+
 }

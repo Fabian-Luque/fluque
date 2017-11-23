@@ -33,6 +33,8 @@ class DatabaseSeeder extends Seeder
        // $this->call(PrimerUser::class);
        $this->call(EstadoCajaTableSeeder::class);
        $this->call(TipoMontoTableSeeder::class);
+       $this->call(ColorMotorTableSeeder::class);
+       $this->call(ClasificacionColorTableSeeder::class);
 
     }
 }

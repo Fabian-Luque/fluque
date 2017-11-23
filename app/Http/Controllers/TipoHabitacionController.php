@@ -231,6 +231,24 @@ class TipoHabitacionController extends Controller
 
     }
 
+    public function cantidadTipoHabitacion()
+    {
+       $tipos_habitacion = TipoHabitacion::with('habitaciones')->get();
+
+       foreach ($tipos_habitacion as $tipo) {
+            $cantidad = count($tipo->habitaciones); 
+
+            $tipo->update(array('cantidad' => $cantidad));
+
+       }
+
+       return "actualizado";
+
+    }
+
+
+
+
 
 
 }
