@@ -110,6 +110,7 @@ Route::get('regiones/motor', 'PropiedadController@getRegiones');
 Route::get('cantidad/tipo/habitacion', 'TipoHabitacionController@cantidadTipoHabitacion');
 Route::get('cliente/motor', 'ClienteController@index');
 Route::put('cliente/motor/{id}', 'ClienteController@update');
+Route::get('obtener/colores', 'MotorReservaController@getColoresPropiedad');
 
 
 Route::get('reset/password/{token}', 'ApiAuthController@ResetPassword');
@@ -237,7 +238,6 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::post('asignar/color/motor', 'MotorReservaController@asignarColorMotor');
 		Route::post('editar/color/motor', 'MotorReservaController@editarColor');
 		Route::post('anular/reservas', 'ReservaController@anularReservas');
-		Route::get('obtener/colores', 'MotorReservaController@getColoresPropiedad');
 
 
 
