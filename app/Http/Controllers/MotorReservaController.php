@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Events\ReservasMotorEvent;
+use Illuminate\Support\Facades\Event;
 use App\Http\Requests;
 use App\Propiedad;
 use App\Temporada;
@@ -488,6 +490,7 @@ class MotorReservaController extends Controller
 
     public function reserva(Request $request)
     {
+        $propiedad_id = null;
         if ($request->has('codigo')) {
             $codigo = $request->input('codigo');
             $propiedad    = Propiedad::where('codigo', $codigo)->first();
@@ -610,6 +613,12 @@ class MotorReservaController extends Controller
                 $reserva->monto_deposito        = $habitacion['monto_deposito'];
                 $reserva->n_reserva_motor       = $n_reserva_motor + 1;
                 $reserva->save();
+
+                if ($propiedad_id != null) {
+                    Event::fire(
+                        new ReservasMotorEvent($reserva, $propiedad_id)
+                    );
+                }
             }
 
         } else {
