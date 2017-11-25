@@ -330,17 +330,8 @@ class MotorReservaController extends Controller
                 $query->where('propiedad_id', $propiedad_id);
             });
             $query->where('habitacion_id', null)->whereIn('estado_reserva_id', [1,2,3,4,5])->orderby('n_reserva_motor')->with('TipoMoneda')->with('tipoHabitacion');
-            }])
+        }])
         ->get();
-
-        // $clientes = Cliente::whereHas('reservas.tipoHabitacion', function($query) use($propiedad_id){
-        //     $query->where('propiedad_id', $propiedad_id);
-        // })->with(['reservas' => function ($q){
-        //     $q->where('habitacion_id', null)->whereIn('estado_reserva_id', [1,2,3,4,5])->orderby('n_reserva_motor')->with('TipoMoneda')->with('tipoHabitacion');}])
-        // ->with('tipoCliente')
-        // ->with('region')
-        // ->with('pais')
-        // ->get();
 
         $data = []; //Arreglo principal
         $aux = 0; //aux de n_reserva_motor
