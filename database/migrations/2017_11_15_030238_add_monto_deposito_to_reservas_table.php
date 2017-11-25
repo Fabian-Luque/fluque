@@ -14,7 +14,6 @@ class AddMontoDepositoToReservasTable extends Migration
     {
         Schema::table('reservas', function (Blueprint $table) {
             $table->integer('monto_deposito')->after('noches')->nullable();
-            $table->dropColumn('precio_habitacion');
         });
     }
 
