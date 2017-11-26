@@ -226,6 +226,10 @@ class MotorRaController extends Controller
                 }
             }
             $data['nombre']             = $propiedad->nombre;
+            $data['direccion']          = $propiedad->direccion;
+            $data['telefono']           = $propiedad->telefono;
+            $data['email ']             = $propiedad->email;
+            $data['ciudad']             = $propiedad->ciudad;
             $data['tipo_cobro_id']      = $propiedad->tipo_cobro_id;
             $data['tipo_monedas']       = $propiedad->tipoMonedas;
             $data['cuentas_bancaria']   = $propiedad->cuentasBancaria;
