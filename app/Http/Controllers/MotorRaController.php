@@ -36,10 +36,9 @@ class MotorRaController extends Controller
                 'errors' => true,);
             return Response::json($data, 400);
         }
-        if ($request->has('propiedad_id') && $request->has('codigo')) {
-            $propiedad_id   = $request->input('propiedad_id');
+        if ($request->has('codigo')) {
             $codigo         = $request->input('codigo');
-            $propiedad      = Propiedad::where('id', $propiedad_id)->where('codigo', $codigo)->with('tiposHabitacion')->with('tipoMonedas')->with('cuentasBancaria.tipoCuenta', 'tipoDepositoPropiedad.tipoDeposito')->with('politicas')->first();
+            $propiedad      = Propiedad::where('codigo', $codigo)->with('tiposHabitacion')->with('tipoMonedas')->with('cuentasBancaria.tipoCuenta', 'tipoDepositoPropiedad.tipoDeposito')->with('politicas')->first();
             if (is_null($propiedad)) {
                 $retorno  = array(
                     'msj'    => "Propiedad no encontrada",
@@ -48,7 +47,7 @@ class MotorRaController extends Controller
             }
         } else {
             $retorno = array(
-                'msj'    => "No se envia propiedad_id",
+                'msj'    => "No se envia codigo",
                 'errors' => true);
             return Response::json($retorno, 400);
         }
