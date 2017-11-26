@@ -12,30 +12,25 @@ class MotorController extends Controller {
 		return '
 		<style media="screen">
 			.contenedor-motor-reserva {
-				height: 200px;
-				background-color: #d1d1d1;
+				height: 90px;
+				background-color: transparent;
 			}
 			.md-datepicker-input-mask {
 				overflow: hidden;
 			}
+			.contenedor-motor-reserva .mdr-btn {
+				font-size: 13px;
+			}
 		</style>
 
 
-		<div class="contenedor-motor-reserva" layout="row" layout-align="center center" ng-cloak>
+		<div class="contenedor-motor-reserva" layout="row" layout-align="center center" md-theme="mdrTheme" ng-cloak>
 			<form name="motorReservaForm">
-				<md-datepicker name="checkin" ng-model="check_in" md-placeholder="Check in" required style="width:100px;"></md-datepicker>
-				<md-datepicker name="checkout" ng-model="check_out" md-placeholder="Check out" required></md-datepicker>
+				<md-datepicker name="checkin" ng-model="check_in" md-placeholder="Check in" md-min-date="minDate" ng-change="cambioCheckIn()" required style="width:100px;"></md-datepicker>
+				<md-datepicker name="checkout" ng-model="check_out" md-placeholder="Check out" md-min-date="fecha_limite_2" required></md-datepicker>
 			</form>
 
-			<md-button class="md-raised md-primary" ng-click="buscarDisponibilidad(motorReservaForm);" ng-disabled="motorReservaForm.$invalid">{{buscar}}</md-button>
-
-		</div>
-';
-	}
-
-	public function getDisponibilidad(Request $request) {
-		return '
-		<div class="contenedor-motor-reserva" layout="row" layout-align="center center" ng-cloak>
+			<md-button class="md-raised md-accent mdr-btn" ng-click="buscarDisponibilidad(motorReservaForm);" ui-sref="asd" ng-disabled="motorReservaForm.$invalid">buscar</md-button>
 
 		</div>
 ';
