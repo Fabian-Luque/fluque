@@ -257,7 +257,7 @@ Route::group(['as' => 'api.jarvis.'], function() {
 
 });
 
-
+		Route::get('crear/permisos', 'RolController@crearPermisos');
 
 		Route::post('crear/zona/horaria', 'PropiedadController@crearZona');
 		Route::post('crear/pais', 'PropiedadController@crearPais');
