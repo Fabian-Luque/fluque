@@ -20,9 +20,9 @@ use JWTAuth;
 class UserController extends Controller {
     public function show($id){
         try {
-            $users = User::where('id', $id)->with('propiedad.tipoPropiedad','propiedad.pais','propiedad.region','propiedad.zonaHoraria' ,'propiedad.tipoMonedas', 'propiedad.tipoCobro')->with('rol.permisos')->first();
+            $users = User::where('id', $id)->with('propiedad.tipoPropiedad','propiedad.pais','propiedad.region','propiedad.zonaHoraria' ,'propiedad.tipoMonedas', 'propiedad.tipoCobro')->with('rol.permisos')->get();
 
-            $propiedad_id = $users->propiedad[0]['id'];
+            $propiedad_id = $users[0]->propiedad[0]['id'];
 
             $reservas = Reserva::whereHas('tipoHabitacion', function ($query) use ($propiedad_id) {
                         $query->where('propiedad_id', $propiedad_id);})
@@ -30,7 +30,8 @@ class UserController extends Controller {
                         ->whereIn('estado_reserva_id', [1,2,3,4,5])
                         ->get();
 
-                foreach ($users['propiedad'] as $propiedad) {
+            foreach ($users as $user) {
+                foreach ($user['propiedad'] as $propiedad) {
                     $caja_abierta    = Caja::where('propiedad_id', $propiedad->id)->where('estado_caja_id', 1)->first();
                     if (!is_null($caja_abierta)) {
                         $propiedad->caja_abierta = 1;
@@ -39,7 +40,7 @@ class UserController extends Controller {
                     }
                     $propiedad->reservas_motor = count($reservas);
                 }
-            
+            }
 
             return $users;
             
