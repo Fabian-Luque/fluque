@@ -151,7 +151,6 @@ class TipoHabitacionController extends Controller
                 'nombre'	       => '',
                 'capacidad'        => '',
                 'cantidad'         => '',
-                'disponible_venta' => ''
             ]
         );
 
@@ -213,6 +212,41 @@ class TipoHabitacionController extends Controller
         }
 
 	}
+
+    public function editarTipoHabitacion(Request $request)
+    {
+        if ($request->has('tipo_habitacion_id')) {
+            $tipo_habitacion_id   = $request->input('tipo_habitacion_id');
+            $tipo_habitacion      = TipoHabitacion::where('id', $tipo_habitacion_id)->first();
+            if (is_null($tipo_habitacion)) {
+                $retorno = array(
+                    'msj'    => "Tipo habitacion no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia tipo_habitacion_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        if ($request->has('disponible_venta')) {
+            $disponible_venta = $request->input('disponible_venta');
+        } else {
+            $retorno = array(
+                'msj'    => "Solicitud incompleta",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+            
+        $tipo_habitacion->update(array('disponible_venta' => $disponible_venta));
+
+            $data = [
+                'errors' => false,
+                'msj'    => 'Tipo Habitacion actualizado satisfactoriamente',];
+            return Response::json($data, 201);
+    }
 
 	public function destroy($id)
     {
