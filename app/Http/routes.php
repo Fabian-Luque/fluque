@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Http\Response as HttpResponse;
+use App\Events\ReservasMotorEvent;
+use App\User;
 
 Route::auth();
 
@@ -10,6 +12,8 @@ Route::get(
 		return view('auth.login');
 	}
 );
+
+
 
 //////////////////////// rutas dash ////////////////////////////
 
@@ -96,15 +100,29 @@ Route::post('eliminar/user', 'UserController@delete');
 		}
 	);
 
-	Route::get('reset/password/{token}', 'ApiAuthController@ResetPassword');
+//// motor de reserva
+Route::get('motor/reserva', 'MotorWidgetControllers\MotorController@getMotor');
+Route::get('motor/disponibilidad', 'MotorWidgetControllers\MotorController@getDisponibilidad');
+Route::get('motor/disponibilidad/habitacion', 'MotorRaController@getDisponibilidad');
+Route::post('motor/reserva/habitacion', 'MotorRaController@reserva');
+Route::get('crear/codigo', 'PropiedadController@crearCodigo');
+Route::get('tipo/cliente/motor', 'ClienteController@getTipoCliente');
+Route::get('paises/motor', 'PropiedadController@getPaises');
+Route::get('regiones/motor', 'PropiedadController@getRegiones');
+Route::get('cantidad/tipo/habitacion', 'TipoHabitacionController@cantidadTipoHabitacion');
+Route::get('cliente/motor', 'ClienteController@index');
+Route::put('cliente/motor/{id}', 'ClienteController@update');
+Route::get('obtener/colores', 'MotorRaController@getColoresPropiedad');
+
+
+Route::get('reset/password/{token}', 'ApiAuthController@ResetPassword');
 
 Route::group(['as' => 'api.jarvis.'], function() {
 
 	Route::post('registro', 'UserController@store');
 	Route::post('/signin', 'ApiAuthController@signin');
 
-		
-
+	
 	Route::group(['middleware' => ['jwt.auth']], function () {
 		Route::post('cambio/password', 'ApiAuthController@ResetPassUser');
 		Route::post('reserva/habitacion', 'ReservaController@reserva');
@@ -160,7 +178,6 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::post('eliminar/moneda/propiedad', 'PropiedadController@eliminarMoneda');
 		Route::put('editar/moneda/{id}', 'PropiedadController@editarMoneda');
 		Route::get('reporte', 'PropiedadController@reportesDiario');
-		Route::post('crear/pais', 'PropiedadController@crearPais');
 		Route::get('paises', 'PropiedadController@getPaises');
 		Route::get('regiones', 'PropiedadController@getRegiones');
 		Route::post('calendario/temporada', 'TemporadaController@calendario');
@@ -172,7 +189,6 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::post('editar/temporadas', 'TemporadaController@editarTemporadas');
 		Route::get('reportes', 'PropiedadController@reportes');
 		Route::get('reportes/pago', 'PropiedadController@pagos');
-		Route::post('crear/zona/horaria', 'PropiedadController@crearZona');
 		Route::get('zonas/horarias', 'PropiedadController@getZonasHorarias');
 		Route::put('pago/{id}', 'ReservaController@editarPago');
 		Route::delete('pago/{id}', 'ReservaController@eliminarPago');
@@ -206,7 +222,22 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::delete('egreso/propiedad/{id}', 'EgresoController@eliminarEgresoPropiedad');
 		Route::put('editar/politica/{id}', 'PropiedadController@editarPolitica');
 		Route::delete('eliminar/politica/{id}', 'PropiedadController@eliminarPolitica');
-
+		Route::get('habitaciones/disponibles', 'MotorRaController@habitacionesDisponibles');
+		Route::get('obtener/reservas/motor', 'MotorRaController@getReservasMotor');
+		Route::post('asignar/habitacion', 'MotorRaController@asignarHabitacion');
+		Route::post('crear/cuenta/bancaria', 'PropiedadController@crearCuentaBancaria');
+		Route::put('editar/cuenta/bancaria/{id}', 'PropiedadController@editarCuentaBancaria');
+		Route::delete('eliminar/cuenta/bancaria/{id}', 'PropiedadController@eliminarCuentaBancaria');
+		Route::get('tipo/cuenta', 'PropiedadController@getTipoCuenta');
+		Route::post('tipo/deposito/propiedad', 'PropiedadController@crearTipoDepositoPropiedad');
+		Route::put('tipo/deposito/propiedad/{id}', 'PropiedadController@editarTipoDepositoPropiedad');
+		Route::delete('tipo/deposito/propiedad/{id}', 'PropiedadController@eliminarTipoDepositoPropiedad');
+		Route::get('tipo/deposito', 'PropiedadController@getTipoDeposito');
+		Route::get('colores/motor', 'MotorRaController@getColores');
+		Route::get('clasificacion/color', 'MotorRaController@getClasificacionColores');
+		Route::post('asignar/color/motor', 'MotorRaController@asignarColorMotor');
+		Route::post('editar/color/motor', 'MotorRaController@editarColor');
+		Route::post('anular/reservas', 'ReservaController@anularReservas');
 
 
 
@@ -225,4 +256,11 @@ Route::group(['as' => 'api.jarvis.'], function() {
 });
 
 });
+
+		Route::get('crear/permisos', 'RolController@crearPermisos');
+
+		Route::post('crear/zona/horaria', 'PropiedadController@crearZona');
+		Route::post('crear/pais', 'PropiedadController@crearPais');
+
+Route::post('evento', 'DashControllers\UserDashController@evento');
 

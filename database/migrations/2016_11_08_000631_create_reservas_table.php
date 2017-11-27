@@ -30,7 +30,7 @@ class CreateReservasTable extends Migration
         $table->foreign('metodo_pago_id')->references('id')->on('metodo_pago');
         $table->integer('estado_reserva_id')->unsigned();
         $table->foreign('estado_reserva_id')->references('id')->on('estado_reserva');
-        $table->integer('habitacion_id')->unsigned();
+        $table->integer('habitacion_id')->unsigned()->nullable();
         $table->foreign('habitacion_id')->references('id')->on('habitaciones');
         $table->integer('cliente_id')->unsigned();
         $table->foreign('cliente_id')->references('id')->on('clientes');

@@ -274,192 +274,153 @@ class ReservaController extends Controller
 
     public function reserva(Request $request)
     {
+        if ($request->has('tipo_moneda_id') && $request->has('fecha_inicio') && $request->has('fecha_fin') && $request->has('iva') && $request->has('noches') && $request->has('habitacion_info') && $request->has('cliente')) {
+            $tipo_moneda_id      = $request->get('tipo_moneda_id');
+            $fecha_inicio        = $request->get('fecha_inicio');
+            $fecha_fin           = $request->get('fecha_fin');
+            $iva                 = $request->get('iva');
+            $noches              = $request->get('noches');
+            $clientes            = $request['cliente'];
+            $habitaciones_info   = $request['habitacion_info'];
 
-       $clientes = $request['cliente'];
-      
-        $habitaciones_info = $request['habitacion_info'];
-
-        if (!is_array($habitaciones_info)) {
-            $habitaciones_info = [];
-            $habitaciones_info . push($request['habitacion_info']);
-        }
-
-        $fecha_inicio   = $request->input('fecha_inicio');
-        $fecha_fin      = $request->input('fecha_fin');
-        $tipo_moneda_id = $request->input('tipo_moneda_id');
-
-        if ($clientes['tipo_cliente_id'] == 1) {
-
-            if($request->has('cliente.rut')){
-              
-                $cliente = Cliente::firstOrNew($request['cliente']);
-
-                $cliente->tipo_cliente_id       = $clientes['tipo_cliente_id'];
-                $cliente->nombre                = $clientes['nombre'];
-                $cliente->apellido              = $clientes['apellido'];
-                $cliente->giro                  = null;
-                $cliente->save();
-
-
-            }else{
-
-                $cliente                         = new Cliente();
-
-                $cliente->nombre                 = $clientes['nombre'];
-                $cliente->apellido               = $clientes['apellido'];
-                if($request->has('cliente.direccion')){
-                $cliente->direccion              = $clientes['direccion'];
-                }else{
-                $cliente->direccion              = null;
-                }
-                if($request->has('cliente.ciudad')){
-                $cliente->ciudad                 = $clientes['ciudad'];
-                }else{
-                $cliente->ciudad                 = null;
-                }
-                if($request->has('cliente.telefono')){
-                $cliente->telefono               = $clientes['telefono'];
-                }else{
-                $cliente->telefono               = null;
-                }
-                if($request->has('cliente.email')){
-                $cliente->email                  = $clientes['email'];
-                }else{
-                $cliente->email                  = null;
-                }
-                if($request->has('cliente.pais_id')) {
-                $cliente->pais_id                = $clientes['pais_id'];
-                }else{
-                $cliente->pais_id                = null;
-                }
-                if($request->has('cliente.region_id')) {
-                $cliente->region_id              = $clientes['region_id'];
-                }else{
-                $cliente->region_id              = null;
-                }
-                $cliente->tipo_cliente_id        = $clientes['tipo_cliente_id'];
-                $cliente->save();
-
-
-
+            if (!is_array($habitaciones_info)) {
+                $habitaciones_info = [];
+                $habitaciones_info . push($request['habitacion_info']);
             }
 
+            $fecha_inicio   = $request->input('fecha_inicio');
+            $fecha_fin      = $request->input('fecha_fin');
+            $tipo_moneda_id = $request->input('tipo_moneda_id');
+
+            if ($clientes['tipo_cliente_id'] == 1) {
+                if ($request->has('cliente.rut')) {
+                    $cliente                       = Cliente::firstOrNew($request['cliente']);
+                    $cliente->tipo_cliente_id      = $clientes['tipo_cliente_id'];
+                    $cliente->nombre               = $clientes['nombre'];
+                    $cliente->apellido             = $clientes['apellido'];
+                    $cliente->giro                 = null;
+                    $cliente->save();
+                } else { 
+                    $cliente                         = new Cliente();
+                    $cliente->nombre                 = $clientes['nombre'];
+                    $cliente->apellido               = $clientes['apellido'];
+                    if($request->has('cliente.direccion')){
+                    $cliente->direccion              = $clientes['direccion'];
+                    }else{
+                    $cliente->direccion              = null;
+                    }
+                    if($request->has('cliente.ciudad')){
+                    $cliente->ciudad                 = $clientes['ciudad'];
+                    }else{
+                    $cliente->ciudad                 = null;
+                    }
+                    if($request->has('cliente.telefono')){
+                    $cliente->telefono               = $clientes['telefono'];
+                    }else{
+                    $cliente->telefono               = null;
+                    }
+                    if($request->has('cliente.email')){
+                    $cliente->email                  = $clientes['email'];
+                    }else{
+                    $cliente->email                  = null;
+                    }
+                    if($request->has('cliente.pais_id')) {
+                    $cliente->pais_id                = $clientes['pais_id'];
+                    }else{
+                    $cliente->pais_id                = null;
+                    }
+                    if($request->has('cliente.region_id')) {
+                    $cliente->region_id              = $clientes['region_id'];
+                    }else{
+                    $cliente->region_id              = null;
+                    }
+                    $cliente->tipo_cliente_id        = $clientes['tipo_cliente_id'];
+                    $cliente->save();
+                }
 
             } else {
 
-            if ($clientes['tipo_cliente_id'] == 2) {
-
-                $cliente = Cliente::firstOrNew($request['cliente']);
-
-                $cliente->rut               = $clientes['rut'];
-                $cliente->nombre            = $clientes['nombre'];
-                $cliente->tipo_cliente_id   = $clientes['tipo_cliente_id'];
-                $cliente->save();
+                if ($clientes['tipo_cliente_id'] == 2) {
+                    $cliente                    = Cliente::firstOrNew($request['cliente']);
+                    $cliente->rut               = $clientes['rut'];
+                    $cliente->nombre            = $clientes['nombre'];
+                    $cliente->tipo_cliente_id   = $clientes['tipo_cliente_id'];
+                    $cliente->save();
+                }
             }
 
-        }
-
             foreach ($habitaciones_info as $habitacion_info) {
-                $habitacion_id = $habitacion_info['id'];
-                $huespedes = $habitacion_info['huespedes'];
-                $propiedad_id = $habitacion_info['propiedad_id'];
+                $habitacion_id  = $habitacion_info['id'];
+                $huespedes      = $habitacion_info['huespedes'];
+                $propiedad_id   = $habitacion_info['propiedad_id'];
 
-                $reservas = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
+                $reserva = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
+                    $query->where('propiedad_id', $propiedad_id);})
+                ->orderby('numero_reserva', 'DESC')
+                ->first();
 
-                    $query->where('propiedad_id', $propiedad_id);})->get();
-
-                $reserva = $reservas->last();
-
-                if(!empty($reserva)){
-
-                $numero = $reserva->numero_reserva;
-
-                }else{
-
-                $numero = 0;    
-
+                if (!empty($reserva)) {
+                    $numero = $reserva->numero_reserva;
+                } else {
+                    $numero = 0;    
                 }
 
                 $reserv = Reserva::where('habitacion_id', $habitacion_info['id'])->where('checkin', $fecha_inicio)->where('checkout', $fecha_fin)->where('estado_reserva_id', '!=', 6)->where('estado_reserva_id', '!=', 7)->first();
 
+                if (is_null($reserv)) {
+                    $reserva                        = new Reserva();
+                    if (!empty($reserva)) {
+                        $reserva->numero_reserva    = $numero + 1;
+                    } else {
+                        $reserva->numero_reserva    = 1;
+                    }
+                    $reserva->monto_alojamiento     = $habitacion_info['monto_alojamiento'];
+                    $reserva->monto_total           = $habitacion_info['monto_alojamiento'];
+                    $reserva->monto_consumo         = 0;
+                    $reserva->monto_por_pagar       = $habitacion_info['monto_alojamiento'];
+                    $reserva->ocupacion             = $habitacion_info['ocupacion'];
+                    $reserva->tipo_fuente_id        = $request['tipo_fuente_id'];
+                    $reserva->habitacion_id         = $habitacion_info['id'];
+                    $reserva->cliente_id            = $cliente->id;
+                    $reserva->checkin               = $fecha_inicio;
+                    $reserva->checkout              = $fecha_fin;
+                    $reserva->tipo_moneda_id        = $tipo_moneda_id;
+                    $reserva->iva                   = $request['iva'];
+                    $reserva->descuento             = $habitacion_info['descuento'];
+                    $reserva->estado_reserva_id     = $request['estado_reserva_id'];
+                    $reserva->noches                = $request['noches'];
+                    $reserva->observacion           = $request['observacion'];
+                    $reserva->detalle               = $request['detalle'];
+                    $reserva->save();
 
+                    if (!empty($huespedes)) {
+                       foreach ($huespedes as $huesped) {
+                            $huesped               = Huesped::firstOrNew($huesped);
+                            $huesped->apellido     = $huesped['apellido'];
+                            $huesped->rut          = $huesped['rut'];
+                            $huesped->telefono     = $huesped['telefono'];
+                            $huesped->save();
+                            $reserva->huespedes()->attach($huesped->id);
+                        }
+                    }
 
-                if(is_null($reserv)){
-
-                   
-                $reserva                        = new Reserva();
-                if(!empty($reserva)){
-                $reserva->numero_reserva        = $numero + 1;
-                }else{
-                $reserva->numero_reserva        = 1;
+                } else {
+                    $retorno = array(
+                        'msj'       => "Error: La reserva ya fué creada",
+                        'errors'    => true);
+                    return Response::json($retorno, 201);
                 }
-                /*$reserva->precio_habitacion     = $habitacion_info['precio_habitacion'];*/
-                $reserva->monto_alojamiento     = $habitacion_info['monto_alojamiento'];
-                $reserva->monto_total           = $habitacion_info['monto_alojamiento'];
-                $reserva->monto_consumo         = 0;
-                $reserva->monto_por_pagar       = $habitacion_info['monto_alojamiento'];
-                $reserva->ocupacion             = $habitacion_info['ocupacion'];
-                $reserva->tipo_fuente_id        = $request['tipo_fuente_id'];
-                $reserva->habitacion_id         = $habitacion_info['id'];
-                $reserva->cliente_id            = $cliente->id;
-                $reserva->checkin               = $fecha_inicio;
-                $reserva->checkout              = $fecha_fin;
-                $reserva->tipo_moneda_id        = $tipo_moneda_id;
-                $reserva->iva                   = $request['iva'];
-                $reserva->descuento             = $habitacion_info['descuento'];
-                $reserva->estado_reserva_id     = $request['estado_reserva_id'];
-                $reserva->noches                = $request['noches'];
-                $reserva->observacion           = $request['observacion'];
-                $reserva->detalle               = $request['detalle'];
-                $reserva->save();
-
-            if(!empty($huespedes)){
-
-           foreach ($huespedes as $huesped) {
-                
-                $huesped = Huesped::firstOrNew($huesped);
-              
-                $huesped->apellido       = $huesped['apellido'];
-                $huesped->rut            = $huesped['rut'];
-                $huesped->telefono       = $huesped['telefono'];
-                $huesped->save();
-
-                $reserva->huespedes()->attach($huesped->id);
-
-              }
-
-
-
-             }
-
-            }else{
-
-                    $retorno = array(
-
-                    'msj'       => "Error: La reserva ya fué creada",
-                    'errors'    => true
-
-
-                    );
-
-                     return Response::json($retorno, 201);
-
-
-           }
-
-
+            }
+            $retorno = array(
+                'msj'       => "Reserva creada satisfactoriamente",
+                'errors'    => false);
+            return Response::json($retorno, 201);
+        } else {
+            $retorno = array(
+                'msj'    => "Incompleto",
+                'errors' => true);
+            return Response::json($retorno, 400);
         }
-
-
-                    $retorno = array(
-
-                    'msj'       => "Reserva creada satisfactoriamente",
-                    'errors'    => false
-
-
-                    );
-
-                     return Response::json($retorno, 201);
 
     }
 
@@ -1028,118 +989,60 @@ class ReservaController extends Controller
 
 
 
-    public function cambiarHabitacion(Request $request){
+    public function cambiarHabitacion(Request $request)
+    {
+        if ($request->has('reserva_id') && $request->has('habitacion_id')) {
+            $reserva_id     = $request->input('reserva_id');
+            $habitacion_id  = $request->input('habitacion_id');
+            $reserva        = Reserva::where('id', $reserva_id)->first();
 
+            if (!is_null($reserva)) {
+                $habitacion   = Habitacion::where('id', $habitacion_id)->first();
+                if (!is_null($habitacion)) {
+                $fecha_inicio = $reserva->checkin;
+                $fecha_fin    = $reserva->checkout;
+                $fechaInicio  =strtotime($fecha_inicio);
+                $fechaFin     =strtotime($fecha_fin);
 
-      if($request->has('reserva_id') && $request->has('habitacion_id')){
+                for ($i=$fechaInicio; $i<$fechaFin; $i+=86400) {
+                    $fecha = date("Y-m-d", $i);
+                    $habitacion = Habitacion::where('id', $habitacion_id)->whereHas('reservas', function($query) use($fecha){
+                        $query->where('checkin','<=' ,$fecha)->where('checkout', '>', $fecha)->where('estado_reserva_id', '!=', 6)->where('estado_reserva_id', '!=', 7);
+                    })->first();
 
+                    if (!is_null($habitacion)) {
+                        $retorno = array(
+                            'msj'    => "La habitación no está disponible",
+                            'errors' => true);
+                        return Response::json($retorno, 400);
+                    }
+                }
 
-      $reserva_id = $request->input('reserva_id');
-      $habitacion_id = $request->input('habitacion_id');
+                    $reserva->update(array('habitacion_id' => $habitacion_id));
 
-      $reserva = Reserva::where('id', $reserva_id)->first();
+                    $retorno = [
+                        'errors' => false,
+                        'msj' => 'Reserva actualizada satisfactoriamente',];
+                    return Response::json($retorno, 201);
 
-        if(!is_null($reserva)){
-
-          $habitacion = Habitacion::where('id', $habitacion_id)->first();
-
-          if(!is_null($habitacion)){
-
-          $fecha_inicio = $reserva->checkin;
-          $fecha_fin = $reserva->checkout;
-
-          $fechaInicio=strtotime($fecha_inicio);
-          $fechaFin=strtotime($fecha_fin);
-
-            for($i=$fechaInicio; $i<$fechaFin; $i+=86400){
-            
-            $fecha = date("Y-m-d", $i);
-
-
-            $habitacion = Habitacion::where('id', $habitacion_id)->whereHas('reservas', function($query) use($fecha){
-
-                    $query->where('checkin','<=' ,$fecha)->where('checkout', '>', $fecha)->where('estado_reserva_id', '!=', 6)->where('estado_reserva_id', '!=', 7);
-
-            })->first();
-
-
-            if(!is_null($habitacion)){
-
-              $retorno = array(
-
-                'msj'    => "La habitación no está disponible",
-                'errors' => true
-            );
-
-            return Response::json($retorno, 400);
-
-            }
-
-
-            }
-
-            $reserva->update(array('habitacion_id' => $habitacion_id));
-
-                $retorno = [
-
-                'errors' => false,
-                'msj' => 'Reserva actualizada satisfactoriamente',
-
-                ];
-
-                 return Response::json($retorno, 201);
-
-
-
-
-          }else{
-
+                } else {
+                    $retorno = array(
+                        'msj' => "Habitación no encontrada",
+                        'errors' => true);
+                    return Response::json($retorno, 404);
+                }
+            } else {
                 $retorno = array(
-
-                    'msj' => "Habitación no encontrada",
-                    'errors' => true
-
-
-                );
-
-            return Response::json($retorno, 404);
-
-
-          }
-
-
-
-        }else{
-
-            $retorno = array(
-
                     'msj' => "Reserva no encontrada",
-                    'errors' => true
-
-
-                );
-
-            return Response::json($retorno, 404);
-
-
-        }
-
-
-
-        
-      }else{
-
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
             $retorno = array(
-
                 'msj'    => "La solicitud está incompleta",
-                'errors' => true
-            );
-
+                'errors' => true);
             return Response::json($retorno, 400);
-
-
-      }
-
+        }
 
     }
 
@@ -2008,6 +1911,45 @@ class ReservaController extends Controller
 
 
 
+    }
+
+    public function anularReservas(Request $request)
+    {
+        if ($request->has('reservas')) {
+            $reservas = $request->get('reservas');
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia propiedad_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        if ($request->has('observacion')) {
+            $observacion = $request->get('observacion');
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia observación",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        foreach ($reservas as $reserva) {
+            $id      = $reserva;
+            $reserva = Reserva::where('id', $id)->first();
+            if (!is_null($reserva)) {
+                $reserva->update(array('estado_reserva_id' => 6, 'observacion' => $observacion));
+            } else {
+                $retorno  = array(
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        }
+
+          $retorno = [
+              'errors' => false,
+              'msj'    => 'Reservas anuladas satisfactoriamente',];
+          return Response::json($retorno, 201);
     }   
 
 

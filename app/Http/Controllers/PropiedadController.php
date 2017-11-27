@@ -26,6 +26,10 @@ use App\EgresoCaja;
 use App\EgresoPropiedad;
 use App\Egreso;
 use App\Politica;
+use App\CuentaBancaria;
+use App\TipoCuenta;
+use App\PropiedadTipoDeposito;
+use App\TipoDeposito;
 use Illuminate\Support\Facades\Config;
 use Input;
 use Illuminate\Http\Request;
@@ -1219,9 +1223,7 @@ class PropiedadController extends Controller
 
     public function ingresoServicio(Request $request)
     {
-
         if ($request->has('venta_servicio') && $request->has('propiedad_id') && $request->has('metodo_pago_id')) {
-
             $propiedad           = Propiedad::where('id', $request->input('propiedad_id'))->first();
             $metodo_pago_id      = $request->input('metodo_pago_id');
             $numero_operacion    = $request->input('numero_operacion');
@@ -1229,127 +1231,74 @@ class PropiedadController extends Controller
             $numero_cheque       = $request->input('numero_cheque');
 
             if (!is_null($propiedad)) {
-
                 $servicios = $request->input('venta_servicio');
-
                 foreach ($servicios as $servicio) {
-
-                    $servicio_id  = $servicio['servicio_id'];
-                    $cantidad     = $servicio['cantidad'];
-                    $precio_total = $servicio['precio_total'];
-
+                    $servicio_id         = $servicio['servicio_id'];
+                    $cantidad            = $servicio['cantidad'];
+                    $precio_total        = $servicio['precio_total'];
                     $serv                = Servicio::where('id', $servicio_id)->where('propiedad_id', $request->input('propiedad_id'))->first();
                     $cantidad_disponible = $serv->cantidad_disponible;
 
                     if (!is_null($serv)) {
-
                         if ($serv->categoria_id == 2) {
-
                             if ($cantidad >= 1) {
-
                                 if ($serv->cantidad_disponible > 0) {
-
                                     if ($cantidad <= $serv->cantidad_disponible) {
-
-                                        $servicio_id     = $serv->id;
-                                        $servicio_nombre = $serv->nombre;
-
+                                        $servicio_id         = $serv->id;
+                                        $servicio_nombre     = $serv->nombre;
                                         $cantidad_disponible = $cantidad_disponible - $cantidad;
-
                                         $serv->update(array('cantidad_disponible' => $cantidad_disponible));
-
                                         $propiedad->vendeServicios()->attach($servicio_id, ['metodo_pago_id' => $metodo_pago_id, 'cantidad' => $cantidad, 'precio_total' => $precio_total, 'numero_operacion' => $numero_operacion, 'tipo_comprobante_id' => $tipo_comprobante_id, 'numero_cheque' => $numero_cheque]);
 
                                     } else {
-
                                         $data = array(
-
                                             'msj'    => " La cantidad ingresada es mayor al stock del producto",
-                                            'errors' => true,
-
-                                        );
-
+                                            'errors' => true,);
                                         return Response::json($data, 400);
-
                                     }
 
                                 } else {
-
                                     $data = array(
-
                                         'msj'    => " El servicio no tiene stock",
-                                        'errors' => true,
-
-                                    );
-
+                                        'errors' => true,);
                                     return Response::json($data, 400);
-
                                 }
 
                             } else {
-
                                 $data = array(
-
                                     'msj'    => " La cantidad ingresada no corresponde",
-                                    'errors' => true,
-
-                                );
-
+                                    'errors' => true,);
                                 return Response::json($data, 400);
-
                             }
 
                         } elseif ($serv->categoria_id == 1) {
-
                             $propiedad->vendeServicios()->attach($servicio_id, ['metodo_pago_id' => $metodo_pago_id, 'cantidad' => $cantidad, 'precio_total' => $precio_total, 'numero_operacion' => $numero_operacion, 'tipo_comprobante_id' => $tipo_comprobante_id, 'numero_cheque' => $numero_cheque]);
-
                         }
 
                     } else {
-
                         $retorno = array(
-
                             'msj'    => "El servicio no pertenece a la propiedad",
-                            'errors' => true,
-                        );
-
+                            'errors' => true,);
                         return Response::json($retorno, 400);
-
                     }
-
                 }
-
                 $retorno = array(
-
                     'msj'   => "Servicios ingresados correctamente",
-                    'erros' => false,
-                );
-
+                    'erros' => false,);
                 return Response::json($retorno, 201);
 
             } else {
-
                 $data = array(
-
                     'msj'    => "Propiedad no encontrada",
-                    'errors' => true,
-
-                );
-
+                    'errors' => true,);
                 return Response::json($data, 404);
-
             }
 
         } else {
-
             $retorno = array(
-
                 'msj'    => "La solicitud esta incompleta",
-                'errors' => true,
-            );
-
+                'errors' => true,);
             return Response::json($retorno, 400);
-
         }
 
     }
@@ -1358,7 +1307,7 @@ class PropiedadController extends Controller
     {
         if ($request->has('id')) {
 
-            $propiedad = Propiedad::where('id', $request->input('id'))->with('tipoPropiedad','pais','region','zonaHoraria' ,'tipoMonedas.clasificacionMonedas', 'tipoCobro', 'politicas')->get();
+            $propiedad = Propiedad::where('id', $request->input('id'))->with('tipoPropiedad','pais','region','zonaHoraria' ,'tipoMonedas','coloresMotor' ,'tipoCobro', 'politicas', 'cuentasBancaria.tipoCuenta', 'tipoDepositoPropiedad.tipoDeposito')->get();
             return $propiedad;
         }
 
@@ -1526,7 +1475,7 @@ class PropiedadController extends Controller
                     $clasificacion_moneda = $moneda['clasificacion_moneda_id'];
                     $tipo_moneda          = $moneda['tipo_moneda_id'];
 
-                    $propiedad->clasificacionMonedas()->attach($clasificacion_moneda, ['tipo_moneda_id' => $tipo_moneda]);
+                    $propiedad->clasificacionColores()->attach($clasificacion_moneda, ['tipo_moneda_id' => $tipo_moneda]);
 
                     if (count($tipos_habitacion) > 0) {
                         if ($propiedad->tipo_cobro_id != 3) {
@@ -1700,7 +1649,185 @@ class PropiedadController extends Controller
         }
     }
 
-    public function getTipoPropiedad(){
+    public function crearCuentaBancaria(Request $request)
+    {
+        if ($request->has('propiedad_id')) {
+            $propiedad_id = $request->input('propiedad_id');
+            $propiedad    = Propiedad::where('id', $propiedad_id)->first();
+            if (is_null($propiedad)) {
+                $retorno = array(
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia propiedad_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        if ($request->has('nombre_banco') && $request->has('numero_cuenta') && $request->has('titular') && $request->has('rut') && $request->has('email') && $request->has('tipo_cuenta_id')) {
+            $nombre_banco   = $request->input('nombre_banco');
+            $numero_cuenta  = $request->input('numero_cuenta');
+            $titular        = $request->input('titular');
+            $rut            = $request->input('rut');
+            $email          = $request->input('email');
+            $tipo_cuenta_id = $request->input('tipo_cuenta_id');
+
+            $cuenta                     = new CuentaBancaria();
+            $cuenta->nombre_banco       = $nombre_banco;
+            $cuenta->numero_cuenta      = $numero_cuenta;
+            $cuenta->titular            = $titular;
+            $cuenta->rut                = $rut;
+            $cuenta->email              = $email;
+            $cuenta->tipo_cuenta_id     = $tipo_cuenta_id;
+            $cuenta->propiedad_id       = $propiedad_id;
+            $cuenta->save();    
+
+            $retorno = array(
+                'msj'   => "Cuenta creada satisfactoriamente",
+                'erros' => false,);
+            return Response::json($retorno, 201);
+
+        } else {
+            $retorno = array(
+                'msj'    => "La solicitud esta incompleta",
+                'errors' => true,);
+            return Response::json($retorno, 400);
+        }
+
+    }
+
+    public function editarCuentaBancaria(Request $request,$id)
+    {
+        $rules = array(
+            'nombre_banco'    => '', 
+            'numero_cuenta'   => '',
+            'titular'         => '',
+            'rut'             => '',
+            'email'           => '',
+            'tipo_cuenta_id'  => 'numeric',
+        );
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            $data = [
+                'errors' => true,
+                'msg'    => $validator->messages(),];
+            return Response::json($data, 400);
+
+        } else {
+
+            $cuenta = CuentaBancaria::findOrFail($id);
+            $cuenta->update($request->all());
+            $cuenta->touch();
+
+            $data = [
+                'errors' => false,
+                'msg'    => 'Cuenta actualizada satisfactoriamente',];
+            return Response::json($data, 201);
+        }
+
+    }
+
+    public function crearTipoDepositoPropiedad(Request $request)
+    {
+        $rules = array(
+            'valor'            => 'numeric', 
+            'propiedad_id'     => 'required|numeric',
+            'tipo_deposito_id' => 'required|numeric',
+        );
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            $data = [
+                'errors' => true,
+                'msj'    => $validator->messages(),];
+            return Response::json($data, 400);
+
+        } else {
+
+            $propiedad_id = $request->input('propiedad_id');
+            $propiedad    = Propiedad::where('id', $propiedad_id)->first();
+            if (!is_null($propiedad)) {
+                $tipo_deposito                   = new PropiedadTipoDeposito();
+                $tipo_deposito->valor            = $request->input('valor');
+                $tipo_deposito->propiedad_id     = $request->input('propiedad_id');
+                $tipo_deposito->tipo_deposito_id = $request->input('tipo_deposito_id');
+                $tipo_deposito->save(); 
+            } else {
+                $retorno = array(
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+
+            $data = [
+                'errors' => false,
+                'msj'    => 'Tipo deposito creado satisfactoriamente',];
+            return Response::json($data, 201);
+        }
+
+    }
+
+    public function editarTipoDepositoPropiedad(Request $request, $id)
+    {
+        $rules = array(
+            'valor'              => 'numeric', 
+            'tipo_deposito_id'   => 'numeric',
+        );
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            $data = [
+                'errors' => true,
+                'msg'    => $validator->messages(),];
+            return Response::json($data, 400);
+
+        } else {
+
+            $tipo_deposito = PropiedadTipoDeposito::findOrFail($id);
+            $tipo_deposito->update($request->all());
+            $tipo_deposito->touch();
+
+            $data = [
+                'errors' => false,
+                'msg'    => 'Tipo deposito actualizado satisfactoriamente',];
+            return Response::json($data, 201);
+        }
+
+    }
+
+    public function eliminarTipoDepositoPropiedad($id)
+    {
+        $tipo_deposito = PropiedadTipoDeposito::findOrFail($id);
+        $tipo_deposito->delete();
+
+        $data = [
+            'errors' => false,
+            'msg'    => 'Tipo deposito eliminado satisfactoriamente',];
+        return Response::json($data, 202);
+
+    }
+
+    public function eliminarCuentaBancaria($id)
+    {
+        $cuenta = CuentaBancaria::findOrFail($id);
+        $cuenta->delete();
+
+        $data = [
+            'errors' => false,
+            'msg'    => 'Cuenta eliminada satisfactoriamente',];
+        return Response::json($data, 202);
+
+    }
+
+    public function getTipoPropiedad()
+    {
         $TipoPropiedad = TipoPropiedad::all();
         return $TipoPropiedad;
     }
@@ -1713,13 +1840,10 @@ class PropiedadController extends Controller
 
     }
 
-    public function getPaises(){
-
+    public function getPaises()
+    {
         $paises = Pais::all();
-
         return $paises;
-
-
     }
 
     public function getRegiones(Request $request){
@@ -1748,6 +1872,19 @@ class PropiedadController extends Controller
         $tipoCobros = TipoCobro::all();
         return $tipoCobros;
 
+    }
+
+    public function getTipoCuenta()
+    {
+        $tipoCuenta = TipoCuenta::all();
+        return $tipoCuenta;
+
+    }
+
+    public function getTipoDeposito()
+    {
+        $tipoDeposito = TipoDeposito::all();
+        return $tipoDeposito;
 
     }
 
@@ -1780,8 +1917,6 @@ class PropiedadController extends Controller
 
     public function crearZona(Request $request)
     {
-
-
         foreach ($request['zonas_horarias'] as $zona) {
 
             $zona_horaria               = new ZonaHoraria();
@@ -1793,9 +1928,21 @@ class PropiedadController extends Controller
 
         return "zonas horarias creadas";
 
+    }
 
+    public function CrearCodigo()
+    {
+        $propiedades = Propiedad::all();
+        foreach ($propiedades as $propiedad) {
+            $propiedad = Propiedad::where('id', $propiedad->id)->first();
+            $propiedad->update(array('codigo' => str_random(50)));
+
+        }
+
+        return "creados";
 
     }
+
 
 
 }
