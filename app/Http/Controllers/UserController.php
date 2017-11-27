@@ -30,8 +30,7 @@ class UserController extends Controller {
                         ->whereIn('estado_reserva_id', [1,2,3,4,5])
                         ->get();
 
-            foreach ($users as $user) {
-                foreach ($user['propiedad'] as $propiedad) {
+                foreach ($users['propiedad'] as $propiedad) {
                     $caja_abierta    = Caja::where('propiedad_id', $propiedad->id)->where('estado_caja_id', 1)->first();
                     if (!is_null($caja_abierta)) {
                         $propiedad->caja_abierta = 1;
@@ -40,7 +39,7 @@ class UserController extends Controller {
                     }
                     $propiedad->reservas_motor = count($reservas);
                 }
-            }
+            
 
             return $users;
             
