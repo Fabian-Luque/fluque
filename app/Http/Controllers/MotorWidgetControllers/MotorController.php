@@ -23,7 +23,10 @@ class MotorController extends Controller {
 			}
 			.contenedor-motor-reserva .mdr-gf-datepicker {
 				.md-button.md-icon-button {
-					background: none;
+					background: none !important;
+				}
+				.md-datepicker-button {
+					background: none !important;
 				}
 			}
 		</style>
