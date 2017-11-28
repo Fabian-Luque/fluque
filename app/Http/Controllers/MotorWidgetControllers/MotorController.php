@@ -28,6 +28,9 @@ class MotorController extends Controller {
 				.md-datepicker-button {
 					background: none !important;
 				}
+				.md-datepicker-button.md-icon-button.md-button.md-ink-ripple.md-mdrTheme-theme {
+					background: none !important;
+				}
 			}
 		</style>
 
