@@ -185,6 +185,29 @@ class RolController extends Controller
         }
 	}
 
+	public function crearPermisos()
+	{
+		$roles = Rol::all();
+
+		foreach ($roles as $rol) {
+
+			$rol->permisos()->attach(29,['estado' => 0]);
+			$rol->permisos()->attach(30,['estado' => 0]);
+			$rol->permisos()->attach(31,['estado' => 0]);
+			$rol->permisos()->attach(32,['estado' => 0]);
+			$rol->permisos()->attach(33,['estado' => 0]);
+			$rol->permisos()->attach(34,['estado' => 0]);
+			$rol->permisos()->attach(35,['estado' => 0]);
+			$rol->permisos()->attach(36,['estado' => 0]);
+			$rol->permisos()->attach(37,['estado' => 0]);
+			$rol->permisos()->attach(38,['estado' => 0]);
+			$rol->permisos()->attach(39,['estado' => 0]);
+		}
+
+		return "permisos asignados";
+
+	}
+
 	public function destroy($id)
     {
         $rol = Rol::findOrFail($id);
@@ -197,6 +220,5 @@ class RolController extends Controller
         return Response::json($data, 202);
 
     }
-
 
 }

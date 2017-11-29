@@ -2,19 +2,17 @@
 
 namespace App\Http\Controllers\DashControllers;
 
-use App\Habitacion;
+use App\Estadocuenta;
+use App\Events\ReservasMotorEvent;
 use App\Http\Controllers\Controller;
 use App\Propiedad;
-use App\Servicio;
-use App\TipoHabitacion;
 use App\TipoPropiedad;
-use App\Estadocuenta;
 use App\User;
 use App\QvoUser;
 use App\UbicacionProp;
 use App\ZonaHoraria;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Event;
 use Response;
 use JWTAuth;
 use Grimzy\LaravelMysqlSpatial\Types\Point;
@@ -22,9 +20,10 @@ use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Client;
 use App\Jobs\ProcesoQVO;
 
+
 class UserDashController extends Controller {
 
-	public function CreateUser(Request $request) {
+    public function CreateUser(Request $request) {
         if ($request->has('name') && $request->has('email') && $request->has('password') && $request->has('phone') && $request->has('nombre') && $request->has('direccion') && $request->has('tipo_propiedad_id') && $request->has('tipo_cuenta') && $request->has('ciudad') && $request->has('numero_habitaciones') && $request->has('latitud') && $request->has('longitud')) {
             $us = User::where('email',$request->email)->first();
             if (!isset($us->email)) {
@@ -59,6 +58,10 @@ class UserDashController extends Controller {
 
                 $job = new ProcesoQVO($usuario);
                 dispatch($job);
+
+                Event::fire(
+                    new ReservasMotorEvent($usuario)
+                );
                 
                 $data['accion'] = 'Crear usuario';
                 $data['msg'] = 'Usuario creado satisfactoriamente';
@@ -74,7 +77,7 @@ class UserDashController extends Controller {
             'respuesta', 
             $data
         );
-	}
+    }
 
     public function ReadUser(Request $request) {  
         if ($request->has('id')) {
@@ -101,7 +104,7 @@ class UserDashController extends Controller {
         }
     }
 
-	public function UpdateUser(Request $request)  {
+    public function UpdateUser(Request $request)  {
         $rules = array(
             'nombre'     => '',
             'direccion'     => '',
@@ -142,10 +145,10 @@ class UserDashController extends Controller {
             'respuesta', 
             $data
         );
-	}  
+    }  
 
-	public function DeleteUser(Request $request) {
-		if ($request->has('id')) {
+    public function DeleteUser(Request $request) {
+        if ($request->has('id')) {
             if ($user = User::find($request->id)) {
                 $user->delete();
 
@@ -160,7 +163,7 @@ class UserDashController extends Controller {
             $data['msg']    = 'Datos requeridos';
         }
         return Response::json($data);
-	} 
+    } 
 
     public function getViewTipoPropiedad(Request $request) {
         $TipoPropiedad = TipoPropiedad::all();
@@ -205,6 +208,14 @@ class UserDashController extends Controller {
         return View('administrador.prop')->with(
             'props', 
             $propiedades
+        );
+    }
+
+    public function evento(Request $request) {
+        $usuario = User::find(1);
+
+        Event::fire(
+            new ReservasMotorEvent($usuario)
         );
     }
 }

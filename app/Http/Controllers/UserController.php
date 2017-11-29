@@ -10,6 +10,8 @@ use App\TipoHabitacion;
 use App\User;
 use App\ZonaHoraria;
 use App\Estado;
+use App\Caja;
+use App\Reserva;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Response;
@@ -21,8 +23,28 @@ class UserController extends Controller {
     }
     public function show($id){
         try {
-            $users = User::where('id', $id)->with('propiedad.tipoMonedas.clasificacionMonedas')->with('rol.permisos')->get();
+            $users = User::where('id', $id)->with('propiedad.tipoPropiedad','propiedad.pais','propiedad.region','propiedad.zonaHoraria' ,'propiedad.tipoMonedas', 'propiedad.tipoCobro')->with('rol.permisos')->get();
+
+            $reservas = Reserva::whereHas('tipoHabitacion', function ($query) use ($id) {
+                        $query->where('propiedad_id', $id);})
+                        ->where('habitacion_id', null)
+                        ->whereIn('estado_reserva_id', [1,2,3,4,5])
+                        ->get();
+
+            foreach ($users as $user) {
+                foreach ($user['propiedad'] as $propiedad) {
+                    $caja_abierta    = Caja::where('propiedad_id', $propiedad->id)->where('estado_caja_id', 1)->first();
+                    if (!is_null($caja_abierta)) {
+                        $propiedad->caja_abierta = 1;
+                    } else {
+                        $propiedad->caja_abierta = 0;
+                    }
+                    $propiedad->reservas_motor = count($reservas);
+                }
+            }
+
             return $users;
+            
         } catch (ModelNotFoundException $e) {
             $data = [
                 'errors' => true,
@@ -43,31 +65,43 @@ class UserController extends Controller {
             $data['errors'] = true;
             $data['msg'] = $validator->errors();
         } else {
-            $usuario                       = new User();
-            $usuario->name                 = $request->get('name');
-            $usuario->email                = $request->get('email');
-            $usuario->password             = $request->get('password');
-            $usuario->phone                = $request->get('phone');
-            $usuario->rol_id               = 1;
-            $usuario->estado_id            = 1;
 
-            $usuario->save();
+            $codigo = str_random(50);
+            $prop   = Propiedad::where('codigo', $codigo)->first();
 
-            $propiedad                      = new Propiedad();
-            $propiedad->nombre              = $request->get('nombre');
-            $propiedad->numero_habitaciones = $request->get('numero_habitaciones');
-            $propiedad->ciudad              = $request->get('ciudad');
-            $propiedad->direccion           = $request->get('direccion');
-            $propiedad->tipo_propiedad_id   = $request->get('tipo_propiedad_id');
+            if (is_null($prop)) {
+                $usuario                       = new User();
+                $usuario->name                 = $request->get('name');
+                $usuario->email                = $request->get('email');
+                $usuario->password             = $request->get('password');
+                $usuario->phone                = $request->get('phone');
+                $usuario->rol_id               = 1;
+                $usuario->estado_id            = 1;
 
-            $propiedad->save();
-            $usuario->propiedad()->attach($propiedad->id);
+                $usuario->save();
 
-            $data = [
-                'errors' => false,
-                'msg'    => 'usuario creado satisfactoriamente',
-            ];
-            return Response::json($data, 201);
+                $propiedad                      = new Propiedad();
+                $propiedad->nombre              = $request->get('nombre');
+                $propiedad->numero_habitaciones = $request->get('numero_habitaciones');
+                $propiedad->ciudad              = $request->get('ciudad');
+                $propiedad->direccion           = $request->get('direccion');
+                $propiedad->tipo_propiedad_id   = $request->get('tipo_propiedad_id');
+                $propiedad->codigo              = $codigo;
+
+                $propiedad->save();
+                $usuario->propiedad()->attach($propiedad->id);
+
+                $data = [
+                    'errors' => false,
+                    'msg'    => 'usuario creado satisfactoriamente',
+                ];
+                return Response::json($data, 201);
+            } else {
+                $retorno = array(
+                    'msj'    => "No se pudo crear cuenta",
+                    'errors' => true,);
+                return Response::json($retorno, 400);
+            }
         }
     }
 

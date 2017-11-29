@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Http\Response as HttpResponse;
+use App\Events\ReservasMotorEvent;
+use App\User;
 
 Route::auth();
 
@@ -10,6 +12,7 @@ Route::get(
 		return view('auth.login');
 	}
 );
+
 
 Route::post('guardar/ubicacion/propiedad', 'GeoController@UbicacionCreate');
 
@@ -116,14 +119,29 @@ Route::group(['prefix' => 'dash', 'middleware' => ['auth']],
 		}
 	);
 
-	Route::get('reset/password/{token}', 'ApiAuthController@ResetPassword');
+//// motor de reserva
+Route::get('motor/reserva', 'MotorWidgetControllers\MotorController@getMotor');
+Route::get('motor/disponibilidad', 'MotorWidgetControllers\MotorController@getDisponibilidad');
+Route::get('motor/disponibilidad/habitacion', 'MotorReservaController@getDisponibilidad');
+Route::post('motor/reserva/habitacion', 'MotorReservaController@reserva');
+Route::get('crear/codigo', 'PropiedadController@crearCodigo');
+Route::get('tipo/cliente/motor', 'ClienteController@getTipoCliente');
+Route::get('paises/motor', 'PropiedadController@getPaises');
+Route::get('regiones/motor', 'PropiedadController@getRegiones');
+Route::get('cantidad/tipo/habitacion', 'TipoHabitacionController@cantidadTipoHabitacion');
+Route::get('cliente/motor', 'ClienteController@index');
+Route::put('cliente/motor/{id}', 'ClienteController@update');
+Route::get('obtener/colores', 'MotorReservaController@getColoresPropiedad');
+
+
+Route::get('reset/password/{token}', 'ApiAuthController@ResetPassword');
 
 Route::group(['as' => 'api.jarvis.'], function() {
 
 	Route::post('registro', 'UserController@store');
 	Route::post('/signin', 'ApiAuthController@signin');
 
-
+	
 	Route::group(['middleware' => ['jwt.auth']], function () {
 		Route::post('tarjeta/qvo/crear', 'QVOController@SubsTarjeta');
 		Route::post('cambio/password', 'ApiAuthController@ResetPassUser');
@@ -160,6 +178,8 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::post('pdf/pagos', 'PDFController@pagos');
 		Route::post('pdf/reservas', 'PDFController@reservas');
 		Route::post('pdf/comprobante/reserva', 'PDFController@comprobanteReserva');
+		Route::post('pdf/comprobante/reserva/resumen', 'PDFController@comprobanteReservaResumen');
+		Route::post('pdf/caja', 'PDFController@caja');
 		Route::post('ingreso/servicio', 'PropiedadController@ingresoServicio');
 		Route::post('ingreso/servicio/cliente', 'ClienteController@ingresoServicio');
 		Route::get('cliente/empresa', 'ClienteController@getClientes');
@@ -198,6 +218,8 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::get('tipo/cobros', 'PropiedadController@getTipoCobro');
 		Route::post('editar/precios', 'TipoHabitacionController@editarPrecios');
 		Route::get('reportes/financiero/anual', 'PropiedadController@reporteFinancieroAnual');
+		Route::get('reportes/egresos/anual', 'PropiedadController@reporteEgresoAnual');
+		Route::get('reportes/egresos', 'PropiedadController@reporteEgresos');
 		Route::get('reportes/financiero', 'PropiedadController@reporteFinanciero');
 		Route::get('obtener/pagos', 'PropiedadController@getPagos');
 		Route::get('obtener/reserva', 'ReservaController@getPagoReserva');
@@ -205,6 +227,41 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::get('rol/permisos', 'RolController@getPermisos');
 		Route::post('crear/usuario', 'UserController@crearUsuario');
 		Route::get('estados', 'UserController@getEstados');
+		Route::post('abrir/caja', 'CajaController@abrirCaja');
+		Route::post('cerrar/caja', 'CajaController@cerrarCaja');
+		Route::get('tipo-monto', 'CajaController@tipoMonto');
+		Route::get('caja/abierta', 'CajaController@getCajaAbierta');
+		Route::post('ingresar/egreso/caja', 'EgresoController@ingresarEgresoCaja');
+		Route::post('ingresar/egreso/propiedad', 'EgresoController@ingresarEgresoPropiedad');
+		Route::get('reportes/cajas', 'CajaController@getCajas');
+		Route::get('obtener/caja', 'CajaController@getCaja');
+		Route::get('obtener/egresos/caja', 'EgresoController@obtenerEgresosCaja');
+		Route::get('obtener/egresos/propiedad', 'EgresoController@obtenerEgresosPropiedad');
+		Route::put('editar/egreso/caja/{id}', 'EgresoController@editarEgresoCaja');
+		Route::put('editar/egreso/propiedad/{id}', 'EgresoController@editarEgresoPropiedad');
+		Route::post('crear/politicas', 'PropiedadController@crearPoliticas');
+		Route::delete('egreso/caja/{id}', 'EgresoController@eliminarEgresoCaja');
+		Route::delete('egreso/propiedad/{id}', 'EgresoController@eliminarEgresoPropiedad');
+		Route::put('editar/politica/{id}', 'PropiedadController@editarPolitica');
+		Route::delete('eliminar/politica/{id}', 'PropiedadController@eliminarPolitica');
+		Route::get('habitaciones/disponibles', 'MotorReservaController@habitacionesDisponibles');
+		Route::get('obtener/reservas/motor', 'MotorReservaController@getReservasMotor');
+		Route::post('asignar/habitacion', 'MotorReservaController@asignarHabitacion');
+		Route::post('crear/cuenta/bancaria', 'PropiedadController@crearCuentaBancaria');
+		Route::put('editar/cuenta/bancaria/{id}', 'PropiedadController@editarCuentaBancaria');
+		Route::delete('eliminar/cuenta/bancaria/{id}', 'PropiedadController@eliminarCuentaBancaria');
+		Route::get('tipo/cuenta', 'PropiedadController@getTipoCuenta');
+		Route::post('tipo/deposito/propiedad', 'PropiedadController@crearTipoDepositoPropiedad');
+		Route::put('tipo/deposito/propiedad/{id}', 'PropiedadController@editarTipoDepositoPropiedad');
+		Route::delete('tipo/deposito/propiedad/{id}', 'PropiedadController@eliminarTipoDepositoPropiedad');
+		Route::get('tipo/deposito', 'PropiedadController@getTipoDeposito');
+		Route::get('colores/motor', 'MotorReservaController@getColores');
+		Route::get('clasificacion/color', 'MotorReservaController@getClasificacionColores');
+		Route::post('asignar/color/motor', 'MotorReservaController@asignarColorMotor');
+		Route::post('editar/color/motor', 'MotorReservaController@editarColor');
+		Route::post('anular/reservas', 'ReservaController@anularReservas');
+
+
 
 		Route::resource('user', 'UserController', ['except' => ['create', 'edit','store']]);
 		Route::resource('propiedad', 'PropiedadController', ['except' => ['create', 'edit', 'store']]);
@@ -215,16 +272,17 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::resource('huesped', 'HuespedController', ['except' => ['create', 'edit']]);
 		Route::resource('temporada', 'TemporadaController', ['except' => ['create', 'edit']]);
 		Route::resource('tipo/habitacion', 'TipoHabitacionController', ['except' => ['create', 'edit']]);
-
 		Route::resource('rol', 'RolController', ['except' => ['create', 'edit']]);
+		Route::resource('egreso', 'EgresoController', ['except' => ['create', 'edit']]);
+
 });
 
 });
+
+
 
 
 
 Route::post('cliente/qvo/crear', 'QVOController@ClienteCreate');
 
-
-
-
+Route::post('evento', 'DashControllers\UserDashController@evento');
