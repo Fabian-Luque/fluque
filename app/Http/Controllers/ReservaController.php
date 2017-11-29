@@ -1141,32 +1141,43 @@ class ReservaController extends Controller
 
             if (!is_null($reserva)) {
                 $habitacion   = Habitacion::where('id', $habitacion_id)->first();
+
                 if (!is_null($habitacion)) {
-                $fecha_inicio = $reserva->checkin;
-                $fecha_fin    = $reserva->checkout;
-                $fechaInicio  =strtotime($fecha_inicio);
-                $fechaFin     =strtotime($fecha_fin);
+                $inicio       = $reserva->checkin;
+                $fin          = $reserva->checkout;
+                $fecha_inicio = $inicio->startOfDay()->format('Y-m-d');
+                $fecha_fin    = $fin->startOfDay()->format('Y-m-d');
 
-                for ($i=$fechaInicio; $i<$fechaFin; $i+=86400) {
-                    $fecha = date("Y-m-d", $i);
-                    $habitacion = Habitacion::where('id', $habitacion_id)->whereHas('reservas', function($query) use($fecha){
-                        $query->where('checkin','<=' ,$fecha)->where('checkout', '>', $fecha)->where('estado_reserva_id', '!=', 6)->where('estado_reserva_id', '!=', 7);
-                    })->first();
+                $habitacion_disponible = Habitacion::where('id', $habitacion_id)
+                ->whereDoesntHave('reservas', function ($query) use ($fecha_inicio, $fecha_fin) {
+                    $query->whereIn('estado_reserva_id', [1,2,3,4,5])
+                    ->where(function ($query) use ($fecha_inicio, $fecha_fin) {
+                        $query->where(function ($query) use ($fecha_inicio, $fecha_fin) {
+                            $query->where('checkin', '>=', $fecha_inicio);
+                            $query->where('checkin', '<',  $fecha_fin);
+                        });
+                        $query->orWhere(function($query) use ($fecha_inicio,$fecha_fin){
+                            $query->where('checkin', '<=', $fecha_inicio);
+                            $query->where('checkout', '>',  $fecha_inicio);
+                        });                
+                    });
+                })
+                ->with('tipoHabitacion')
+                ->get();
 
-                    if (!is_null($habitacion)) {
-                        $retorno = array(
-                            'msj'    => "La habitación no está disponible",
-                            'errors' => true);
-                        return Response::json($retorno, 400);
-                    }
+                if (!is_null($habitacion_disponible)) {
+                    $reserva->update(array('habitacion_id' => $habitacion_id));
+                } else {
+                    $retorno = array(
+                      'msj'    => "La habitación no se encuentra disponible",
+                      'errors' => true);
+                    return Response::json($retorno, 400);
                 }
 
-                    $reserva->update(array('habitacion_id' => $habitacion_id));
-
-                    $retorno = [
-                        'errors' => false,
-                        'msj' => 'Reserva actualizada satisfactoriamente',];
-                    return Response::json($retorno, 201);
+                $retorno = [
+                    'errors' => false,
+                    'msj' => 'Reserva actualizada satisfactoriamente',];
+                return Response::json($retorno, 201);
 
                 } else {
                     $retorno = array(
