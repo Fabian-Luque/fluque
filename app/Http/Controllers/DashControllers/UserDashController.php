@@ -20,7 +20,7 @@ use JWTAuth;
 use Grimzy\LaravelMysqlSpatial\Types\Point;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Client;
-use App\Jobs\CrearClienteQVO;
+use App\Jobs\ProcesoQVO;
 
 class UserDashController extends Controller {
 
@@ -57,9 +57,7 @@ class UserDashController extends Controller {
                 );
                 $ubicacion->save();
 
-                $client = new Client();
-
-                $job = new CrearClienteQVO($usuario);
+                $job = new ProcesoQVO($usuario);
                 dispatch($job);
                 
                 $data['accion'] = 'Crear usuario';
