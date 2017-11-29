@@ -1,5 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE Html>
+<Html lang="en">
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -11,9 +11,9 @@
 	{!! Html::style('assets/css/light-bootstrap-dashboard.css'); !!}
 	{!! Html::style('assets/css/pe-icon-7-stroke.css'); !!}
 	{!! Html::style('assets/css/boostrap.min.css'); !!}
-	{!! HTML::script('assets/js/jquery-3.2.1.js'); !!}
-	{!! HTML::script('assets/js/light-bootstrap-dashboard.js'); !!}
-	{!! HTML::script('assets/js/bootstrap.min.js'); !!}
+	{!! Html::script('assets/js/jquery-3.2.1.js'); !!}
+	{!! Html::script('assets/js/light-bootstrap-dashboard.js'); !!}
+	{!! Html::script('assets/js/bootstrap.js'); !!}
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js" type="text/javascript"></script>
 
 	<link rel="shortcut icon" href="{{ asset('assets/img/hotel.png') }}">
@@ -41,4 +41,4 @@
 		</div>
 	</div>
 </body>
-</html>
+</Html>
