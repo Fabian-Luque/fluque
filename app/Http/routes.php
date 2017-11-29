@@ -281,8 +281,5 @@ Route::group(['as' => 'api.jarvis.'], function() {
 
 
 
-
-
 Route::post('cliente/qvo/crear', 'QVOController@ClienteCreate');
 
-Route::post('evento', 'DashControllers\UserDashController@evento');

@@ -58,10 +58,6 @@ class UserDashController extends Controller {
 
                 $job = new ProcesoQVO($usuario);
                 dispatch($job);
-
-                Event::fire(
-                    new ReservasMotorEvent($usuario)
-                );
                 
                 $data['accion'] = 'Crear usuario';
                 $data['msg'] = 'Usuario creado satisfactoriamente';
@@ -208,14 +204,6 @@ class UserDashController extends Controller {
         return View('administrador.prop')->with(
             'props', 
             $propiedades
-        );
-    }
-
-    public function evento(Request $request) {
-        $usuario = User::find(1);
-
-        Event::fire(
-            new ReservasMotorEvent($usuario)
         );
     }
 }
