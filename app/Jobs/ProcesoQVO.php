@@ -114,7 +114,7 @@ class ProcesoQVO extends Job implements ShouldQueue {
             $retorno['msj']    = "El usuario no se encuentra registrado";
         }
 
-        echo $retorno;
+        echo "proceso funcionando";
     }
 
     public function failed() {
