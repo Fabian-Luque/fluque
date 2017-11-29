@@ -19,6 +19,7 @@ use Grimzy\LaravelMysqlSpatial\Types\Point;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Client;
 use App\Jobs\ProcesoQVO;
+use Illuminate\Support\Facades\Validator;
 
 
 class UserDashController extends Controller {
