@@ -293,10 +293,11 @@ class ReservaController extends Controller
         $fecha_inicio = $inicio->startOfDay()->format('Y-m-d');
         $fecha_fin    = $fin->startOfDay()->format('Y-m-d');
 
-        $habitaciones_disponibles = Habitacion::where('propiedad_id', $request->input('propiedad_id'))
-        ->whereDoesntHave('reservas', function ($query) use ($fecha_inicio, $fecha_fin) {
-            $query->whereIn('estado_reserva_id', [1,2,3,4,5])
-            ->where(function ($query) use ($fecha_inicio, $fecha_fin) {
+        $habitaciones_disponibles = TipoHabitacion::where('propiedad_id', $propiedad_id)
+        ->with(['habitaciones' => function ($query) use($fecha_inicio, $fecha_fin){
+            $query->whereDoesntHave('reservas', function ($query) use ($fecha_inicio, $fecha_fin) {
+                $query->whereIn('estado_reserva_id', [1,2,3,4,5])
+                ->where(function ($query) use ($fecha_inicio, $fecha_fin) {
                 $query->where(function ($query) use ($fecha_inicio, $fecha_fin) {
                     $query->where('checkin', '>=', $fecha_inicio);
                     $query->where('checkin', '<',  $fecha_fin);
@@ -306,8 +307,8 @@ class ReservaController extends Controller
                     $query->where('checkout', '>',  $fecha_inicio);
                 });                
             });
-        })
-        ->with('tipoHabitacion')
+            });
+        }])
         ->get();
 
         return $habitaciones_disponibles;
