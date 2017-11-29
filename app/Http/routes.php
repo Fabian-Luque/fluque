@@ -240,6 +240,7 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::post('anular/reservas', 'ReservaController@anularReservas');
 		Route::post('editar/tipo/habitacion', 'TipoHabitacionController@editarTipoHabitacion');
 		Route::post('cambiar/fechas/reserva', 'ReservaController@cambiarFechasReserva');
+		Route::post('habitaciones/disponibles/reserva', 'ReservaController@habitacionesDisponibles');
 
 
 

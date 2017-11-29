@@ -246,6 +246,74 @@ class ReservaController extends Controller
 
     }
 
+    /**
+     * habitaciones disponibles para cambiar de habitacion una reserva
+     *
+     * @author ALLEN
+     *
+     * @param  Request          $request ($reserva_id, $propiedad_id)
+     * @return Response::json
+     */
+    public function habitacionesDisponibles(Request $request)
+    {
+        if ($request->has('propiedad_id')) {
+            $propiedad_id = $request->input('propiedad_id');
+            $propiedad    = Propiedad::where('id', $propiedad_id)->first();
+            if (is_null($propiedad)) {
+                $retorno = array(
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia propiedad_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        if ($request->has('reserva_id')) {
+            $reserva_id = $request->input('reserva_id');
+            $reserva = Reserva::where('id', $reserva_id)->first();
+            if (is_null($reserva)) {
+                $retorno = array(
+                    'msj'    => "Reserva no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia reserva_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        $inicio       = $reserva->checkin;
+        $fin          = $reserva->checkout;
+        $fecha_inicio = $inicio->startOfDay()->format('Y-m-d');
+        $fecha_fin    = $fin->startOfDay()->format('Y-m-d');
+
+        $habitaciones_disponibles = Habitacion::where('propiedad_id', $request->input('propiedad_id'))
+        ->whereDoesntHave('reservas', function ($query) use ($fecha_inicio, $fecha_fin) {
+            $query->whereIn('estado_reserva_id', [1,2,3,4,5])
+            ->where(function ($query) use ($fecha_inicio, $fecha_fin) {
+                $query->where(function ($query) use ($fecha_inicio, $fecha_fin) {
+                    $query->where('checkin', '>=', $fecha_inicio);
+                    $query->where('checkin', '<',  $fecha_fin);
+                });
+                $query->orWhere(function($query) use ($fecha_inicio,$fecha_fin){
+                    $query->where('checkin', '<=', $fecha_inicio);
+                    $query->where('checkout', '>',  $fecha_inicio);
+                });                
+            });
+        })
+        ->with('tipoHabitacion')
+        ->get();
+
+        return $habitaciones_disponibles;
+
+    }
+
 
 
     public function editarPAgo(Request $request, $id)
