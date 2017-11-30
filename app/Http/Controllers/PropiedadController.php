@@ -1475,7 +1475,7 @@ class PropiedadController extends Controller
                     $clasificacion_moneda = $moneda['clasificacion_moneda_id'];
                     $tipo_moneda          = $moneda['tipo_moneda_id'];
 
-                    $propiedad->clasificacionColores()->attach($clasificacion_moneda, ['tipo_moneda_id' => $tipo_moneda]);
+                    $propiedad->clasificacionMonedas()->attach($clasificacion_moneda, ['tipo_moneda_id' => $tipo_moneda]);
 
                     if (count($tipos_habitacion) > 0) {
                         if ($propiedad->tipo_cobro_id != 3) {
