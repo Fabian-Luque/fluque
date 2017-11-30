@@ -32,7 +32,6 @@ class UserDashController extends Controller {
 					$usuario->save();
 
 					$propiedad = new Propiedad();
-					$propiedad->id = $usuario->id;
 					$propiedad->nombre = $request->nombre;
 					$propiedad->direccion = $request->direccion;
 					$propiedad->ciudad = $request->ciudad;
