@@ -77,6 +77,6 @@ class QVOController extends Controller {
 				$retorno["msj"] = "No existe el cliente para la subscripcion de tarjeta";
 			}
 		}
-		return Response::json($retorno, $status);
+		return Response::json($retorno);
 	}
 }

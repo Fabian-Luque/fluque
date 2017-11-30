@@ -143,7 +143,7 @@ Route::group(['as' => 'api.jarvis.'], function() {
 
 	
 	Route::group(['middleware' => ['jwt.auth']], function () {
-		Route::post('tarjeta/qvo/crear', 'QVOController@SubsTarjeta');
+		
 		Route::post('cambio/password', 'ApiAuthController@ResetPassUser');
 		Route::post('reserva/habitacion', 'ReservaController@reserva');
 		Route::get('reserva/propiedad', 'ReservaController@getReservas');
@@ -280,6 +280,6 @@ Route::group(['as' => 'api.jarvis.'], function() {
 });
 
 
-
+Route::post('tarjeta/qvo/crear', 'QVOController@SubsTarjeta');
 Route::post('cliente/qvo/crear', 'QVOController@ClienteCreate');
 
