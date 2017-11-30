@@ -1863,7 +1863,7 @@ class ReservaController extends Controller
 
 
 
-        $reservas_checkout = Reserva::select('reservas.id', 'checkin', 'checkout', 'habitacion_id', 'estado_reserva_id', 'cliente_id', 'nombre', 'apellido')->whereHas('habitacion', function($query) use($id){
+        $reservas_checkout = Reserva::select('reservas.id', 'checkin', 'checkout', 'habitacion_id', 'estado_reserva_id', 'cliente_id', 'nombre', 'apellido', 'noches')->whereHas('habitacion', function($query) use($id){
 
                    $query->where('propiedad_id', $id);
        })
