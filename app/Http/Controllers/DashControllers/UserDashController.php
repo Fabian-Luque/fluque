@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\DashControllers;
 
 use App\Estadocuenta;
-use App\Events\ReservasMotorEvent;
 use App\Http\Controllers\Controller;
 use App\Propiedad;
 use App\TipoPropiedad;
@@ -18,33 +17,42 @@ class UserDashController extends Controller {
 		if ($request->has('name') && $request->has('email') && $request->has('password') && $request->has('phone') && $request->has('nombre') && $request->has('direccion') && $request->has('tipo_propiedad_id') && $request->has('tipo_cuenta') && $request->has('ciudad') && $request->has('numero_habitaciones')) {
 			$us = User::where('email', $request->email)->first();
 			if (!isset($us->email)) {
-				$usuario = new User();
-				$usuario->name = $request->name;
-				$usuario->email = $request->email;
-				$usuario->password = $request->password;
-				$usuario->phone = $request->phone;
-				$usuario->rol_id = 1;
-				$usuario->estado_id = 1;
-				$usuario->save();
 
-				$propiedad = new Propiedad();
-				$propiedad->id = $usuario->id;
-				$propiedad->nombre = $request->nombre;
-				$propiedad->direccion = $request->direccion;
-				$propiedad->ciudad = $request->ciudad;
-				$propiedad->numero_habitaciones = $request->numero_habitaciones;
-				$propiedad->tipo_propiedad_id = $request->tipo_propiedad_id;
-				$propiedad->estado_cuenta_id = $request->tipo_cuenta;
-				$propiedad->save();
+	            $codigo = str_random(50);
+	            $prop   = Propiedad::where('codigo', $codigo)->first();
 
-				$usuario->propiedad()->attach($propiedad->id);
+                if (is_null($prop)) {
+					$usuario = new User();
+					$usuario->name = $request->name;
+					$usuario->email = $request->email;
+					$usuario->password = $request->password;
+					$usuario->phone = $request->phone;
+					$usuario->rol_id = 1;
+					$usuario->estado_id = 1;
+					$usuario->save();
 
-				$data['accion'] = 'Crear usuario';
-				$data['msg'] = 'Usuario creado satisfactoriamente';
+					$propiedad = new Propiedad();
+					$propiedad->id = $usuario->id;
+					$propiedad->nombre = $request->nombre;
+					$propiedad->direccion = $request->direccion;
+					$propiedad->ciudad = $request->ciudad;
+					$propiedad->numero_habitaciones = $request->numero_habitaciones;
+					$propiedad->tipo_propiedad_id = $request->tipo_propiedad_id;
+					$propiedad->estado_cuenta_id = $request->tipo_cuenta;
+					$propiedad->codigo = $codigo;
+					$propiedad->save();
 
-				Event::fire(
-					new ReservasMotorEvent($usuario)
-				);
+					$usuario->propiedad()->attach($propiedad->id);
+
+					$data['accion'] = 'Crear usuario';
+					$data['msg'] = 'Usuario creado satisfactoriamente';
+
+	            } else {
+	                $retorno = array(
+	                    'msj'    => "No se pudo crear cuenta",
+	                    'errors' => true,);
+	                return Response::json($retorno, 400);
+	            }
 			} else {
 				$data['accion'] = 'Crear usuario';
 				$data['msg'] = 'Error. El correo ingresado ya esta en uso';
