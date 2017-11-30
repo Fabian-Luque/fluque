@@ -209,8 +209,8 @@ class ReservaController extends Controller
             $fecha_fin      = $request->input('fecha_fin');
 
             $habitacion_disponible = Habitacion::where('id', $hab_id)
-            ->whereDoesntHave('reservas', function ($query) use ($fecha_inicio, $fecha_fin) {
-                $query->whereIn('estado_reserva_id', [1,2,3,4,5])
+            ->whereDoesntHave('reservas', function ($query) use ($fecha_inicio, $fecha_fin, $reserva_id) {
+                $query->whereIn('estado_reserva_id', [1,2,3,4,5])->where('id', '!=', $reserva_id)
                 ->where(function ($query) use ($fecha_inicio, $fecha_fin) {
                     $query->where(function ($query) use ($fecha_inicio, $fecha_fin) {
                         $query->where('checkin', '>=', $fecha_inicio);
