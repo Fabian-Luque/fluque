@@ -27,7 +27,7 @@ class QVOController extends Controller {
                 $job = new ProcesoQVO($user);
                 dispatch($job);
 
-                $status            = trans('request.failure.code.bad_request');
+                $status            = trans('request.success.code');
 				$retorno['errors'] = true;
 				$retorno['msj']    = "Proceso QVO se ha iniciado";
             } else {
@@ -47,35 +47,42 @@ class QVOController extends Controller {
 		if ($request->has('user_id') && $request->has('url_retorno')) {
 			$user = User::find($request->user_id);
 			$client = new Client();
-			$qvo_user = QvoUser::where(
-				'prop_id',
-				$user->propiedad[0]->id
-			)->first();
 
-			if (isset($qvo_user->prop_id)) {
-				try {
-					$body = $client->request(
-						'POST', 
-						config('app.qvo_url_base').'/customers/'.$qvo_user->qvo_id.'/cards/inscriptions', [
-							'json' => [
-								'return_url' => $request->url_retorno,
-							],
-							'headers' => [
-								'Authorization' => 'Bearer '.config('app.qvo_key')
+			if (isset($user->id)) {
+				$qvo_user = QvoUser::where(
+					'prop_id',
+					$user->propiedad[0]->id
+				)->first();
+
+				if (isset($qvo_user->prop_id)) {
+					try {
+						$body = $client->request(
+							'POST', 
+							config('app.qvo_url_base').'/customers/'.$qvo_user->qvo_id.'/cards/inscriptions', [
+								'json' => [
+									'return_url' => $request->url_retorno,
+								],
+								'headers' => [
+									'Authorization' => 'Bearer '.config('app.qvo_key')
+								]
 							]
-						]
-					)->getBody();
+						)->getBody();
 					
-					$response = json_decode($body);
-					$retorno["msj"]    = $response;
-				} catch (GuzzleException $e) {
-					$retorno["msj"]    = json_decode(
-						(string)$e->getResponse()->getBody()
-					);
-				} 
+						$response = json_decode($body);
+						$retorno["msj"]    = $response;
+					} catch (GuzzleException $e) {
+						$retorno["msj"]    = json_decode(
+							(string)$e->getResponse()->getBody()
+						);
+					} 
+				} else {
+					$retorno["msj"] = "No existe el cliente para la subscripcion de tarjeta";
+				}
 			} else {
-				$retorno["msj"] = "No existe el cliente para la subscripcion de tarjeta";
+				$retorno["msj"] = "No existe el usuario para la subscripcion de tarjeta";
 			}
+		} else {
+			$retorno["msj"] = "Datos requeridos";
 		}
 		return Response::json($retorno);
 	}

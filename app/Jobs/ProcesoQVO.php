@@ -24,6 +24,7 @@ class ProcesoQVO extends Job implements ShouldQueue {
         $user = User::find($this->user->id);
         $client = new Client();
 
+        \Log::info($user);
         if (!is_null($user)) {
             try {
                 $body = $client->request(
@@ -101,7 +102,7 @@ class ProcesoQVO extends Job implements ShouldQueue {
                         );
                     } 
                 } else {
-                    echo "\nError al crear el cliente\n";
+                    \Log::error('Error al crear el cliente');
                 }
             } catch (GuzzleException $e) {
                 $retorno["msj"] = json_decode(
@@ -114,12 +115,10 @@ class ProcesoQVO extends Job implements ShouldQueue {
             $retorno['msj']    = "El usuario no se encuentra registrado";
         }
 
-        echo "proceso funcionando";
+        \Log::info('Proceso Funcionando - ProcesoQVO')
     }
 
     public function failed() {
-        echo "\n";
-        echo "Por alguna razon fallo!!";
-        echo "\n";
+        \Log::error("Por alguna razon fallo - ProcesoQVO");
     }
 }
