@@ -24,6 +24,7 @@ class QVOController extends Controller {
 				$request->correo
 			)->first();
 			if ($user != null) {
+				\Log::info($user);
                 $job = new ProcesoQVO($user);
                 dispatch($job);
 
