@@ -25,8 +25,7 @@ class QVOController extends Controller {
 			)->first();
 			if ($user != null) {
 				\Log::info($user);
-                $job = new ProcesoQVO($user);
-                dispatch($job);
+                $this->dispatch(new ProcesoQVO($user));
 
                 $status            = trans('request.success.code');
 				$retorno['errors'] = true;
