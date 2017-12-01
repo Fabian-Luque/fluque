@@ -115,7 +115,7 @@ class ProcesoQVO extends Job implements ShouldQueue {
             $retorno['msj']    = "El usuario no se encuentra registrado";
         }
 
-        \Log::info('Proceso Funcionando - ProcesoQVO')
+        \Log::info('Proceso Funcionando - ProcesoQVO');
     }
 
     public function failed() {
