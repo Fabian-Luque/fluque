@@ -331,7 +331,7 @@ class CajaController extends Controller
             foreach ($propiedad->tipoMonedas as $tipo_moneda) {
                 $ingreso = 0;
                 $egreso  = 0;
-                foreach ($caja->pagos as $pago) {
+                foreach ($caja_abierta->pagos as $pago) {
                     if ($tipo_moneda->id == $pago->tipo_moneda_id) {
                         if ($pago->metodo_pago_id == 1) {
                             $ingreso += $pago->monto_equivalente;
