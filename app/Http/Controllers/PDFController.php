@@ -262,7 +262,7 @@ class PDFController extends Controller
             $data['monedas']      = $monedas;
             $data['metodos_pago'] = $ingresos_metodo_pago;
 
-            // return ['propiedad' => [$propiedad], 'detalle_caja' => [$caja], 'monedas' => $monedas, 'metodos_pago' => $ingresos_metodo_pago];
+            //return ['propiedad' => [$propiedad], 'detalle_caja' => [$caja], 'monedas' => $monedas, 'metodos_pago' => $ingresos_metodo_pago];
 
             $pdf = PDF::loadView('pdf.caja', ['propiedad' => [$propiedad], 'detalle_caja' => [$caja], 'monedas' => $monedas, 'metodos_pago' => $ingresos_metodo_pago]);
 
@@ -1256,6 +1256,7 @@ class PDFController extends Controller
 
         }
         
+        //return ['propiedad' => [$propiedad], 'fecha_inicio' => $fecha_inicio, 'fecha_fin' => $fecha_fin, 'fechas' => $fechas_montos, 'ingresos_totales' => $montos_totales];
         $pdf = PDF::loadView('pdf.pagos', ['propiedad' => [$propiedad], 'fecha_inicio' => $fecha_inicio, 'fecha_fin' => $fecha_fin, 'fechas' => $fechas_montos, 'ingresos_totales' => $montos_totales]);
 
         return $pdf->download('archivo.pdf');
