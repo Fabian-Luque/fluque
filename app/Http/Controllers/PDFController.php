@@ -1167,24 +1167,23 @@ class PDFController extends Controller
         }
 
         if ($request->has('fecha_fin')) {
-/*            $fin             = new Carbon($request->input('fecha_fin'));
-            $fechaFin        = $fin->addDay();
-            $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $fechaFin, $pais)->tz('UTC');*/
-
             $fin             = new Carbon($request->input('fecha_fin'));
-
             $fechaFin        = $fin->addDay();
             $fin_fecha       = $fechaFin->startOfDay();
-
             $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $fechaFin, $pais)->tz('UTC');
         } else {
             $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $inicio, $pais)->tz('UTC')->addDay();
         }
 
-        $pagos = Pago::select('id' ,'created_at', 'monto_equivalente' ,'tipo_moneda_id')
+        $pagos = Pago::select('pagos.id', 'reservas.id as reserva_id' ,'pagos.created_at','numero_reserva','numero_operacion', 'tipo' ,'monto_equivalente','numero_cheque', 'monto_equivalente','metodo_pago.nombre as nombre_metodo_pago' , 'metodo_pago_id','tipo_moneda.nombre as nombre_tipo_moneda','pagos.tipo_moneda_id', 'cantidad_decimales', 'tipo_comprobante_id')
         ->whereHas('reserva.habitacion', function($query) use($propiedad_id){
             $query->where('propiedad_id', $propiedad_id);})
-        ->where('created_at','>=' , $fecha_inicio)->where('created_at', '<' , $fecha_fin)
+        ->with(['tipoComprobante' => function ($q){
+            $q->select('id', 'nombre');}])
+        ->where('pagos.created_at','>=' , $fecha_inicio)->where('pagos.created_at', '<' , $fecha_fin)
+        ->join('reservas' , 'reservas.id', '=' , 'pagos.reserva_id')
+        ->join('tipo_moneda', 'tipo_moneda.id', '=' , 'pagos.tipo_moneda_id')
+        ->join('metodo_pago', 'metodo_pago.id', '=' , 'pagos.metodo_pago_id')
         ->get();
 
         $cantidad_noches    = ($fecha_inicio->diffInDays($fecha_fin)) ;
@@ -1200,26 +1199,24 @@ class PDFController extends Controller
             array_push($montos, $m);
         }
 
-
         $auxFecha  = new Carbon($request->input('fecha_inicio'));
         for( $i = 0 ; $i <= $cantidad_noches; $i++){
 
             $fecha      = $auxFecha->format('Y-m-d');
-            $fechas[$i] = ['fecha' => $fecha, 'moneda' => $montos];
+            $fechas[$i] = ['fecha' => $fecha, 'moneda' => $montos, 'ps' => []];
 
             $auxFecha->addDay();
         }
 
-
         $ini  = new Carbon($request->input('fecha_inicio'));
         $inc  = $ini->startOfDay();
-
 
         foreach ($pagos as $pago) {
             $created_at  = new Carbon($pago->created_at);
             $crat        = $created_at->startOfDay();
             $dif         = $inc->diffInDays($crat); 
             $largo       = sizeof($fechas[$dif]['moneda']);
+            array_push($fechas[$dif]['ps'], $pago);
 
             for( $i = 0 ; $i < $largo ; $i++){
                 if ($fechas[$dif]['moneda'][$i]['id'] == $pago->tipo_moneda_id ){
@@ -1230,7 +1227,7 @@ class PDFController extends Controller
 
         $fechas_montos = [];
         foreach ($fechas as $fecha) {
-            $largo = count($fecha);
+            $largo = count($fecha) - 1;
             for( $i = 0 ; $i < $largo ; $i++){
                 if ($fecha['moneda'][$i]['suma'] != 0 ){
                     if (!in_array($fecha, $fechas_montos)) {
@@ -1243,7 +1240,7 @@ class PDFController extends Controller
         $montos_totales = [];
         foreach ($propiedad->tipoMonedas as $moneda) {
             $suma = 0;
-            foreach ($fechas_montos as $key => $fechas) {
+            foreach ($fechas_montos as $fechas) {
                 foreach ($fechas['moneda'] as $m) {
                     if ($m['nombre'] == $moneda->nombre) {
                         $suma += $m['suma'];
@@ -1256,7 +1253,6 @@ class PDFController extends Controller
 
         }
         
-        //return ['propiedad' => [$propiedad], 'fecha_inicio' => $fecha_inicio, 'fecha_fin' => $fecha_fin, 'fechas' => $fechas_montos, 'ingresos_totales' => $montos_totales];
         $pdf = PDF::loadView('pdf.pagos', ['propiedad' => [$propiedad], 'fecha_inicio' => $fecha_inicio, 'fecha_fin' => $fecha_fin, 'fechas' => $fechas_montos, 'ingresos_totales' => $montos_totales]);
 
         return $pdf->download('archivo.pdf');
