@@ -1182,6 +1182,20 @@ class PDFController extends Controller
         ->where('pagos.created_at','>=' , $fecha_inicio)
         ->where('pagos.created_at', '<' , $fecha_fin);
 
+        if ($request->has('tipo_comprobante_id')) {
+            $tipos_comprobante = $request->get('tipo_comprobante_id');
+
+            $pago->whereHas('reserva.habitacion', function($query) use($propiedad_id, $fecha_inicio, $fecha_fin){
+            $query->where('propiedad_id', $propiedad_id);})
+            ->where(function ($query) use ($tipos_comprobante) {
+                $query->where(function ($query) use ($tipos_comprobante) {
+                    $query->whereIn('tipo_comprobante_id',  $tipos_comprobante);
+                    $query->orWhere('tipo_comprobante_id', '=', null);
+                });              
+            });
+ 
+        }
+
         if ($request->has('metodo_pago_id')) {
             $metodos_pago = $request->get('metodo_pago_id');
 
@@ -1194,17 +1208,6 @@ class PDFController extends Controller
             });
         }
 
-        if ($request->has('tipo_comprobante_id')) {
-            $tipos_comprobante = $request->get('tipo_comprobante_id');
-
-            $pago->whereHas('reserva.habitacion', function($query) use($propiedad_id){
-                $query->where('propiedad_id', $propiedad_id);
-            })->where(function ($query) use ($tipos_comprobante) {
-                $query->where(function ($query) use ($tipos_comprobante) {
-                $query->whereIn('tipo_comprobante_id', $tipos_comprobante);
-            });
-            });
-        }
 
         $pagos = $pago->select('pagos.id', 'reservas.id as reserva_id' ,'pagos.created_at','numero_reserva','numero_operacion', 'tipo' ,'monto_equivalente','numero_cheque', 'monto_equivalente','metodo_pago.nombre as nombre_metodo_pago' , 'metodo_pago_id','tipo_moneda.nombre as nombre_tipo_moneda','pagos.tipo_moneda_id', 'cantidad_decimales', 'tipo_comprobante_id')
         ->with(['tipoComprobante' => function ($q){
