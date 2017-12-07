@@ -1227,7 +1227,7 @@ class PDFController extends Controller
         }
 
 
-        return $pagos = $pago->select('pagos.id', 'reservas.id as reserva_id' ,'pagos.created_at','numero_reserva','numero_operacion', 'tipo' ,'monto_equivalente','numero_cheque', 'monto_equivalente','metodo_pago.nombre as nombre_metodo_pago' , 'metodo_pago_id','tipo_moneda.nombre as nombre_tipo_moneda','pagos.tipo_moneda_id', 'cantidad_decimales', 'tipo_comprobante_id')
+        $pagos = $pago->select('pagos.id', 'reservas.id as reserva_id' ,'pagos.created_at','numero_reserva','numero_operacion', 'tipo' ,'monto_equivalente','numero_cheque', 'monto_equivalente','metodo_pago.nombre as nombre_metodo_pago' , 'metodo_pago_id','tipo_moneda.nombre as nombre_tipo_moneda','pagos.tipo_moneda_id', 'cantidad_decimales', 'tipo_comprobante_id')
         ->with(['tipoComprobante' => function ($q){
             $q->select('id', 'nombre');}])
         ->where('pagos.created_at','>=' , $fecha_inicio)->where('pagos.created_at', '<' , $fecha_fin)
