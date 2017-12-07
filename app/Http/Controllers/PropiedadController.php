@@ -995,12 +995,6 @@ class PropiedadController extends Controller
             $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $inicio, $pais)->tz('UTC')->addDay();
         }
 
-        // return $pagos = Pago::select('id' ,'created_at', 'monto_equivalente' ,'tipo_moneda_id')
-        // ->whereHas('reserva.habitacion', function($query) use($propiedad_id){
-        //     $query->where('propiedad_id', $propiedad_id);})
-        // ->where('created_at','>=' , $fecha_inicio)->where('created_at', '<' , $fecha_fin)
-        // ->get();
-
         $pago = $pago->newQuery();
 
         $pago->whereHas('reserva.habitacion', function($query) use($propiedad_id, $fecha_inicio, $fecha_fin){
@@ -1008,18 +1002,36 @@ class PropiedadController extends Controller
         ->where('pagos.created_at','>=' , $fecha_inicio)
         ->where('pagos.created_at', '<' , $fecha_fin);
 
-        if ($request->has('tipo_comprobante_id')) {
-            $tipos_comprobante = $request->get('tipo_comprobante_id');
+        $indicador = $request->get('indicador');
 
-            $pago->whereHas('reserva.habitacion', function($query) use($propiedad_id, $fecha_inicio, $fecha_fin){
-            $query->where('propiedad_id', $propiedad_id);})
-            ->where(function ($query) use ($tipos_comprobante) {
-                $query->where(function ($query) use ($tipos_comprobante) {
-                    $query->whereIn('tipo_comprobante_id',  $tipos_comprobante);
-                    $query->orWhere('tipo_comprobante_id', '=', null);
-                });              
-            });
- 
+        if ($indicador == 1) {
+            
+            if ($request->has('tipo_comprobante_id')) {
+                $tipos_comprobante = $request->get('tipo_comprobante_id');
+
+                $pago->whereHas('reserva.habitacion', function($query) use($propiedad_id, $fecha_inicio, $fecha_fin){
+                $query->where('propiedad_id', $propiedad_id);})
+                ->where(function ($query) use ($tipos_comprobante) {
+                    $query->where(function ($query) use ($tipos_comprobante) {
+                        $query->whereIn('tipo_comprobante_id',  $tipos_comprobante);
+                        $query->orWhere('tipo_comprobante_id', '=', null);
+                    });              
+                });
+            }
+            
+        } else {
+
+            if ($request->has('tipo_comprobante_id')) {
+                $tipos_comprobante = $request->get('tipo_comprobante_id');
+
+                $pago->whereHas('reserva.habitacion', function($query) use($propiedad_id, $fecha_inicio, $fecha_fin){
+                $query->where('propiedad_id', $propiedad_id);})
+                ->where(function ($query) use ($tipos_comprobante) {
+                    $query->where(function ($query) use ($tipos_comprobante) {
+                        $query->whereIn('tipo_comprobante_id',  $tipos_comprobante);
+                    });              
+                });
+            }
         }
 
         if ($request->has('metodo_pago_id')) {
