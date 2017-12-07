@@ -1140,7 +1140,7 @@ class PDFController extends Controller
     }
 
 
-   public function pagos(Request $request)
+   public function pagos(Request $request, Pago $pago)
    {
         if ($request->has('propiedad_id')) {
             $propiedad_id = $request->input('propiedad_id');
@@ -1175,9 +1175,38 @@ class PDFController extends Controller
             $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $inicio, $pais)->tz('UTC')->addDay();
         }
 
-        $pagos = Pago::select('pagos.id', 'reservas.id as reserva_id' ,'pagos.created_at','numero_reserva','numero_operacion', 'tipo' ,'monto_equivalente','numero_cheque', 'monto_equivalente','metodo_pago.nombre as nombre_metodo_pago' , 'metodo_pago_id','tipo_moneda.nombre as nombre_tipo_moneda','pagos.tipo_moneda_id', 'cantidad_decimales', 'tipo_comprobante_id')
-        ->whereHas('reserva.habitacion', function($query) use($propiedad_id){
+        $pago = $pago->newQuery();
+
+        $pago->whereHas('reserva.habitacion', function($query) use($propiedad_id, $fecha_inicio, $fecha_fin){
             $query->where('propiedad_id', $propiedad_id);})
+        ->where('pagos.created_at','>=' , $fecha_inicio)
+        ->where('pagos.created_at', '<' , $fecha_fin);
+
+        if ($request->has('metodo_pago_id')) {
+            $metodos_pago = $request->get('metodo_pago_id');
+
+            $pago->whereHas('reserva.habitacion', function($query) use($propiedad_id){
+                $query->where('propiedad_id', $propiedad_id);
+            })->where(function ($query) use ($metodos_pago) {
+                $query->where(function ($query) use ($metodos_pago) {
+                $query->whereIn('metodo_pago_id', $metodos_pago);
+            });
+            });
+        }
+
+        if ($request->has('tipo_comprobante_id')) {
+            $tipos_comprobante = $request->get('tipo_comprobante_id');
+
+            $pago->whereHas('reserva.habitacion', function($query) use($propiedad_id){
+                $query->where('propiedad_id', $propiedad_id);
+            })->where(function ($query) use ($tipos_comprobante) {
+                $query->where(function ($query) use ($tipos_comprobante) {
+                $query->whereIn('tipo_comprobante_id', $tipos_comprobante);
+            });
+            });
+        }
+
+        $pagos = $pago->select('pagos.id', 'reservas.id as reserva_id' ,'pagos.created_at','numero_reserva','numero_operacion', 'tipo' ,'monto_equivalente','numero_cheque', 'monto_equivalente','metodo_pago.nombre as nombre_metodo_pago' , 'metodo_pago_id','tipo_moneda.nombre as nombre_tipo_moneda','pagos.tipo_moneda_id', 'cantidad_decimales', 'tipo_comprobante_id')
         ->with(['tipoComprobante' => function ($q){
             $q->select('id', 'nombre');}])
         ->where('pagos.created_at','>=' , $fecha_inicio)->where('pagos.created_at', '<' , $fecha_fin)
