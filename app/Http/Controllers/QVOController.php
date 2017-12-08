@@ -162,10 +162,29 @@ class QVOController extends Controller {
                         $response = json_decode($body);
 
 
-                        if (isset($qvo_user->qvo_id)) {
-                            $job = (new CrearSubscripcionQVO($user))->delay(5);
-                            dispatch($job);
-                        } 
+                        if (isset($qvo_user->prop_id) && isset($qvo_user->solsub_id) == true) {
+            				try {
+                				$body = $client->request(
+                    				'POST', 
+                    				config('app.qvo_url_base').'/subscriptions', [
+                        					'json' => [
+                            					'customer_id' => $qvo_user->qvo_id,
+                            					'plan_id' => $user->propiedad[0]->id
+                        					],
+                        					'headers' => [
+                            					'Authorization' => 'Bearer '.config('app.qvo_key')
+                        					]
+                    					]
+                				)->getBody();
+                				$response = json_decode($body);
+
+                				$qvo_user->solsub_id = $response->id;
+                				$qvo_user->save(); 
+
+				                $retorno["msj"]    = $response;
+            				} catch (GuzzleException $e) {
+                				$retorno["msj"]    = json_decode((string)$e->getResponse()->getBody());
+            				} 
                     } catch (GuzzleException $e) {
                         $retorno["msj"] = json_decode(
                             (string)$e->getResponse()->getBody()
