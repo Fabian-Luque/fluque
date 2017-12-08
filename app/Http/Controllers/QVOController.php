@@ -161,9 +161,7 @@ class QVOController extends Controller {
 
                         $response = json_decode($body);
 
-
-                        if (isset($qvo_user->prop_id) && isset($qvo_user->solsub_id) == true) {
-            				try {
+                        try {
                 				$body = $client->request(
                     				'POST', 
                     				config('app.qvo_url_base').'/subscriptions', [
