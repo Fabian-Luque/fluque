@@ -162,7 +162,7 @@ class QVOController extends Controller {
                         $response = json_decode($body);
 
 
-                        if (isset($qvo_user->id)) {
+                        if (isset($qvo_user->qvo_id)) {
                             $job = (new CrearSubscripcionQVO($user))->delay(5);
                             dispatch($job);
                         } 
