@@ -86,4 +86,30 @@ class QVOController extends Controller {
 		}
 		return Response::json($retorno);
 	}
+
+
+	public function ejmqvo(Request $request) {
+		$client = new Client();
+		
+		try {
+			$body = $client->request(
+				'POST', 
+				config('app.qvo_url_base').'/customers/'.$request->qvo_id.'/cards/inscriptions', [
+						'json' => [
+							'return_url' => "www.google.com",
+						],
+						'headers' => [
+							'Authorization' => 'Bearer '.config('app.qvo_key')
+						]
+				]
+			)->getBody();
+					
+			$response = json_decode($body);
+			$retorno["msj"]    = $response;
+		} catch (GuzzleException $e) {
+			$retorno["msj"]    = json_decode(
+				(string)$e->getResponse()->getBody()
+			);
+		} 
+	}
 }

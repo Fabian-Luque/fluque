@@ -26,7 +26,9 @@ class ProcesoQVO extends Job implements ShouldQueue {
 
         \Log::info($user);
         if (!is_null($user)) {
+            \Log::info("si es nulo\n");
             try {
+                \Log::info("peticion http\n");
                 $body = $client->request(
                     'POST',  
                     config('app.qvo_url_base').'/customers', [
