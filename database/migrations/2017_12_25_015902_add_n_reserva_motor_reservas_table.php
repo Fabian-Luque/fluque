@@ -12,9 +12,11 @@ class AddNReservaMotorReservasTable extends Migration
      */
     public function up()
     {
+        if (!Schema::hasTable('reservas')) {
         Schema::table('reservas', function (Blueprint $table) {
             $table->integer('n_reserva_motor')->after('detalle')->nullable();
         });
+    }
     }
 
     /**

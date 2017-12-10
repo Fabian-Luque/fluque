@@ -12,6 +12,7 @@ class CreateEgresosTable extends Migration
      */
     public function up()
     {
+        if (!Schema::hasTable('egresos')) {
         Schema::create('egresos', function (Blueprint $table) {
             $table->increments('id');
             $table->string('nombre');
@@ -20,6 +21,7 @@ class CreateEgresosTable extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
+    }
     }
 
     /**

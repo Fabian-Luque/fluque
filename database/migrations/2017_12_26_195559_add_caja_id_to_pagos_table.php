@@ -12,10 +12,12 @@ class AddCajaIdToPagosTable extends Migration
      */
     public function up()
     {
+        if (!Schema::hasTable('pagos')) {
         Schema::table('pagos', function (Blueprint $table) {
             $table->integer('caja_id')->after('tipo_comprobante_id')->nullable()->unsigned();
             $table->foreign('caja_id')->references('id')->on('cajas');
         });
+    }
     }
 
     /**

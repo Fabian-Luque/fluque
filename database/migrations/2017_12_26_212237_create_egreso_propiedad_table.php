@@ -12,6 +12,7 @@ class CreateEgresoPropiedadTable extends Migration
      */
     public function up()
     {
+        if (!Schema::hasTable('egreso_propiedad')) {
         Schema::create('egreso_propiedad', function (Blueprint $table) {
             $table->increments('id');
             $table->float('monto',10,2);
@@ -26,6 +27,7 @@ class CreateEgresoPropiedadTable extends Migration
             $table->foreign('tipo_moneda_id')->references('id')->on('tipo_moneda');
             $table->timestamps();
         });
+    }
     }
 
     /**

@@ -12,6 +12,7 @@ class CreatePropiedadMonedaTable extends Migration
      */
     public function up()
     {
+        if (!Schema::hasTable('propiedad_moneda')) {
             Schema::create('propiedad_moneda', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('propiedad_id')->unsigned();
@@ -22,6 +23,7 @@ class CreatePropiedadMonedaTable extends Migration
             $table->foreign('tipo_moneda_id')->references('id')->on('tipo_moneda');
             $table->timestamps();
             });
+        }
     }
 
     /**

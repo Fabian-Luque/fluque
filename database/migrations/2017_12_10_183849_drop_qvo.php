@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddDetalleToReservasTable extends Migration
+class DropQvo extends Migration
 {
     /**
      * Run the migrations.
@@ -12,11 +12,7 @@ class AddDetalleToReservasTable extends Migration
      */
     public function up()
     {
-        if (!Schema::hasTable('reservas')) {
-        Schema::table('reservas', function (Blueprint $table) {
-        $table->string('detalle')->after('observacion')->nullable();
-        });
-    }
+        Schema::drop('qvousers');
     }
 
     /**

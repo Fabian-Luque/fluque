@@ -16,12 +16,6 @@
                 );
 
 
-
-                $("").click(
-                    function () {
-                        
-                    }
-                );
             }
         );
     </script>
