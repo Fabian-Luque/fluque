@@ -5,13 +5,10 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateCajasTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
+
     public function up()
     {
+        if (!Schema::hasTable('cajas')) {
         Schema::create('cajas', function (Blueprint $table) {
             $table->increments('id');
             $table->dateTime('fecha_apertura');
@@ -25,7 +22,7 @@ class CreateCajasTable extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
-
+}
     }
 
     /**
