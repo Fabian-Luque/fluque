@@ -12,6 +12,7 @@ class CreateMontoCajaTable extends Migration
      */
     public function up()
     {
+        if (!Schema::hasTable('montos_caja')) {
         Schema::create('montos_caja', function (Blueprint $table) {
             $table->increments('id');
             $table->float('monto',10,2);
@@ -23,6 +24,7 @@ class CreateMontoCajaTable extends Migration
             $table->foreign('tipo_monto_id')->references('id')->on('tipo_monto');
             $table->timestamps();
         });
+    }
     }
 
     /**
