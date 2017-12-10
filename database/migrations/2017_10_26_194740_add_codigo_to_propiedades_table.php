@@ -12,9 +12,11 @@ class AddCodigoToPropiedadesTable extends Migration
      */
     public function up()
     {
+        if (!Schema::hasTable('propiedades')) {
         Schema::table('propiedades', function (Blueprint $table) {
             $table->string('codigo')->after('zona_horaria_id')->nullable()->unique();
         });
+    }
     }
 
     /**

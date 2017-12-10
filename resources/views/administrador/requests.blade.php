@@ -131,7 +131,7 @@
         					break;
 
         					case 'upr':
-        						        						var row = $(this).parents('tr');
+        						var row = $(this).parents('tr');
 								var id = row.data('id');
 								var tok = "<?php echo csrf_token(); ?>";
 								var user;
@@ -212,6 +212,47 @@
 								$('#confirma-del').attr('value', id);
 								$('#confirma-del').show();
         					break;
+
+                            case 'qvo':
+                                var row = $(this).parents('tr');
+                                var id = row.data('id');
+                                var tok = "<?php echo csrf_token(); ?>";
+                        
+                                $.ajax({
+                                    type: "POST",
+                                    url:  "<?php echo url('qvo/proceso'); ?>",
+                                    headers: {
+                                        'X-CSRF-TOKEN': tok
+                                    },
+                                    data: {
+                                        prop_id: id, 
+                                        _token: tok
+                                    },
+                        
+                                    success: function(data) {
+                                        console.log(data.errors);
+                                        
+                                        if (data.errors == false) {
+                                            InfoModal(
+                                                "QVO",
+                                                "Se ha creado un cliente, un plan, y una subscripcion a dicho plan en QVO"
+                                            );
+                                        } else {
+                                            InfoModal(
+                                                "QVO",
+                                                ""+data.msj.error.message
+                                            );
+                                        }
+                                    },
+                                    error: function(xhr, textStatus, thrownError) {
+                                        InfoModal(
+                                            "QVO",
+                                            "Error de QVO"
+                                        );
+                                    }
+                                });
+                            break;
+
         					default: 
         					break;
 						}// fin switch

@@ -14,6 +14,14 @@
                     "<?php echo $resp['accion'];?>",
                     "<?php echo $resp['msg'];?>"
                 );
+
+
+
+                $("").click(
+                    function () {
+                        
+                    }
+                );
             }
         );
     </script>
@@ -36,6 +44,7 @@
             			<th>DIRECCION</th>
             			<th>CUENTA</th>
                         <th>CREADO</th>
+                        <th>QVO</th>
         			</thead>
         			<tbody>
         				@if(!empty($props[0]['id']))
@@ -51,6 +60,9 @@
                                     <td> {{ $prop->created }} </td>
                                     <td> 
                                         <a href="upr" name="b-lista" value="{{ $prop->id }}" class="btn btn-info btn-xs">Editar</a>
+                                    </td>
+                                    <td> 
+                                        <a href="qvo" name="b-lista" value="{{ $prop->id }}" class="btn btn-info btn-xs">QVO</a>
                                     </td>
    								</tr>
    							@endforeach

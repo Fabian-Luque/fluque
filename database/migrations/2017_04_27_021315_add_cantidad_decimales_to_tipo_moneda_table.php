@@ -12,9 +12,11 @@ class AddCantidadDecimalesToTipoMonedaTable extends Migration
      */
     public function up()
     {
+        if (!Schema::hasTable('tipo_moneda')) {
         Schema::table('tipo_moneda', function (Blueprint $table) {
         $table->integer('cantidad_decimales')->after('nombre')->default(0)->unsigned();
         });
+    }
     }
 
     /**

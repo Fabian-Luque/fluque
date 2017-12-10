@@ -12,6 +12,7 @@ class AddAttributesPropiedadesTable extends Migration
      */
     public function up()
     {
+        if (!Schema::hasTable('propiedades')) {
             Schema::table('propiedades', function (Blueprint $table) {
             $table->string('telefono')->after('direccion');
             $table->string('email')->after('telefono');
@@ -22,6 +23,7 @@ class AddAttributesPropiedadesTable extends Migration
            
 
         });
+        }
     }
 
     /**

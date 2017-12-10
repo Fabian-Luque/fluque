@@ -13,7 +13,7 @@ class CreateTipoHabitacionTable extends Migration
     public function up()
     {
         
-
+if (!Schema::hasTable('tipo_habitacion')) {
         Schema::create('tipo_habitacion', function(Blueprint $table){
         $table->increments('id');
         $table->string('nombre');
@@ -21,7 +21,7 @@ class CreateTipoHabitacionTable extends Migration
                             
         });
 
-
+}
 
     }
 

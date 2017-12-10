@@ -13,6 +13,7 @@ use App\Jobs\CrearSubscripcionQVO;
 use App\Jobs\CreateSubsTarjeta;
 use App\Jobs\ProcesoQVO;
 use App\User;
+use App\Propiedad;
 use App\QvoUser;
 use Response;
 
@@ -45,13 +46,13 @@ class QVOController extends Controller {
 
 	public function SubsTarjeta(Request $request) {
 		if ($request->has('user_id') && $request->has('url_retorno')) {
-			$user = User::find($request->user_id);
+			$propiedad = Propiedad::find($request->user_id);
 			$client = new Client();
 
-			if (isset($user->id)) {
+			if (isset($propiedad->id)) {
 				$qvo_user = QvoUser::where(
 					'prop_id',
-					$user->propiedad[0]->id
+					$propiedad->id
 				)->first();
 
 				if (isset($qvo_user->prop_id)) {
@@ -87,22 +88,19 @@ class QVOController extends Controller {
 		return Response::json($retorno);
 	}
 
-
-	public function ejmqvo(Request $request) {
-		$user = User::find($request->id);
+	public function ProcesoQVO(Request $request) {
+		if ($request->has('prop_id')) {
+		$propiedad = Propiedad::find($request->prop_id);
         $client = new Client();
 
-        \Log::info($user);
-        if (!is_null($user)) {
-            \Log::info("si es nulo\n");
+        if (!is_null($propiedad->id)) {
             try {
-                \Log::info("peticion http\n");
                 $body = $client->request(
                     'POST',  
                     config('app.qvo_url_base').'/customers', [
                         'json' => [
-                            'email' => $user->email,
-                            'name'  => $user->propiedad[0]->nombre
+                            'email' => $propiedad->user[0]->email,
+                            'name'  => $propiedad->nombre
                         ],
                         'headers' => [
                             'Authorization' => 'Bearer '.config('app.qvo_key')
@@ -110,15 +108,15 @@ class QVOController extends Controller {
                     ]
                 )->getBody();
     
-
                 $response = json_decode($body);
+                $retorno['errors'] = false;
                 $retorno["msj"] = $response;
 
                 $qvo_user = new QvoUser();
-                $qvo_user->prop_id = $user->propiedad[0]->id;
+                $qvo_user->prop_id = $propiedad->id;
                 $qvo_user->qvo_id  = $response->id;
-                
-                if ($qvo_user->save()) {
+                $qvo_user->save();
+
                     try {
                         $body = $client->request(
                             'POST', 
@@ -131,11 +129,11 @@ class QVOController extends Controller {
                         $dolar_price = 600;
                     }
 
-                    if ($user->propiedad[0]->numero_habitaciones > 27) {
+                    if ($propiedad->numero_habitaciones > 27) {
                         $precio = round($dolar_price * 27);    
                     } else {
                         $precio = round(
-                            $dolar_price * $user->propiedad[0]->numero_habitaciones
+                            $dolar_price * $propiedad->numero_habitaciones
                         );
                     }
 
@@ -144,8 +142,8 @@ class QVOController extends Controller {
                             'POST',  
                             config('app.qvo_url_base').'/plans', [
                                 'json' => [
-                                    'id' => $user->propiedad[0]->id,
-                                    'name' => $user->propiedad[0]->nombre,
+                                    'id' => $propiedad->id,
+                                    'name' => $propiedad->nombre,
                                     'price' => $precio * intval(
                                         config('app.PRECIO_X_HAB_QVO')
                                     ),
@@ -162,36 +160,42 @@ class QVOController extends Controller {
                         $response = json_decode($body);
 
                         try {
-                				$body = $client->request(
-                    				'POST', 
-                    				config('app.qvo_url_base').'/subscriptions', [
-                        					'json' => [
-                            					'customer_id' => $qvo_user->qvo_id,
-                            					'plan_id' => $user->propiedad[0]->id
-                        					],
-                        					'headers' => [
-                            					'Authorization' => 'Bearer '.config('app.qvo_key')
-                        					]
-                    					]
-                				)->getBody();
-                				$response = json_decode($body);
+                                $body = $client->request(
+                                    'POST', 
+                                    config('app.qvo_url_base').'/subscriptions', [
+                                            'json' => [
+                                                'customer_id' => $qvo_user->qvo_id,
+                                                'plan_id' => $propiedad->id
+                                            ],
+                                            'headers' => [
+                                                'Authorization' => 'Bearer '.config('app.qvo_key')
+                                            ]
+                                        ]
+                                )->getBody();
+                                $response = json_decode($body);
 
-                				$qvo_user->solsub_id = $response->id;
-                				$qvo_user->save(); 
+                                $qvo_user->solsub_id = $response->id;
+                                $qvo_user->save(); 
 
-				                $retorno["msj"]    = $response;
-            				} catch (GuzzleException $e) {
-                				$retorno["msj"]    = json_decode((string)$e->getResponse()->getBody());
-            				} 
+                                $retorno['errors'] = false;
+                                $retorno["msj"]    = $response;
+                            } catch (GuzzleException $e) {
+                            	$status            = trans('request.failure.code.bad_request');
+            					$retorno['errors'] = true;
+                                $retorno["msj"]    = json_decode(
+                                	(string)$e->getResponse()->getBody()
+                                );
+                            } 
                     } catch (GuzzleException $e) {
+                    	$status            = trans('request.failure.code.bad_request');
+            			$retorno['errors'] = true;
                         $retorno["msj"] = json_decode(
                             (string)$e->getResponse()->getBody()
                         );
-                    } 
-                } else {
-                    \Log::error('Error al crear el cliente');
-                }
+                    }  
             } catch (GuzzleException $e) {
+            	$status            = trans('request.failure.code.bad_request');
+            	$retorno['errors'] = true;
                 $retorno["msj"] = json_decode(
                     (string)$e->getResponse()->getBody()
                 );
@@ -201,7 +205,25 @@ class QVOController extends Controller {
             $retorno['errors'] = true;
             $retorno['msj']    = "El usuario no se encuentra registrado";
         }
-
+    } else {
+    	$status            = trans('request.failure.code.bad_request');
+        $retorno['errors'] = true;
+        $retorno['msj']    = "Datos requeridos";
+	}
         return Response::json($retorno);
+	}
+
+
+	public function getInfoQVO(Request $request) {
+		if ($request->has('prop_id')) {
+			$propiedad = Propiedad::find($request->prop_id);
+
+			$retorno['errors'] = false;
+        	$retorno['msj']    = $propiedad->QVO;
+		} else {
+        	$retorno['errors'] = true;
+        	$retorno['msj']    = "Datos requeridos";
+		}
+		return Response::json($retorno);
 	}
 }

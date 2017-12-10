@@ -13,14 +13,16 @@ class CreateTableRelQvoUser extends Migration {
                 $table->integer('prop_id')->unsigned()->index();
                 $table->string('qvo_id');
                 $table->string('solsub_id')->nullable();
+                
                 $table->foreign('prop_id')
                     ->references('id')
-                ->on('users');
+                ->on('propiedades');
                 $table->timestamps();
             }
         );
     }
 
     public function down() {
+        Schema::drop('qvousers');
     }
 }

@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTipoCuentaTable extends Migration
+class CreateTableTarifas extends Migration
 {
     /**
      * Run the migrations.
@@ -12,13 +12,7 @@ class CreateTipoCuentaTable extends Migration
      */
     public function up()
     {
-        if (!Schema::hasTable('tipo_cuenta')) {
-        Schema::create('tipo_cuenta', function(Blueprint $table){
-        $table->increments('id');
-        $table->string('nombre');
-        $table->timestamps();
-        });
-    }
+        //
     }
 
     /**
