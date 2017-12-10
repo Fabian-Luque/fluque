@@ -12,6 +12,7 @@ class CreatePoliticasTable extends Migration
      */
     public function up()
     {
+        if (!Schema::hasTable('politicas')) {
         Schema::create('politicas', function (Blueprint $table) {
             $table->increments('id');
             $table->string('descripcion');
@@ -19,6 +20,7 @@ class CreatePoliticasTable extends Migration
             $table->foreign('propiedad_id')->references('id')->on('propiedades')->onDelete('cascade');
             $table->timestamps();
         });
+    }
     }
 
     /**
