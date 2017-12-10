@@ -3,27 +3,20 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateEstadoCajaTable extends Migration
-{
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
+class CreateEstadoCajaTable extends Migration {
+
     public function up()
     {
+        if (!Schema::hasTable('egreso_caja')) {
         Schema::create('estado_caja', function (Blueprint $table) {
             $table->increments('id');
             $table->string('nombre');
             $table->timestamps();
         });
     }
+    }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
+
     public function down()
     {
         //

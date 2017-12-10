@@ -12,7 +12,7 @@ class AddIvaDescuentoToReservasTable extends Migration
      */
     public function up()
     {
-        if (!Schema::hasTable('reservas')) {
+        if (Schema::hasTable('reservas')) {
         Schema::table('reservas', function (Blueprint $table) {
         $table->boolean('iva')->after('noches')->default(0)->nullable();
         $table->integer('descuento')->after('iva')->nullable();

@@ -12,7 +12,7 @@ class AddObservacionToReservasTable extends Migration
      */
     public function up()
     {
-        if (!Schema::hasTable('reservas')) {
+        if (Schema::hasTable('reservas')) {
         Schema::table('reservas', function (Blueprint $table) {
         $table->string('observacion')->after('noches')->nullable();
         });
