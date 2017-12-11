@@ -18,13 +18,12 @@ io.on(
 r.on('message', function(channel, messageStr){
     var message = JSON.parse(messageStr);
     console.log(message);
-    io.emit('message', message);    
+    io.emit('message123', message);    
 });
 
 http.listen(3000, function(){
   console.log('listening on *:3000');
 });
-
 
 
 /*

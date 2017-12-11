@@ -248,6 +248,7 @@ class QVOController extends Controller {
         } else {
         	$propiedad = Propiedad::find($request->prop_id);
 			try {
+				$client = new Client();
 				$body = $client->request(
 					'PUT',  
 					config('app.qvo_url_base').'/customers', [

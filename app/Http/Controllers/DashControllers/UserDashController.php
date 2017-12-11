@@ -311,12 +311,21 @@ class UserDashController extends Controller {
                 $prop->tipo_propiedad = TipoPropiedad::find(
                     $prop->tipo_propiedad_id
                 )->nombre;
+                $prop->tipo_propiedad = trim($prop->tipo_propiedad);
             }
             if (isset($prop->estado_cuenta_id)) {
                 $prop->estado_cuenta = Estadocuenta::find(
                     $prop->estado_cuenta_id
                 )->nombre;
+                $prop->estado_cuenta = trim($prop->estado_cuenta);
             }
+
+            $prop->id = trim($prop->id);
+            $prop->nombre = trim($prop->nombre);
+            $prop->numero_habitaciones = trim($prop->numero_habitaciones);
+            $prop->ciudad = trim($prop->ciudad);
+            $prop->direccion = trim($prop->direccion);
+            $prop->created = trim($prop->created);
         }
         return View('administrador.prop')->with(
             'props', 
