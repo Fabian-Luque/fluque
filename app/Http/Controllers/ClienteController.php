@@ -25,211 +25,102 @@ use \Carbon\Carbon;
 class ClienteController extends Controller
 {
 
-	public function ingresoServicio(Request $request){
-
-		 if($request->has('venta_servicio') && $request->has('propiedad_id')){
-
+	public function ingresoServicio(Request $request)
+	{
+		if ($request->has('venta_servicio') && $request->has('propiedad_id')) {
 		 	$propiedad =  Propiedad::where('id', $request->input('propiedad_id'))->first();
 
-		 	if(!is_null($propiedad)){
-
+		 	if (!is_null($propiedad)) {
 		 		$servicios = $request->input('venta_servicio');
 
 		 		foreach ($servicios as $servicio) {
+			 		$nombre_consumidor 	 = $servicio['nombre_consumidor'];
+			 		$apellido_consumidor = $servicio['apellido_consumidor'];
+			 		$rut_consumidor 	 = $servicio['rut_consumidor'];
+			 		$servicio_id 		 = $servicio['servicio_id'];
+	                $cantidad 			 = $servicio['cantidad'];
+	                $cliente_id 		 = $servicio['cliente_id'];
 
+	                $serv 				 = Servicio::where('id', $servicio_id)->where('propiedad_id', $request->input('propiedad_id'))->first();
+	               	$cliente 			 = Cliente::where('id', $cliente_id)->first();
 
+	                if (!is_null($serv)) {
+		                $servicio_id 	 	 = $serv->id;
+		                $servicio_nombre 	 = $serv->nombre;
+		                $cantidad_disponible = $serv->cantidad_disponible;
 
-		 		$nombre_consumidor = $servicio['nombre_consumidor'];
-		 		$apellido_consumidor = $servicio['apellido_consumidor'];
-		 		$rut_consumidor = $servicio['rut_consumidor'];
-		 		$servicio_id = $servicio['servicio_id'];
-                $cantidad = $servicio['cantidad'];
-                $cliente_id = $servicio['cliente_id'];
+            			if ($serv->categoria_id == 2) {
+               				if (!is_null($cliente)) {
+				               	$reservas 		 = Reserva::where('cliente_id', $cliente->id)->get();
+				               	$reserva  		 = $reservas->last();
+	                			$precio_servicio = PrecioServicio::where('tipo_moneda_id', $reserva->tipo_moneda_id)->where('servicio_id', $servicio_id)->lists('precio_servicio')->first();
+	                			$precio_total    = $precio_servicio * $cantidad;
 
-                $serv = Servicio::where('id', $servicio_id)->where('propiedad_id', $request->input('propiedad_id'))->first();
-               	$cliente = Cliente::where('id', $cliente_id)->first();
+               					if ($cantidad >= 1) {
+               						if ($serv->cantidad_disponible > 0) {
+               							if ($cantidad <= $serv->cantidad_disponible) {
+	               				 			$cantidad_disponible = $cantidad_disponible - $cantidad;
+	                             			$serv->update(array('cantidad_disponible' => $cantidad_disponible));
 
+			                 				$propiedad->consumoClienteServicios()->attach($servicio_id, ['cliente_id' => $cliente_id,'nombre_consumidor' => $nombre_consumidor,'apellido_consumidor' => $apellido_consumidor,'rut_consumidor' => $rut_consumidor,'cantidad' => $cantidad , 'precio_total' => $precio_total]);
 
-
-                if(!is_null($serv)){
-
-                $servicio_id = $serv->id;
-                $servicio_nombre = $serv->nombre;
-                $cantidad_disponible = $serv->cantidad_disponible;
-
-            if($serv->categoria_id == 2){
-
-
-               	if(!is_null($cliente)){
-
-               	$reservas = Reserva::where('cliente_id', $cliente->id)->get();
-               	$reserva = $reservas->last();
-               	
-
-                $precio_servicio = PrecioServicio::where('tipo_moneda_id', $reserva->tipo_moneda_id)->where('servicio_id', $servicio_id)->lists('precio_servicio')->first();
-                $precio_total = $precio_servicio * $cantidad;
-
-               		if($cantidad >= 1){
-
-               			if($serv->cantidad_disponible > 0){
-
-               				if($cantidad <= $serv->cantidad_disponible){
-
-               				 $cantidad_disponible = $cantidad_disponible - $cantidad;
-
-                             $serv->update(array('cantidad_disponible' => $cantidad_disponible));
-
-			                 $propiedad->consumoClienteServicios()->attach($servicio_id, ['cliente_id' => $cliente_id,'nombre_consumidor' => $nombre_consumidor,'apellido_consumidor' => $apellido_consumidor,'rut_consumidor' => $rut_consumidor,'cantidad' => $cantidad , 'precio_total' => $precio_total]);
-
-
-			            	}else{
-
-
-
-			            	$data = array(
-
-                            'msj' => " La cantidad ingresada es mayor al stock del producto",
-                            'errors' => true
-
-
-                            );
-
-                            return Response::json($data, 400);
-
-
-
+				            			} else {
+							            	$data = array(
+					                            'msj' => " La cantidad ingresada es mayor al stock del producto",
+					                            'errors' => true);
+				                            return Response::json($data, 400);
+				            			}
+	           				 		} else {
+			           			    	$data = array(
+					                        'msj' => " El servicio no tiene stock",
+					                        'errors' => true);
+				                        return Response::json($data, 400);
+		           					}
+            					} else {
+			            		    $data = array(
+				                        'msj' => " La cantidad ingresada no corresponde",
+				                        'errors' => true);
+			                        return Response::json($data, 400);
+			            		}
+			            	} else {
+				            	$data = array(
+									'msj' => "Cliente no encontrado",
+									'errors' => true);
+								return Response::json($data, 404);
 			            	}
 
-           				 }else{
+            			} elseif ($serv->categoria_id == 1) {
+			            	$reservas 		 =	Reserva::where('cliente_id', $cliente->id)->get();
+			               	$reserva  		 = $reservas->last();
+	                		$precio_servicio = PrecioServicio::where('tipo_moneda_id', $reserva->tipo_moneda_id)->where('servicio_id', $servicio_id)->lists('precio_servicio')->first();
+	                		$precio_total    = $precio_servicio * $cantidad;
 
-           			    	$data = array(
-
-	                        'msj' => " El servicio no tiene stock",
-	                        'errors' => true
-
-
-	                         );
-
-	                         return Response::json($data, 400);
-
-
-	           				 }
-
-            	}else{
-
-
-	            		    $data = array(
-
-	                        'msj' => " La cantidad ingresada no corresponde",
-	                        'errors' => true
-
-
-	                        );
-
-	                        return Response::json($data, 400);
-
-
-
-			            	}
-
-
-			            	}else{
-
-
-			            	$data = array(
-
-								'msj' => "Cliente no encontrado",
-								'errors' => true
-
-
-							);
-
-							return Response::json($data, 404);
-
-
-			            	}
-
-
-
-            }elseif($serv->categoria_id == 1){
-
-            	$reservas = Reserva::where('cliente_id', $cliente->id)->get();
-               	$reserva = $reservas->last();
-               	
-
-                $precio_servicio = PrecioServicio::where('tipo_moneda_id', $reserva->tipo_moneda_id)->where('servicio_id', $servicio_id)->lists('precio_servicio')->first();
-                $precio_total = $precio_servicio * $cantidad;
-
-
-            	$propiedad->consumoClienteServicios()->attach($servicio_id, ['cliente_id' => $cliente_id,'nombre_consumidor' => $nombre_consumidor,'apellido_consumidor' => $apellido_consumidor,'rut_consumidor' => $rut_consumidor,'cantidad' => $cantidad , 'precio_total' => $precio_total]);
-
-
-
-            }
-
-
-
-                 }else{
-
-                $retorno = array(
-
-                'msj'    => "El servicio no pertenece a la propiedad",
-                'errors' => true
-                );
-
-                return Response::json($retorno, 400);
-
-
-             }
-
-
+	            			$propiedad->consumoClienteServicios()->attach($servicio_id, ['cliente_id' => $cliente_id,'nombre_consumidor' => $nombre_consumidor,'apellido_consumidor' => $apellido_consumidor,'rut_consumidor' => $rut_consumidor,'cantidad' => $cantidad , 'precio_total' => $precio_total]);
+            			}
+                	} else {
+		                $retorno = array(
+			                'msj'    => "El servicio no pertenece a la propiedad",
+			                'errors' => true);
+		                return Response::json($retorno, 400);
+                	}
 		 		}
 
 		 		$retorno = array(
-
                     'msj' => "Servicios ingresados correctamente",
-                    'errors' =>false
-                );
-
+                    'errors' =>false);
                 return Response::json($retorno, 201);
-		 		
-
-
-
-		 	}else{
-
-
+		 	} else {
 		 		$data = array(
-
                     'msj' => "Propiedad no encontrada",
-                    'errors' => true
-
-
-                );
-
-            return Response::json($data, 404);
-
-
-
+                    'errors' => true);
+            	return Response::json($data, 404);
 		 	}
-
-
-
-		 }else{
-
+		} else {
 		 	$retorno = array(
-
                 'msj'    => "La solicitud esta incompleta",
-                'errors' => true
-            );
-
+                'errors' => true);
             return Response::json($retorno, 400);
-
-
-
-
-
-		 }
+		}
 
 	}
 
@@ -381,7 +272,6 @@ public function calificacion(Request $request)
 	$fecha_checkin  = $checkin->format('Y-m-d');
    	
 	if($fecha_checkout == $fecha_hoy || $fecha_checkout < $fecha_hoy){
-
    		$pago = $reserva->pagos->where('metodo_pago_id', 2)->first();
 
    		if (!is_null($pago)) {
@@ -406,7 +296,6 @@ public function calificacion(Request $request)
 		}
 
 	} elseif ($fecha_checkin < $fecha_hoy && $fecha_checkout > $fecha_hoy) {
-
        	$auxFecha = new Carbon($fecha_checkin);
        	$auxFin   = new Carbon($fecha_hoy);
        	$noches   = $auxFin->diffInDays($auxFecha);
@@ -420,7 +309,6 @@ public function calificacion(Request $request)
    		}
 
 		foreach ($huespedes as $huesped) {
-
 			$huesped_id = $huesped;
 			$huesped 	= Huesped::where('id', $huesped_id)->first();
 			$propiedad->calificacionHuespedes()->attach($huesped->id, ['comentario' => $comentario_huesped, 'calificacion' => $calificacion_huesped]);
