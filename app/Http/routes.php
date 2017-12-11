@@ -164,7 +164,6 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::post('ingreso/servicio/cliente', 'ClienteController@ingresoServicio');
 		Route::get('cliente/empresa', 'ClienteController@getClientes');
 		Route::post('pago/consumo', 'ReservaController@pagoConsumo');
-		Route::get('cliente/email', 'ClienteController@getCliente');
 		Route::get('buscar/email', 'ClienteController@buscarEmail');
 		Route::get('buscar/rut', 'ClienteController@buscarRut');
 		Route::get('disponibilidad', 'HabitacionController@disponibilidad');
