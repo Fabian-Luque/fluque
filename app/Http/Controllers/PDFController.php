@@ -205,6 +205,15 @@ class PDFController extends Controller
             return Response::json($retorno, 400);
         }
 
+        if ($request->has('caja_resumen')) {
+            $caja_resumen = $request->input('caja_resumen');
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia caja_resumen",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
         $caja  = Caja::where('id', $caja_id)->with('montos.tipoMonto', 'montos.tipoMoneda')->with('user')->with('estadoCaja')->with('pagos.tipoComprobante','pagos.metodoPago', 'pagos.tipoMoneda', 'pagos.reserva')->with('egresosCaja.tipoMoneda', 'egresosCaja.egreso')->first();
 
         if (!is_null($caja)) {
@@ -264,7 +273,11 @@ class PDFController extends Controller
 
             //return ['propiedad' => [$propiedad], 'detalle_caja' => [$caja], 'monedas' => $monedas, 'metodos_pago' => $ingresos_metodo_pago];
 
-            $pdf = PDF::loadView('pdf.caja', ['propiedad' => [$propiedad], 'detalle_caja' => [$caja], 'monedas' => $monedas, 'metodos_pago' => $ingresos_metodo_pago]);
+            if ($caja_resumen == 1) {
+                $pdf = PDF::loadView('pdf.caja_resumen', ['propiedad' => [$propiedad], 'detalle_caja' => [$caja], 'monedas' => $monedas, 'metodos_pago' => $ingresos_metodo_pago]);
+            } else {
+                $pdf = PDF::loadView('pdf.caja', ['propiedad' => [$propiedad], 'detalle_caja' => [$caja], 'monedas' => $monedas, 'metodos_pago' => $ingresos_metodo_pago]);
+            }
 
             return $pdf->download('archivo.pdf');
 
