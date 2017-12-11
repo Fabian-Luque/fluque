@@ -13,11 +13,17 @@
     @endforeach
 </ul>
 
+
+
 {!! Form::open(['route' => array('crear.user', ), 'autocomplete' => 'off']) !!}
-<div class="container" style="padding-top: 6%;">   
-  <div class="row">
-    <div class="col-sm-6">
-      <div style="padding-left: 30%;">
+<center>
+  <div class="container" style="padding-top: 6%;">   
+  <div class="row" style="height: 100%;">
+      
+    <div class="col-lg-11 col-md-offset-1">
+      <center>
+            <div class="col-sm-3">
+      <div>
       <div class="form-group has-feedback">
         {!! Form::label('Nombre') !!}
         {!! 
@@ -86,15 +92,10 @@
         !!}
       </div>
 
-      <div class="form-group has-feedback">
-        {!! Form::label('Latitud') !!}
-        <input type="number" name="latitud" class="form-control" step="any" placeholder="Latitud Propiedad" required/>
-      </div>
-    
       </div>
     </div>
-    <div class="col-sm-6">
-      <div style="padding-right: 30%;">
+    <div class="col-sm-3">
+      <div >
         <div class="form-group has-feedback">
           {!! Form::label('Tipo Propiedad') !!}
           <select type="text" class="form-control" name="tipo_propiedad_id">
@@ -148,7 +149,13 @@
           !!}
         </div>
 
-        <div class="form-group has-feedback">
+        
+      </div>
+    </div>
+
+    <div class="col-sm-3">
+      <div>
+            <div class="form-group has-feedback">
           {!! Form::label('Tipo Cuenta') !!}
           <select type="text" class="form-control" name="tipo_cuenta">
                 <option value="1">
@@ -164,20 +171,54 @@
         </div>
 
         <div class="form-group has-feedback">
-        {!! Form::label('Longitud') !!}
-        <input type="number" name="longitud" class="form-control" step="any" placeholder="Longitud Propiedad" required/>
+          {!! Form::label('Periodo') !!}
+          <select type="text" class="form-control" name="periodo">
+                <option value="day">
+                  Diario
+                </option>
+                <option value="week">
+                  Semanal
+                </option>
+                <option value="month">
+                  Mensual
+                </option>
+                <option value="year">
+                  Anual
+                </option>
+          </select>
+        </div>
+
+        <div class="form-group has-feedback">
+          {!! Form::label('Longitud') !!}
+          <input type="number" name="longitud" class="form-control" step="any" placeholder="Longitud Propiedad" required/>
+        </div>
+
+        <div class="form-group has-feedback">
+          {!! Form::label('Latitud') !!}
+          <input type="number" name="latitud" class="form-control" step="any" placeholder="Latitud Propiedad" required/>
+        </div>
+        
       </div>
-      </div>
+    </div>
+      </center>
     </div>
   </div>
 </div>
-<div class="form-group has-feedback" style="padding-left:35%; padding-right:35%; padding-top: 1%;">
-    {!! Form::submit(
-      'Registrar', 
-      array(
-        'class'=>'btn btn-primary btn-lg btn-block'
-      ))
-    !!}
+</center>
+<div class="container-fluid" style="padding-right: 30%; padding-left: 30%;">
+  <div class="row" style="margin-right:0;margin-left:0">
+    <div class="row text-center">
+      {!! Form::submit(
+        'Registrar', 
+        array(
+          'class'=>'btn btn-primary btn-lg btn-block'
+         ))
+      !!}    
+    </div>
+  </div>
 </div>
 {!! Form::close() !!}
 @endsection
+
+
+

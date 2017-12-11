@@ -25,7 +25,7 @@ use Illuminate\Support\Facades\Validator;
 class UserDashController extends Controller {
 
     public function CreateUser(Request $request) {
-        if ($request->has('name') && $request->has('email') && $request->has('password') && $request->has('phone') && $request->has('nombre') && $request->has('direccion') && $request->has('tipo_propiedad_id') && $request->has('tipo_cuenta') && $request->has('ciudad') && $request->has('numero_habitaciones') && $request->has('latitud') && $request->has('longitud')) {
+        if ($request->has('name') && $request->has('email') && $request->has('password') && $request->has('phone') && $request->has('nombre') && $request->has('direccion') && $request->has('tipo_propiedad_id') && $request->has('tipo_cuenta') && $request->has('ciudad') && $request->has('numero_habitaciones') && $request->has('latitud') && $request->has('longitud') && $request->has('periodo')) {
             $us = User::where('email',$request->email)->first();
             if (!isset($us->email)) {
                 $usuario = new User();
@@ -118,7 +118,7 @@ class UserDashController extends Controller {
                                         config('app.PRECIO_X_HAB_QVO')
                                     ),
                                     'currency' => 'CLP',
-                                    'interval' => 'year',
+                                    'interval' => $request->periodo,
                                     'trial_period_days' => 15
                                 ],
                                 'headers' => [
