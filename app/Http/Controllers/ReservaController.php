@@ -1824,131 +1824,90 @@ class ReservaController extends Controller
     }
 
 
-    public function calendario(Request $request){
-
-        $id = $request->input('propiedad_id');
-        $fecha_inicio = $request->input('fecha_inicio');
-        $fecha_fin    = $request->input('fecha_fin');
-        $ancho_calendario = $request->input('ancho_calendario');
-        $ancho_celdas = $request->input('ancho_celdas');
-        $cantidad_dias = $request->input('cantidad_dias');
-        $calendario = [];
-
+    public function calendario(Request $request)
+    {
+        if ($request->has('id') && $request->has('fecha_inicio') && $request->has('fecha_fin') && $request->has('ancho_calendario') && $request->has('ancho_celdas') && $request->has('cantidad_dias')) {
+            $id               = $request->input('propiedad_id');
+            $fecha_inicio     = $request->input('fecha_inicio');
+            $fecha_fin        = $request->input('fecha_fin');
+            $ancho_calendario = $request->input('ancho_calendario');
+            $ancho_celdas     = $request->input('ancho_celdas');
+            $cantidad_dias    = $request->input('cantidad_dias');
+            $calendario       = [];
+        } else {
+            $retorno = array(
+                'msj'    => "La solicitud esta incompleta",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
 
         $fechas = [$fecha_inicio, $fecha_fin];
-
-        $tipos = TipoHabitacion::whereHas('habitaciones', function($query) use($id){
-
-                    $query->where('propiedad_id', $id);
-
+        $tipos  = TipoHabitacion::whereHas('habitaciones', function($query) use($id){
+            $query->where('propiedad_id', $id);
         })->with(['habitaciones' => function ($q){
-
-        $q->select('id', 'nombre', 'tipo_habitacion_id');}])->get();
-
+            $q->select('id', 'nombre', 'tipo_habitacion_id');}])->get();
 
         $reservas = Reserva::select('reservas.id', 'checkin', 'checkout', 'habitacion_id', 'estado_reserva_id', 'cliente_id', 'nombre', 'apellido', 'noches')->whereHas('habitacion', function($query) use($id){
-
-                   $query->where('propiedad_id', $id);
-       })
-       ->join('clientes', 'clientes.id','=','cliente_id')
-       ->whereBetween('checkin', $fechas)->whereIn('estado_reserva_id', [1,2,3,4,5])->get();
-
-
-
+            $query->where('propiedad_id', $id);})
+        ->join('clientes', 'clientes.id','=','cliente_id')
+        ->whereBetween('checkin', $fechas)->whereIn('estado_reserva_id', [1,2,3,4,5])->get();
 
         $reservas_checkout = Reserva::select('reservas.id', 'checkin', 'checkout', 'habitacion_id', 'estado_reserva_id', 'cliente_id', 'nombre', 'apellido', 'noches')->whereHas('habitacion', function($query) use($id){
-
-                   $query->where('propiedad_id', $id);
-       })
-       ->join('clientes', 'clientes.id','=','cliente_id')
-       ->whereBetween('checkout', $fechas)->whereIn('estado_reserva_id', [1,2,3,4,5])->get();
-
+            $query->where('propiedad_id', $id);})
+        ->join('clientes', 'clientes.id','=','cliente_id')
+        ->whereBetween('checkout', $fechas)->whereIn('estado_reserva_id', [1,2,3,4,5])->get();
 
         $habitaciones_tipo = [];
+
         foreach ($tipos as $tipo) {
-                
             $habitaciones = $tipo->habitaciones;
-            $nombre_tipo = $tipo->nombre;
-
-            $nombre = [ 'nombre' => $nombre_tipo, 'header' => 1];
+            $nombre_tipo  = $tipo->nombre;
+            $nombre       = [ 'nombre' => $nombre_tipo, 'header' => 1];
             array_push($habitaciones_tipo, $nombre);
-
             foreach ($habitaciones as $habitacion) {
-                
                 array_push($habitaciones_tipo, $habitacion);
-
             }
         }
 
         $reservas_calendario = [];
-
        
         foreach ($reservas as $reserva) {
-            /*return $reserva;*/
-       
-            $inicio   = new Carbon($fecha_inicio);
-            
-            $checkout = $reserva->checkout;
-
-            $fin      = new Carbon($checkout);
-
-            $diferencia = $inicio->diffInDays($fin);
-
+            $inicio           = new Carbon($fecha_inicio);
+            $checkout         = $reserva->checkout;
+            $fin              = new Carbon($checkout);
+            $diferencia       = $inicio->diffInDays($fin);
             $checkin          = new Carbon($reserva->checkin);
             $posicion_checkin = $inicio->diffInDays($checkin) + 1;
-            if($diferencia <= ($cantidad_dias -1 )){
-
-
-
+            if ($diferencia <= ($cantidad_dias -1 )) {
                 $noches         = $reserva->noches;
                 $reserva->left  = ($posicion_checkin * $ancho_celdas)-30;
-
                 $reserva->right = (($ancho_calendario - $reserva->left - ($noches * $ancho_celdas)) + $ancho_celdas)-60;
-
                 array_push($reservas_calendario, $reserva);
-             }else{
-
-
-                $reserva->left = ($posicion_checkin * $ancho_celdas)-30;
-
+             } else {
+                $reserva->left  = ($posicion_checkin * $ancho_celdas)-30;
                 $reserva->right = 0;
-
-                
-
-
-            array_push($reservas_calendario, $reserva);
-
-
+                array_push($reservas_calendario, $reserva);
             }
-
-
-
         }
 
-            foreach ($reservas_checkout as $reserva_checkout) {
+        foreach ($reservas_checkout as $reserva_checkout) {
+            $checkin           = $reserva_checkout->checkin;
+            $in                = new Carbon($checkin);
+            $inicio            = new Carbon($fecha_inicio);
+            $checkout          = new Carbon($reserva_checkout->checkout);
+            $posicion_checkout = $checkout->diffInDays($inicio) + 1;
 
-                $checkin = $reserva_checkout->checkin;
-                $in  = new Carbon($checkin);
-                $inicio   = new Carbon($fecha_inicio);
+            if ($in < $inicio ) {
+                $reserva_checkout->left  = 0;
+                $reserva_checkout->right = (($ancho_calendario - ( $ancho_celdas * $posicion_checkout)) + $ancho_celdas)-30;
+                array_push($reservas_calendario, $reserva_checkout);
+            }
+        }
 
-                $checkout = new Carbon($reserva_checkout->checkout);
-                $posicion_checkout = $checkout->diffInDays($inicio) + 1;
+        array_push($calendario, $habitaciones_tipo);
+        array_push($calendario, $reservas_calendario);
 
-                    if ($in < $inicio ) {
-
-                    $reserva_checkout->left = 0;
-                    $reserva_checkout->right = (($ancho_calendario - ( $ancho_celdas * $posicion_checkout)) + $ancho_celdas)-30;
-
-                    array_push($reservas_calendario, $reserva_checkout);
-
-                    }
-                }
-
-            array_push($calendario, $habitaciones_tipo);
-            array_push($calendario, $reservas_calendario);
-
-         return $calendario;
-
+        return $calendario;
 
     }
 

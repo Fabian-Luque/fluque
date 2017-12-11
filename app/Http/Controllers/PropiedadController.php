@@ -476,7 +476,7 @@ class PropiedadController extends Controller
             $retorno = array(
                'msj'    => "No se envia año actual",
                'errors' => true);
-            return Response::json($retorno, 404);
+            return Response::json($retorno, 400);
         }
 
         $moneda_propiedad = $propiedad->tipoMonedas;
