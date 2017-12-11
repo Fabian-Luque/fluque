@@ -248,11 +248,16 @@ class QVOController extends Controller {
         } else {
         	$propiedad = Propiedad::find($request->prop_id);
 			try {
+				$qvo_user = QvoUser::where(
+					'prop_id',
+					$request->prop_id
+				)->first();
 				$client = new Client();
 				$body = $client->request(
 					'PUT',  
 					config('app.qvo_url_base').'/customers', [
 						'json' => [
+							'customer_id' => $qvo_user->qvo_id,
 							'email' => $propiedad->user[0]->email,
 							'name'  => $propiedad->nombre,
 							'default_payment_method_id' => $request->tarjeta_id
