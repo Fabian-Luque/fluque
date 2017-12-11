@@ -252,6 +252,7 @@ class QVOController extends Controller {
 					'prop_id',
 					$request->prop_id
 				)->first();
+				dd($qvo_user->qvo_id);
 				$client = new Client();
 				$body = $client->request(
 					'PUT',  
