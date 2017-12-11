@@ -213,13 +213,17 @@ class QVOController extends Controller {
         return Response::json($retorno);
 	}
 
-
 	public function getInfoQVO(Request $request) {
 		if ($request->has('prop_id')) {
 			$propiedad = Propiedad::find($request->prop_id);
 
-			$retorno['errors'] = false;
-        	$retorno['msj']    = $propiedad->QVO;
+        	if (isset($propiedad->id)) {
+                $retorno['errors'] = false;
+                $retorno['msj']    = $propiedad->QVO;
+            } else {
+                $retorno['errors'] = true;
+                $retorno['msj']    = "La propiedad no se encuentra registrada en nuestra Base de datos";
+            }
 		} else {
         	$retorno['errors'] = true;
         	$retorno['msj']    = "Datos requeridos";
