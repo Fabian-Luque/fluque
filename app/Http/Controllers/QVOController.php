@@ -254,11 +254,10 @@ class QVOController extends Controller {
 				)->first();
 
 				$client = new Client();
-				$body = $client->request(
+				$body = $client->request( 
 					'PUT',  
-					config('app.qvo_url_base').'/customers', [
+					config('app.qvo_url_base').'/customers/'.$qvo_user->qvo_id, [
 						'json' => [
-							'customer_id' => $qvo_user->qvo_id,
 							'email' => $propiedad->user[0]->email,
 							'name'  => $propiedad->nombre,
 							'default_payment_method_id' => $request->tarjeta_id
