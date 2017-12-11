@@ -56,7 +56,11 @@
                                         <a href="upr" name="b-lista" value="{{ $prop->id }}" class="btn btn-info btn-xs">Editar</a>
                                     </td>
                                     <td> 
-                                        <a href="qvo" name="b-lista" value="{{ $prop->id }}" class="btn btn-info btn-xs">QVO</a>
+                                        @if(empty($prop->qvo))
+                                            <a href="qvo" name="b-lista" value="{{ $prop->id }}" class="btn btn-info btn-xs">QVO</a>
+                                        @else
+                                            si
+                                        @endif
                                     </td>
    								</tr>
    							@endforeach

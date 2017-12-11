@@ -301,6 +301,12 @@ class UserDashController extends Controller {
                 )
             );
 
+            if (isset($prop->QVO)) {
+                $prop->qvo = true;
+            } else {
+                $prop->qvo = false;
+            }
+
             if (isset($prop)) {
                 $prop->tipo_propiedad = TipoPropiedad::find(
                     $prop->tipo_propiedad_id
