@@ -1826,7 +1826,7 @@ class ReservaController extends Controller
 
     public function calendario(Request $request)
     {
-        if ($request->has('id') && $request->has('fecha_inicio') && $request->has('fecha_fin') && $request->has('ancho_calendario') && $request->has('ancho_celdas') && $request->has('cantidad_dias')) {
+        if ($request->has('propiedad_id') && $request->has('fecha_inicio') && $request->has('fecha_fin') && $request->has('ancho_calendario') && $request->has('ancho_celdas') && $request->has('cantidad_dias')) {
             $id               = $request->input('propiedad_id');
             $fecha_inicio     = $request->input('fecha_inicio');
             $fecha_fin        = $request->input('fecha_fin');
