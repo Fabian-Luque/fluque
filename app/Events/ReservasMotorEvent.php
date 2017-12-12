@@ -12,10 +12,12 @@ class ReservasMotorEvent extends Event {
 
     public $data;
 
-    public function __construct($reserva, $propiedad_id) {
-        $this->data = array(
+    public function __construct($propiedad_id) {
+        $this->data = $propiedad_id;
+        /*$this->data = array(
             'propiedad_id' => $propiedad_id
         );
+        */
     }
 
     public function broadcastOn() {
