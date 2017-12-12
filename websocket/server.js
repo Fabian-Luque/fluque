@@ -18,7 +18,8 @@ io.on(
 r.on('message', function(channel, messageStr){
     var message = JSON.parse(messageStr);
     console.log(message);
-    io.emit('message123', message);    
+    console.log(message.data.propiedad_id);
+    io.emit('message' + message.data.propiedad_id, message);    
 });
 
 http.listen(3000, function(){

@@ -11,7 +11,7 @@ class QvoUser extends Model {
     	'id', 
     	'prop_id', 
     	'qvo_id',
-        'solsub_id',
+        'solsub_id', // id de subscripcion a plan 
     	'created_at', 
     	'updated_at'
     ];

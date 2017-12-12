@@ -323,4 +323,49 @@ class QVOController extends Controller {
 		}
 		return Response::json($retorno); 
 	}
+
+	//DELETE /subscriptions/{subscription_id}
+	public function SubscripcionPlanCancelar(Request $request) { 
+  		$validator = Validator::make(
+        	$request->all(), 
+        	array(
+            	'prop_id' => 'required',	 
+           	)
+        );
+
+        if ($validator->fails()) {
+        	$retorno['errors'] = true;
+        	$retorno["msj"] = $validator->errors();
+        } else {
+        	$propiedad = Propiedad::find($request->prop_id);
+			try {
+				$qvo_user = QvoUser::where(
+					'prop_id',
+					$request->prop_id
+				)->first();
+
+				$client = new Client();
+				$body = $client->request( 
+					'DELETE',  
+					config('app.qvo_url_base').'/subscriptions/'.$qvo_user->solsub_id,[
+						'json' => []
+						,
+						'headers' => [
+							'Authorization' => 'Bearer '.config('app.qvo_key')
+						]
+					]
+				)->getBody();
+	
+				$response = json_decode($body);
+				$retorno['errors'] = false;
+				$retorno["msj"] = $response;
+			} catch (GuzzleException $e) {
+				$retorno['errors'] = true;
+				$retorno["msj"] = json_decode(
+					(string)$e->getResponse()->getBody()
+				);
+			}
+		}
+		return Response::json($retorno); 
+	}
 }
