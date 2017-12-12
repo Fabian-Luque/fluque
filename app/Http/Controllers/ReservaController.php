@@ -1423,7 +1423,7 @@ class ReservaController extends Controller
                                         }
                                         $pago->reserva_id            = $reserva->id;
                                         $pago->caja_id               = $caja_abierta->id;
-                                        // $pago->save();
+                                        $pago->save();
                                   
                                     } else {
                                         $pago                        = new Pago();
@@ -1439,7 +1439,7 @@ class ReservaController extends Controller
                                         }
                                         $pago->reserva_id            = $reserva->id;
                                         $pago->caja_id               = $caja_abierta->id;
-                                        // $pago->save();
+                                        $pago->save();
                                     }
 
                                     $pagos_reserva = $reserva->pagos->where('metodo_pago_id', 2)->first();
