@@ -205,6 +205,15 @@ class PDFController extends Controller
             return Response::json($retorno, 400);
         }
 
+        if ($request->has('caja_resumen')) {
+            $caja_resumen = $request->input('caja_resumen');
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia caja_resumen",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
         $caja  = Caja::where('id', $caja_id)->with('montos.tipoMonto', 'montos.tipoMoneda')->with('user')->with('estadoCaja')->with('pagos.tipoComprobante','pagos.metodoPago', 'pagos.tipoMoneda', 'pagos.reserva')->with('egresosCaja.tipoMoneda', 'egresosCaja.egreso')->first();
 
         if (!is_null($caja)) {
@@ -214,7 +223,9 @@ class PDFController extends Controller
                 $egreso  = 0;
                 foreach ($caja->pagos as $pago) {
                     if ($tipo_moneda->id == $pago->tipo_moneda_id) {
-                        $ingreso += $pago->monto_equivalente;
+                        if ($pago->metodo_pago_id == 1 || $pago->metodo_pago_id == 4) {
+                            $ingreso += $pago->monto_equivalente;
+                        }
                     }
                 }
                 foreach ($caja->egresosCaja as $egreso_caja) {
@@ -260,9 +271,13 @@ class PDFController extends Controller
             $data['monedas']      = $monedas;
             $data['metodos_pago'] = $ingresos_metodo_pago;
 
-            // return ['propiedad' => [$propiedad], 'detalle_caja' => [$caja], 'monedas' => $monedas, 'metodos_pago' => $ingresos_metodo_pago];
+            //return ['propiedad' => [$propiedad], 'detalle_caja' => [$caja], 'monedas' => $monedas, 'metodos_pago' => $ingresos_metodo_pago];
 
-            $pdf = PDF::loadView('pdf.caja', ['propiedad' => [$propiedad], 'detalle_caja' => [$caja], 'monedas' => $monedas, 'metodos_pago' => $ingresos_metodo_pago]);
+            if ($caja_resumen == 1) {
+                $pdf = PDF::loadView('pdf.caja_resumen', ['propiedad' => [$propiedad], 'detalle_caja' => [$caja], 'monedas' => $monedas, 'metodos_pago' => $ingresos_metodo_pago]);
+            } else {
+                $pdf = PDF::loadView('pdf.caja', ['propiedad' => [$propiedad], 'detalle_caja' => [$caja], 'monedas' => $monedas, 'metodos_pago' => $ingresos_metodo_pago]);
+            }
 
             return $pdf->download('archivo.pdf');
 
@@ -1138,7 +1153,7 @@ class PDFController extends Controller
     }
 
 
-   public function pagos(Request $request)
+   public function pagos(Request $request, Pago $pago)
    {
         if ($request->has('propiedad_id')) {
             $propiedad_id = $request->input('propiedad_id');
@@ -1165,24 +1180,73 @@ class PDFController extends Controller
         }
 
         if ($request->has('fecha_fin')) {
-/*            $fin             = new Carbon($request->input('fecha_fin'));
-            $fechaFin        = $fin->addDay();
-            $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $fechaFin, $pais)->tz('UTC');*/
-
             $fin             = new Carbon($request->input('fecha_fin'));
-
             $fechaFin        = $fin->addDay();
             $fin_fecha       = $fechaFin->startOfDay();
-
             $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $fechaFin, $pais)->tz('UTC');
         } else {
             $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $inicio, $pais)->tz('UTC')->addDay();
         }
 
-        $pagos = Pago::select('id' ,'created_at', 'monto_equivalente' ,'tipo_moneda_id')
-        ->whereHas('reserva.habitacion', function($query) use($propiedad_id){
+        $pago = $pago->newQuery();
+
+        $pago->whereHas('reserva.habitacion', function($query) use($propiedad_id, $fecha_inicio, $fecha_fin){
             $query->where('propiedad_id', $propiedad_id);})
-        ->where('created_at','>=' , $fecha_inicio)->where('created_at', '<' , $fecha_fin)
+        ->where('pagos.created_at','>=' , $fecha_inicio)
+        ->where('pagos.created_at', '<' , $fecha_fin);
+
+        $indicador = $request->get('indicador');
+
+        if ($indicador == 1) {
+            
+            if ($request->has('tipo_comprobante_id')) {
+                $tipos_comprobante = $request->get('tipo_comprobante_id');
+
+                $pago->whereHas('reserva.habitacion', function($query) use($propiedad_id, $fecha_inicio, $fecha_fin){
+                $query->where('propiedad_id', $propiedad_id);})
+                ->where(function ($query) use ($tipos_comprobante) {
+                    $query->where(function ($query) use ($tipos_comprobante) {
+                        $query->whereIn('tipo_comprobante_id',  $tipos_comprobante);
+                        $query->orWhere('tipo_comprobante_id', '=', null);
+                    });              
+                });
+            }
+            
+        } else {
+
+            if ($request->has('tipo_comprobante_id')) {
+                $tipos_comprobante = $request->get('tipo_comprobante_id');
+
+                $pago->whereHas('reserva.habitacion', function($query) use($propiedad_id, $fecha_inicio, $fecha_fin){
+                $query->where('propiedad_id', $propiedad_id);})
+                ->where(function ($query) use ($tipos_comprobante) {
+                    $query->where(function ($query) use ($tipos_comprobante) {
+                        $query->whereIn('tipo_comprobante_id',  $tipos_comprobante);
+                    });              
+                });
+            }
+        }
+        
+        if ($request->has('metodo_pago_id')) {
+            $metodos_pago = $request->get('metodo_pago_id');
+
+            $pago->whereHas('reserva.habitacion', function($query) use($propiedad_id){
+                $query->where('propiedad_id', $propiedad_id);
+            })->where(function ($query) use ($metodos_pago) {
+                $query->where(function ($query) use ($metodos_pago) {
+                $query->whereIn('metodo_pago_id', $metodos_pago);
+            });
+            });
+        }
+
+
+        $pagos = $pago->select('pagos.id', 'reservas.id as reserva_id' ,'pagos.created_at','numero_reserva','numero_operacion', 'tipo' ,'monto_equivalente','numero_cheque', 'monto_equivalente','metodo_pago.nombre as nombre_metodo_pago' , 'metodo_pago_id','tipo_moneda.nombre as nombre_tipo_moneda','pagos.tipo_moneda_id', 'cantidad_decimales', 'tipo_comprobante_id')
+        ->with(['tipoComprobante' => function ($q){
+            $q->select('id', 'nombre');}])
+        ->where('pagos.created_at','>=' , $fecha_inicio)->where('pagos.created_at', '<' , $fecha_fin)
+        ->join('reservas' , 'reservas.id', '=' , 'pagos.reserva_id')
+        ->join('tipo_moneda', 'tipo_moneda.id', '=' , 'pagos.tipo_moneda_id')
+        ->join('metodo_pago', 'metodo_pago.id', '=' , 'pagos.metodo_pago_id')
         ->get();
 
         $cantidad_noches    = ($fecha_inicio->diffInDays($fecha_fin)) ;
@@ -1198,26 +1262,24 @@ class PDFController extends Controller
             array_push($montos, $m);
         }
 
-
         $auxFecha  = new Carbon($request->input('fecha_inicio'));
         for( $i = 0 ; $i <= $cantidad_noches; $i++){
 
             $fecha      = $auxFecha->format('Y-m-d');
-            $fechas[$i] = ['fecha' => $fecha, 'moneda' => $montos];
+            $fechas[$i] = ['fecha' => $fecha, 'moneda' => $montos, 'ps' => []];
 
             $auxFecha->addDay();
         }
 
-
         $ini  = new Carbon($request->input('fecha_inicio'));
         $inc  = $ini->startOfDay();
-
 
         foreach ($pagos as $pago) {
             $created_at  = new Carbon($pago->created_at);
             $crat        = $created_at->startOfDay();
             $dif         = $inc->diffInDays($crat); 
             $largo       = sizeof($fechas[$dif]['moneda']);
+            array_push($fechas[$dif]['ps'], $pago);
 
             for( $i = 0 ; $i < $largo ; $i++){
                 if ($fechas[$dif]['moneda'][$i]['id'] == $pago->tipo_moneda_id ){
@@ -1228,7 +1290,7 @@ class PDFController extends Controller
 
         $fechas_montos = [];
         foreach ($fechas as $fecha) {
-            $largo = count($fecha);
+            $largo = count($fecha) - 1;
             for( $i = 0 ; $i < $largo ; $i++){
                 if ($fecha['moneda'][$i]['suma'] != 0 ){
                     if (!in_array($fecha, $fechas_montos)) {
@@ -1241,7 +1303,7 @@ class PDFController extends Controller
         $montos_totales = [];
         foreach ($propiedad->tipoMonedas as $moneda) {
             $suma = 0;
-            foreach ($fechas_montos as $key => $fechas) {
+            foreach ($fechas_montos as $fechas) {
                 foreach ($fechas['moneda'] as $m) {
                     if ($m['nombre'] == $moneda->nombre) {
                         $suma += $m['suma'];

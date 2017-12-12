@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\DashControllers;
 
 use App\Estadocuenta;
-use App\Events\ReservasMotorEvent;
 use App\Http\Controllers\Controller;
 use App\Propiedad;
 use App\TipoPropiedad;
@@ -28,150 +27,162 @@ class UserDashController extends Controller {
         if ($request->has('name') && $request->has('email') && $request->has('password') && $request->has('phone') && $request->has('nombre') && $request->has('direccion') && $request->has('tipo_propiedad_id') && $request->has('tipo_cuenta') && $request->has('ciudad') && $request->has('numero_habitaciones') && $request->has('latitud') && $request->has('longitud') && $request->has('periodo')) {
             $us = User::where('email',$request->email)->first();
             if (!isset($us->email)) {
-                $usuario = new User();
-                $usuario->name                  = $request->name;
-                $usuario->email                 = $request->email;
-                $usuario->password              = $request->password;
-                $usuario->phone                 = $request->phone;
-                $usuario->rol_id                = 1;
-                $usuario->estado_id             = 1;
-                $usuario->save();
+                $codigo = str_random(50);
+                $prop   = Propiedad::where('codigo', $codigo)->first();
 
-                $propiedad                      = new Propiedad();
-                $propiedad->id                  = $usuario->id;
-                $propiedad->nombre              = $request->nombre;
-                $propiedad->direccion           = $request->direccion;
-                $propiedad->ciudad              = $request->ciudad;
-                $propiedad->numero_habitaciones = $request->numero_habitaciones;
-                $propiedad->tipo_propiedad_id   = $request->tipo_propiedad_id;
-                $propiedad->estado_cuenta_id    = $request->tipo_cuenta;
-                $propiedad->save();
+                if (is_null($prop)) {
+                    $usuario = new User();
+                    $usuario->name = $request->name;
+                    $usuario->email = $request->email;
+                    $usuario->password = $request->password;
+                    $usuario->phone = $request->phone;
+                    $usuario->rol_id = 1;
+                    $usuario->estado_id = 1;
+                    $usuario->save();
 
-                $usuario->propiedad()->attach($propiedad->id);
+                    $propiedad = new Propiedad();
+                    $propiedad->nombre = $request->nombre;
+                    $propiedad->direccion = $request->direccion;
+                    $propiedad->ciudad = $request->ciudad;
+                    $propiedad->numero_habitaciones = $request->numero_habitaciones;
+                    $propiedad->tipo_propiedad_id = $request->tipo_propiedad_id;
+                    $propiedad->estado_cuenta_id = $request->tipo_cuenta;
+                    $propiedad->codigo = $codigo;
+                    $propiedad->save();
 
-                $ubicacion           = new UbicacionProp();
-                $ubicacion->prop_id  = $propiedad->id;
-                $ubicacion->location = new Point(
-                    $request->latitud, 
-                    $request->longitud
-                );
-                $ubicacion->save();
+                    $usuario->propiedad()->attach($propiedad->id);
 
-                $user = $usuario;
-        $client = new Client();
+                    $ubicacion           = new UbicacionProp();
+                    $ubicacion->prop_id  = $propiedad->id;
+                    $ubicacion->location = new Point(
+                        $request->latitud, 
+                        $request->longitud
+                    );
+                    $ubicacion->save();
 
-        \Log::info($user);
-        if (!is_null($user)) {
-            \Log::info("si es nulo\n");
-            try {
-                \Log::info("peticion http\n");
-                $body = $client->request(
-                    'POST',  
-                    config('app.qvo_url_base').'/customers', [
-                        'json' => [
-                            'email' => $user->email,
-                            'name'  => $user->propiedad[0]->nombre
-                        ],
-                        'headers' => [
-                            'Authorization' => 'Bearer '.config('app.qvo_key')
-                        ]
-                    ]
-                )->getBody();
-    
+                    $user = $usuario;
+                    $client = new Client();
 
-                $response = json_decode($body);
-                $retorno["msj"] = $response;
+                    $data['accion'] = 'Crear usuario';
+                    $data['msg'] = 'Usuario creado exitosamente';
 
-                $qvo_user = new QvoUser();
-                $qvo_user->prop_id = $user->propiedad[0]->id;
-                $qvo_user->qvo_id  = $response->id;
-                
-                if ($qvo_user->save()) {
-                    try {
-                        $body = $client->request(
-                            'POST', 
-                            config('app.DOLAR_PRICE_API')
-                        )->getBody();
-            
-                        $dolar_price = json_decode($body); 
-                        $dolar_price = intval($dolar_price->quotes->USDCLP);
-                    } catch (GuzzleException $e) {
-                        $dolar_price = 600;
-                    }
-
-                    if ($user->propiedad[0]->numero_habitaciones > 27) {
-                        $precio = round($dolar_price * 27);    
-                    } else {
-                        $precio = round(
-                            $dolar_price * $user->propiedad[0]->numero_habitaciones
-                        );
-                    }
-
-                    try {
-                        $body = $client->request(
-                            'POST',  
-                            config('app.qvo_url_base').'/plans', [
-                                'json' => [
-                                    'id' => $user->propiedad[0]->id,
-                                    'name' => $user->propiedad[0]->nombre,
-                                    'price' => $precio * intval(
-                                        config('app.PRECIO_X_HAB_QVO')
-                                    ),
-                                    'currency' => 'CLP',
-                                    'interval' => $request->periodo,
-                                    'trial_period_days' => 15
-                                ],
-                                'headers' => [
-                                    'Authorization' => 'Bearer '.config('app.qvo_key')
-                                ]
-                            ]
-                        )->getBody();
-
-                        $response = json_decode($body);
-
+                    if (!is_null($propiedad->id)) {
                         try {
+                            $body = $client->request(
+                                'POST',  
+                                config('app.qvo_url_base').'/customers', [
+                                    'json' => [
+                                        'email' => $propiedad->user[0]->email,
+                                        'name'  => $propiedad->nombre
+                                    ],
+                                    'headers' => [
+                                        'Authorization' => 'Bearer '.config('app.qvo_key')
+                                    ]
+                                ]
+                            )->getBody();
+    
+                            $response = json_decode($body);
+                            $retorno['errors'] = false;
+                            $retorno["msj"] = $response;
+
+                            $qvo_user = new QvoUser();
+                            $qvo_user->prop_id = $propiedad->id;
+                            $qvo_user->qvo_id  = $response->id;
+                            $qvo_user->save();
+
+                            try {
                                 $body = $client->request(
                                     'POST', 
-                                    config('app.qvo_url_base').'/subscriptions', [
+                                    config('app.DOLAR_PRICE_API')
+                                )->getBody();
+            
+                                $dolar_price = json_decode($body); 
+                                $dolar_price = intval($dolar_price->quotes->USDCLP);
+                            } catch (GuzzleException $e) {
+                                $dolar_price = 600;
+                            }
+
+                            if ($propiedad->numero_habitaciones > 27) {
+                                $precio = round($dolar_price * 27);    
+                            } else {
+                                $precio = round(
+                                    $dolar_price * $propiedad->numero_habitaciones
+                                );
+                            }
+
+                            try {
+                                $body = $client->request(
+                                    'POST',  
+                                    config('app.qvo_url_base').'/plans', [
+                                        'json' => [
+                                            'id' => $propiedad->id,
+                                            'name' => $propiedad->nombre,
+                                            'price' => $precio * intval(
+                                                config('app.PRECIO_X_HAB_QVO')
+                                            ),
+                                            'currency' => 'CLP',
+                                            'interval' => 'year',
+                                            'trial_period_days' => 15
+                                        ],
+                                        'headers' => [
+                                            'Authorization' => 'Bearer '.config('app.qvo_key')
+                                        ]
+                                    ]
+                                )->getBody();
+
+                                $response = json_decode($body);
+
+                                try {
+                                    $body = $client->request(
+                                        'POST', 
+                                        config('app.qvo_url_base').'/subscriptions', [
                                             'json' => [
                                                 'customer_id' => $qvo_user->qvo_id,
-                                                'plan_id' => $user->propiedad[0]->id
+                                                'plan_id' => $propiedad->id
                                             ],
                                             'headers' => [
                                                 'Authorization' => 'Bearer '.config('app.qvo_key')
                                             ]
                                         ]
-                                )->getBody();
-                                $response = json_decode($body);
+                                    )->getBody();
+                                    $response = json_decode($body);
 
-                                $qvo_user->solsub_id = $response->id;
-                                $qvo_user->save(); 
+                                    $qvo_user->solsub_id = $response->id;
+                                    $qvo_user->save(); 
 
-                                $retorno["msj"]    = $response;
+                                    $retorno['errors'] = false;
+                                    $retorno["msj"]    = $response;
+                                } catch (GuzzleException $e) {
+                                    $status            = trans('request.failure.code.bad_request');
+                                    $retorno['errors'] = true;
+                                    $retorno["msj"]    = json_decode(
+                                        (string)$e->getResponse()->getBody()
+                                    );
+                                } 
                             } catch (GuzzleException $e) {
-                                $retorno["msj"]    = json_decode((string)$e->getResponse()->getBody());
-                            } 
-                    } catch (GuzzleException $e) {
-                        $retorno["msj"] = json_decode(
-                            (string)$e->getResponse()->getBody()
-                        );
-                    } 
+                                $status            = trans('request.failure.code.bad_request');
+                                $retorno['errors'] = true;
+                                $retorno["msj"] = json_decode(
+                                    (string)$e->getResponse()->getBody()
+                                );
+                            }  
+                        } catch (GuzzleException $e) {
+                            $status = trans('request.failure.code.bad_request');
+                            $retorno['errors'] = true;
+                            $retorno["msj"] = json_decode(
+                                (string)$e->getResponse()->getBody()
+                            );
+                        } 
+                    } else {
+                        $status            = trans('request.failure.code.bad_request');
+                        $retorno['errors'] = true;
+                        $retorno['msj']    = "El usuario no se encuentra registrado";
+                    }
                 } else {
-                    \Log::error('Error al crear el cliente');
+                    $status            = trans('request.failure.code.bad_request');
+                    $retorno['errors'] = true;
+                    $retorno['msj']    = "Error al intentar crear la cuenta";
                 }
-            } catch (GuzzleException $e) {
-                $retorno["msj"] = json_decode(
-                    (string)$e->getResponse()->getBody()
-                );
-            } 
-        } else {
-            $status            = trans('request.failure.code.bad_request');
-            $retorno['errors'] = true;
-            $retorno['msj']    = "El usuario no se encuentra registrado";
-        }
-                
-                $data['accion'] = 'Crear usuario';
-                $data['msg'] = 'Usuario creado satisfactoriamente';
             } else {
                 $data['accion'] = 'Crear usuario';
                 $data['msg'] = 'Error. El correo ingresado ya esta en uso';
@@ -281,7 +292,6 @@ class UserDashController extends Controller {
     }
 
     public function getViewPropiedad(Request $request) {
-        Event::fire(new ReservasMotorEvent("2","4"));
         $propiedades = Propiedad::all(); 
         setlocale(LC_ALL,"es_CO.utf8");   
 

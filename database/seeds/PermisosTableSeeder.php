@@ -33,7 +33,7 @@ class PermisosTableSeeder extends Seeder
 
     		],
     		[
-    			'nombre' 		=> 'Tipo habitación',
+    			'nombre' 		=> 'Habitación',
     			'seccion_id'	=>  1,
 
     		],
@@ -123,35 +123,69 @@ class PermisosTableSeeder extends Seeder
 
     		],
     		[
-    			'nombre' 		=> 'Financiero',
+    			'nombre' 		=> 'Ingresos',
     			'seccion_id'	=> 4,
-
-    		],
-    		[
-    			'nombre' 		=> 'Crear habitación',
-    			'seccion_id'	=> 5,
-
-    		],
-    		[
-    			'nombre' 		=> 'Editar Habitación',
-    			'seccion_id'	=> 5,
-
-    		],
-    		[
-    			'nombre' 		=> 'Crear productos y servicios',
-    			'seccion_id'	=> 6,
-
-    		],
-    		[
-    			'nombre' 		=> 'Editar productos y servicios',
-    			'seccion_id'	=> 6,
 
     		],
     		[
     			'nombre' 		=> 'Asignar consumos',
     			'seccion_id'	=> 7,
 
-    		]
+    		],
+            ],
+            [
+                'nombre'        => 'Abrir Caja',
+                'seccion_id'    => 8,
+
+            ],
+            [
+                'nombre'        => 'Cerrar Caja',
+                'seccion_id'    => 8,
+
+            ],
+            [
+                'nombre'        => 'Crear egreso de caja',
+                'seccion_id'    => 9,
+
+            ],
+            [
+                'nombre'        => 'Crear egreso de propiedad',
+                'seccion_id'    => 9,
+            ],
+            [
+                'nombre'        => 'Editar egreso de caja',
+                'seccion_id'    => 9,
+            ],
+            [
+                'nombre'        => 'Editar egreso de propiedad',
+                'seccion_id'    => 9,
+            ],
+            [
+                'nombre'        => 'Eliminar egreso de caja',
+                'seccion_id'    => 9,
+            ],
+            [
+                'nombre'        => 'Eliminar egreso de propiedad',
+                'seccion_id'    => 9,
+            ],
+            [
+                'nombre'        => 'Caja',
+                'seccion_id'    => 4,
+            ],
+            [
+                'nombre'        => 'Egresos',
+                'seccion_id'    => 4,
+            ],
+            [
+                'nombre'        => 'Productos',
+                'seccion_id'    => 1,
+            ],
+            [
+                'nombre'        => 'Canales',
+                'seccion_id'    => 1,
+
+            ]
+
     		
     		]);
     }

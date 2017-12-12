@@ -25,8 +25,10 @@ class UserController extends Controller {
         try {
             $users = User::where('id', $id)->with('propiedad.tipoPropiedad','propiedad.pais','propiedad.region','propiedad.zonaHoraria' ,'propiedad.tipoMonedas', 'propiedad.tipoCobro')->with('rol.permisos')->get();
 
-            $reservas = Reserva::whereHas('tipoHabitacion', function ($query) use ($id) {
-                        $query->where('propiedad_id', $id);})
+            $propiedad_id = $users[0]->propiedad[0]['id'];
+
+            $reservas = Reserva::whereHas('tipoHabitacion', function ($query) use ($propiedad_id) {
+                        $query->where('propiedad_id', $propiedad_id);})
                         ->where('habitacion_id', null)
                         ->whereIn('estado_reserva_id', [1,2,3,4,5])
                         ->get();

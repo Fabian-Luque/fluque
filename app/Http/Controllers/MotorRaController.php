@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Events\ReservasMotorEvent;
+use Illuminate\Support\Facades\Event;
 use App\Http\Requests;
 use App\Propiedad;
 use App\Temporada;
@@ -21,10 +23,9 @@ use \Carbon\Carbon;
 use App\ZonaHoraria;
 use JWTAuth;
 
-
-class MotorReservaController extends Controller
+class MotorRaController extends Controller
 {
-	public function getDisponibilidad(Request $request)
+    public function getDisponibilidad(Request $request)
 	{
         if ($request->has('fecha_inicio') && $request->has('fecha_fin')) {
             $inicio = new Carbon($request->input('fecha_inicio'));
@@ -35,10 +36,9 @@ class MotorReservaController extends Controller
                 'errors' => true,);
             return Response::json($data, 400);
         }
-        if ($request->has('propiedad_id') && $request->has('codigo')) {
-            $propiedad_id   = $request->input('propiedad_id');
+        if ($request->has('codigo')) {
             $codigo         = $request->input('codigo');
-            $propiedad      = Propiedad::where('id', $propiedad_id)->where('codigo', $codigo)->with('tiposHabitacion')->with('tipoMonedas')->with('cuentasBancaria.tipoCuenta', 'tipoDepositoPropiedad.tipoDeposito')->with('politicas')->first();
+            $propiedad      = Propiedad::where('codigo', $codigo)->with('tiposHabitacion')->with('tipoMonedas')->with('cuentasBancaria.tipoCuenta', 'tipoDepositoPropiedad.tipoDeposito')->with('politicas')->first();
             if (is_null($propiedad)) {
                 $retorno  = array(
                     'msj'    => "Propiedad no encontrada",
@@ -47,11 +47,12 @@ class MotorReservaController extends Controller
             }
         } else {
             $retorno = array(
-                'msj'    => "No se envia propiedad_id",
+                'msj'    => "No se envia codigo",
                 'errors' => true);
             return Response::json($retorno, 400);
         }
 
+        $propiedad_id 			   = $propiedad->id;
         $propiedad_monedas         = $propiedad->tipoMonedas; // monedas propiedad
         $tipo_habitacion_propiedad = $propiedad->tiposHabitacion;
 
@@ -60,7 +61,7 @@ class MotorReservaController extends Controller
             $fecha_inicio = $inicio->startOfDay()->format('Y-m-d');
             $fecha_fin    = $fin->startOfDay()->format('Y-m-d');
 
-            $habitaciones_disponibles = Habitacion::where('propiedad_id', $request->input('propiedad_id'))
+            $habitaciones_disponibles = Habitacion::where('propiedad_id', $propiedad_id)
             ->whereDoesntHave('reservas', function ($query) use ($fecha_inicio, $fecha_fin) {
                 $query->whereIn('estado_reserva_id', [1,2,3,4,5])
                 ->where(function ($query) use ($fecha_inicio, $fecha_fin) {
@@ -225,6 +226,10 @@ class MotorReservaController extends Controller
                 }
             }
             $data['nombre']             = $propiedad->nombre;
+            $data['direccion']          = $propiedad->direccion;
+            $data['telefono']           = $propiedad->telefono;
+            $data['email']              = $propiedad->email;
+            $data['ciudad']             = $propiedad->ciudad;
             $data['tipo_cobro_id']      = $propiedad->tipo_cobro_id;
             $data['tipo_monedas']       = $propiedad->tipoMonedas;
             $data['cuentas_bancaria']   = $propiedad->cuentasBancaria;
@@ -322,13 +327,13 @@ class MotorReservaController extends Controller
             return Response::json($retorno, 400);
         }
 
-        $clientes = Cliente::whereHas('reservas.tipoHabitacion', function($query) use($propiedad_id){
-            $query->where('propiedad_id', $propiedad_id);
-        })->with(['reservas' => function ($q){
-            $q->where('habitacion_id', null)->whereIn('estado_reserva_id', [1,2,3,4,5])->orderby('n_reserva_motor')->with('TipoMoneda')->with('tipoHabitacion');}])
-        ->with('tipoCliente')
-        ->with('region')
-        ->with('pais')
+        $clientes = Cliente::with('tipoCliente')->with('region')->with('pais')
+        ->with(['reservas' => function ($query) use($propiedad_id){
+            $query->whereHas('tipoHabitacion', function($query) use($propiedad_id){
+                $query->where('propiedad_id', $propiedad_id);
+            });
+            $query->where('habitacion_id', null)->whereIn('estado_reserva_id', [1,2,3,4,5])->orderby('n_reserva_motor')->with('TipoMoneda')->with('tipoHabitacion');
+        }])
         ->get();
 
         $data = []; //Arreglo principal
@@ -488,6 +493,7 @@ class MotorReservaController extends Controller
 
     public function reserva(Request $request)
     {
+        $propiedad_id = null;
         if ($request->has('codigo')) {
             $codigo = $request->input('codigo');
             $propiedad    = Propiedad::where('codigo', $codigo)->first();
@@ -610,6 +616,12 @@ class MotorReservaController extends Controller
                 $reserva->monto_deposito        = $habitacion['monto_deposito'];
                 $reserva->n_reserva_motor       = $n_reserva_motor + 1;
                 $reserva->save();
+
+                if ($propiedad_id != null) {
+                    Event::fire(
+                        new ReservasMotorEvent($reserva, $propiedad_id)
+                    );
+                }
             }
 
         } else {
@@ -813,7 +825,4 @@ class MotorReservaController extends Controller
         $clasificacion = ClasificacionColor::all();
         return $clasificacion;
     }
-
-
-
 }
