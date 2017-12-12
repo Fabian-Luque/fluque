@@ -20,7 +20,7 @@ io.on(
 r.on('message', function(channel, messageStr){
     var message = JSON.parse(messageStr);
     //console.log(message);
-    console.log(message[0]);
+    console.log(message.data);
     io.emit('canal' + 41, message);    
 });
 
