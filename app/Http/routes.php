@@ -297,6 +297,7 @@ Route::post('qvo/proceso', 'QVOController@ProcesoQVO')->name('qvo.proceso');
 Route::post('infoqvo/obtener','QVOController@getInfoQVO');
 Route::post('tarjeta/default/modificar','QVOController@TarjetaxDefectoModificar');
 Route::post('subscripcion/plan/cancelar','QVOController@SubscripcionPlanCancelar');
+Route::post('tarjeta/eliminar','QVOController@TarjetaEliminar');
 
 
 
