@@ -1333,7 +1333,7 @@ class ReservaController extends Controller
                 $tipo_moneda_id      = $pago['tipo_moneda_id'];
                 $monto_equivalente   = $pago['monto_equivalente'];
 
-                $reserva = Reserva::where('id', $reserva_id)->first();
+                $reserva = Reserva::where('id', $reserva_id)->with('pagos')->first();
                 if (!is_null($reserva)) {
                     
                     if (isset($pago['numero_cheque'])) {
@@ -1605,7 +1605,7 @@ class ReservaController extends Controller
 
         if ($request->has('reserva_id')) {
             $reserva_id    = $request->input('reserva_id');
-            $reserva       = Reserva::where('id', $reserva_id)->first();
+            $reserva       = Reserva::where('id', $reserva_id)->with('pagos')->first();
             if(is_null($reserva)){
                 $retorno = array(
                     'msj'    => "Reserva no encontrada",
@@ -1653,10 +1653,21 @@ class ReservaController extends Controller
 
                 $total = $monto_por_pagar - $monto_pago;
                 if ($monto_pago <= $reserva->monto_por_pagar) {
-                    if ($reserva->estado_reserva_id == 5 && $total == 0) {
-                        $reserva->update(array('monto_por_pagar' => $total, 'estado_reserva_id' => 4));
+
+                    $pagos_reserva = $reserva->pagos->where('metodo_pago_id', 2)->first();
+
+                    if (!is_null($pagos_reserva)) {
+                        if ($reserva->estado_reserva_id == 5 && $monto == 0) {
+                            $reserva->update(array('monto_por_pagar' => $monto, 'estado_reserva_id' => 5));
+                        } else {
+                            $reserva->update(array('monto_por_pagar' => $monto));
+                        }
                     } else {
-                        $reserva->update(array('monto_por_pagar' => $total));
+                        if ($reserva->estado_reserva_id == 5 && $monto == 0) {
+                            $reserva->update(array('monto_por_pagar' => $monto, 'estado_reserva_id' => 4));
+                        } else {
+                            $reserva->update(array('monto_por_pagar' => $monto));
+                        }
                     }
 
                     if ($request->has('monto_pago') && $request->has('monto_equivalente')) {
