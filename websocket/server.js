@@ -13,12 +13,15 @@ io.on(
         //console.log('usuario conectado');
     }
 );
+
+
+
 //cuando llegue un mensaje a redis 
 r.on('message', function(channel, messageStr){
     var message = JSON.parse(messageStr);
     //console.log(message);
-    console.log('message' + message[0].data);
-    io.emit('message' + message.data.propiedad_id, message);    
+    console.log('message' + 41);
+    io.emit('message' + 41, message);    
 });
 
 http.listen(3000, function(){
