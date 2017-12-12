@@ -281,6 +281,7 @@ class UserDashController extends Controller {
     }
 
     public function getViewPropiedad(Request $request) {
+        Event::fire(new ReservasMotorEvent("2","4"));
         $propiedades = Propiedad::all(); 
         setlocale(LC_ALL,"es_CO.utf8");   
 

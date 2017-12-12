@@ -280,4 +280,47 @@ class QVOController extends Controller {
 		}
 		return Response::json($retorno); 
 	}
+
+	public function TarjetaEliminar(Request $request) {
+		$validator = Validator::make(
+        	$request->all(), 
+        	array(
+            	'card_id' => 'required',
+            	'prop_id' => 'required',	 
+           	)
+        );
+
+        if ($validator->fails()) {
+        	$retorno['errors'] = true;
+        	$retorno["msj"] = $validator->errors();
+        } else {
+        	$propiedad = Propiedad::find($request->prop_id);
+			try {
+				$qvo_user = QvoUser::where(
+					'prop_id',
+					$request->prop_id
+				)->first();
+
+				$client = new Client();
+				$body = $client->request( 
+					'DELETE',  
+					config('app.qvo_url_base').'/customers/'.$qvo_user->qvo_id.'/cards/'.$request->card_id,[
+						'headers' => [
+							'Authorization' => 'Bearer '.config('app.qvo_key')
+						]
+					]
+				)->getBody();
+	
+				$response = json_decode($body);
+				$retorno['errors'] = false;
+				$retorno["msj"] = $response;
+			} catch (GuzzleException $e) {
+				$retorno['errors'] = true;
+				$retorno["msj"] = json_decode(
+					(string)$e->getResponse()->getBody()
+				);
+			}
+		}
+		return Response::json($retorno); 
+	}
 }
