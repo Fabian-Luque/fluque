@@ -1472,7 +1472,7 @@ class ReservaController extends Controller
                                 }
                             } else {
                                 $data = array(
-                                    'msj' => "La habitacion ya fue pagada",
+                                    'msj' => "La habitación ya fue pagada",
                                     'errors' =>true);
                                 return Response::json($data, 400);
                             }
@@ -1544,14 +1544,6 @@ class ReservaController extends Controller
                                         $reserva->update(array('monto_por_pagar' => $monto));
                                     }
                                 }
-
-
-                                // if ($reserva->estado_reserva_id == 5 && $monto == 0) {
-                                //     $reserva->update(array('monto_por_pagar' => $monto, 'estado_reserva_id' => 4));
-                                // } else {
-                                //     $reserva->update(array('monto_por_pagar' => $monto));
-                                // }
-
                             } else {
                                 $data = array(
                                     'msj' => "El monto a pagar no corresponde",
@@ -2000,69 +1992,31 @@ class ReservaController extends Controller
 
 
 
-    public function show($id){
+    public function show($id)
+    {
+        $reserva = Reserva::where('id', $id)
+        ->with(['huespedes.servicios' => function ($q) use($id) {
+            $q->wherePivot('reserva_id', $id);}])
+        ->with('habitacion.tipoHabitacion')
+        ->with('cliente.pais','cliente.region','tipoMoneda' ,'tipoFuente', 'metodoPago','estadoReserva','pagos.tipoComprobante','pagos.tipoMoneda', 'pagos.metodoPago')
+        ->with('huespedes.pais', 'huespedes.region')
+        ->first();
 
-
-
-       $reservas = Reserva::where('id', $id)->first();
-
-       if(!is_null($reservas)){
-
-
-        $reservas = Reserva::where('id', $id)->with(['huespedes.servicios' => function ($q) use($id) {
-
-        $q->wherePivot('reserva_id', $id);}])
-
-
-        ->with('habitacion.tipoHabitacion')->with('cliente.pais','cliente.region','tipoMoneda' ,'tipoFuente', 'metodoPago','estadoReserva','pagos.tipoComprobante','pagos.tipoMoneda', 'pagos.metodoPago')->with('huespedes.pais', 'huespedes.region')->get();
-
-            foreach ($reservas as $reserva){
-                foreach ($reserva['huespedes'] as $huesped) {
-                    $huesped->consumo_total = 0;
-                    foreach ($huesped['servicios'] as $servicio) {
-                        $huesped->consumo_total += $servicio->pivot->precio_total;
-
-                    }
+       if(!is_null($reserva)){
+            foreach ($reserva['huespedes'] as $huesped) {
+                $huesped->consumo_total = 0;
+                foreach ($huesped['servicios'] as $servicio) {
+                    $huesped->consumo_total += $servicio->pivot->precio_total;
                 }
-
             }
-
-
-            $reserva =  $reservas->first();
-
-            $propiedad_id = $reserva->habitacion->propiedad_id;
-
-
-            $tipos = TipoHabitacion::whereHas('habitaciones', function($query) use($propiedad_id){
-
-            $query->where('propiedad_id', $propiedad_id);
-
-            })->with(['habitaciones' => function ($q) use($propiedad_id) {
-
-            $q->where('propiedad_id', $propiedad_id);}])->get();
-
-            $data = ['reserva' => $reserva, 'habitaciones' => $tipos];
-
-            return $data;
-
-
+            return $reserva;
+            
        }else{
-
             $data = array(
-
-                    'msj' => "Reserva no encontrada",
-                    'errors' => true
-
-
-                );
-
+                'msj' => "Reserva no encontrada",
+                'errors' => true);
             return Response::json($data, 404);
-
-
-
        }
-
-
 
     }
 
