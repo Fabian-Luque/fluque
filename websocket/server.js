@@ -13,7 +13,6 @@ io.on(
         //console.log('usuario conectado');
     }
 );
-
 //cuando llegue un mensaje a redis 
 r.on('message', function(channel, messageStr){
     var message = JSON.parse(messageStr);
