@@ -1657,16 +1657,16 @@ class ReservaController extends Controller
                     $pagos_reserva = $reserva->pagos->where('metodo_pago_id', 2)->first();
 
                     if (!is_null($pagos_reserva)) {
-                        if ($reserva->estado_reserva_id == 5 && $monto_pago == 0) {
-                            $reserva->update(array('monto_por_pagar' => $monto_pago, 'estado_reserva_id' => 5));
+                        if ($reserva->estado_reserva_id == 5 && $total == 0) {
+                            $reserva->update(array('monto_por_pagar' => $total, 'estado_reserva_id' => 5));
                         } else {
-                            $reserva->update(array('monto_por_pagar' => $monto_pago));
+                            $reserva->update(array('monto_por_pagar' => $total));
                         }
                     } else {
-                        if ($reserva->estado_reserva_id == 5 && $monto_pago == 0) {
-                            $reserva->update(array('monto_por_pagar' => $monto_pago, 'estado_reserva_id' => 4));
+                        if ($reserva->estado_reserva_id == 5 && $total == 0) {
+                            $reserva->update(array('monto_por_pagar' => $total, 'estado_reserva_id' => 4));
                         } else {
-                            $reserva->update(array('monto_por_pagar' => $monto_pago));
+                            $reserva->update(array('monto_por_pagar' => $total));
                         }
                     }
 
