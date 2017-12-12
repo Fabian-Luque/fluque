@@ -19,9 +19,8 @@ io.on(
 //cuando llegue un mensaje a redis 
 r.on('message', function(channel, messageStr){
     var message = JSON.parse(messageStr);
-    //console.log(message);
     console.log(message.data);
-    io.emit('canal' + 41, message);    
+    io.emit('canal' + message.data, message);    
 });
 
 http.listen(3000, function(){
