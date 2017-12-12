@@ -619,7 +619,7 @@ class MotorRaController extends Controller
 
                 if ($propiedad_id != null) {
                     Event::fire(
-                        new ReservasMotorEvent($propiedad_id)
+                        new ReservasMotorEvent($reserva, $propiedad_id)
                     );
                 }
             }
