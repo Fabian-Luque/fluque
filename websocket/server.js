@@ -17,7 +17,7 @@ io.on(
 r.on('message', function(channel, messageStr){
     var message = JSON.parse(messageStr);
     //console.log(message);
-    console.log('message' + message.data.propiedad_id);
+    console.log('message' + message[0].data);
     io.emit('message' + message.data.propiedad_id, message);    
 });
 
