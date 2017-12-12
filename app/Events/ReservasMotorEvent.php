@@ -14,7 +14,6 @@ class ReservasMotorEvent extends Event {
 
     public function __construct($reserva, $propiedad_id) {
         $this->data = array(
-            'reserva'      => $reserva,
             'propiedad_id' => $propiedad_id
         );
     }
