@@ -31,6 +31,13 @@ class UserDashController extends Controller {
                 $prop   = Propiedad::where('codigo', $codigo)->first();
 
                 if (is_null($prop)) {
+
+                    if (!isset($request->dias_prueba)) {
+                        $dias_prueba = $request->dias_prueba;
+                    } else {
+                        $dias_prueba = 15;
+                    }
+
                     $usuario = new User();
                     $usuario->name = $request->name;
                     $usuario->email = $request->email;
@@ -122,7 +129,7 @@ class UserDashController extends Controller {
                                             ),
                                             'currency' => 'CLP',
                                             'interval' => 'year',
-                                            'trial_period_days' => 15
+                                            'trial_period_days' => $dias_prueba
                                         ],
                                         'headers' => [
                                             'Authorization' => 'Bearer '.config('app.qvo_key')

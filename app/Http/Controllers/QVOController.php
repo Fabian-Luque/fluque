@@ -91,8 +91,9 @@ class QVOController extends Controller {
 
 	public function ProcesoQVO(Request $request) {
 		if ($request->has('prop_id')) {
-		$propiedad = Propiedad::find($request->prop_id);
-		$client = new Client();
+			$propiedad = Propiedad::find($request->prop_id);
+
+					$client = new Client();
 
 		if (!is_null($propiedad->id)) {
 			try {
@@ -206,11 +207,11 @@ class QVOController extends Controller {
 			$retorno['errors'] = true;
 			$retorno['msj']    = "El usuario no se encuentra registrado";
 		}
-	} else {
-		$status            = trans('request.failure.code.bad_request');
-		$retorno['errors'] = true;
-		$retorno['msj']    = "Datos requeridos";
-	}
+		} else {
+			$status            = trans('request.failure.code.bad_request');
+			$retorno['errors'] = true;
+			$retorno['msj']    = "Datos requeridos";
+		}
 		return Response::json($retorno);
 	}
 
@@ -310,6 +311,8 @@ class QVOController extends Controller {
 						]
 					]
 				)->getBody();
+
+
 	
 				$response = json_decode($body);
 				$retorno['errors'] = false;
@@ -348,6 +351,50 @@ class QVOController extends Controller {
 				$body = $client->request( 
 					'DELETE',  
 					config('app.qvo_url_base').'/subscriptions/'.$qvo_user->solsub_id,[
+						'json' => []
+						,
+						'headers' => [
+							'Authorization' => 'Bearer '.config('app.qvo_key')
+						]
+					]
+				)->getBody();
+	
+				$response = json_decode($body);
+				$retorno['errors'] = false;
+				$retorno["msj"] = $response;
+			} catch (GuzzleException $e) {
+				$retorno['errors'] = true;
+				$retorno["msj"] = json_decode(
+					(string)$e->getResponse()->getBody()
+				);
+			}
+		}
+		return Response::json($retorno); 
+	}
+
+	public function ClienteQVOEliminar(Request $request) {
+		$validator = Validator::make(
+        	$request->all(), 
+        	array(
+            	'prop_id' => 'required',	 
+           	)
+        );
+
+        if ($validator->fails()) {
+        	$retorno['errors'] = true;
+        	$retorno["msj"] = $validator->errors();
+        } else {
+        	$propiedad = Propiedad::find($request->prop_id);
+			try {
+				$qvo_user = QvoUser::where(
+					'prop_id',
+					$request->prop_id
+				)->first();
+
+				$client = new Client();
+				$body = $client->request( 
+					'DELETE',  
+					config('app.qvo_url_base').'/customers/'.$qvo_user->qvo_id,[
 						'json' => []
 						,
 						'headers' => [

@@ -41,6 +41,7 @@
             			<th>DIRECCION</th>
             			<th>CUENTA</th>
                         <th>CREADO</th>
+                        <th>EDITAR</th>
                         <th>QVO</th>
         			</thead>
         			<tbody>
@@ -62,7 +63,7 @@
                                         @if(empty($prop->qvo))
                                             <a href="qvo" name="b-lista" value="{{ $prop->id }}" class="btn btn-info btn-xs">QVO</a>
                                         @else
-                                            si
+                                            <a href="qvo_subs_cancel" name="b-lista" value="{{ $prop->id }}" class="btn btn-danger btn-xs">Cancelar QVO</a>
                                         @endif
                                     </td>
    								</tr>
