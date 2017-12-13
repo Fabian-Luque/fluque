@@ -315,6 +315,40 @@ class ReservaController extends Controller
 
     }
 
+    public function getCuentasCredito(Request $request)
+    {
+        if ($request->has('propiedad_id')) {
+            $propiedad_id = $request->input('propiedad_id');
+            $propiedad    = Propiedad::where('id', $propiedad_id)->first();
+            if (is_null($propiedad)) {
+                $retorno = array(
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia propiedad_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        $reservas = Reserva::select('reservas.id', 'numero_reserva', 'checkin', 'checkout', 'clientes.nombre as nombre_cliente', 'clientes.apellido as apellido_cliente', 'clientes.rut', 'tipo_moneda.nombre as nombre_moneda', 'cantidad_decimales' )
+        ->whereHas('habitacion',function($query) use($propiedad_id){
+            $query->where('propiedad_id', $propiedad_id);
+        })
+        ->where('estado_reserva_id', 5)
+        ->with(['pagos' => function ($query){
+            $query->where('metodo_pago_id', 2)->with('metodoPago', 'tipoComprobante', 'tipoMoneda');
+        }])
+        ->join('clientes', 'clientes.id','=','cliente_id')
+        ->join('tipo_moneda', 'tipo_moneda.id', '=', 'tipo_moneda_id')
+        ->get();
+
+        return $reservas;
+
+    }
+
 
 
     public function editarPAgo(Request $request, $id)
