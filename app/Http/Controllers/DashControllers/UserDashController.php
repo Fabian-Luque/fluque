@@ -32,7 +32,7 @@ class UserDashController extends Controller {
 
                 if (is_null($prop)) {
 
-                    if (!isset($request->dias_prueba)) {
+                    if ($request->has('dias_prueba')) {
                         $dias_prueba = $request->dias_prueba;
                     } else {
                         $dias_prueba = 15;
