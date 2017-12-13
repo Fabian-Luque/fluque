@@ -302,4 +302,4 @@ Route::post('cliente/qvo/eliminar','QVOController@ClienteQVOEliminar');
 
 
 
-Route::post('crear/user', 'DashControllers\UserDashController@CreateUser')->name('crear.user');
+Route::post('crear/user', 'DashControllers\UserDashController@CreateUserP');
