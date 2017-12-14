@@ -316,6 +316,8 @@ Route::post('tarjeta/stripe/obtener','StripeController@tarjetaStripeObtener');
 Route::post('tarjeta/stripe/actualizar','StripeController@tarjetaStripeActualizar');
 Route::post('tarjeta/stripe/eliminar','StripeController@tarjetaStripeEliminar');
 
+Route::post('invoice/stripe/obtener','StripeController@InvoiceStripeObtener');
+
 
 
 

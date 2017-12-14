@@ -11,6 +11,7 @@ use App\Propiedad;
 use Response;
 use Cartalyst\Stripe\Stripe;
 use Cartalyst\Stripe\Exception\NotFoundException;
+use Cartalyst\Stripe\Exception\MissingParameterException;
 use App\DatosStripe;
 
 class StripeController extends Controller {
@@ -129,7 +130,6 @@ class StripeController extends Controller {
         		'exp_month' => 'required',
         		'cvc'       => 'required',
         		'exp_year'  => 'required',
-        		'nombre'  => 'required',
            	)
         );
 
@@ -142,25 +142,32 @@ class StripeController extends Controller {
         		$request->prop_id
         	)->first();
 
-        	$stripe = Stripe::make(config('app.STRIPE_SECRET'));
+        	try {
+        		$stripe = Stripe::make(config('app.STRIPE_SECRET'));
 
-    		$token = $stripe->tokens()->create([
-    			'card' => [
-        			'number'    => $request->number,
-        			'exp_month' => $request->exp_month,
-        			'cvc'       => $request->cvc,
-        			'exp_year'  => $request->exp_year,
-    			],
-    			'name'          => $request->nombre
-			]);
+    			$token = $stripe->tokens()->create([
+    				'card' => [
+        				'number'    => $request->number,
+        				'exp_month' => $request->exp_month,
+        				'cvc'       => $request->cvc,
+        				'exp_year'  => $request->exp_year,
+    				],
+				]);
 
-			$card = $stripe->cards()->create(
-				$datos_stripe->cliente_id, 
-				$token['id']
-			);
+				$card = $stripe->cards()->create(
+					'cus_BwZZtQyTOFkSC3',//$datos_stripe->cliente_id, 
+					$token['id']
+				);
 
-    		$retorno['errors'] = false;
-    		$retorno['msg'] = $card;
+				$retorno['errors'] = false;
+    			$retorno['msg'] = $card;
+        	} catch(MissingParameterException $e) {
+        		$retorno['errors'] = true;
+        		$retorno['msg'] = $e->getMessage();
+        	} catch(NotFoundException $e) {
+        		$retorno['errors'] = true;
+        		$retorno['msg'] = $e->getMessage();
+        	}
     	}
     	return Response::json($retorno);
     }
@@ -294,6 +301,43 @@ class StripeController extends Controller {
     		}
     		
    			$retorno['msg'] = $cards; 		
+    	}
+    	return Response::json($retorno);
+    }
+
+    public function InvoiceStripeObtener(Request $request) {
+    	$validator = Validator::make(
+        	$request->all(), 
+        	array(
+            	'prop_id' 	=> 'required',  	
+           	)
+        );
+
+        if ($validator->fails()) {
+        	$retorno['errors'] = true;
+        	$retorno["msj"] = $validator->errors();
+        } else {
+        	$datos_stripe = DatosStripe::where(
+        		'prop_id',
+        		$request->prop_id
+        	)->first();
+
+        	$stripe = Stripe::make(config('app.STRIPE_SECRET'));
+
+        	if (isset($datos_stripe->cliente_id)) {
+    			try {
+    				$retorno['errors'] = false;
+    				$retorno['msg'] = $stripe->invoices()->upcomingInvoice(
+    					$datos_stripe->cliente_id
+    				);
+    			} catch (NotFoundException $e) {
+    				$retorno['errors'] = true;
+					$retorno['msg'] = $e->getMessage();
+    			}
+    		} else {
+    			$retorno['errors'] = true;
+				$retorno['msg'] = 'La propiedad no se encuentra registrada';
+    		} 		
     	}
     	return Response::json($retorno);
     }
