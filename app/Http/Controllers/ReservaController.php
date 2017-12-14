@@ -345,7 +345,21 @@ class ReservaController extends Controller
         ->join('tipo_moneda', 'tipo_moneda.id', '=', 'tipo_moneda_id')
         ->get();
 
-        return $reservas;
+        $facturadas    = [];
+        $no_facturadas = [];
+        foreach ($reservas as $reserva) {
+            foreach ($reserva['pagos'] as $pago) {
+                if ($pago->tipo_comprobante_id == null) {
+                    array_push($no_facturadas, $reserva);
+                } else {
+                    array_push($facturadas, $reserva);
+                }
+            }
+        }
+
+        $data['facturadas']    = $facturadas;
+        $data['no_facturadas'] = $no_facturadas;
+        return $data;
 
     }
 
