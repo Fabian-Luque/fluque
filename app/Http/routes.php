@@ -303,3 +303,14 @@ Route::post('cliente/qvo/eliminar','QVOController@ClienteQVOEliminar');
 
 
 Route::post('crear/user', 'DashControllers\UserDashController@CreateUserP');
+
+
+
+
+Route::post('cliente/stripe/crear','StripeController@ClienteStripeCrear');
+Route::post('plan/stripe/crear','StripeController@PlanStripeCrear');
+Route::post('subscripcion/stripe/crear','StripeController@SubscripcionStripeCrear');
+
+
+
+

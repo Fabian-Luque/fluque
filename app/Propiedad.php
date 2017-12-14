@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Propiedad extends Model {
 	use SoftDeletes;
+
     protected $table = 'propiedades';
 
 	protected $fillable = [ 

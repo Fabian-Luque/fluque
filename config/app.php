@@ -24,6 +24,10 @@ return [
     'DOLAR_PRICE_API' => env('DOLAR_PRICE_API', null),
     'PRECIO_X_HAB_QVO' => env('PRECIO_X_HAB_QVO', null),
 
+    'STRIPE_SECRET' => env('STRIPE_SECRET', null),
+    'STRIPE_KEY' => env('STRIPE_KEY', null),
+
+
     /*
     |--------------------------------------------------------------------------
     | Application Debug Mode
@@ -160,6 +164,7 @@ return [
         Collective\Html\HtmlServiceProvider::class,
         Grimzy\LaravelMysqlSpatial\SpatialServiceProvider::class,
         GeneaLabs\Phpgmaps\PhpgmapsServiceProvider::class,
+        Laravel\Cashier\CashierServiceProvider::class,
       
         /*
          * Application Service Providers...
