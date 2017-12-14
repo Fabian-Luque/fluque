@@ -351,7 +351,7 @@ class ReservaController extends Controller
 
 
 
-    public function editarPAgo(Request $request, $id)
+    public function editarPago(Request $request, $id)
     {
         $rules = array(
             'numero_cheque'            => '',
