@@ -12,6 +12,7 @@ class CreateCuentaBancariaTable extends Migration
      */
     public function up()
     {
+        if (!Schema::hasTable('cuenta_bancaria')) {
         Schema::create('cuenta_bancaria', function (Blueprint $table) {
             $table->increments('id');
             $table->string('nombre_banco');
@@ -25,6 +26,7 @@ class CreateCuentaBancariaTable extends Migration
             $table->foreign('propiedad_id')->references('id')->on('propiedades')->onDelete('cascade');
             $table->timestamps();
         });
+    }
     }
 
     /**
