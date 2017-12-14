@@ -70,18 +70,25 @@ class UserDashController extends Controller {
 
                     $stripe = Stripe::make(config('app.STRIPE_SECRET'));
 
+                    if ($propiedad->numero_habitaciones > 27) {
+                        $habitaciones = 27; 
+                    } else {
+                        $habitaciones = $propiedad->numero_habitaciones;
+                    }
+
                     $plan = $stripe->plans()->create([
                         'id'                   => $usuario->email.'_'.$propiedad->nombre,
                         'name'                 => $propiedad->nombre,
-                        'amount'               => config('app.PRECIO_X_HAB_QVO') * $propiedad->numero_habitaciones,
+                        'amount'               => config('app.PRECIO_X_HAB_QVO') * $habitaciones,
                         'currency'             => 'USD',
                         'interval'             => $request->periodo,
                         'trial_period_days'    => '15',
-                        'interval_count'       => $request->intervalo,
+                        'interval_count'       => 1,
                     ]);
 
                     $datos_stripe = new DatosStripe();
                     $datos_stripe->plan_id = $plan['id'];
+                    $datos_stripe->prop_id = $propiedad->id;
                     $datos_stripe->save();
 
                     $data['accion'] = 'Crear usuario';

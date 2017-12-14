@@ -14,13 +14,19 @@ class CreateDatosStripeTable extends Migration {
                     $table->string('plan_id');
                     $table->string('cliente_id');
                     $table->string('subs_id');
+                    $table->integer('prop_id')->unsigned();
                     $table->timestamps();
+                    $table->foreign('prop_id')
+                        ->references('id')
+                    ->on('propiedades');
                 }
             );
         }
     }
 
     public function down() {
-        Schema::drop('datos_stripe');
+        if (Schema::hasTable('datos_stripe')) {
+            Schema::drop('datos_stripe');
+        }
     }
 }

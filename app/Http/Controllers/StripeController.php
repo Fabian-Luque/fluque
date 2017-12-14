@@ -10,13 +10,15 @@ use App\User;
 use App\Propiedad;
 use Response;
 use Cartalyst\Stripe\Stripe;
+use App\DatosStripe;
 
 class StripeController extends Controller {
     public function ClienteStripeCrear(Request $request) {
     	$validator = Validator::make(
         	$request->all(), 
         	array(
-            	'email' => 'required',
+            	'email'   => 'required',
+            	'prop_id' => 'required',
            	)
         );
 
@@ -24,17 +26,21 @@ class StripeController extends Controller {
         	$retorno['errors'] = true;
         	$retorno["msj"] = $validator->errors();
         } else {
+        	$datos_stripe = DatosStripe::where(
+        		'prop_id',
+        		$request->prop_id
+        	)->first();
 
-        	if ($request->has('plan')) {
-        		$plan = $request->plan;
+        	if (isset($datos_stripe->plan_id)) {
+        		$plan = $datos_stripe->plan_id;
         	} else {
         		$plan = null;
         	}
 
-        	if ($request->has('modena')) {
-        		$modena = 'USD';
+        	if ($request->has('moneda')) {
+        		$moneda = 'USD';
         	} else {
-        		$modena = $request->modena;
+        		$moneda = $request->moneda;
         	}
 
     		$stripe = Stripe::make(config('app.STRIPE_SECRET'));
@@ -109,6 +115,47 @@ class StripeController extends Controller {
 
     		$retorno['errors'] = false;
     		$retorno['msg'] = $plan;
+    	}
+    	return Response::json($retorno);
+    }
+
+    public function tarjetaStripeCrear(Request $request) {
+    	$validator = Validator::make(
+        	$request->all(), 
+        	array(
+            	'prop_id' 	=> 'required',
+            	'number'    => 'required',
+        		'exp_month' => 'required',
+        		'cvc'       => 'required',
+        		'exp_year'  => 'required',
+           	)
+        );
+
+        if ($validator->fails()) {
+        	$retorno['errors'] = true;
+        	$retorno["msj"] = $validator->errors();
+        } else {
+        	$datos_stripe = DatosStripe::where(
+        		'prop_id',
+        		$request->prop_id
+        	)->first();
+
+    		$token = $stripe->tokens()->create([
+    			'card' => [
+        			'number'    => $request->number,
+        			'exp_month' => $request->exp_month,
+        			'cvc'       => $request->cvc,
+        			'exp_year'  => $request->exp_year,
+    			],
+			]);
+
+			$card = $stripe->cards()->create(
+				$datos_stripe->cliente_id, 
+				$token['id']
+			);
+
+    		$retorno['errors'] = false;
+    		$retorno['msg'] = $card;
     	}
     	return Response::json($retorno);
     }
