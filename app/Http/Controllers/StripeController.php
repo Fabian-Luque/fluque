@@ -129,6 +129,7 @@ class StripeController extends Controller {
         		'exp_month' => 'required',
         		'cvc'       => 'required',
         		'exp_year'  => 'required',
+        		'nombre'  => 'required',
            	)
         );
 
@@ -150,6 +151,7 @@ class StripeController extends Controller {
         			'cvc'       => $request->cvc,
         			'exp_year'  => $request->exp_year,
     			],
+    			'name'          => $request->nombre
 			]);
 
 			$card = $stripe->cards()->create(
@@ -209,4 +211,56 @@ class StripeController extends Controller {
     	}
     	return Response::json($retorno);
     }
+
+    public function tarjetaStripeActualizar(Request $request) {
+    	$validator = Validator::make(
+        	$request->all(), 
+        	array(
+            	'prop_id' 	=> 'required',  
+            	'card_id'   => 'required',  	
+        		'number'    => 'required',
+        		'exp_month' => 'required',
+        		'cvc'       => 'required',
+        		'exp_year'  => 'required',
+    			'name'      => 'required',
+           	)
+        );
+
+        if ($validator->fails()) {
+        	$retorno['errors'] = true;
+        	$retorno["msj"] = $validator->errors();
+        } else {
+        	$datos_stripe = DatosStripe::where(
+        		'prop_id',
+        		$request->prop_id
+        	)->first();
+
+        	$stripe = Stripe::make(config('app.STRIPE_SECRET'));
+
+    		try {
+    			$retorno['errors'] = false;
+    				
+    			$card = $stripe->cards()->update(
+    				$datos_stripe->cliente_id, 
+    				$request->card_id, [
+    					'card' => [
+        					'number'    => $request->number,
+        					'exp_month' => $request->exp_month,
+        					'cvc'       => $request->cvc,
+        					'exp_year'  => $request->exp_year,
+    					],
+    					'name'          => $request->nombre
+					]
+				);
+    		} catch (NotFoundException $e) {
+    			$retorno['errors'] = true;
+				$cards = $e->getMessage();
+    		}
+    		
+   			$retorno['msg'] = $cards; 		
+    	}
+    	return Response::json($retorno);
+    }
+
+    
 }
