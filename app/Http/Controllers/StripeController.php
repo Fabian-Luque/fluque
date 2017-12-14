@@ -262,5 +262,39 @@ class StripeController extends Controller {
     	return Response::json($retorno);
     }
 
-    
+    public function tarjetaStripeEliminar(Request $request) {
+    	$validator = Validator::make(
+        	$request->all(), 
+        	array(
+            	'prop_id' 	=> 'required',  
+            	'card_id'   => 'required',  	
+           	)
+        );
+
+        if ($validator->fails()) {
+        	$retorno['errors'] = true;
+        	$retorno["msj"] = $validator->errors();
+        } else {
+        	$datos_stripe = DatosStripe::where(
+        		'prop_id',
+        		$request->prop_id
+        	)->first();
+
+        	$stripe = Stripe::make(config('app.STRIPE_SECRET'));
+
+    		try {
+    			$retorno['errors'] = false;
+    			$card = $stripe->cards()->delete(
+    				$datos_stripe->cliente_id, 
+    				$request->card_id
+    			);
+    		} catch (NotFoundException $e) {
+    			$retorno['errors'] = true;
+				$cards = $e->getMessage();
+    		}
+    		
+   			$retorno['msg'] = $cards; 		
+    	}
+    	return Response::json($retorno);
+    }
 }

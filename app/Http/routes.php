@@ -314,6 +314,7 @@ Route::post('subscripcion/stripe/crear','StripeController@SubscripcionStripeCrea
 Route::post('tarjeta/stripe/crear','StripeController@tarjetaStripeCrear');
 Route::post('tarjeta/stripe/obtener','StripeController@tarjetaStripeObtener');
 Route::post('tarjeta/stripe/actualizar','StripeController@tarjetaStripeActualizar');
+Route::post('tarjeta/stripe/eliminar','StripeController@tarjetaStripeEliminar');
 
 
 
