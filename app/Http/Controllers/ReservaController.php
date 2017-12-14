@@ -1382,6 +1382,8 @@ class ReservaController extends Controller
                 $monto_equivalente   = $pago['monto_equivalente'];
 
                 $reserva = Reserva::where('id', $reserva_id)->with('pagos')->first();
+
+
                 if (!is_null($reserva)) {
                     
                     if (isset($pago['numero_cheque'])) {
@@ -1407,6 +1409,7 @@ class ReservaController extends Controller
                                 }
                                 $pago->reserva_id            = $reserva->id;
                                 $pago->caja_id               = $caja_abierta->id;
+                                $pago->estado                = 1;
                                 $pago->save();
                                 
                             } else {
@@ -1423,6 +1426,7 @@ class ReservaController extends Controller
                                 }
                                 $pago->reserva_id            = $reserva->id;
                                 $pago->caja_id               = $caja_abierta->id;
+                                $pago->estado                = 1;
                                 $pago->save();
                             }
 
@@ -1471,6 +1475,9 @@ class ReservaController extends Controller
                                         }
                                         $pago->reserva_id            = $reserva->id;
                                         $pago->caja_id               = $caja_abierta->id;
+                                        if ($metodo_pago != 2) {
+                                            $pago->estado            = 1;
+                                        }
                                         $pago->save();
                                   
                                     } else {
@@ -1487,10 +1494,13 @@ class ReservaController extends Controller
                                         }
                                         $pago->reserva_id            = $reserva->id;
                                         $pago->caja_id               = $caja_abierta->id;
+                                        if ($metodo_pago != 2) {
+                                            $pago->estado            = 1;
+                                        }
                                         $pago->save();
                                     }
 
-                                    $pagos_reserva = $reserva->pagos->where('metodo_pago_id', 2)->first();
+                                    $pagos_reserva = Pago::where('reserva_id', $reserva_id)->where('metodo_pago_id', 2)->first();
 
                                     if ($reserva->estado_reserva_id == 1 ) {
                                         $reserva->update(array('monto_por_pagar' => $monto, 'estado_reserva_id' => 2));
@@ -1502,6 +1512,7 @@ class ReservaController extends Controller
                                             $reserva->update(array('monto_por_pagar' => $monto, 'estado_reserva_id' => 5));
                                         } else {
                                             $reserva->update(array('monto_por_pagar' => $monto));
+                                            $pagos_reserva->update(array('estado' => 1));
                                         }
 
                                     } else {
@@ -1550,6 +1561,7 @@ class ReservaController extends Controller
                                     }
                                     $pago->reserva_id            = $reserva->id;
                                     $pago->caja_id               = $caja_abierta->id;
+                                    $pago->estado                = 1;
                                     $pago->save();
                                       
                                 } else {
@@ -1566,6 +1578,7 @@ class ReservaController extends Controller
                                     }
                                     $pago->reserva_id            = $reserva->id;
                                     $pago->caja_id               = $caja_abierta->id;
+                                    $pago->estado                = 1;
                                     $pago->save();
                                 }
 
@@ -1573,7 +1586,7 @@ class ReservaController extends Controller
                                     $consumo->update(array('estado' => 'Pagado', 'pago_id' => $pago->id));
                                 }
 
-                                $pagos_reserva = $reserva->pagos->where('metodo_pago_id', 2)->first();
+                                $pagos_reserva = Pago::where('reserva_id', $reserva_id)->where('metodo_pago_id', 2)->first();
 
 
                                 if (!is_null($pagos_reserva)) {
@@ -1582,6 +1595,7 @@ class ReservaController extends Controller
                                         $reserva->update(array('monto_por_pagar' => $monto, 'estado_reserva_id' => 5));
                                     } else {
                                         $reserva->update(array('monto_por_pagar' => $monto));
+                                        $pagos_reserva->update(array('estado' => 1));
                                     }
 
                                 } else {
@@ -1694,7 +1708,7 @@ class ReservaController extends Controller
                 $total = $monto_por_pagar - $monto_pago;
                 if ($monto_pago <= $reserva->monto_por_pagar) {
 
-                    $pagos_reserva = $reserva->pagos->where('metodo_pago_id', 2)->first();
+                    $pagos_reserva = Pago::where('reserva_id', $reserva_id)->where('metodo_pago_id', 2)->first();
 
                     if (!is_null($pagos_reserva)) {
                         if ($reserva->estado_reserva_id == 5 && $total == 0) {
@@ -1726,6 +1740,7 @@ class ReservaController extends Controller
                         }
                         $pago->reserva_id            = $reserva->id;
                         $pago->caja_id               = $caja_abierta->id;
+                        $pago->estado                = 1;
                         $pago->save();
                           
                     } else {
@@ -1742,6 +1757,7 @@ class ReservaController extends Controller
                         }
                         $pago->reserva_id            = $reserva->id;
                         $pago->caja_id               = $caja_abierta->id;
+                        $pago->estado                = 1;
                         $pago->save();
 
                     }
