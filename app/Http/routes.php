@@ -311,6 +311,10 @@ Route::post('cliente/stripe/crear','StripeController@ClienteStripeCrear');
 Route::post('plan/stripe/crear','StripeController@PlanStripeCrear');
 Route::post('subscripcion/stripe/crear','StripeController@SubscripcionStripeCrear');
 
+Route::post('tarjeta/stripe/crear','StripeController@tarjetaStripeCrear');
+Route::post('tarjeta/stripe/obtener','StripeController@tarjetaStripeObtener');
+
+
 
 
 

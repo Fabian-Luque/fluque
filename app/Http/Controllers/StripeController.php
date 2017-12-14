@@ -10,6 +10,7 @@ use App\User;
 use App\Propiedad;
 use Response;
 use Cartalyst\Stripe\Stripe;
+use Cartalyst\Stripe\Exception\NotFoundException;
 use App\DatosStripe;
 
 class StripeController extends Controller {
@@ -140,6 +141,8 @@ class StripeController extends Controller {
         		$request->prop_id
         	)->first();
 
+        	$stripe = Stripe::make(config('app.STRIPE_SECRET'));
+
     		$token = $stripe->tokens()->create([
     			'card' => [
         			'number'    => $request->number,
@@ -156,6 +159,53 @@ class StripeController extends Controller {
 
     		$retorno['errors'] = false;
     		$retorno['msg'] = $card;
+    	}
+    	return Response::json($retorno);
+    }
+
+    public function tarjetaStripeObtener(Request $request) {
+    	$validator = Validator::make(
+        	$request->all(), 
+        	array(
+            	'prop_id' 	=> 'required',
+           	)
+        );
+
+        if ($validator->fails()) {
+        	$retorno['errors'] = true;
+        	$retorno["msj"] = $validator->errors();
+        } else {
+        	$datos_stripe = DatosStripe::where(
+        		'prop_id',
+        		$request->prop_id
+        	)->first();
+
+        	$stripe = Stripe::make(config('app.STRIPE_SECRET'));
+
+    		if ($request->has('card_id')) {
+    			try {
+    				$retorno['errors'] = false;
+    				$cards = $stripe->cards()->find(
+    					$request->cliente_id, 
+    					$request->card_id
+    				);
+    			} catch (NotFoundException $e) {
+    				$retorno['errors'] = true;
+					$cards = $e->getMessage();
+    			}
+    		
+    			$retorno['msg'] = $cards;
+    		} else {
+    			try {
+    				$retorno['errors'] = false;
+    				$cards = $stripe->cards()->all($request->cliente_id);
+    			} catch (NotFoundException $e) {
+    				$retorno['errors'] = true;
+					$cards = $e->getMessage();
+    			}
+    		
+    			$retorno['msg'] = $cards;
+    		}
     	}
     	return Response::json($retorno);
     }
