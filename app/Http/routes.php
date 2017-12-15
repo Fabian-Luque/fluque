@@ -12,6 +12,9 @@ Route::get(
 );
 
 Route::post('guardar/ubicacion/propiedad', 'GeoController@UbicacionCreate');
+Route::post('googlemaps', 'GeoController@GoogleMaps');
+
+
 
 Route::get('hotelescercanos', 'GeoController@Gmaps');
 Route::get(
