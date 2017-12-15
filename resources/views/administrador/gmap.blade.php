@@ -26,9 +26,7 @@
 	var centreGot = false;
 </script>
 
-<script type="text/javascript">
-  
-</script>
+
 {!! $map['js'] !!} 
 {!! $map['html'] !!}
   
