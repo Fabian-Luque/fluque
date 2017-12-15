@@ -339,7 +339,7 @@ class ReservaController extends Controller
         })
         ->where('estado_reserva_id', 5)
         ->with(['pagos' => function ($query){
-            $query->where('metodo_pago_id', 2)->with('metodoPago', 'tipoComprobante', 'tipoMoneda');
+            $query->with('metodoPago', 'tipoComprobante', 'tipoMoneda');
         }])
         ->join('clientes', 'clientes.id','=','cliente_id')
         ->join('tipo_moneda', 'tipo_moneda.id', '=', 'tipo_moneda_id')
