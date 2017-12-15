@@ -315,6 +315,15 @@ class ReservaController extends Controller
 
     }
 
+
+    /**
+     * obtener reservas pendientes de pago
+     *
+     * @author ALLEN
+     *
+     * @param  Request          $request ($propiedad_id)
+     * @return Response::json
+     */
     public function getCuentasCredito(Request $request)
     {
         if ($request->has('propiedad_id')) {
@@ -360,6 +369,36 @@ class ReservaController extends Controller
         $data['facturadas']    = $facturadas;
         $data['no_facturadas'] = $no_facturadas;
         return $data;
+
+    }
+
+    public function confirmarPagoReserva(Request $request)
+    {
+        if ($request->has('reserva_id')) {
+            $reserva_id = $request->input('reserva_id');
+            $reserva = Reserva::where('id', $reserva_id)->first();
+            if (is_null($reserva)) {
+                $retorno = array(
+                    'msj'    => "Reserva no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia reserva_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        $pago = Pago::where('reserva_id', $reserva_id)->where('metodo_pago_id', 2)->first();
+
+        $reserva->update(array('estado_reserva_id' => 4));
+        $pago->update(array('estado' => 1));
+
+        $retorno = array(
+            'msj'       => "Pago confirmado satisfactoriamente",
+            'errors'    => false);
+        return Response::json($retorno, 201);
 
     }
 
@@ -593,7 +632,7 @@ class ReservaController extends Controller
                     $retorno = array(
                         'msj'       => "Error: La reserva ya fué creada",
                         'errors'    => true);
-                    return Response::json($retorno, 201);
+                    return Response::json($retorno, 400);
                 }
             }
             $retorno = array(
