@@ -1361,7 +1361,7 @@ class ReservaController extends Controller
           return Response::json($retorno, 400);
         }
     
-        $reservas = Reserva::select('reservas.id', 'numero_reserva' ,'checkin', 'habitacion_id', 'estado_reserva_id' ,'checkout','ocupacion', 'monto_total','estado_reserva.nombre as estado' ,'cliente_id', 'clientes.nombre as nombre_cliente', 'clientes.apellido as apellido_cliente', 'noches', 'tipo_moneda.nombre as nombre_moneda', 'cantidad_decimales')
+        $reservas = Reserva::select('reservas.id', 'numero_reserva' ,'checkin', 'habitacion_id', 'estado_reserva_id' ,'checkout','ocupacion', 'monto_total','estado_reserva.nombre as estado' ,'cliente_id', 'clientes.nombre as nombre_cliente', 'clientes.apellido as apellido_cliente', 'noches', 'tipo_moneda.nombre as nombre_moneda', 'cantidad_decimales', 'monto_por_pagar')
         ->whereHas('habitacion', function($query) use($id){
             $query->where('propiedad_id', $id);})
         ->with(['huespedes' => function ($q){
