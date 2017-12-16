@@ -418,13 +418,15 @@ class PDFController extends Controller
             $ingresos_por_habitacion = 0;
             $ingresos_por_consumos   = 0;
             foreach ($pagos_tipo_moneda as $pago) {
-                $suma_pagos += $pago->monto_equivalente;
-                if($pago->tipo == 'Pago habitacion'){
-                    $ingresos_por_habitacion += $pago->monto_equivalente;
-                }elseif($pago->tipo == 'Pago consumos'){
-                    $ingresos_por_consumos += $pago->monto_equivalente;
-                }elseif ($pago->tipo == 'Confirmacion de reserva') {
-                    $ingresos_por_habitacion += $pago->monto_equivalente;
+                if ($pago->estado == 1) {
+                    $suma_pagos += $pago->monto_equivalente;
+                    if($pago->tipo == 'Pago habitacion'){
+                        $ingresos_por_habitacion += $pago->monto_equivalente;
+                    }elseif($pago->tipo == 'Pago consumos'){
+                        $ingresos_por_consumos += $pago->monto_equivalente;
+                    }elseif ($pago->tipo == 'Confirmacion de reserva') {
+                        $ingresos_por_habitacion += $pago->monto_equivalente;
+                    }
                 }
             }
 
@@ -456,9 +458,11 @@ class PDFController extends Controller
             foreach ($propiedad_monedas as $moneda) {
                 $suma_ingreso   = 0;
                 foreach ($pagos as $pago) {
-                    if ($moneda->id == $pago->tipo_moneda_id) {
-                        if ($metodo->nombre == $pago->MetodoPago->nombre) {
-                            $suma_ingreso += $pago->monto_equivalente;
+                    if ($pago->estado == 1) {
+                        if ($moneda->id == $pago->tipo_moneda_id) {
+                            if ($metodo->nombre == $pago->MetodoPago->nombre) {
+                                $suma_ingreso += $pago->monto_equivalente;
+                            }
                         }
                     }
                 }
@@ -487,9 +491,11 @@ class PDFController extends Controller
             foreach ($propiedad_monedas as $moneda) {
                 $suma_ingreso   = 0;
                 foreach ($pagos as $pago) {
-                    if ($moneda->id == $pago->tipo_moneda_id) {
-                        if ($fuente->nombre == $pago->reserva->tipoFuente->nombre) {
-                            $suma_ingreso += $pago->monto_equivalente;
+                    if ($pago->estado == 1) {
+                        if ($moneda->id == $pago->tipo_moneda_id) {
+                            if ($fuente->nombre == $pago->reserva->tipoFuente->nombre) {
+                                $suma_ingreso += $pago->monto_equivalente;
+                            }
                         }
                     }
                 }
@@ -522,9 +528,11 @@ class PDFController extends Controller
             foreach ($propiedad_monedas as $moneda) {
                 $suma_ingreso   = 0;
                 foreach ($pagos as $pago) {
-                    if ($moneda->id == $pago->tipo_moneda_id) {
-                        if ($tipo->nombre == $pago->reserva->habitacion->tipoHabitacion->nombre) {
-                            $suma_ingreso += $pago->monto_equivalente;
+                    if ($pago->estado == 1) {
+                        if ($moneda->id == $pago->tipo_moneda_id) {
+                            if ($tipo->nombre == $pago->reserva->habitacion->tipoHabitacion->nombre) {
+                                $suma_ingreso += $pago->monto_equivalente;
+                            }
                         }
                     }
                 }
@@ -548,9 +556,11 @@ class PDFController extends Controller
             foreach ($propiedad_monedas as $moneda) {
                 $suma_ingreso   = 0;
                 foreach ($pagos as $pago) {
-                    if ($moneda->id == $pago->tipo_moneda_id) {
-                        if ($tipo->nombre == $pago->reserva->cliente->tipoCliente->nombre) {
-                            $suma_ingreso += $pago->monto_equivalente;
+                    if ($pago->estado == 1) {
+                        if ($moneda->id == $pago->tipo_moneda_id) {
+                            if ($tipo->nombre == $pago->reserva->cliente->tipoCliente->nombre) {
+                                $suma_ingreso += $pago->monto_equivalente;
+                            }
                         }
                     }
                 }
@@ -573,14 +583,16 @@ class PDFController extends Controller
         foreach ($servicios as $servicio) {
         $cantidad_vendido   = 0;
             foreach ($pagos as $pago) {
-                foreach ($pago->reserva->huespedes as $huesped) {
-                    foreach ($huesped->servicios as $serv) {
-                        if ($servicio->nombre == $serv->nombre) {
-                            $id = $serv->pivot->id;
-                            if (!in_array($id, $servicios_vendidos)) {
-                                if ($serv->pivot->estado == "Pagado") {
-                                    $cantidad_vendido += $serv->pivot->cantidad;
-                                    array_push($servicios_vendidos, $id);
+                if ($pago->estado == 1) {
+                    foreach ($pago->reserva->huespedes as $huesped) {
+                        foreach ($huesped->servicios as $serv) {
+                            if ($servicio->nombre == $serv->nombre) {
+                                $id = $serv->pivot->id;
+                                if (!in_array($id, $servicios_vendidos)) {
+                                    if ($serv->pivot->estado == "Pagado") {
+                                        $cantidad_vendido += $serv->pivot->cantidad;
+                                        array_push($servicios_vendidos, $id);
+                                    }
                                 }
                             }
                         }
