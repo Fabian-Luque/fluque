@@ -1565,7 +1565,7 @@ class ReservaController extends Controller
                                             $reserva->update(array('monto_por_pagar' => $monto, 'estado_reserva_id' => 5));
                                         } else {
                                             $reserva->update(array('monto_por_pagar' => $monto));
-                                            $pagos_reserva->update(array('estado' => 1));
+                                            // $pagos_reserva->update(array('estado' => 1));
                                         }
 
                                     } else {
