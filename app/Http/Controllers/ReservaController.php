@@ -342,7 +342,7 @@ class ReservaController extends Controller
             return Response::json($retorno, 400);
         }
 
-        return $reservas = Reserva::select('reservas.id', 'numero_reserva', 'checkin', 'checkout', 'clientes.nombre as nombre_cliente', 'clientes.apellido as apellido_cliente', 'clientes.rut', 'tipo_moneda.nombre as nombre_moneda', 'cantidad_decimales' )
+        $reservas = Reserva::select('reservas.id', 'numero_reserva', 'checkin', 'checkout', 'clientes.nombre as nombre_cliente', 'clientes.apellido as apellido_cliente', 'clientes.rut', 'tipo_moneda.nombre as nombre_moneda', 'cantidad_decimales' )
         ->whereHas('habitacion',function($query) use($propiedad_id){
             $query->where('propiedad_id', $propiedad_id);
         })
@@ -357,13 +357,18 @@ class ReservaController extends Controller
         $facturadas    = [];
         $no_facturadas = [];
         foreach ($reservas as $reserva) {
+            $suma_pago = 0;
             foreach ($reserva['pagos'] as $pago) {
-                if ($pago->tipo_comprobante_id == null) {
-                    array_push($no_facturadas, $reserva);
-                } else {
-                    array_push($facturadas, $reserva);
+                $suma_pago += $pago->monto_equivalente;
+                if ($pago->tipo == "Pago habitacion") {
+                    if ($pago->tipo_comprobante_id == null) {
+                        array_push($no_facturadas, $reserva);
+                    } else {
+                        array_push($facturadas, $reserva);
+                    }
                 }
             }
+            $reserva->pago_total = $suma_pago;
         }
 
         $data['facturadas']    = $facturadas;
