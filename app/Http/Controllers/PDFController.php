@@ -1552,7 +1552,7 @@ class PDFController extends Controller
                       $ingresos_por_consumos = 0;
 
                       foreach ($pagos_tipo_moneda as $pago) {
-
+                        if ($pago->estado == 1) {
                           $suma_pagos += $pago->monto_equivalente;
 
                           if($pago->tipo == 'Pago habitacion'){
@@ -1569,6 +1569,8 @@ class PDFController extends Controller
                             $ingresos_por_habitacion += $pago->monto_equivalente;
 
                           }
+                        }
+
 
                       }
 
