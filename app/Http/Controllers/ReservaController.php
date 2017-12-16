@@ -342,7 +342,7 @@ class ReservaController extends Controller
             return Response::json($retorno, 400);
         }
 
-        $reservas = Reserva::select('reservas.id', 'numero_reserva', 'checkin', 'checkout', 'clientes.nombre as nombre_cliente', 'clientes.apellido as apellido_cliente', 'clientes.rut', 'tipo_moneda.nombre as nombre_moneda', 'cantidad_decimales' )
+        return $reservas = Reserva::select('reservas.id', 'numero_reserva', 'checkin', 'checkout', 'clientes.nombre as nombre_cliente', 'clientes.apellido as apellido_cliente', 'clientes.rut', 'tipo_moneda.nombre as nombre_moneda', 'cantidad_decimales' )
         ->whereHas('habitacion',function($query) use($propiedad_id){
             $query->where('propiedad_id', $propiedad_id);
         })
@@ -390,10 +390,13 @@ class ReservaController extends Controller
             return Response::json($retorno, 400);
         }
 
-        $pago = Pago::where('reserva_id', $reserva_id)->where('metodo_pago_id', 2)->first();
+        $pagos = Pago::where('reserva_id', $reserva_id)->where('metodo_pago_id', 2)->get();
 
         $reserva->update(array('estado_reserva_id' => 4));
-        $pago->update(array('estado' => 1));
+
+        foreach ($pagos as $pago) {
+            $pago->update(array('estado' => 1));
+        }
 
         $retorno = array(
             'msj'       => "Pago confirmado satisfactoriamente",
@@ -426,13 +429,19 @@ class ReservaController extends Controller
                 $getFecha = new Carbon($request->input('fecha'));
             }
 
-            $pago                       = Pago::findOrFail($id);
-            $pago->numero_operacion     = $request->input('numero_operacion');
-            $pago->tipo_comprobante_id  = $request->input('tipo_comprobante_id');
-            $pago->numero_cheque        = $request->input('numero_cheque');
-            $pago->metodo_pago_id       = $request->input('metodo_pago_id');
-            $pago->created_at           = $getFecha;
-            $pago->touch();
+            $pago       = Pago::where('id', $id)->first();
+            $reserva_id = $pago->reserva_id;
+            $pagos      = Pago::where('reserva_id', $reserva_id)->where('metodo_pago_id', 2)->get();
+
+            foreach ($pagos as $pago) {
+                $pago                       = Pago::findOrFail($pago->id);
+                $pago->numero_operacion     = $request->input('numero_operacion');
+                $pago->tipo_comprobante_id  = $request->input('tipo_comprobante_id');
+                $pago->numero_cheque        = $request->input('numero_cheque');
+                $pago->metodo_pago_id       = $request->input('metodo_pago_id');
+                $pago->created_at           = $getFecha;
+                $pago->touch();
+            }
 
             $data = [
                 'errors' => false,
