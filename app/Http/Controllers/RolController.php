@@ -190,7 +190,7 @@ class RolController extends Controller
 		$roles = Rol::where('nombre', '!=', 'Dueño de la propiedad')->get();
 
 		foreach ($roles as $rol) {
-			$rol->permisos()->attach(40,['estado' => 0]);
+			$rol->permisos()->attach(41,['estado' => 0]);
 
 		}
 
