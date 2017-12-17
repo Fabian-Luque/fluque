@@ -395,12 +395,12 @@ class ReservaController extends Controller
             return Response::json($retorno, 400);
         }
 
-        $pagos = Pago::where('reserva_id', $reserva_id)->where('metodo_pago_id', 2)->get();
-
+        $fecha_actual = Carbon::now();
+        $pagos        = Pago::where('reserva_id', $reserva_id)->where('metodo_pago_id', 2)->get();
         $reserva->update(array('estado_reserva_id' => 4));
 
         foreach ($pagos as $pago) {
-            $pago->update(array('estado' => 1));
+            $pago->update(array('estado' => 1, 'created_at' => $fecha_actual));
         }
 
         $retorno = array(
