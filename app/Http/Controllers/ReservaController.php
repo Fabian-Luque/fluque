@@ -436,9 +436,10 @@ class ReservaController extends Controller
 
             $pago       = Pago::where('id', $id)->first();
             $reserva_id = $pago->reserva_id;
-            $pagos      = Pago::where('reserva_id', $reserva_id)->where('metodo_pago_id', 2)->get();
 
-            if (count($pagos) == 0) {
+            if ($pago->metodo_pago_id == 2) {
+                $pagos = Pago::where('reserva_id', $reserva_id)->where('metodo_pago_id', 2)->get();
+
                 foreach ($pagos as $pago) {
                     $pago                       = Pago::findOrFail($pago->id);
                     $pago->numero_operacion     = $request->input('numero_operacion');
@@ -457,6 +458,28 @@ class ReservaController extends Controller
                 $pago->created_at           = $getFecha;
                 $pago->touch();
             }
+            
+
+
+            // if (count($pagos) != 0) {
+            //     foreach ($pagos as $pago) {
+            //         $pago                       = Pago::findOrFail($pago->id);
+            //         $pago->numero_operacion     = $request->input('numero_operacion');
+            //         $pago->tipo_comprobante_id  = $request->input('tipo_comprobante_id');
+            //         $pago->numero_cheque        = $request->input('numero_cheque');
+            //         $pago->metodo_pago_id       = $request->input('metodo_pago_id');
+            //         $pago->created_at           = $getFecha;
+            //         $pago->touch();
+            //     }
+            // } else {
+            //     $pago                       = Pago::findOrFail($pago->id);
+            //     $pago->numero_operacion     = $request->input('numero_operacion');
+            //     $pago->tipo_comprobante_id  = $request->input('tipo_comprobante_id');
+            //     $pago->numero_cheque        = $request->input('numero_cheque');
+            //     $pago->metodo_pago_id       = $request->input('metodo_pago_id');
+            //     $pago->created_at           = $getFecha;
+            //     $pago->touch();
+            // }
 
 
             $data = [
