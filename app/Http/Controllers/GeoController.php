@@ -179,7 +179,6 @@ class GeoController extends Controller {
 		return Response::json($ubp);
     }
 
-
     public function AddLocatePropiedad(Request $request) {   
         $diseño = new DiseñoMapa();
         $config['center'] = 'auto';
@@ -227,11 +226,7 @@ class GeoController extends Controller {
                 }
             }
         }
-
-        return view('administrador.gmap')->with(
-            'map', 
-            $pgm->create_map()
-        );
+        return Response::json($pgm->create_map());
     }
 
     public function UbicacionRead(Request $request) {

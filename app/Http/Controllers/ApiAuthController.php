@@ -14,14 +14,15 @@ use DB;
 use \Carbon\Carbon;
 
 class ApiAuthController extends Controller {
-
 	public function signin(Request $request) {
         $credentials = $request->only('email', 'password');
-        $user = User::where('email', $credentials['email'])->first();
+        $user = User::where('email', $credentials['email'])->with('propiedad')->first();
 
         if(!is_null($user)) {
             $user_id = $user->id;
+            $propiedad_id = $user->propiedad[0]['id'];
 
+            if (strcmp($request->email, 'soporte@gofeels.com') != 0) {
                 switch ($user->propiedad[0]->estado_cuenta_id) {
         		    case '3': //
                         $data['errors'] = trans('request.failure.status');
@@ -36,7 +37,7 @@ class ApiAuthController extends Controller {
                                 $data['msg']    = 'Usuario o contraseña incorrecta';
                                 $status         = trans('request.failure.code.forbidden');
                             } else {
-                                $data   = compact('token', 'user_id');
+                                $data   = compact('token', 'user_id', 'propiedad_id');
                                 $status = trans('request.success.code');
                             }
                         } else {   
@@ -46,6 +47,11 @@ class ApiAuthController extends Controller {
                         }
         		    break;
         	    }
+            } else {
+                $data['errors'] = trans('request.failure.status');
+                $data['msg']    = 'Su cuenta se encuentra inactiva';
+                $status         = trans('request.failure.code.forbidden');
+            }
         } else {
         	$data['errors'] = trans('request.failure.status');
         	$data['msg']  	= trans('request.failure.bad');
@@ -69,12 +75,12 @@ class ApiAuthController extends Controller {
                     } else {
                         $data['errors'] = trans('request.failure.status');
                         $data['msg']    = 'Contraseña actual ingresada no valida';
-                        $status         = trans('request.failure.code.bad_request');
+                        $status         = trans('request.failure.code.forbidden');
                     }
                } else {
                     $data['errors'] = trans('request.failure.status');
                     $data['msg']    = 'Utilice una contraeña distinta a la actual';
-                    $status         = trans('request.failure.code.bad_request');
+                    $status         = trans('request.failure.code.forbidden');
                }
             } else {
                 $data['errors'] = trans('request.failure.status');
@@ -97,9 +103,9 @@ class ApiAuthController extends Controller {
 
             $user =  User::where('email', $request->email)->first();
             $rpass = ResetPass::where('email', $user->email)->first();
-
+            if (strcmp($request->password, $request->passwordc) == 0) {
             if (!is_null($rpass)) {
-                if (!is_null($user) && (strcmp($request->password, $request->passwordc) == 0 )) {
+                if (!is_null($user)) {
 
                     $now = Carbon::now()->setTimezone('America/Santiago');
                     
@@ -141,22 +147,33 @@ class ApiAuthController extends Controller {
                     }
                 } else {
                     $data['errors'] = true;
-                    $data['msg']    = 'Confirmacion de contraseña no coincide';
+                    $data['msg']    = 'Acceso denegado';
                 }
             } else {
                 $data['errors'] = true;
                 $data['msg']    = 'La peticion de cambio de contraseña a caducado';
             }
+        } else {
+            $data['errors'] = true;
+            $data['msg']    = 'Confirmacion de contraseña no coincide';
+
+            return redirect(
+                'resetpass'
+            )->with('respuest', $data);  
+        }
+
             return redirect(
                 'sendmailreset'
-            )->with('respuesta', $data);    
+            )->with('respuesta', $data);   
+       
+             
         } elseif (!is_null($token)) {
             return redirect(
                 'resetpass'
             )->with('token_reset', $token);
         } else {
             $data['errors'] = true;
-            $data['msg']    = 'Datos requeridos';
+            $data['msg']    = 'Sesion expirada';
             
             return redirect(
                 'sendmailreset'

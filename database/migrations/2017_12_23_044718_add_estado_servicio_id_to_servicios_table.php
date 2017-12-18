@@ -12,10 +12,12 @@ class AddEstadoServicioIdToServiciosTable extends Migration
      */
     public function up()
     {
+        if (Schema::hasTable('servicios')) {
         Schema::table('servicios', function (Blueprint $table) {
         $table->integer('estado_servicio_id')->after('cantidad_disponible')->nullable()->unsigned();
         $table->foreign('estado_servicio_id')->references('id')->on('estado_servicio');
         });
+    }
     }
 
     /**

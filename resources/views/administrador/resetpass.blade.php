@@ -24,6 +24,22 @@
     </script>
 @endif
 
+<script type="text/javascript">
+window.onload = function () {
+  document.getElementById("pass1").onchange = validatePassword;
+  document.getElementById("pass2").onchange = validatePassword;
+}
+function validatePassword(){
+var pass2=document.getElementById("pass1").value;
+var pass1=document.getElementById("pass2").value;
+if(pass1!=pass2)
+  document.getElementById("pass1").setCustomValidity("La confirmacion no coincide");
+else
+  document.getElementById("pass1").setCustomValidity('');  
+//empty string means no validation error
+}
+</script>
+
 <div class="container">
     <div id="passwordreset" style="margin-top:50px" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
       <div class="panel panel-info">
@@ -58,62 +74,79 @@
                                 'id' => 'token_reset_id',
                                 'name'=> 'token_reset'
                             ))}}
+                            @elseif(session('respuest'))
+                            <?php 
+                              $respuest = session('respuest');
+                            ?>
+                                  <script type="text/javascript">
+        $(document).ready(
+
+            function(e) {
+                InfoModal(
+                    "Respuesta",
+                    "<?php echo $respuest['msg'];?>"
+                );
+            }
+        );
+    </script>
                           @endif
                             <div class="form-group">
                                 <label for="email" class=" control-label col-sm-3">Correo de la cuenta</label>
                                 <div class="col-sm-9"> 
-        						{!! Form::text(
-          							'email', 
-          							null, 
-          							array(
-            							'required', 
-            							'class'=>'form-control',
-            							'name'=>'email', 
-            							'id'=>'correo',
-            							'placeholder'=>'Correo de la cuenta'
-          							)
-          						)!!}
-          						</div>
+                    {!! Form::text(
+                        'email', 
+                        null, 
+                        array(
+                          'required', 
+                          'class'=>'form-control',
+                          'name'=>'email', 
+                          'id'=>'correo',
+                          'placeholder'=>'Correo de la cuenta'
+                        )
+                      )!!}
+                      </div>
                             </div>
                             <div class="form-group">
                                 <label for="email" class=" control-label col-sm-3">Nueva contraseña</label>
                                 <div class="col-sm-9">
                                 {!! Form::password(
-          							'password',[
+                        'password',[
                         'required',
-            						'class' => 'form-control', 
-            						'name'=>'password',
-            						'autocomplete'=>'new-password',
+                        'class' => 'form-control', 
+                        'name'=>'password',
+                        'autocomplete'=>'new-password',
                         'minlength' => '6',
-            						'placeholder' => 'Nueva contraseña', 
-            						'type' => 'password'
-          						])!!}
-          						</div>
+                        'id' => 'pass1',
+                        'placeholder' => 'Nueva contraseña', 
+                        'type' => 'password'
+                      ])!!}
+                      </div>
                             </div>
                             <div class="form-group">
 
                                 <label for="email" class=" control-label col-sm-3">Confirmacion</label>
                                 <div class="col-sm-9">
                                 {!! Form::password(
-          							'passwordc',[
+                        'passwordc',[
                         'required',
-            						'class' => 'form-control', 
-            						'name'=>'passwordc',
+                        'class' => 'form-control', 
+                        'name'=>'passwordc',
                         'minlength' => '6',
-            						'autocomplete'=>'new-password',
-            						'placeholder' => 'Confirme contraseña', 
-            						'type' => 'password'
-          						])!!}
-          						</div>
+                        'id' => 'pass2',
+                        'autocomplete'=>'new-password',
+                        'placeholder' => 'Confirme contraseña', 
+                        'type' => 'password'
+                      ])!!}
+                      </div>
                             </div>
                             <div class="form-group">             
                                 <div class="  col-sm-offset-3 col-sm-9">
                                     {!! Form::submit(
-      									'Cambiar', 
-      									array(
-        									'class'=>'btn btn-primary btn-lg btn-block'
-      									)
-      								)!!}
+                        'Cambiar', 
+                        array(
+                          'class'=>'btn btn-primary btn-lg btn-block'
+                        )
+                      )!!}
                                 </div>
                             </div>                             
                         {!! Form::close() !!}

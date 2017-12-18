@@ -1,17 +1,18 @@
 @extends('administrador.default')
+
 @section('content')
+
 <style type="text/css">
     body {
       background-color: #494a6b;
       padding-top: 10%;  
     }
 </style>
-<img src="img-responsive" src="https://www.gofeels.com/wp-content/uploads/2017/07/logodark.png">
 <div class="container">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default">
-                <div class="panel-heading">Inicio de sesion</div>
+                <div class="panel-heading">Inicio de hbbhbsesion</div>
                 <div class="panel-body">
                     <form class="form-horizontal" role="form" method="POST" action="{{ url('/login') }}">
                         <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
@@ -48,7 +49,8 @@
                                     <i class="fa fa-btn fa-sign-in"></i> Iniciar
                                 </button>
 
-                                <a class="btn btn-link" href="{{ url('/sendmailreset') }}">Olvidaste tu contraseña?</a>
+                               <a class="btn btn-link" href="{{ url('/sendmailreset') }}">Olvidaste tu contraseña?</a>
+                              
                             </div>
                         </div>
                     </form>

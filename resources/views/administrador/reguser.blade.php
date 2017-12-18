@@ -1,6 +1,7 @@
 @extends('administrador.home_admin')
 @include('administrador.requests')
 @section('registrar')
+{!! Html::style('assets/css/perfil_en_mapa.css'); !!}
 <div class="text-center col-md-4 col-md-offset-4" ">
   <div class="col-lg-12 col-offset-6 centered">
     <h4> Registro de Cuenta </h4>
@@ -13,12 +14,65 @@
     @endforeach
 </ul>
 
+<script type="text/javascript">
+  $(document).on(
+      "unload",
+      function () {
+        $.ajax({
+          type: "POST",
+          url:  "<?php echo url('locate/prop'); ?>",
+          headers: {
+            'X-CSRF-TOKEN': "<?php echo csrf_token(); ?>"
+          },
+          data: { 
+            _token: "<?php echo csrf_token(); ?>"
+          },
+                  
+          success: function(data) {
+            $( "#contenedor" ).append(data.html);
+            $( "#contenedor" ).append(data.js);
+            
+          },
+          error: function(xhr, textStatus, thrownError) {
+                          
+          }
+        });
+      }
+  );
 
+  $(document).ready(
+      function () {
+        $.ajax({
+          type: "POST",
+          url:  "<?php echo url('locate/prop'); ?>",
+          headers: {
+            'X-CSRF-TOKEN': "<?php echo csrf_token(); ?>"
+          },
+          data: { 
+            _token: "<?php echo csrf_token(); ?>"
+          },
+                  
+          success: function(data) {
+            $( "#contenedor" ).append(data.html);
+          },
+          error: function(xhr, textStatus, thrownError) {
+                          
+          }
+        });
+      }
+  );
+</script>
+
+<div id="contenedor">
 {!! Form::open(['route' => array('crear.user', ), 'autocomplete' => 'off']) !!}
-<div class="container" style="padding-top: 6%;">   
-  <div class="row">
-    <div class="col-sm-6">
-      <div style="padding-left: 30%;">
+<center>
+  <div class="container" style="padding-top: 6%;">   
+  <div class="row" style="height: 100%;">
+      
+    <div class="col-lg-11 col-md-offset-1">
+      <center>
+            <div class="col-sm-3">
+      <div>
       <div class="form-group has-feedback">
         {!! Form::label('Nombre') !!}
         {!! 
@@ -83,14 +137,14 @@
           array('required', 
             'class'=>'form-control',
             'name'=>'nombre', 
-            'placeholder'=>'Telefono')) 
+            'placeholder'=>'Nombre Propiedad')) 
         !!}
       </div>
-    
+
       </div>
     </div>
-    <div class="col-sm-6">
-      <div style="padding-right: 30%;">
+    <div class="col-sm-3">
+      <div >
         <div class="form-group has-feedback">
           {!! Form::label('Tipo Propiedad') !!}
           <select type="text" class="form-control" name="tipo_propiedad_id">
@@ -144,7 +198,13 @@
           !!}
         </div>
 
-        <div class="form-group has-feedback">
+        
+      </div>
+    </div>
+
+    <div class="col-sm-3">
+      <div>
+            <div class="form-group has-feedback">
           {!! Form::label('Tipo Cuenta') !!}
           <select type="text" class="form-control" name="tipo_cuenta">
                 <option value="1">
@@ -158,17 +218,56 @@
                 </option>
           </select>
         </div>
+
+        <div class="form-group has-feedback">
+          {!! Form::label('Periodo') !!}
+          <select type="text" class="form-control" name="periodo">
+                <option value="day">
+                  Diario
+                </option>
+                <option value="week">
+                  Semanal
+                </option>
+                <option value="month">
+                  Mensual
+                </option>
+                <option value="year">
+                  Anual
+                </option>
+          </select>
+        </div>
+
+        <div class="form-group has-feedback">
+          {!! Form::label('Longitud') !!}
+          <input type="number" name="longitud" class="form-control" step="any" placeholder="Longitud Propiedad" required/>
+        </div>
+
+        <div class="form-group has-feedback">
+          {!! Form::label('Latitud') !!}
+          <input type="number" name="latitud" class="form-control" step="any" placeholder="Latitud Propiedad" required/>
+        </div>
+        
       </div>
+    </div>
+      </center>
     </div>
   </div>
 </div>
-<div class="form-group has-feedback" style="padding-left:35%; padding-right:35%; padding-top: 1%;">
-    {!! Form::submit(
-      'Registrar', 
-      array(
-        'class'=>'btn btn-primary btn-lg btn-block'
-      ))
-    !!}
+</center>
+<div class="container-fluid" style="padding-right: 30%; padding-left: 30%;">
+  <div class="row" style="margin-right:0;margin-left:0">
+    <div class="row text-center">
+      {!! Form::submit(
+        'Registrar', 
+        array(
+          'class'=>'btn btn-primary btn-lg btn-block'
+         ))
+      !!}    
+    </div>
+  </div>
 </div>
 {!! Form::close() !!}
 @endsection
+
+
+</div>

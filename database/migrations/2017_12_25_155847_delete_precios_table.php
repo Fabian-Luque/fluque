@@ -12,7 +12,9 @@ class DeletePreciosTable extends Migration
      */
     public function up()
     {
+        if (!Schema::hasTable('precios')) {
         Schema::drop('precios');
+    }
     }
 
     /**

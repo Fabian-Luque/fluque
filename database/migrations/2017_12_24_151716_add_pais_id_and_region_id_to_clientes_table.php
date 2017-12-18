@@ -12,12 +12,14 @@ class AddPaisIdAndRegionIdToClientesTable extends Migration
      */
     public function up()
     {
+        if (Schema::hasTable('clientes')) {
         Schema::table('clientes', function (Blueprint $table) {
         $table->integer('pais_id')->after('giro')->nullable()->unsigned();
         $table->foreign('pais_id')->references('id')->on('paises');
         $table->integer('region_id')->after('pais_id')->nullable()->unsigned();
         $table->foreign('region_id')->references('id')->on('regiones');
         });
+    }
     }
 
     /**

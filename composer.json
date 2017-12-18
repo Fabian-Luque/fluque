@@ -15,11 +15,13 @@
         "doctrine/dbal": "~2.5",
         "laravelcollective/html": "^5.2",
         "guzzlehttp/guzzle": "^6.3",
-        "myallocator/myallocator-php-sdk": "^1.2",
         "grimzy/laravel-mysql-spatial": "^2.0",
-        "genealabs/phpgmaps": "^0.4.1",
         "stevebauman/location": "^2.0",
-        "predis/predis": "^1.1"
+        "genealabs/phpgmaps": "^0.4.1",
+        "predis/predis": "~1.0",
+        "gabrielbull/websocket-client": "^0.3.1",
+        "laravel/cashier": "^5.0",
+        "cartalyst/stripe": "^2.1"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

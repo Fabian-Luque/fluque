@@ -185,6 +185,19 @@ class RolController extends Controller
         }
 	}
 
+	public function crearPermisos()
+	{
+		$roles = Rol::where('nombre', '!=', 'Dueño de la propiedad')->get();
+
+		foreach ($roles as $rol) {
+			$rol->permisos()->attach(40,['estado' => 0]);
+
+		}
+
+		return "permisos asignados";
+
+	}
+
 	public function destroy($id)
     {
         $rol = Rol::findOrFail($id);
@@ -197,6 +210,5 @@ class RolController extends Controller
         return Response::json($data, 202);
 
     }
-
 
 }

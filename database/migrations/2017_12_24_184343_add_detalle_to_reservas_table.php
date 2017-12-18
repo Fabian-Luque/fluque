@@ -12,9 +12,11 @@ class AddDetalleToReservasTable extends Migration
      */
     public function up()
     {
+        if (Schema::hasTable('reservas')) {
         Schema::table('reservas', function (Blueprint $table) {
         $table->string('detalle')->after('observacion')->nullable();
         });
+    }
     }
 
     /**

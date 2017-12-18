@@ -1,5 +1,6 @@
 @extends('administrador.default')
 @section('content')
+
 <div class="wrapper">
    <div class="sidebar" data-color="blue" data-image="/assets/img/mujer.jpg">
         <div class="sidebar-wrapper">

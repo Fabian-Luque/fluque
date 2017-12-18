@@ -15,7 +15,8 @@ return [
     |
     */
 
-    'default' => env('QUEUE_DRIVER', 'sync'),
+    'default' => env('QUEUE_DRIVER', 'redis'),
+
 
     /*
     |--------------------------------------------------------------------------
@@ -61,7 +62,7 @@ return [
             'driver' => 'redis',
             'connection' => 'default',
             'queue' => 'default',
-            'expire' => 60,
+            'retry_after' => 90,
         ],
 
     ],

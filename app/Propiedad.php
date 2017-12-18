@@ -7,12 +7,39 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Propiedad extends Model {
 	use SoftDeletes;
+
     protected $table = 'propiedades';
 
-	protected $fillable = [ 'id', 'nombre','tipo', 'numero_habitaciones','region','pais','ciudad','estado','direccion', 'telefono', 'email', 'nombre_responsable', 'descripcion','iva', 'porcentaje_deposito', 'pais_id', 'estado_cuenta_id','region_id', 'tipo_propiedad_id', 'tipo_cobro_id', 'zona_horaria_id'];
+	protected $fillable = [ 
+        'id', 
+        'nombre',
+        'tipo', 
+        'numero_habitaciones',
+        'region',
+        'pais',
+        'ciudad',
+        'estado',
+        'direccion', 
+        'telefono', 
+        'email', 
+        'nombre_responsable', 
+        'descripcion','iva', 
+        'porcentaje_deposito', 
+        'pais_id', 
+        'estado_cuenta_id',
+        'region_id', 
+        'tipo_propiedad_id', 
+        'tipo_cobro_id', 
+        'zona_horaria_id', 
+        'codigo'
+    ];
 
     public function ubicacion() {
         return $this->hasOne('App\UbicacionProp');
+    }
+
+    public function QVO() {
+        return $this->hasOne('App\QvoUser', 'prop_id');
     }
 
     public function user() {
@@ -34,6 +61,10 @@ class Propiedad extends Model {
         return $this->belongsTo('App\Pais', 'pais_id'); 
     }
 
+    public function tipoDepositoPropiedad(){
+        return $this->hasOne('App\PropiedadTipoDeposito', 'propiedad_id');
+    }
+
     public function region() {
         return $this->belongsTo('App\Region', 'region_id'); 
     }
@@ -47,11 +78,15 @@ class Propiedad extends Model {
     }
 
     public function zonaHoraria() {
-        return $this->belongsTo('App\zonaHoraria', 'zona_horaria_id'); 
+        return $this->belongsTo('App\ZonaHoraria', 'zona_horaria_id'); 
     }
 
     public function habitaciones() {
     	return $this->hasMany('App\Habitacion', 'propiedad_id');
+    }
+
+    public function politicas() {
+        return $this->hasMany('App\Politica', 'propiedad_id');
     }
 
     public function servicios() {
@@ -68,6 +103,22 @@ class Propiedad extends Model {
 
     public function tipoCobro(){
         return $this->belongsTo('App\TipoCobro', 'tipo_cobro_id');
+    }
+
+    public function cajas(){
+        return $this->hasMany('App\Caja', 'propiedad_id');
+    }
+
+    public function egresos(){
+        return $this->hasMany('App\Egreso', 'propiedad_id');
+    }
+
+    public function cuentasBancaria() {
+        return $this->hasMany('App\CuentaBancaria', 'propiedad_id');
+    }
+
+    public function egresosPropiedad(){
+        return $this->hasMany('App\EgresoPropiedad', 'propiedad_id');
     }
 
     public function calificacionHuespedes() {
@@ -117,4 +168,20 @@ class Propiedad extends Model {
             ->withPivot('tipo_moneda_id')
             ->withTimestamps();
     }
+
+    public function coloresMotor(){
+        return $this->belongsToMany('App\ColorMotor', 'motor_propiedad')
+            ->withPivot('id','clasificacion_color_id')
+            ->withTimestamps();
+    }
+
+    public function clasificacionColores(){
+        return $this->belongsToMany('App\ClasificacionColor', 'motor_propiedad')
+            ->withPivot('color_motor_id')
+            ->withTimestamps();
+    }
+
+
+
+
 }
