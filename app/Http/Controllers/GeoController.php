@@ -10,6 +10,7 @@ use App\UbicacionProp;
 use Grimzy\LaravelMysqlSpatial\Types\Point;
 use GeneaLabs\Phpgmaps\Phpgmaps;
 use App\clases\DiseñoMapa;
+use Illuminate\Support\Facades\Validator;
 
 class GeoController extends Controller {
 
@@ -227,6 +228,38 @@ class GeoController extends Controller {
             }
         }
         return Response::json($pgm->create_map());
+    }
+
+    public function PropiedadesCercanas(Request $request) {
+        $validator = Validator::make(
+            $request->all(), 
+            array(
+                'latitud'  => 'required',
+                'longitud' => 'required',
+                'radio'    => 'required',
+            )
+        );
+
+        if ($validator->fails()) {
+            $retorno['errors'] = true;
+            $retorno["msj"] = $validator->errors();
+        } else {
+            try {
+                $u_props = new UbicacionProp();
+                $propiedades = $u_props->getPropiedadesCercanas(
+                    $request->latitud,
+                    $request->longitud,
+                    $request->radio
+                );
+
+                $retorno['errors'] = false;
+                $retorno['msj']    = $propiedades;
+            } catch (\Illuminate\Database\QueryException $e) {
+                $retorno['errors'] = true;
+                $retorno['msj']    = "No existen propiedades en un radio ".$request->radio." KM^2";
+            }
+        }
+        return Response::json($retorno);
     }
 
     public function UbicacionRead(Request $request) {

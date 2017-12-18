@@ -13,6 +13,8 @@ Route::get(
   }
 );
 
+Route::post('propiedad/cercana/obtener','GeoController@PropiedadesCercanas');
+
 
 Route::post('guardar/ubicacion/propiedad', 'GeoController@UbicacionCreate');
 Route::post('googlemaps', 'GeoController@GoogleMaps');
@@ -329,8 +331,3 @@ Route::post('tarjeta/stripe/actualizar','StripeController@tarjetaStripeActualiza
 Route::post('tarjeta/stripe/eliminar','StripeController@tarjetaStripeEliminar');
 
 Route::post('invoice/stripe/obtener','StripeController@InvoiceStripeObtener');
-
-
-
-
-
