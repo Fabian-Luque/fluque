@@ -459,29 +459,6 @@ class ReservaController extends Controller
                 $pago->touch();
             }
             
-
-
-            // if (count($pagos) != 0) {
-            //     foreach ($pagos as $pago) {
-            //         $pago                       = Pago::findOrFail($pago->id);
-            //         $pago->numero_operacion     = $request->input('numero_operacion');
-            //         $pago->tipo_comprobante_id  = $request->input('tipo_comprobante_id');
-            //         $pago->numero_cheque        = $request->input('numero_cheque');
-            //         $pago->metodo_pago_id       = $request->input('metodo_pago_id');
-            //         $pago->created_at           = $getFecha;
-            //         $pago->touch();
-            //     }
-            // } else {
-            //     $pago                       = Pago::findOrFail($pago->id);
-            //     $pago->numero_operacion     = $request->input('numero_operacion');
-            //     $pago->tipo_comprobante_id  = $request->input('tipo_comprobante_id');
-            //     $pago->numero_cheque        = $request->input('numero_cheque');
-            //     $pago->metodo_pago_id       = $request->input('metodo_pago_id');
-            //     $pago->created_at           = $getFecha;
-            //     $pago->touch();
-            // }
-
-
             $data = [
                 'errors' => false,
                 'msg'    => 'Pago actualizado satisfactoriamente',];
