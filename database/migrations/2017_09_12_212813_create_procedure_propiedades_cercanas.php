@@ -15,7 +15,7 @@ class CreateProcedurePropiedadesCercanas extends Migration {
        $sql = "
 CREATE PROCEDURE propiedades_cercanas(pos_lat DOUBLE, pos_lng DOUBLE, radio_km DOUBLE)
 BEGIN
-    DECLARE fin INT;
+    DECLARE fin INT DEFAULT 0;
     DECLARE idd INT DEFAULT 0;
     DECLARE prop_idd INT DEFAULT 0;
     DECLARE latitudd DOUBLE DEFAULT 0;

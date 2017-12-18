@@ -238,15 +238,14 @@
         </div>
 
         <div class="form-group has-feedback">
-          {!! Form::label('Longitud') !!}
-          <input type="number" name="longitud" class="form-control" step="any" placeholder="Longitud Propiedad" required/>
-        </div>
-
-        <div class="form-group has-feedback">
           {!! Form::label('Latitud') !!}
           <input type="number" name="latitud" class="form-control" step="any" placeholder="Latitud Propiedad" required/>
         </div>
         
+        <div class="form-group has-feedback">
+          {!! Form::label('Longitud') !!}
+          <input type="number" name="longitud" class="form-control" step="any" placeholder="Longitud Propiedad" required/>
+        </div>
       </div>
     </div>
       </center>

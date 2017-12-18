@@ -11,6 +11,7 @@ use Grimzy\LaravelMysqlSpatial\Types\Point;
 use GeneaLabs\Phpgmaps\Phpgmaps;
 use App\clases\DiseñoMapa;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Database\QueryException;
 
 class GeoController extends Controller {
 
@@ -254,7 +255,7 @@ class GeoController extends Controller {
 
                 $retorno['errors'] = false;
                 $retorno['msj']    = $propiedades;
-            } catch (\Illuminate\Database\QueryException $e) {
+            } catch (QueryException $e) {
                 $retorno['errors'] = true;
                 $retorno['msj']    = "No existen propiedades en un radio ".$request->radio." KM^2";
             }
