@@ -62,7 +62,9 @@ class CajaController extends Controller
                 $egreso  = 0;
                 foreach ($caja->pagos as $pago) {
                     if ($tipo_moneda->id == $pago->tipo_moneda_id) {
-                        $ingreso += $pago->monto_equivalente;
+                        if ($pago->metodo_pago_id == 1) {
+                            $ingreso += $pago->monto_equivalente;
+                        }
                     }
                 }
                 foreach ($caja->egresosCaja as $egreso_caja) {
@@ -237,7 +239,9 @@ class CajaController extends Controller
                 $egreso  = 0;
                 foreach ($caja_abierta->pagos as $pago) {
                     if ($tipo_moneda->id == $pago->tipo_moneda_id) {
-                        $ingreso += $pago->monto_equivalente;
+                        if ($pago->metodo_pago_id == 1) {
+                            $ingreso += $pago->monto_equivalente;
+                        }
                     }
                 }
                 foreach ($caja_abierta->egresosCaja as $egreso_caja) {
@@ -329,7 +333,9 @@ class CajaController extends Controller
                 $egreso  = 0;
                 foreach ($caja_abierta->pagos as $pago) {
                     if ($tipo_moneda->id == $pago->tipo_moneda_id) {
-                        $ingreso += $pago->monto_equivalente;
+                        if ($pago->metodo_pago_id == 1) {
+                            $ingreso += $pago->monto_equivalente;
+                        }
                     }
                 }
                 foreach ($caja_abierta->egresosCaja as $egreso_caja) {

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\DashControllers;
 
 use App\Estadocuenta;
-use App\Events\ReservasMotorEvent;
 use App\Http\Controllers\Controller;
 use App\Propiedad;
 use App\TipoPropiedad;

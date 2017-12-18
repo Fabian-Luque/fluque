@@ -164,7 +164,6 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::post('ingreso/servicio/cliente', 'ClienteController@ingresoServicio');
 		Route::get('cliente/empresa', 'ClienteController@getClientes');
 		Route::post('pago/consumo', 'ReservaController@pagoConsumo');
-		Route::get('cliente/email', 'ClienteController@getCliente');
 		Route::get('buscar/email', 'ClienteController@buscarEmail');
 		Route::get('buscar/rut', 'ClienteController@buscarRut');
 		Route::get('disponibilidad', 'HabitacionController@disponibilidad');
@@ -188,7 +187,7 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::get('temporada/precios', 'TemporadaController@getPreciosTemporadas');
 		Route::post('editar/temporadas', 'TemporadaController@editarTemporadas');
 		Route::get('reportes', 'PropiedadController@reportes');
-		Route::get('reportes/pago', 'PropiedadController@pagos');
+		Route::post('reportes/pago', 'PropiedadController@pagos');
 		Route::get('zonas/horarias', 'PropiedadController@getZonasHorarias');
 		Route::put('pago/{id}', 'ReservaController@editarPago');
 		Route::delete('pago/{id}', 'ReservaController@eliminarPago');
@@ -239,7 +238,10 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::post('editar/color/motor', 'MotorRaController@editarColor');
 		Route::post('anular/reservas', 'ReservaController@anularReservas');
 		Route::post('editar/tipo/habitacion', 'TipoHabitacionController@editarTipoHabitacion');
-
+		Route::post('habitaciones/disponibles/reserva', 'ReservaController@habitacionesDisponibles');
+		Route::post('cambiar/fechas/reserva', 'ReservaController@cambiarFechasReserva');
+		Route::get('reservas/credito', 'ReservaController@getCuentasCredito');
+		Route::post('confirmar/pago', 'ReservaController@confirmarPagoReserva');
 
 
 		Route::resource('user', 'UserController', ['except' => ['create', 'edit','store']]);
