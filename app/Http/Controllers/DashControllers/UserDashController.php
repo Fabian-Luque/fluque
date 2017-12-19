@@ -21,6 +21,7 @@ use GuzzleHttp\Client;
 use App\Jobs\ProcesoQVO;
 use Illuminate\Support\Facades\Validator;
 use Cartalyst\Stripe\Stripe;
+use Cartalyst\Stripe\Exception\MissingParameterException;
 
 class UserDashController extends Controller {
 
@@ -76,23 +77,33 @@ class UserDashController extends Controller {
                         $habitaciones = $propiedad->numero_habitaciones;
                     }
 
-                    $plan = $stripe->plans()->create([
-                        'id'                   => $usuario->email.'_'.$propiedad->nombre,
-                        'name'                 => $propiedad->nombre,
-                        'amount'               => config('app.PRECIO_X_HAB_QVO') * $habitaciones,
-                        'currency'             => 'USD',
-                        'interval'             => $request->periodo,
-                        'trial_period_days'    => '15',
-                        'interval_count'       => 1,
-                    ]);
+                    try {
 
-                    $datos_stripe = new DatosStripe();
-                    $datos_stripe->plan_id = $plan['id'];
-                    $datos_stripe->prop_id = $propiedad->id;
-                    $datos_stripe->save();
+                        $plan = $stripe->plans()->create([
+                            'id'                   => $usuario->email.'_'.$propiedad->nombre,
+                            'name'                 => $propiedad->nombre,
+                            'amount'               => config('app.PRECIO_X_HAB_QVO') * $habitaciones,
+                            'currency'             => 'USD',
+                            'interval'             => $request->periodo,
+                            'trial_period_days'    => '15',
+                            'interval_count'       => 1,
+                        ]);
 
-                    $data['accion'] = 'Crear usuario';
-                    $data['msg'] = 'Usuario creado exitosamente';
+                        $datos_stripe = new DatosStripe();
+                        $datos_stripe->plan_id = $plan['id'];
+                        $datos_stripe->prop_id = $propiedad->id;
+                        $datos_stripe->save();
+
+                        $data['accion'] = 'Crear usuario';
+                        $data['msg'] = 'Usuario creado exitosamente';
+                    } catch(MissingParameterException $e) {
+                        $ubicacion->delete();
+                        $propiedad->delete();
+                        $usuario->delete();
+                        
+                        $data['accion'] = 'Crear usuario';
+                        $data['msg'] = 'No se pudo registrar el usuario. Error: '.$e->getMessage();
+                    }
                 } else {
                     $status            = trans('request.failure.code.bad_request');
                     $retorno['errors'] = true;
@@ -258,9 +269,6 @@ class UserDashController extends Controller {
             $propiedades
         );
     }
-
-
-
 
     public function CreateUserP(Request $request) {
         if ($request->has('name') && $request->has('email') && $request->has('password') && $request->has('phone') && $request->has('nombre') && $request->has('direccion') && $request->has('tipo_propiedad_id') && $request->has('tipo_cuenta') && $request->has('ciudad') && $request->has('numero_habitaciones') && $request->has('latitud') && $request->has('longitud') && $request->has('periodo')) {
