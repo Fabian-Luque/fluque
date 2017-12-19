@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitd8a8aaa910f82a5e3e3be29dcd5b7fad
+class ComposerStaticInit983cb86d0d3688ec8020575c97ab7085
 {
     public static $files = array (
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
@@ -503,6 +503,7 @@ class ComposerStaticInitd8a8aaa910f82a5e3e3be29dcd5b7fad
         'AddCantidadDisponibleVentaToTipoHabitacionTable' => __DIR__ . '/../..' . '/database/migrations/2017_10_10_202634_add_cantidad_disponible_venta_to_tipo_habitacion_table.php',
         'AddCantidadHuespedesToPreciosTemporadaTable' => __DIR__ . '/../..' . '/database/migrations/2017_12_25_181125_add_cantidad_huespedes_to_precios_temporada_table.php',
         'AddCategoriaIdServiciosTable' => __DIR__ . '/../..' . '/database/migrations/2017_12_22_040805_add_categoria_id_servicios_table.php',
+        'AddClaveForaneaTablaUbicacionPropiedad' => __DIR__ . '/../..' . '/database/migrations/2017_12_19_175252_add_clave_foranea_tabla_ubicacion_propiedad.php',
         'AddCodigoToPropiedadesTable' => __DIR__ . '/../..' . '/database/migrations/2017_10_26_194740_add_codigo_to_propiedades_table.php',
         'AddColumnApellidoToClientesTable' => __DIR__ . '/../..' . '/database/migrations/2017_12_22_223242_add_column_apellido_to_clientes_table.php',
         'AddColumnEstadoHuespedReservaServicioTable' => __DIR__ . '/../..' . '/database/migrations/2017_12_22_031319_add_column_estado_huesped_reserva_servicio_table.php',
@@ -580,7 +581,7 @@ class ComposerStaticInitd8a8aaa910f82a5e3e3be29dcd5b7fad
         'CreatePreciosServicioTable' => __DIR__ . '/../..' . '/database/migrations/2017_12_22_244320_create_precios_servicio_table.php',
         'CreatePreciosTable' => __DIR__ . '/../..' . '/database/migrations/2017_12_22_223244_create_precios_table.php',
         'CreatePreciosTemporadaTable' => __DIR__ . '/../..' . '/database/migrations/2017_05_27_040727_create_precios_temporada_table.php',
-        'CreateProcedureHaversine' => __DIR__ . '/../..' . '/database/migrations/2017_12_18_211439_create_procedure_haversine.php',
+        'CreateProcedureHaversine' => __DIR__ . '/../..' . '/database/migrations/2017_09_12_212814_create_procedure_haversine.php',
         'CreateProcedurePropiedadesCercanas' => __DIR__ . '/../..' . '/database/migrations/2017_09_12_212813_create_procedure_propiedades_cercanas.php',
         'CreatePropiedadMonedaTable' => __DIR__ . '/../..' . '/database/migrations/2017_12_23_018303_create_propiedad_moneda_table.php',
         'CreatePropiedadTable' => __DIR__ . '/../..' . '/database/migrations/2016_10_02_054109_create_propiedad_table.php',
@@ -1187,10 +1188,10 @@ class ComposerStaticInitd8a8aaa910f82a5e3e3be29dcd5b7fad
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitd8a8aaa910f82a5e3e3be29dcd5b7fad::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitd8a8aaa910f82a5e3e3be29dcd5b7fad::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInitd8a8aaa910f82a5e3e3be29dcd5b7fad::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInitd8a8aaa910f82a5e3e3be29dcd5b7fad::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit983cb86d0d3688ec8020575c97ab7085::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit983cb86d0d3688ec8020575c97ab7085::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit983cb86d0d3688ec8020575c97ab7085::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit983cb86d0d3688ec8020575c97ab7085::$classMap;
 
         }, null, ClassLoader::class);
     }

@@ -166,8 +166,8 @@ class GeoController extends Controller {
     		$ubp = new UbicacionProp();
 			$ubp->prop_id = $request->id;
 			$ubp->location = new Point(
-				$request->latitud, 
-				$request->longitud
+                $request->longitud,
+				$request->latitud 
 			);
 			$ubp->save();
 
@@ -178,7 +178,7 @@ class GeoController extends Controller {
     		$data['errors'] = true;
             $data['msg']    = 'Datos requeridos';
     	}
-		return Response::json($ubp);
+		return Response::json($data);
     }
 
     public function AddLocatePropiedad(Request $request) {   

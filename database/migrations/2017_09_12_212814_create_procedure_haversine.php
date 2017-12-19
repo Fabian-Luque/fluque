@@ -12,12 +12,12 @@ class CreateProcedureHaversine extends Migration {
                 NO SQL
                 DETERMINISTIC
                 BEGIN
-                    RETURN (
-                        6372.795477598 *
+                    RETURN ( 
+                        6372.795477598 * 
                         ACOS(
-                            SIN ( RADIANS(x(location)) ) * SIN( RADIANS((pos_lat)) ) + 
-                            COS ( RADIANS(x(location)) ) * COS( RADIANS((pos_lat)) ) * 
-                            COS ( RADIANS(y(location)) - RADIANS(pos_lng) )
+                            SIN ( RADIANS(X(location)) ) * SIN( RADIANS((pos_lat)) ) + 
+                            COS ( RADIANS(X(location)) ) * COS( RADIANS((pos_lat)) ) * 
+                            COS ( RADIANS(Y(location)) - RADIANS(pos_lng) )
                         )
                     );
                 END
@@ -26,7 +26,7 @@ class CreateProcedureHaversine extends Migration {
     }
 
     public function down() {
-        $sql = "DROP PROCEDURE IF EXISTS haversine";
+        $sql = "DROP FUNCTION IF EXISTS haversine";
         DB::unprepared($sql);
     }
 }

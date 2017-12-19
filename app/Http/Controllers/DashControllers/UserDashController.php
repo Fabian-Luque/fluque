@@ -64,8 +64,8 @@ class UserDashController extends Controller {
                     $ubicacion           = new UbicacionProp();
                     $ubicacion->prop_id  = $propiedad->id;
                     $ubicacion->location = new Point(
-                        $request->latitud, 
-                        $request->longitud
+                        $request->longitud,
+                        $request->latitud 
                     );
                     $ubicacion->save();
 
