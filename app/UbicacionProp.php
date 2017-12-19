@@ -26,7 +26,7 @@ class UbicacionProp extends Model {
 
     public static function getPropiedadesCercanas($latitud, $longitud, $radio) {
         return DB::select(
-            'SELECT id, prop_id, X(location) as latitud, X(location) as longitud, created_at, updated_at FROM ubicacion_propiedad WHERE haversine(location,?, ?) < ?', 
+            'SELECT id, prop_id, X(location) as latitud, Y(location) as longitud, created_at, updated_at FROM ubicacion_propiedad WHERE haversine(location,?, ?) < ?', 
             array(
                 $latitud,
                 $longitud,
