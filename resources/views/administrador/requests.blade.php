@@ -152,6 +152,8 @@
             						},
             			
             						success: function(data) {
+
+                                        console.log(parseFloat(data.msg.propiedad[0].ubicacion.location.coordinates[0])+ " aahhhhhh");
             							console.log(data.msg.propiedad[0].nombre);
             							console.log(data.msg);
             							$("#id_user").val(data.msg.id);
@@ -171,6 +173,14 @@
 
                                         $("#fecha").val(
                                             data.msg.propiedad[0].fecha
+                                        );
+
+                                        $("#latitud").val(
+                                            parseFloat(data.msg.propiedad[0].ubicacion.location.coordinates[0])
+                                        );
+
+                                        $("#longitud").val(
+                                            parseFloat(data.msg.propiedad[0].ubicacion.location.coordinates[1])
                                         );
             							
             						},

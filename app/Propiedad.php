@@ -38,10 +38,6 @@ class Propiedad extends Model {
         return $this->hasOne('App\UbicacionProp');
     }
 
-    public function QVO() {
-        return $this->hasOne('App\QvoUser', 'prop_id');
-    }
-
     public function user() {
         return $this->belongsToMany(
             'App\User', 

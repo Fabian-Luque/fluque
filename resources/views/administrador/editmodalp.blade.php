@@ -31,7 +31,7 @@
           </select>
         </div>
 
-                <div class="form-group has-feedback">
+        <div class="form-group has-feedback">
           {!! Form::label('N° Habitaciones') !!}
           {!! Form::number(
             'credit_amount', 
@@ -44,15 +44,16 @@
             ]) 
           !!}
         </div>
+
+        <div class="form-group has-feedback">
+          {!! Form::label('Latitud') !!}
+          <input id="latitud" type="number" name="latitud" class="form-control" step="any" placeholder="Latitud Propiedad" required/>
+        </div>
     
       </div>
     </div>
     <div class="col-xs-2 col-sm-2 text-center">
       <div>
-
-
-
-
         <div class="form-group has-feedback">
           {!! Form::label('Ciudad') !!}
           {!! Form::text(
@@ -96,6 +97,11 @@
                   inactiva
                 </option>
           </select>
+        </div>
+        
+        <div class="form-group has-feedback">
+          {!! Form::label('Longitud') !!}
+          <input id="longitud" type="number" name="longitud" class="form-control" step="any" placeholder="Longitud Propiedad" required/>
         </div>
 
       </div>

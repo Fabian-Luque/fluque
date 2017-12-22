@@ -18,10 +18,10 @@ use JWTAuth;
 use Grimzy\LaravelMysqlSpatial\Types\Point;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Client;
-use App\Jobs\ProcesoQVO;
 use Illuminate\Support\Facades\Validator;
 use Cartalyst\Stripe\Stripe;
 use Cartalyst\Stripe\Exception\MissingParameterException;
+use \Illuminate\Database\QueryException;
 
 class UserDashController extends Controller {
 
@@ -130,6 +130,12 @@ class UserDashController extends Controller {
                 $request->id
             )->with('propiedad')->first();
 
+            $ub = UbicacionProp::where(
+                'prop_id',
+                $user->propiedad[0]->id
+            )->first();
+            
+            $user->propiedad[0]->ubicacion = $ub;
             if (count($user) != 0) {
                 $data['errors'] = false;
                 $data['msg']    = $user;
@@ -161,8 +167,8 @@ class UserDashController extends Controller {
             'phone'    => '',
             'rol_id'   => 'numeric',
             'estado_id'=> 'numeric',
-            'latitud'  => 'numeric',
-            'longitud' => 'numeric',
+            'latitud'  => 'required',
+            'longitud' => 'required',
         );
 
         $validator = Validator::make($request->all(), $rules);
@@ -173,7 +179,15 @@ class UserDashController extends Controller {
             if (!isset($us->email)) {
                 $usuario->update($request->all());
                 $propiedad = Propiedad::find($request->id);
-                $propiedad->update($request->all());    
+                $propiedad->update($request->all());  
+
+                $ubicacion           = new UbicacionProp();
+                    $ubicacion->prop_id  = $propiedad->id;
+                    $ubicacion->location = new Point(
+                        $request->longitud,
+                        $request->latitud 
+                    );
+                $ubicacion->save();  
                 
                 $data['msg'] = 'Registro Actualizado Satisfactoriamente';
             } else {
@@ -221,7 +235,12 @@ class UserDashController extends Controller {
         $propiedades = Propiedad::all(); 
         setlocale(LC_ALL,"es_CO.utf8");   
 
-        foreach ($propiedades as $prop) {    
+        foreach ($propiedades as $prop) {
+            try {
+                $prop->ub = $prop->ubicacion;
+            } catch (QueryException $e) {
+                $prop->ub = null;
+            }
             $aux = str_replace(":", " ", $prop->created_at);
             $aux = str_replace("-", " ", $aux);
             $arr = (explode(' ', $aux));
@@ -237,12 +256,6 @@ class UserDashController extends Controller {
                     $arr[0]
                 )
             );
-
-            if (isset($prop->QVO)) {
-                $prop->qvo = true;
-            } else {
-                $prop->qvo = false;
-            }
 
             if (isset($prop)) {
                 $prop->tipo_propiedad = TipoPropiedad::find(
@@ -264,6 +277,7 @@ class UserDashController extends Controller {
             $prop->direccion = trim($prop->direccion);
             $prop->created = trim($prop->created);
         }
+
         return View('administrador.prop')->with(
             'props', 
             $propiedades

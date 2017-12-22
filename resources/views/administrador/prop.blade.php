@@ -42,7 +42,6 @@
             			<th>CUENTA</th>
                         <th>CREADO</th>
                         <th>EDITAR</th>
-                        <th>QVO</th>
         			</thead>
         			<tbody>
         				@if(!empty($props[0]['id']))
