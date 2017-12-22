@@ -152,9 +152,6 @@
             						},
             			
             						success: function(data) {
-
-                                        console.log(parseFloat(data.msg.propiedad[0].ubicacion.location.coordinates[0])+ " aahhhhhh");
-            							console.log(data.msg.propiedad[0].nombre);
             							console.log(data.msg);
             							$("#id_user").val(data.msg.id);
             							$("#name").val(data.msg.name);
