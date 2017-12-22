@@ -175,13 +175,15 @@
                                             data.msg.propiedad[0].fecha
                                         );
 
-                                        $("#latitud").val(
-                                            parseFloat(data.msg.propiedad[0].ubicacion.location.coordinates[0])
-                                        );
+                                        if (data.msg.propiedad[0].ubicacion != null) {
+                                            $("#latitud").val(
+                                                parseFloat(data.msg.propiedad[0].ubicacion.location.coordinates[0])
+                                            );
 
-                                        $("#longitud").val(
-                                            parseFloat(data.msg.propiedad[0].ubicacion.location.coordinates[1])
-                                        );
+                                            $("#longitud").val(
+                                                parseFloat(data.msg.propiedad[0].ubicacion.location.coordinates[1])
+                                            );
+                                        }
             							
             						},
         							error: function(xhr, textStatus, thrownError) {
