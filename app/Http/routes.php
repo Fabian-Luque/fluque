@@ -321,4 +321,4 @@ Route::post('invoice/stripe/obtener','StripeController@InvoiceStripeObtener');
 
 
 
-Route::post('myallocator/configurar', 'MyallocatorController@Configuracion')->middleware('cors');
+Route::post('myallocator/configurar', 'MyallocatorController@Configuracion');
