@@ -17,7 +17,8 @@ use GuzzleHttp\Client;
 class MyallocatorController extends Controller {
     
     public function Configuracion(Request $request) {
-    	$validator = Validator::make(
+    	/*
+        $validator = Validator::make(
         	$request->all(), 
         	array(
             	'm_user_id'   	=> 'required',
@@ -32,11 +33,12 @@ class MyallocatorController extends Controller {
         	$retorno['errors'] = true;
         	$retorno["msj"] = $validator->errors();
         } else {
-        	$cm = CredencialMyallocator::where(
+        */
+        /*	$cm = CredencialMyallocator::where(
         		'prop_id',
         		$request->prop_id
         	)->first();
-
+*/
         	$client = new Client();
 
     		try {
@@ -59,7 +61,7 @@ class MyallocatorController extends Controller {
 	    	} catch (ClientException $e) {
 				$retorno = ($e->getResponse()->getBody()->getContents());
 	    	}
-$retorno["msj"] = $retorno;
+$retorno = $retorno;
 /*
 
         	try {
@@ -88,7 +90,7 @@ $retorno["msj"] = $retorno;
     			$retorno['msg'] = $e->getMessage();
         	}
         	*/		
-    	}
+    	//}
     	return Response::json($retorno);
     }
 }
