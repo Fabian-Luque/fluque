@@ -38,8 +38,7 @@ class MyallocatorController extends Controller {
         	)->first();
 
         	$client = new Client();
-        	$retorno["msj"] = "holaaa";
-/*
+
     		try {
 	            $response = $client->request(
 	            	'POST', 
@@ -60,7 +59,7 @@ class MyallocatorController extends Controller {
 	    	} catch (ClientException $e) {
 				$retorno = ($e->getResponse()->getBody()->getContents());
 	    	}
-*/
+$retorno["msj"] = $retorno;
 /*
 
         	try {
