@@ -331,3 +331,9 @@ Route::post('tarjeta/stripe/actualizar','StripeController@tarjetaStripeActualiza
 Route::post('tarjeta/stripe/eliminar','StripeController@tarjetaStripeEliminar');
 
 Route::post('invoice/stripe/obtener','StripeController@InvoiceStripeObtener');
+
+
+
+
+
+Route::post('myallocator/configurar', 'MyallocatorController@Configuracion')->middleware('cors');
