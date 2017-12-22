@@ -301,21 +301,6 @@ Route::group(['as' => 'api.jarvis.'], function() {
 
 Route::post('evento', 'DashControllers\UserDashController@evento');
 
-
-
-
-
-Route::post('tarjeta/qvo/crear', 'QVOController@SubsTarjeta');
-Route::post('cliente/qvo/crear', 'QVOController@ClienteCreate');
-Route::post('qvo/proceso', 'QVOController@ProcesoQVO')->name('qvo.proceso');
-Route::post('infoqvo/obtener','QVOController@getInfoQVO');
-Route::post('tarjeta/default/modificar','QVOController@TarjetaxDefectoModificar');
-Route::post('subscripcion/plan/cancelar','QVOController@SubscripcionPlanCancelar');
-Route::post('tarjeta/eliminar','QVOController@TarjetaEliminar');
-Route::post('cliente/qvo/eliminar','QVOController@ClienteQVOEliminar');
-
-
-
 Route::post('crear/user', 'DashControllers\UserDashController@CreateUserP');
 
 
