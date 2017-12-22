@@ -242,7 +242,6 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::post('cambiar/fechas/reserva', 'ReservaController@cambiarFechasReserva');
 		Route::get('reservas/credito', 'ReservaController@getCuentasCredito');
 		Route::post('confirmar/pago', 'ReservaController@confirmarPagoReserva');
-		Route::get('propiedades/disponibles', 'PropiedadController@propiedadesDisponibles');
 
 
 		Route::resource('user', 'UserController', ['except' => ['create', 'edit','store']]);

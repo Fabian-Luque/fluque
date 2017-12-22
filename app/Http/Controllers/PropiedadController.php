@@ -1767,36 +1767,6 @@ class PropiedadController extends Controller
 
     }
 
-    public function propiedadesDisponibles()
-    {
-
-        $fecha_inicio = "2017-12-10";
-        $fecha_fin    = "2017-12-13";
-        $propiedades = [1,2,3,4,5,6,7,8,9,10];
-
-        return $propiedades_ocupadas = Propiedad::whereIn('id', $propiedades)
-            ->whereHas('habitaciones.reservas', function ($query) use ($fecha_inicio, $fecha_fin) {
-                $query->whereIn('estado_reserva_id', [1,2,3,4,5])
-                ->where(function ($query) use ($fecha_inicio, $fecha_fin) {
-                    $query->where(function ($query) use ($fecha_inicio, $fecha_fin) {
-                        $query->where('checkin', '>=', $fecha_inicio);
-                        $query->where('checkin', '<',  $fecha_fin);
-                    });
-                    $query->orWhere(function($query) use ($fecha_inicio,$fecha_fin){
-                        $query->where('checkin', '<=', $fecha_inicio);
-                        $query->where('checkout', '>',  $fecha_inicio);
-                    });                
-                });
-            })
-            ->get();
-
-
-    }
-
-
-
-
-
     public function getTipoPropiedad()
     {
         $TipoPropiedad = TipoPropiedad::all();
