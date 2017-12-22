@@ -39,18 +39,4 @@
         </div>
     </div>
 </body>
-<script src="../growl/javascripts/jquery.growl.js" type="text/javascript"></script>
-<link href="../growl/stylesheets/jquery.growl.css" rel="stylesheet" type="text/css" />
-<script src="http://localhost:3000/socket.io/socket.io.js"></script>
-<script>
-    var socket = io.connect('http://localhost:3000');
-    socket.on(
-        'message123',
-        function(msg) {
-            alert("holaa");
-            console.log(msg);
-            
-        }
-    );
-</script>
 </Html>
