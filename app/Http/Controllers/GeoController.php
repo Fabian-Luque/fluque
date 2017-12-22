@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use Response;
 use App\UbicacionProp;   
+use App\Propiedad;
 use Grimzy\LaravelMysqlSpatial\Types\Point;
 use GeneaLabs\Phpgmaps\Phpgmaps;
 use App\clases\DiseñoMapa;
@@ -235,9 +236,11 @@ class GeoController extends Controller {
         $validator = Validator::make(
             $request->all(), 
             array(
-                'latitud'  => 'required',
-                'longitud' => 'required',
-                'radio'    => 'required',
+                'latitud'      => 'required',
+                'longitud'     => 'required',
+                'radio'        => 'required',
+                'fecha_inicio' => 'required',
+                'fecha_fin'    => 'required',
             )
         );
 
@@ -252,6 +255,56 @@ class GeoController extends Controller {
                     $request->longitud,
                     $request->radio
                 );
+                $propiedades = collect($propiedades);
+
+                $fecha_inicio = $request->fecha_inicio;
+                $fecha_fin    = $request->fecha_fin;
+
+                $propiedades_ids = $propiedades->lists('prop_id')->toArray();
+
+                $propiedades_ocupadas = Propiedad::whereIn(
+                    'id', 
+                    $propiedades_ids
+                )->whereHas(
+                    'habitaciones.reservas', 
+                    function ($query) use ($fecha_inicio, $fecha_fin) {
+                        $query->whereIn(
+                            'estado_reserva_id', 
+                            [1,2,3,4,5]
+                        )->where(
+                            function ($query) use ($fecha_inicio, $fecha_fin) {
+                                $query->where(
+                                    function ($query) use ($fecha_inicio, $fecha_fin) {
+                                        $query->where('checkin', '>=', $fecha_inicio);
+                                        $query->where('checkin', '<',  $fecha_fin);
+                                    }
+                                );
+                                $query->orWhere(
+                                    function($query) use ($fecha_inicio,$fecha_fin) {
+                                        $query->where('checkin', '<=', $fecha_inicio);
+                                        $query->where('checkout', '>',  $fecha_inicio);
+                                    }
+                                );                
+                            }
+                        );
+                    }
+                )->get();
+
+                $propiedades_ocupadas_ids = $propiedades_ocupadas->lists('id')->toArray();
+
+                if(count($propiedades_ocupadas_ids) != 0) {
+                    foreach ($propiedades as $prop) {
+                        if (array_search($prop->id, $propiedades_ocupadas_ids, false) != false) {
+                            $prop->disponible = true;
+                        } else {
+                            $prop->disponible = false;
+                        }
+                    }
+                } else {
+                    foreach ($propiedades as $prop) {
+                        $prop->disponible = true;
+                    }
+                }
 
                 $retorno['errors'] = false;
                 $retorno['msj']    = $propiedades;
