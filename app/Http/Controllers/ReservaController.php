@@ -436,6 +436,7 @@ class ReservaController extends Controller
 
             $pago       = Pago::where('id', $id)->first();
             $reserva_id = $pago->reserva_id;
+            $reserva    = Reserva::where('id', $reserva_id)->first();
 
             if ($pago->metodo_pago_id == 2) {
                 $pagos = Pago::where('reserva_id', $reserva_id)->where('metodo_pago_id', 2)->get();
@@ -446,6 +447,9 @@ class ReservaController extends Controller
                     $pago->tipo_comprobante_id  = $request->input('tipo_comprobante_id');
                     $pago->numero_cheque        = $request->input('numero_cheque');
                     $pago->metodo_pago_id       = $request->input('metodo_pago_id');
+                    if ($pago->estado == 0 && $request->input('metodo_pago_id') != 2) {
+                        $pago->estado               = 1;
+                    }
                     $pago->created_at           = $getFecha;
                     $pago->touch();
                 }
@@ -455,8 +459,18 @@ class ReservaController extends Controller
                 $pago->tipo_comprobante_id  = $request->input('tipo_comprobante_id');
                 $pago->numero_cheque        = $request->input('numero_cheque');
                 $pago->metodo_pago_id       = $request->input('metodo_pago_id');
+                if ($pago->estado == 0 && $request->input('metodo_pago_id') != 2) {
+                    $pago->estado               = 1;
+                }
                 $pago->created_at           = $getFecha;
                 $pago->touch();
+            }
+
+            $pago = Pago::where('reserva_id', $reserva_id)->where('metodo_pago_id', 2)->first();
+            if (is_null($pago)) {
+                if ($reserva->estado_reserva_id == 5 && $reserva->monto_por_pagar == 0) {
+                    $reserva->update(array('estado_reserva_id' => 4));
+                }
             }
             
             $data = [
