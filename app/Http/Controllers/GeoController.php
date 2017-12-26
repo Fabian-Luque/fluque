@@ -262,6 +262,7 @@ class GeoController extends Controller {
                 $fecha_fin    = $request->fecha_fin;
 
                 foreach ($propiedades as $prop) {
+                    $prop->propiedad = Propiedad::find($prop->prop_id);
                     $habitaciones_disponibles = Habitacion::where(
                         'propiedad_id', 
                         $prop->prop_id
