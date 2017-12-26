@@ -262,12 +262,6 @@ class GeoController extends Controller {
 
                 $propiedades_ids = $propiedades->lists('prop_id')->toArray();
 
-
-                
-
-                $propiedades_ocupadas_ids = $propiedades_ocupadas->lists('id')->toArray();
-
-
                 foreach ($propiedades as $prop) {
                     $habitaciones_disponibles = Habitacion::where(
                         'propiedad_id', 
