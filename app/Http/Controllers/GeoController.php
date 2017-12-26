@@ -263,7 +263,7 @@ class GeoController extends Controller {
 
                 foreach ($propiedades as $prop) {
                     $prop->propiedad = Propiedad::find($prop->prop_id);
-                    $prop->n_habitaciones_disponibles = $habitaciones_disponibles->count();
+
                     $habitaciones_disponibles = Habitacion::where(
                         'propiedad_id', 
                         $prop->prop_id
@@ -288,6 +288,8 @@ class GeoController extends Controller {
                             );
                         }
                     )->get();
+
+                    $prop->n_habitaciones_disponibles = $habitaciones_disponibles->count();
 
                     if ($habitaciones_disponibles->count() != 0) {
                         $prop->disponible = true;
