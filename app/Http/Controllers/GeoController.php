@@ -8,6 +8,7 @@ use App\Http\Requests;
 use Response;
 use App\UbicacionProp;   
 use App\Propiedad;
+use App\Habitacion;
 use Grimzy\LaravelMysqlSpatial\Types\Point;
 use GeneaLabs\Phpgmaps\Phpgmaps;
 use App\clases\DiseñoMapa;
