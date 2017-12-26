@@ -261,12 +261,10 @@ class GeoController extends Controller {
                 $fecha_inicio = $request->fecha_inicio;
                 $fecha_fin    = $request->fecha_fin;
 
-                $propiedades_ids = $propiedades->lists('prop_id')->toArray();
-
                 foreach ($propiedades as $prop) {
                     $habitaciones_disponibles = Habitacion::where(
                         'propiedad_id', 
-                        $prop->id
+                        $prop->prop_id
                     )->whereDoesntHave(
                         'reservas', 
                         function ($query) use ($fecha_inicio, $fecha_fin) {
@@ -287,7 +285,7 @@ class GeoController extends Controller {
                                 }
                             );
                         }
-                    )->with('tipoHabitacion')->get();
+                    )->get();
 
                     if ($habitaciones_disponibles->count() != 0) {
                         $prop->disponible = true;
