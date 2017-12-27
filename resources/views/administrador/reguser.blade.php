@@ -367,34 +367,37 @@
 	        	}
 
 	        	marker = new google.maps.Marker({
-          		position: place.geometry.location,
-          		map: map, 
-          		draggable: true,
-          		//icon: icon,
-          		animation: google.maps.Animation.DROP,
-          		title: place.name
-        	});
+	          		position: place.geometry.location,
+	          		map: map, 
+	          		draggable: true,
+	          		//icon: icon,
+	          		animation: google.maps.Animation.DROP,
+	          		title: place.name
+	        	});
 
-	       	google.maps.event.addListener(
-	       		marker, 
-	       		'drag', 
-	       		function(event) {
-		  			mark_drag(event); 
-				}
-			);
+		       	google.maps.event.addListener(
+		       		marker, 
+		       		'drag', 
+		       		function(event) {
+			  			mark_drag(event); 
+					}
+				);
 
-			//marker.addListener('click', toggleBounce);
+				$("#latitud").val(marker.getPosition().lat());
+				$("#longitud").val(marker.getPosition().lng()); 
 
-			google.maps.event.addDomListener(
-				window, 'load', initAutocomplete
-			);
+				//marker.addListener('click', toggleBounce);
 
-	        if (place.geometry.viewport) {
-	          // Only geocodes have viewport.
-	          bounds.union(place.geometry.viewport);
-	        } else {
-	          bounds.extend(place.geometry.location);
-	        }
+				google.maps.event.addDomListener(
+					window, 'load', initAutocomplete
+				);
+
+		        if (place.geometry.viewport) {
+		          // Only geocodes have viewport.
+		          bounds.union(place.geometry.viewport);
+		        } else {
+		          bounds.extend(place.geometry.location);
+		        }
 	      });
 	      map.fitBounds(bounds);
 	    });
@@ -407,14 +410,22 @@
   			$("#pac-input").keypress(
   				function( event ) {
   					if (event.which == 13) {
-  						marker.setMap(null);
+  						try {
+  							marker.setMap(null);
+  							$("#latitud").val(marker.getPosition().lat());
+							$("#longitud").val(marker.getPosition().lng());
+  						} catch(errs) {}
   					}
 				}
 			);
 
 			$("#pac-input").change(
 				function() {
-					marker.setMap(null);
+					try {
+  						marker.setMap(null);
+  						$("#latitud").val(marker.getPosition().lat());
+						$("#longitud").val(marker.getPosition().lng()); 
+  					} catch(errs) {}
 				}
 			);
 		}
