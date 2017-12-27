@@ -316,8 +316,103 @@ class ReservaController extends Controller
     }
 
 
+    /**
+     * obtener reservas pendientes de pago
+     *
+     * @author ALLEN
+     *
+     * @param  Request          $request ($propiedad_id)
+     * @return Response::json
+     */
+    public function getCuentasCredito(Request $request)
+    {
+        if ($request->has('propiedad_id')) {
+            $propiedad_id = $request->input('propiedad_id');
+            $propiedad    = Propiedad::where('id', $propiedad_id)->first();
+            if (is_null($propiedad)) {
+                $retorno = array(
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia propiedad_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
 
-    public function editarPAgo(Request $request, $id)
+        $reservas = Reserva::select('reservas.id', 'numero_reserva', 'checkin', 'checkout', 'clientes.nombre as nombre_cliente', 'clientes.apellido as apellido_cliente', 'clientes.rut', 'tipo_moneda.nombre as nombre_moneda', 'cantidad_decimales' )
+        ->whereHas('habitacion',function($query) use($propiedad_id){
+            $query->where('propiedad_id', $propiedad_id);
+        })
+        ->where('estado_reserva_id', 5)
+        ->with(['pagos' => function ($query){
+            $query->where('metodo_pago_id', 2)->with('metodoPago', 'tipoComprobante', 'tipoMoneda');
+        }])
+        ->join('clientes', 'clientes.id','=','cliente_id')
+        ->join('tipo_moneda', 'tipo_moneda.id', '=', 'tipo_moneda_id')
+        ->get();
+
+        $facturadas    = [];
+        $no_facturadas = [];
+        foreach ($reservas as $reserva) {
+            $suma_pago = 0;
+            foreach ($reserva['pagos'] as $pago) {
+                $suma_pago += $pago->monto_equivalente;
+                if ($pago->tipo == "Pago habitacion") {
+                    if ($pago->tipo_comprobante_id == null) {
+                        array_push($no_facturadas, $reserva);
+                    } else {
+                        array_push($facturadas, $reserva);
+                    }
+                }
+            }
+            $reserva->pago_total = $suma_pago;
+        }
+
+        $data['facturadas']    = $facturadas;
+        $data['no_facturadas'] = $no_facturadas;
+        return $data;
+
+    }
+
+    public function confirmarPagoReserva(Request $request)
+    {
+        if ($request->has('reserva_id')) {
+            $reserva_id = $request->input('reserva_id');
+            $reserva = Reserva::where('id', $reserva_id)->first();
+            if (is_null($reserva)) {
+                $retorno = array(
+                    'msj'    => "Reserva no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia reserva_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        $fecha_actual = Carbon::now();
+        $pagos        = Pago::where('reserva_id', $reserva_id)->where('metodo_pago_id', 2)->get();
+        $reserva->update(array('estado_reserva_id' => 4));
+
+        foreach ($pagos as $pago) {
+            $pago->update(array('estado' => 1, 'created_at' => $fecha_actual));
+        }
+
+        $retorno = array(
+            'msj'       => "Pago confirmado satisfactoriamente",
+            'errors'    => false);
+        return Response::json($retorno, 201);
+
+    }
+
+
+
+    public function editarPago(Request $request, $id)
     {
         $rules = array(
             'numero_cheque'            => '',
@@ -339,14 +434,45 @@ class ReservaController extends Controller
                 $getFecha = new Carbon($request->input('fecha'));
             }
 
-            $pago                       = Pago::findOrFail($id);
-            $pago->numero_operacion     = $request->input('numero_operacion');
-            $pago->tipo_comprobante_id  = $request->input('tipo_comprobante_id');
-            $pago->numero_cheque        = $request->input('numero_cheque');
-            $pago->metodo_pago_id       = $request->input('metodo_pago_id');
-            $pago->created_at           = $getFecha;
-            $pago->touch();
+            $pago       = Pago::where('id', $id)->first();
+            $reserva_id = $pago->reserva_id;
+            $reserva    = Reserva::where('id', $reserva_id)->first();
 
+            if ($pago->metodo_pago_id == 2) {
+                $pagos = Pago::where('reserva_id', $reserva_id)->where('metodo_pago_id', 2)->get();
+
+                foreach ($pagos as $pago) {
+                    $pago                       = Pago::findOrFail($pago->id);
+                    $pago->numero_operacion     = $request->input('numero_operacion');
+                    $pago->tipo_comprobante_id  = $request->input('tipo_comprobante_id');
+                    $pago->numero_cheque        = $request->input('numero_cheque');
+                    $pago->metodo_pago_id       = $request->input('metodo_pago_id');
+                    if ($pago->estado == 0 && $request->input('metodo_pago_id') != 2) {
+                        $pago->estado               = 1;
+                    }
+                    $pago->created_at           = $getFecha;
+                    $pago->touch();
+                }
+            } else {
+                $pago                       = Pago::findOrFail($pago->id);
+                $pago->numero_operacion     = $request->input('numero_operacion');
+                $pago->tipo_comprobante_id  = $request->input('tipo_comprobante_id');
+                $pago->numero_cheque        = $request->input('numero_cheque');
+                $pago->metodo_pago_id       = $request->input('metodo_pago_id');
+                if ($pago->estado == 0 && $request->input('metodo_pago_id') != 2) {
+                    $pago->estado               = 1;
+                }
+                $pago->created_at           = $getFecha;
+                $pago->touch();
+            }
+
+            $pago = Pago::where('reserva_id', $reserva_id)->where('metodo_pago_id', 2)->first();
+            if (is_null($pago)) {
+                if ($reserva->estado_reserva_id == 5 && $reserva->monto_por_pagar == 0) {
+                    $reserva->update(array('estado_reserva_id' => 4));
+                }
+            }
+            
             $data = [
                 'errors' => false,
                 'msg'    => 'Pago actualizado satisfactoriamente',];
@@ -545,7 +671,7 @@ class ReservaController extends Controller
                     $retorno = array(
                         'msj'       => "Error: La reserva ya fué creada",
                         'errors'    => true);
-                    return Response::json($retorno, 201);
+                    return Response::json($retorno, 400);
                 }
             }
             $retorno = array(
@@ -1274,7 +1400,7 @@ class ReservaController extends Controller
           return Response::json($retorno, 400);
         }
     
-        $reservas = Reserva::select('reservas.id', 'numero_reserva' ,'checkin', 'habitacion_id', 'estado_reserva_id' ,'checkout','ocupacion', 'monto_total','estado_reserva.nombre as estado' ,'cliente_id', 'clientes.nombre as nombre_cliente', 'clientes.apellido as apellido_cliente', 'noches', 'tipo_moneda.nombre as nombre_moneda', 'cantidad_decimales')
+        $reservas = Reserva::select('reservas.id', 'numero_reserva' ,'checkin', 'habitacion_id', 'estado_reserva_id' ,'checkout','ocupacion', 'monto_total','estado_reserva.nombre as estado' ,'cliente_id', 'clientes.nombre as nombre_cliente', 'clientes.apellido as apellido_cliente', 'noches', 'tipo_moneda.nombre as nombre_moneda', 'cantidad_decimales', 'monto_por_pagar')
         ->whereHas('habitacion', function($query) use($id){
             $query->where('propiedad_id', $id);})
         ->with(['huespedes' => function ($q){
@@ -1333,7 +1459,9 @@ class ReservaController extends Controller
                 $tipo_moneda_id      = $pago['tipo_moneda_id'];
                 $monto_equivalente   = $pago['monto_equivalente'];
 
-                $reserva = Reserva::where('id', $reserva_id)->first();
+                $reserva = Reserva::where('id', $reserva_id)->with('pagos')->first();
+
+
                 if (!is_null($reserva)) {
                     
                     if (isset($pago['numero_cheque'])) {
@@ -1359,6 +1487,7 @@ class ReservaController extends Controller
                                 }
                                 $pago->reserva_id            = $reserva->id;
                                 $pago->caja_id               = $caja_abierta->id;
+                                $pago->estado                = 1;
                                 $pago->save();
                                 
                             } else {
@@ -1375,6 +1504,7 @@ class ReservaController extends Controller
                                 }
                                 $pago->reserva_id            = $reserva->id;
                                 $pago->caja_id               = $caja_abierta->id;
+                                $pago->estado                = 1;
                                 $pago->save();
                             }
 
@@ -1423,6 +1553,9 @@ class ReservaController extends Controller
                                         }
                                         $pago->reserva_id            = $reserva->id;
                                         $pago->caja_id               = $caja_abierta->id;
+                                        if ($metodo_pago != 2) {
+                                            $pago->estado            = 1;
+                                        }
                                         $pago->save();
                                   
                                     } else {
@@ -1439,17 +1572,34 @@ class ReservaController extends Controller
                                         }
                                         $pago->reserva_id            = $reserva->id;
                                         $pago->caja_id               = $caja_abierta->id;
+                                        if ($metodo_pago != 2) {
+                                            $pago->estado            = 1;
+                                        }
                                         $pago->save();
                                     }
 
+                                    $pagos_reserva = Pago::where('reserva_id', $reserva_id)->where('metodo_pago_id', 2)->first();
+
                                     if ($reserva->estado_reserva_id == 1 ) {
-                                        $reserva->update(array('estado_reserva_id' => $monto, 'estado_reserva_id' => 2));
+                                        $reserva->update(array('monto_por_pagar' => $monto, 'estado_reserva_id' => 2));
                                     }
 
-                                    if ($reserva->estado_reserva_id == 5 && $monto == 0) {
-                                        $reserva->update(array('monto_por_pagar' => $monto, 'estado_reserva_id' => 4));
+                                    if (!is_null($pagos_reserva)) {
+
+                                        if ($reserva->estado_reserva_id == 5 && $monto == 0) {
+                                            $reserva->update(array('monto_por_pagar' => $monto, 'estado_reserva_id' => 5));
+                                        } else {
+                                            $reserva->update(array('monto_por_pagar' => $monto));
+                                            // $pagos_reserva->update(array('estado' => 1));
+                                        }
+
                                     } else {
-                                        $reserva->update(array('monto_por_pagar' => $monto));
+
+                                        if ($reserva->estado_reserva_id == 5 && $monto == 0) {
+                                            $reserva->update(array('monto_por_pagar' => $monto, 'estado_reserva_id' => 4));
+                                        } else {
+                                            $reserva->update(array('monto_por_pagar' => $monto));
+                                        }
                                     }
                                 } else {
                                     $data = array(
@@ -1459,7 +1609,7 @@ class ReservaController extends Controller
                                 }
                             } else {
                                 $data = array(
-                                    'msj' => "La habitacion ya fue pagada",
+                                    'msj' => "La habitación ya fue pagada",
                                     'errors' =>true);
                                 return Response::json($data, 400);
                             }
@@ -1489,6 +1639,7 @@ class ReservaController extends Controller
                                     }
                                     $pago->reserva_id            = $reserva->id;
                                     $pago->caja_id               = $caja_abierta->id;
+                                    $pago->estado                = 1;
                                     $pago->save();
                                       
                                 } else {
@@ -1505,18 +1656,34 @@ class ReservaController extends Controller
                                     }
                                     $pago->reserva_id            = $reserva->id;
                                     $pago->caja_id               = $caja_abierta->id;
+                                    $pago->estado                = 1;
                                     $pago->save();
                                 }
 
                                 foreach ($consumos as $consumo){
                                     $consumo->update(array('estado' => 'Pagado', 'pago_id' => $pago->id));
                                 }
-                                if ($reserva->estado_reserva_id == 5 && $monto == 0) {
-                                    $reserva->update(array('monto_por_pagar' => $monto, 'estado_reserva_id' => 4));
-                                } else {
-                                    $reserva->update(array('monto_por_pagar' => $monto));
-                                }
 
+                                $pagos_reserva = Pago::where('reserva_id', $reserva_id)->where('metodo_pago_id', 2)->first();
+
+
+                                if (!is_null($pagos_reserva)) {
+
+                                    if ($reserva->estado_reserva_id == 5 && $monto == 0) {
+                                        $reserva->update(array('monto_por_pagar' => $monto, 'estado_reserva_id' => 5));
+                                    } else {
+                                        $reserva->update(array('monto_por_pagar' => $monto));
+                                        $pagos_reserva->update(array('estado' => 1));
+                                    }
+
+                                } else {
+
+                                    if ($reserva->estado_reserva_id == 5 && $monto == 0) {
+                                        $reserva->update(array('monto_por_pagar' => $monto, 'estado_reserva_id' => 4));
+                                    } else {
+                                        $reserva->update(array('monto_por_pagar' => $monto));
+                                    }
+                                }
                             } else {
                                 $data = array(
                                     'msj' => "El monto a pagar no corresponde",
@@ -1570,7 +1737,7 @@ class ReservaController extends Controller
 
         if ($request->has('reserva_id')) {
             $reserva_id    = $request->input('reserva_id');
-            $reserva       = Reserva::where('id', $reserva_id)->first();
+            $reserva       = Reserva::where('id', $reserva_id)->with('pagos')->first();
             if(is_null($reserva)){
                 $retorno = array(
                     'msj'    => "Reserva no encontrada",
@@ -1618,10 +1785,21 @@ class ReservaController extends Controller
 
                 $total = $monto_por_pagar - $monto_pago;
                 if ($monto_pago <= $reserva->monto_por_pagar) {
-                    if ($reserva->estado_reserva_id == 5 && $total == 0) {
-                        $reserva->update(array('monto_por_pagar' => $total, 'estado_reserva_id' => 4));
+
+                    $pagos_reserva = Pago::where('reserva_id', $reserva_id)->where('metodo_pago_id', 2)->first();
+
+                    if (!is_null($pagos_reserva)) {
+                        if ($reserva->estado_reserva_id == 5 && $total == 0) {
+                            $reserva->update(array('monto_por_pagar' => $total, 'estado_reserva_id' => 5));
+                        } else {
+                            $reserva->update(array('monto_por_pagar' => $total));
+                        }
                     } else {
-                        $reserva->update(array('monto_por_pagar' => $total));
+                        if ($reserva->estado_reserva_id == 5 && $total == 0) {
+                            $reserva->update(array('monto_por_pagar' => $total, 'estado_reserva_id' => 4));
+                        } else {
+                            $reserva->update(array('monto_por_pagar' => $total));
+                        }
                     }
 
                     if ($request->has('monto_pago') && $request->has('monto_equivalente')) {
@@ -1640,6 +1818,7 @@ class ReservaController extends Controller
                         }
                         $pago->reserva_id            = $reserva->id;
                         $pago->caja_id               = $caja_abierta->id;
+                        $pago->estado                = 1;
                         $pago->save();
                           
                     } else {
@@ -1656,6 +1835,7 @@ class ReservaController extends Controller
                         }
                         $pago->reserva_id            = $reserva->id;
                         $pago->caja_id               = $caja_abierta->id;
+                        $pago->estado                = 1;
                         $pago->save();
 
                     }
@@ -1729,9 +1909,25 @@ class ReservaController extends Controller
         $endDate   = Carbon::today()->endOfDay();
 
 
-        $reservas_hoy = Reserva::whereHas('habitacion', function($query) use($id){
-                    $query->where('propiedad_id', $id);
-        })->where('checkin', '<=' , $fecha)->where('checkout', '>=', $fecha)->with('habitacion.tipoHabitacion')->with('huespedes')->with('cliente.pais', 'cliente.region')->with('estadoReserva')->get();
+        // Reservas de hoy
+        $reservas_hoy = Reserva::select('reservas.id','numero_reserva', 'checkin', 'checkout', 'habitacion_id', 'observacion', 'estado_reserva_id', 'estado_reserva.nombre as estado', 'cliente_id')
+        ->whereHas('habitacion', function($query) use($id){
+            $query->where('propiedad_id', $id);})
+        ->where('checkin', '<=' , $fecha)
+        ->where('checkout', '>=', $fecha)
+        ->with(['cliente' => function ($q){
+            $q->select('clientes.id', 'apellido', 'paises.nombre as pais' ,'regiones.nombre as region', 'ciudad', 'direccion', 'telefono', 'email')
+                ->join('paises', 'paises.id', '=' ,'pais_id')
+                ->join('regiones', 'regiones.id', '=' ,'region_id');}])
+        ->with(['habitacion' => function ($q){
+            $q->select('habitaciones.id', 'habitaciones.nombre', 'tipo_habitacion.nombre as tipo_habitacion')
+                ->join('tipo_habitacion', 'tipo_habitacion.id', '=' ,'tipo_habitacion_id');}])
+        ->join('estado_reserva', 'estado_reserva.id', '=', 'estado_reserva_id')
+        ->get();
+
+        // $reservas_hoy = Reserva::whereHas('habitacion', function($query) use($id){
+        //             $query->where('propiedad_id', $id);
+        // })->where('checkin', '<=' , $fecha)->where('checkout', '>=', $fecha)->with('habitacion.tipoHabitacion')->with('huespedes')->with('cliente.pais', 'cliente.region')->with('estadoReserva')->get();
 
         $entradas              = 0;
         $salidas               = 0;
@@ -1760,24 +1956,73 @@ class ReservaController extends Controller
             }
         }
 
-        $reservas_dia = Reserva::whereHas('habitacion', function($query) use($id){
+        //Actividades del dia
 
-                    $query->where('propiedad_id', $id);
+        $reservas_dia = Reserva::select('reservas.id','numero_reserva', 'noches' ,'checkin', 'checkout' ,'clientes.nombre as nombre_cliente', 'clientes.apellido as apellido_cliente' ,'habitacion_id', 'observacion', 'estado_reserva.nombre as estado')
+        ->WhereHas('habitacion', function($query) use($id){
+            $query->where('propiedad_id', $id);})
+        ->whereBetween('reservas.created_at', [$startDate, $endDate])
+        ->join('clientes', 'clientes.id', '=', 'cliente_id')
+        ->join('estado_reserva', 'estado_reserva.id', '=', 'estado_reserva_id')
+        ->with(['habitacion' => function ($q){
+            $q->select('habitaciones.id', 'habitaciones.nombre', 'tipo_habitacion.nombre as tipo_habitacion')
+              ->join('tipo_habitacion', 'tipo_habitacion.id', '=' ,'tipo_habitacion_id');}])
+        ->get();
 
-        })->whereBetween('created_at', [$startDate, $endDate])->with('habitacion.tipoHabitacion')->with('huespedes')->with('cliente')->with('estadoReserva')->with('metodoPago')->with('tipoFuente')->get();
 
-        $reservas_no_show = Reserva::whereHas('habitacion', function($query) use($id){
+        // $reservas_dia = Reserva::whereHas('habitacion', function($query) use($id){
 
-                    $query->where('propiedad_id', $id);
+        //             $query->where('propiedad_id', $id);
 
-        })->where('checkin', '<' , $fecha_hoy)->whereBetween('estado_reserva_id', [1,2])->with('habitacion.tipoHabitacion')->with('cliente')->with('estadoReserva')->get();
+        // })->whereBetween('created_at', [$startDate, $endDate])->with('habitacion.tipoHabitacion')->with('huespedes')->with('cliente')->with('estadoReserva')->with('metodoPago')->with('tipoFuente')->get();
+
+
+        //reservas no show
+
+        $reservas_no_show = Reserva::select('reservas.id','numero_reserva', 'checkin', 'clientes.nombre as nombre_cliente', 'clientes.apellido as apellido_cliente' ,'habitacion_id', 'observacion', 'estado_reserva.nombre as estado')
+        ->whereHas('habitacion', function($query) use($id){
+            $query->where('propiedad_id', $id);})
+        ->where('checkin', '<' , $fecha_hoy)
+        ->whereBetween('estado_reserva_id', [1,2])
+        ->with(['habitacion' => function ($q){
+            $q->select('habitaciones.id', 'habitaciones.nombre', 'tipo_habitacion.nombre as tipo_habitacion')
+              ->join('tipo_habitacion', 'tipo_habitacion.id', '=' ,'tipo_habitacion_id');}])
+        ->join('clientes', 'clientes.id', '=', 'cliente_id')
+        ->join('estado_reserva', 'estado_reserva.id', '=', 'estado_reserva_id')
+        ->get();
+
+
+        // $reservas = Reserva::select('reservas.id', 'numero_reserva' ,'checkin', 'habitacion_id', 'estado_reserva_id' ,'checkout','ocupacion', 'monto_total','estado_reserva.nombre as estado' ,'cliente_id', 'clientes.nombre as nombre_cliente', 'clientes.apellido as apellido_cliente', 'noches', 'tipo_moneda.nombre as nombre_moneda', 'cantidad_decimales', 'monto_por_pagar')
+        // ->whereHas('habitacion', function($query) use($id){
+        //     $query->where('propiedad_id', $id);})
+        // ->with(['huespedes' => function ($q){
+        //     $q->select('huespedes.id', 'nombre', 'apellido');}])
+        // ->with('habitacion.tipoHabitacion')
+        // ->with('cliente.pais', 'cliente.region')
+        // ->join('clientes', 'clientes.id','=','cliente_id')
+        // ->join('tipo_moneda', 'tipo_moneda.id', '=', 'tipo_moneda_id')
+        // ->join('estado_reserva', 'estado_reserva.id', '=', 'estado_reserva_id')
+        // ->orderBy('reservas.id', 'desc')
+        // ->take(50)
+        // ->get();
+
+
 
         //PORCENTAJE OCUPACION GRAFICO
-        $reservas = Reserva::whereHas('habitacion', function($query) use($id){
 
-                    $query->where('propiedad_id', $id);
+        $reservas = Reserva::select('reservas.id','numero_reserva', 'checkin', 'checkout')
+        ->whereHas('habitacion', function($query) use($id){
+            $query->where('propiedad_id', $id);})
+        ->where('checkin','>=' ,$fecha_inicio)
+        ->where('checkout', '<=', $fecha_fin)
+        ->whereIn('estado_reserva_id', [3,4,5,6])
+        ->get();
 
-        })->where('checkin','>=' ,$fecha_inicio)->where('checkout', '<=', $fecha_fin)->where('estado_reserva_id', '!=', 1)->where('estado_reserva_id', '!=', 2)->where('estado_reserva_id', '!=', 6)->where('estado_reserva_id', '!=', 7)->get();
+        // $reservas = Reserva::whereHas('habitacion', function($query) use($id){
+
+        //             $query->where('propiedad_id', $id);
+
+        // })->where('checkin','>=' ,$fecha_inicio)->where('checkout', '<=', $fecha_fin)->where('estado_reserva_id', '!=', 1)->where('estado_reserva_id', '!=', 2)->where('estado_reserva_id', '!=', 6)->where('estado_reserva_id', '!=', 7)->get();
 
         $numero_habitaciones = $propiedad->numero_habitaciones;
         $auxInicio           = new Carbon($fecha_inicio);
@@ -1816,8 +2061,8 @@ class ReservaController extends Controller
             'reservas_no_show'      => $reservas_no_show,
             'cantidad_reservas_dia' => count($reservas_dia),
             'suma_noches'           => $suma_noches,
-            'porcentaje_ocupacion'  => $ocupacion,
             'reservas_dia'          => $reservas_dia,  
+            'porcentaje_ocupacion'  => $ocupacion,
           );
 
         return $data;
@@ -1954,69 +2199,31 @@ class ReservaController extends Controller
 
 
 
-    public function show($id){
+    public function show($id)
+    {
+        $reserva = Reserva::where('id', $id)
+        ->with(['huespedes.servicios' => function ($q) use($id) {
+            $q->wherePivot('reserva_id', $id);}])
+        ->with('habitacion.tipoHabitacion')
+        ->with('cliente.pais','cliente.region','tipoMoneda' ,'tipoFuente', 'metodoPago','estadoReserva','pagos.tipoComprobante','pagos.tipoMoneda', 'pagos.metodoPago')
+        ->with('huespedes.pais', 'huespedes.region')
+        ->first();
 
-
-
-       $reservas = Reserva::where('id', $id)->first();
-
-       if(!is_null($reservas)){
-
-
-        $reservas = Reserva::where('id', $id)->with(['huespedes.servicios' => function ($q) use($id) {
-
-        $q->wherePivot('reserva_id', $id);}])
-
-
-        ->with('habitacion.tipoHabitacion')->with('cliente.pais','cliente.region','tipoMoneda' ,'tipoFuente', 'metodoPago','estadoReserva','pagos.tipoComprobante','pagos.tipoMoneda', 'pagos.metodoPago')->with('huespedes.pais', 'huespedes.region')->get();
-
-            foreach ($reservas as $reserva){
-                foreach ($reserva['huespedes'] as $huesped) {
-                    $huesped->consumo_total = 0;
-                    foreach ($huesped['servicios'] as $servicio) {
-                        $huesped->consumo_total += $servicio->pivot->precio_total;
-
-                    }
+       if(!is_null($reserva)){
+            foreach ($reserva['huespedes'] as $huesped) {
+                $huesped->consumo_total = 0;
+                foreach ($huesped['servicios'] as $servicio) {
+                    $huesped->consumo_total += $servicio->pivot->precio_total;
                 }
-
             }
-
-
-            $reserva =  $reservas->first();
-
-            $propiedad_id = $reserva->habitacion->propiedad_id;
-
-
-            $tipos = TipoHabitacion::whereHas('habitaciones', function($query) use($propiedad_id){
-
-            $query->where('propiedad_id', $propiedad_id);
-
-            })->with(['habitaciones' => function ($q) use($propiedad_id) {
-
-            $q->where('propiedad_id', $propiedad_id);}])->get();
-
-            $data = ['reserva' => $reserva, 'habitaciones' => $tipos];
-
-            return $data;
-
-
+            return $reserva;
+            
        }else{
-
             $data = array(
-
-                    'msj' => "Reserva no encontrada",
-                    'errors' => true
-
-
-                );
-
+                'msj' => "Reserva no encontrada",
+                'errors' => true);
             return Response::json($data, 404);
-
-
-
        }
-
-
 
     }
 

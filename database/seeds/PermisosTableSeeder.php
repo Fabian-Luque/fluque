@@ -184,6 +184,11 @@ class PermisosTableSeeder extends Seeder
                 'nombre'        => 'Canales',
                 'seccion_id'    => 1,
 
+            ],
+            [
+                'nombre'        => 'Pagos pendientes',
+                'seccion_id'    => 4,
+
             ]
 
     		
