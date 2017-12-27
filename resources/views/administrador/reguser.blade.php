@@ -507,27 +507,20 @@ window.onclick = function(event) {
 		  {!! Form::label('Longitud') !!}
 		  <input id="longitud" type="number" name="longitud" class="form-control" step="any" placeholder="Longitud Propiedad" required/>
 		</div>
+
+		<div class="form-group has-feedback" style="padding-top: 4px;">
+			<br>
+			{!! Form::submit(
+				'Crear Cuenta', 
+				array(
+			  		'class'=>'btn btn-success btn-block'
+			 	)
+			)!!}  
+		</div>
 	  </div>
 	</div>
 	  </center>
 	</div>
-
-
-
-	<div class="container-fluid" style="padding-right: 30%; padding-left: 30%;">
-
-  <div class="row" style="margin-right:0;margin-left:0">
-	<div class="row text-center">
-	  {!! Form::submit(
-		'Registrar', 
-		array(
-		  'class'=>'btn btn-primary btn-lg btn-block'
-		 ))
-	  !!}    
-	</div>
-  </div>
-</div>
-
   </div>
 </div>
 </center> 
