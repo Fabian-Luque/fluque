@@ -26,7 +26,7 @@
 
 
 
-          <h2 class="titulo">Resumen financiero del mes de {{ $mes }}</h2>
+          <h2 class="titulo">Resumen de ingresos del mes de {{ $mes }}</h2>
 
 
 
@@ -134,7 +134,7 @@
             <tr>
               <td class="data-tabla-detalles borde-derecha"><p>{{ $metodo['nombre'] }}</p></td>
 
-              @foreach($tipo['ingresos'] as $ingreso)
+              @foreach($metodo['ingresos'] as $ingreso)
                <td class="data-tabla-detalles-nombre borde-derecha"><p>{{ $ingreso['nombre_moneda'] }} ${{ $ingreso['monto'] }}</p></td>
               
               @endforeach

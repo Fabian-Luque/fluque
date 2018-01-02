@@ -12,12 +12,14 @@ class ChangeColumnTypeToTables extends Migration
      */
     public function up()
     {
-
+        if (Schema::hasTable('egreso_caja')) {
         DB::statement('ALTER TABLE reservas MODIFY precio_habitacion DOUBLE(10,2)');
         DB::statement('ALTER TABLE reservas MODIFY monto_alojamiento DOUBLE(10,2)');
         DB::statement('ALTER TABLE reservas MODIFY monto_consumo DOUBLE(10,2)');
         DB::statement('ALTER TABLE reservas MODIFY monto_total DOUBLE(10,2)');
         DB::statement('ALTER TABLE reservas MODIFY monto_por_pagar DOUBLE(10,2)');
+        }
+
         DB::statement('ALTER TABLE huesped_reserva_servicio MODIFY precio_total DOUBLE(10,2)');
         DB::statement('ALTER TABLE metodo_pago_propiedad_servicio MODIFY precio_total DOUBLE(10,2)');
         DB::statement('ALTER TABLE pagos MODIFY monto_pago DOUBLE(10,2)');

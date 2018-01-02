@@ -22,7 +22,7 @@
       </div>
 
       <div class="estado-cuenta">
-        <h2 class="titulo">Comprobante de reserva</h2>
+        <h2 class="titulo">Voucher de reserva</h2>
 
         <div class="cliente">
                 <table class="tabla-cliente">
@@ -215,6 +215,10 @@
                   <th class="data-tabla-detalles borde-derecha"><p class="titulo align-right">Total</p></th>
                   <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $nombre_moneda }} ${{ number_format($total) }}</p></td>
                 </tr>
+                <tr>
+                  <th class="data-tabla-detalles borde-derecha"><p class="titulo align-right">Por pagar</p></th>
+                  <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $nombre_moneda }} ${{ number_format($por_pagar) }}</p></td>
+                </tr> 
 
                 @else
                 <tr>
@@ -311,6 +315,27 @@
       <div class="seccion">
         <p class="firma">Firma Autorizada Recepción</p>
       </div>
+    </div>
+
+        <div class="page-break"></div>
+
+    <div class="contenedor">
+
+      <div class="detalle-consumo">
+        <h2 class="titulo">Políticas de la propiedad</h2>
+
+        <ul>
+        @foreach($propiedad as $prop)
+          @foreach($prop['politicas'] as $politica)
+            <li>{{ $politica->descripcion }}</li>
+          @endforeach
+        @endforeach
+        </ul>
+
+
+
+      </div>
+
     </div>
 
 

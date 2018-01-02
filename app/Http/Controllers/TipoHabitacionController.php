@@ -42,9 +42,11 @@ class TipoHabitacionController extends Controller
 	{
 		$rules = array(
 
-            'nombre'       => 'required',
-            'capacidad'    => 'required|numeric',
-            'propiedad_id' => 'required|numeric',
+            'nombre'           => 'required',
+            'capacidad'        => 'required|numeric',
+            'cantidad'         => 'numeric',
+            'disponible_venta' => 'numeric',
+            'propiedad_id'     => 'required|numeric',
         );
 
         $validator = Validator::make($request->all(), $rules);
@@ -146,8 +148,9 @@ class TipoHabitacionController extends Controller
 
 		$validator = Validator::make($request->all(),
             [
-                'nombre'	 => '',
-                'capacidad'  => '',
+                'nombre'	       => '',
+                'capacidad'        => '',
+                'cantidad'         => '',
             ]
         );
 
@@ -210,6 +213,41 @@ class TipoHabitacionController extends Controller
 
 	}
 
+    public function editarTipoHabitacion(Request $request)
+    {
+        if ($request->has('tipo_habitacion_id')) {
+            $tipo_habitacion_id   = $request->input('tipo_habitacion_id');
+            $tipo_habitacion      = TipoHabitacion::where('id', $tipo_habitacion_id)->first();
+            if (is_null($tipo_habitacion)) {
+                $retorno = array(
+                    'msj'    => "Tipo habitacion no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia tipo_habitacion_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        if ($request->has('disponible_venta')) {
+            $disponible_venta = $request->input('disponible_venta');
+        } else {
+            $retorno = array(
+                'msj'    => "Solicitud incompleta",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+            
+        $tipo_habitacion->update(array('disponible_venta' => $disponible_venta));
+
+            $data = [
+                'errors' => false,
+                'msj'    => 'Tipo Habitacion actualizado satisfactoriamente',];
+            return Response::json($data, 201);
+    }
+
 	public function destroy($id)
     {
 
@@ -226,6 +264,24 @@ class TipoHabitacionController extends Controller
         return Response::json($data, 202);
 
     }
+
+    public function cantidadTipoHabitacion()
+    {
+       $tipos_habitacion = TipoHabitacion::with('habitaciones')->get();
+
+       foreach ($tipos_habitacion as $tipo) {
+            $cantidad = count($tipo->habitaciones); 
+
+            $tipo->update(array('cantidad' => $cantidad));
+
+       }
+
+       return "actualizado";
+
+    }
+
+
+
 
 
 

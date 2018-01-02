@@ -18,6 +18,11 @@
         );
     </script>
 @endif
+<style type="text/css">
+    td {
+        padding: 0 0 0 0;
+    }
+</style>
     <h4 class="text-center"> Informacion de Propiedades </h4>
   
 <div id="respuesta" class="content">
@@ -31,27 +36,27 @@
             			<th>ID</th>
             			<th>NOMBRE</th>
                         <th>TIPO</th>
-            			<th>NUMERO DE HAB</th>
+            			<th>HABITACIONES</th>
             			<th>CIUDAD</th>
             			<th>DIRECCION</th>
             			<th>CUENTA</th>
                         <th>CREADO</th>
+                        <th>EDITAR</th>
         			</thead>
         			<tbody>
         				@if(!empty($props[0]['id']))
         					@foreach($props as $prop)
         						<tr data-id="{{ $prop->id }}" >
-									<td> {{ $prop->id }} </td>
-									<td> {{ $prop->nombre }} </td>
-                                    <td> {{ $prop->tipo_propiedad }} </td>
-									<td> {{ $prop->numero_habitaciones }} </td>
-									<td> {{ $prop->ciudad }} </td>
-									<td> {{ $prop->direccion }} </td>
-                                    <td> {{ $prop->estado_cuenta }} </td>
-                                    <td> {{ $prop->created }} </td>
+									<td>{{$prop->id}}</td>
+									<td>{{$prop->nombre}}</td>
+                                    <td>{{$prop->tipo_propiedad}}</td>
+									<td>{{$prop->numero_habitaciones}}</td>
+									<td>{{$prop->ciudad}}</td>
+									<td>{{$prop->direccion}}</td>
+                                    <td>{{$prop->estado_cuenta}}</td>
+                                    <td>{{$prop->created}}</td>
                                     <td> 
                                         <a href="upr" name="b-lista" value="{{ $prop->id }}" class="btn btn-info btn-xs">Editar</a>
-           
                                     </td>
    								</tr>
    							@endforeach

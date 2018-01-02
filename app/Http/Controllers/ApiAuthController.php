@@ -16,10 +16,11 @@ use \Carbon\Carbon;
 class ApiAuthController extends Controller {
 	public function signin(Request $request) {
         $credentials = $request->only('email', 'password');
-        $user = User::where('email', $credentials['email'])->first();
+        $user = User::where('email', $credentials['email'])->with('propiedad')->first();
 
         if(!is_null($user)) {
             $user_id = $user->id;
+            $propiedad_id = $user->propiedad[0]['id'];
 
             if (strcmp($request->email, 'soporte@gofeels.com') != 0) {
                 switch ($user->propiedad[0]->estado_cuenta_id) {
@@ -36,7 +37,7 @@ class ApiAuthController extends Controller {
                                 $data['msg']    = 'Usuario o contraseña incorrecta';
                                 $status         = trans('request.failure.code.forbidden');
                             } else {
-                                $data   = compact('token', 'user_id');
+                                $data   = compact('token', 'user_id', 'propiedad_id');
                                 $status = trans('request.success.code');
                             }
                         } else {   

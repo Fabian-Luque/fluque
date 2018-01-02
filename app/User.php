@@ -19,6 +19,10 @@ class User extends Authenticatable {
         'password', 'remember_token',
     ];
 
+    public function QVO() {
+        return $this->hasOne('App\QvoUser');
+    }
+
     public function propiedad(){
         return $this->belongsToMany(
             'App\Propiedad', 
@@ -34,6 +38,11 @@ class User extends Authenticatable {
 
     public function estado(){
         return $this->belongsTo('App\Estado', 'estado_id');
+    }
+
+
+    public function cajas(){
+        return $this->hasMany('App\Caja', 'user_id');
     }
 
     public function setPasswordAttribute($value) {

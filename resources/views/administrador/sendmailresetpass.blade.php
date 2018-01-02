@@ -8,11 +8,6 @@
       padding-top: 10%;  
     }
 </style>
-<ul>
-    @foreach($errors->all() as $error)
-        <li>{{ $error }}</li>
-    @endforeach
-</ul>
 
 @if(session('respuesta'))
     <?php 

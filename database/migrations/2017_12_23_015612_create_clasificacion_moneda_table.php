@@ -12,11 +12,13 @@ class CreateClasificacionMonedaTable extends Migration
      */
     public function up()
     {
+        if (!Schema::hasTable('clasificacion_moneda')) {
         Schema::create('clasificacion_moneda', function(Blueprint $table){
         $table->increments('id');
         $table->string('nombre');
         $table->timestamps();
         });
+    }
     }
 
     /**

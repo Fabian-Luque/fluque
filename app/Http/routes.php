@@ -1,128 +1,162 @@
 <?php
 
 use Illuminate\Http\Response as HttpResponse;
+use App\Events\ReservasMotorEvent;
+use App\User;
 
 Route::auth();
 
 Route::get(
-	'/', 
-	function () {
-		return view('auth.login');
-	}
+  '/', 
+  function () {
+    return view('auth.login');
+  }
 );
 
+Route::post('propiedad/cercana/obtener','GeoController@PropiedadesCercanas');
+
+
 Route::post('guardar/ubicacion/propiedad', 'GeoController@UbicacionCreate');
+Route::post('googlemaps', 'GeoController@GoogleMaps');
+
+Route::post('mapjs', 'GeoController@GoogleMaps');
+Route::post('locate/prop', 'GeoController@AddLocatePropiedad');
+
 
 Route::get('hotelescercanos', 'GeoController@Gmaps');
 Route::post('hoteles/cercanos', 'GeoController@Gmaps');
+
+
+Route::post('ejmm', 'CorreoController@SendFileByEmail');
+
+
 Route::get(
-	'/gmap', 
-	function () {
-		return view('administrador.gmap');
-	}
+  '/gmap', 
+  function () {
+    return view('administrador.gmap');
+  }
+);
+
+Route::get(
+  '/p', 
+  function () {
+    return view('administrador.prueba');
+  }
 );
 
 //////////////////////// rutas dash ////////////////////////////
 
 
 Route::group(['prefix' => 'dash', 'middleware' => ['auth']], 
-	function() {
-    	Route::get(
-			'adminhome', 
-			function() {
-    			return View::make('administrador.home_admin');
-			}
-		);
+  function() {
+
+    
+      Route::get(
+      'adminhome', 
+      function() {
+          return View::make('administrador.home_admin');
+      }
+    );
 
 
 
-		Route::get(
-			'adminprop', 
-			function() {
-    			return View::make('administrador.prop');
-			}
-		);
+    Route::get(
+      'adminprop', 
+      function() {
+          return View::make('administrador.prop');
+      }
+    );
 
-		Route::get(
-			'adminreguser', 
-			function() {
-    			return View::make('administrador.reguser');
-			}
-		);
-		Route::get('adminreguser', 'DashControllers\UserDashController@getViewTipoPropiedad');
+    Route::get(
+      'adminreguser', 
+      function() {
+          return View::make('administrador.reguser');
+      }
+    );
+    Route::get('adminreguser', 'DashControllers\UserDashController@getViewTipoPropiedad');
 
-		Route::get('adminprop', 'DashControllers\UserDashController@getViewPropiedad');
+    Route::get('adminprop', 'DashControllers\UserDashController@getViewPropiedad');
 
-		Route::get(
-			'adminuser', 
-			function() {
-    			return View::make('administrador.user');
-			}
-		);
+    Route::get(
+      'adminuser', 
+      function() {
+          return View::make('administrador.user');
+      }
+    );
 
-		Route::get(
-			'edituser', 
-			function() {
-    			return View::make('administrador.editmodal');
-			}
-		);
+    Route::get(
+      'edituser', 
+      function() {
+          return View::make('administrador.editmodal');
+      }
+    );
 
-		Route::get(
-			'edituserp', 
-			function() {
-    			return View::make('administrador.editmodalp');
-			}
-		);
+    Route::get(
+      'edituserp', 
+      function() {
+          return View::make('administrador.editmodalp');
+      }
+    );
 
-		Route::get(
-			'buscauser', 
-			function() {
-    			return View::make('administrador.accionesC');
-			}
-		);
-		
-		Route::get('adminuser', 'DashControllers\UserDashController@ReadUser');
-				
-		Route::post('crear/user', 'DashControllers\UserDashController@CreateUser')->name('crear.user');
+    Route::get(
+      'buscauser', 
+      function() {
+          return View::make('administrador.accionesC');
+      }
+    );
+    
+    Route::get('adminuser', 'DashControllers\UserDashController@ReadUser');
+        
+    Route::post('crear/user', 'DashControllers\UserDashController@CreateUser')->name('crear.user');
 
-		Route::post('obtener/user', 'DashControllers\UserDashController@ReadUser');
-		Route::post('actualizar/user', 'DashControllers\UserDashController@UpdateUser')->name('editar.user');
-		Route::post('eliminar/user', 'DashControllers\UserDashController@DeleteUser');
-	}
+    Route::post('obtener/user', 'DashControllers\UserDashController@ReadUser');
+    Route::post('actualizar/user', 'DashControllers\UserDashController@UpdateUser')->name('editar.user');
+    Route::post('eliminar/user', 'DashControllers\UserDashController@DeleteUser');
+  }
 );
 //////////////////////// rutas dash  ///////////////////////////////////////
 
-Route::post('my', 'MyAllocatorController@ejm');
 
 
 
-	Route::post('reset/password', 'ApiAuthController@ResetPassword')->name('cambiar.pass');
 
-	Route::post('resetpass/email', 'CorreoController@sendmail')->name('reset.pass.sendmail');
-	
-	Route::get(
-		'sendmailreset', 
-		function() {
-    		return View::make('administrador.sendmailresetpass');
-		}
-	);
+  Route::post('reset/password', 'ApiAuthController@ResetPassword')->name('cambiar.pass');
 
-	Route::get(
-		'resetpass', 
-		function() {
-    		return View::make('administrador.resetpass');
-		}
-	);
+  Route::post('resetpass/email', 'CorreoController@sendmail')->name('reset.pass.sendmail');
+  
+  Route::get(
+    'sendmailreset', 
+    function() {
+        return View::make('administrador.sendmailresetpass');
+    }
+  );
 
-	Route::get('reset/password/{token}', 'ApiAuthController@ResetPassword');
+  Route::get(
+    'resetpass', 
+    function() {
+        return View::make('administrador.resetpass');
+    }
+  );
 
-	Route::post('enviar/correo', 'CorreoController@SendFileByEmail');
+//// motor de reserva
+Route::get('motor/reserva', 'MotorWidgetControllers\MotorController@getMotor');
+Route::get('motor/disponibilidad', 'MotorWidgetControllers\MotorController@getDisponibilidad');
+Route::get('motor/disponibilidad/habitacion', 'MotorRaController@getDisponibilidad');
+Route::post('motor/reserva/habitacion', 'MotorRaController@reserva');
+Route::get('crear/codigo', 'PropiedadController@crearCodigo');
+Route::get('tipo/cliente/motor', 'ClienteController@getTipoCliente');
+Route::get('paises/motor', 'PropiedadController@getPaises');
+Route::get('regiones/motor', 'PropiedadController@getRegiones');
+Route::get('cantidad/tipo/habitacion', 'TipoHabitacionController@cantidadTipoHabitacion');
+Route::get('cliente/motor', 'ClienteController@index');
+Route::put('cliente/motor/{id}', 'ClienteController@update');
+Route::get('obtener/colores', 'MotorRaController@getColoresPropiedad');
+
+Route::get('reset/password/{token}', 'ApiAuthController@ResetPassword');
 
 Route::group(['as' => 'api.jarvis.'], function() {
-
 	Route::post('registro', 'UserController@store');
 	Route::post('/signin', 'ApiAuthController@signin');
-
 
 	Route::group(['middleware' => ['jwt.auth']], function () {
 		Route::post('cambio/password', 'ApiAuthController@ResetPassUser');
@@ -159,11 +193,12 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::post('pdf/pagos', 'PDFController@pagos');
 		Route::post('pdf/reservas', 'PDFController@reservas');
 		Route::post('pdf/comprobante/reserva', 'PDFController@comprobanteReserva');
+		Route::post('pdf/comprobante/reserva/resumen', 'PDFController@comprobanteReservaResumen');
+		Route::post('pdf/caja', 'PDFController@caja');
 		Route::post('ingreso/servicio', 'PropiedadController@ingresoServicio');
 		Route::post('ingreso/servicio/cliente', 'ClienteController@ingresoServicio');
 		Route::get('cliente/empresa', 'ClienteController@getClientes');
 		Route::post('pago/consumo', 'ReservaController@pagoConsumo');
-		Route::get('cliente/email', 'ClienteController@getCliente');
 		Route::get('buscar/email', 'ClienteController@buscarEmail');
 		Route::get('buscar/rut', 'ClienteController@buscarRut');
 		Route::get('disponibilidad', 'HabitacionController@disponibilidad');
@@ -177,7 +212,6 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::post('eliminar/moneda/propiedad', 'PropiedadController@eliminarMoneda');
 		Route::put('editar/moneda/{id}', 'PropiedadController@editarMoneda');
 		Route::get('reporte', 'PropiedadController@reportesDiario');
-		Route::post('crear/pais', 'PropiedadController@crearPais');
 		Route::get('paises', 'PropiedadController@getPaises');
 		Route::get('regiones', 'PropiedadController@getRegiones');
 		Route::post('calendario/temporada', 'TemporadaController@calendario');
@@ -188,8 +222,7 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::get('temporada/precios', 'TemporadaController@getPreciosTemporadas');
 		Route::post('editar/temporadas', 'TemporadaController@editarTemporadas');
 		Route::get('reportes', 'PropiedadController@reportes');
-		Route::get('reportes/pago', 'PropiedadController@pagos');
-		Route::post('crear/zona/horaria', 'PropiedadController@crearZona');
+		Route::post('reportes/pago', 'PropiedadController@pagos');
 		Route::get('zonas/horarias', 'PropiedadController@getZonasHorarias');
 		Route::put('pago/{id}', 'ReservaController@editarPago');
 		Route::delete('pago/{id}', 'ReservaController@eliminarPago');
@@ -197,6 +230,8 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::get('tipo/cobros', 'PropiedadController@getTipoCobro');
 		Route::post('editar/precios', 'TipoHabitacionController@editarPrecios');
 		Route::get('reportes/financiero/anual', 'PropiedadController@reporteFinancieroAnual');
+		Route::get('reportes/egresos/anual', 'PropiedadController@reporteEgresoAnual');
+		Route::get('reportes/egresos', 'PropiedadController@reporteEgresos');
 		Route::get('reportes/financiero', 'PropiedadController@reporteFinanciero');
 		Route::get('obtener/pagos', 'PropiedadController@getPagos');
 		Route::get('obtener/reserva', 'ReservaController@getPagoReserva');
@@ -204,6 +239,45 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::get('rol/permisos', 'RolController@getPermisos');
 		Route::post('crear/usuario', 'UserController@crearUsuario');
 		Route::get('estados', 'UserController@getEstados');
+		Route::post('abrir/caja', 'CajaController@abrirCaja');
+		Route::post('cerrar/caja', 'CajaController@cerrarCaja');
+		Route::get('tipo-monto', 'CajaController@tipoMonto');
+		Route::get('caja/abierta', 'CajaController@getCajaAbierta');
+		Route::post('ingresar/egreso/caja', 'EgresoController@ingresarEgresoCaja');
+		Route::post('ingresar/egreso/propiedad', 'EgresoController@ingresarEgresoPropiedad');
+		Route::get('reportes/cajas', 'CajaController@getCajas');
+		Route::get('obtener/caja', 'CajaController@getCaja');
+		Route::get('obtener/egresos/caja', 'EgresoController@obtenerEgresosCaja');
+		Route::get('obtener/egresos/propiedad', 'EgresoController@obtenerEgresosPropiedad');
+		Route::put('editar/egreso/caja/{id}', 'EgresoController@editarEgresoCaja');
+		Route::put('editar/egreso/propiedad/{id}', 'EgresoController@editarEgresoPropiedad');
+		Route::post('crear/politicas', 'PropiedadController@crearPoliticas');
+		Route::delete('egreso/caja/{id}', 'EgresoController@eliminarEgresoCaja');
+		Route::delete('egreso/propiedad/{id}', 'EgresoController@eliminarEgresoPropiedad');
+		Route::put('editar/politica/{id}', 'PropiedadController@editarPolitica');
+		Route::delete('eliminar/politica/{id}', 'PropiedadController@eliminarPolitica');
+		Route::get('habitaciones/disponibles', 'MotorRaController@habitacionesDisponibles');
+		Route::get('obtener/reservas/motor', 'MotorRaController@getReservasMotor');
+		Route::post('asignar/habitacion', 'MotorRaController@asignarHabitacion');
+		Route::post('crear/cuenta/bancaria', 'PropiedadController@crearCuentaBancaria');
+		Route::put('editar/cuenta/bancaria/{id}', 'PropiedadController@editarCuentaBancaria');
+		Route::delete('eliminar/cuenta/bancaria/{id}', 'PropiedadController@eliminarCuentaBancaria');
+		Route::get('tipo/cuenta', 'PropiedadController@getTipoCuenta');
+		Route::post('tipo/deposito/propiedad', 'PropiedadController@crearTipoDepositoPropiedad');
+		Route::put('tipo/deposito/propiedad/{id}', 'PropiedadController@editarTipoDepositoPropiedad');
+		Route::delete('tipo/deposito/propiedad/{id}', 'PropiedadController@eliminarTipoDepositoPropiedad');
+		Route::get('tipo/deposito', 'PropiedadController@getTipoDeposito');
+		Route::get('colores/motor', 'MotorRaController@getColores');
+		Route::get('clasificacion/color', 'MotorRaController@getClasificacionColores');
+		Route::post('asignar/color/motor', 'MotorRaController@asignarColorMotor');
+		Route::post('editar/color/motor', 'MotorRaController@editarColor');
+		Route::post('anular/reservas', 'ReservaController@anularReservas');
+		Route::post('editar/tipo/habitacion', 'TipoHabitacionController@editarTipoHabitacion');
+		Route::post('habitaciones/disponibles/reserva', 'ReservaController@habitacionesDisponibles');
+		Route::post('cambiar/fechas/reserva', 'ReservaController@cambiarFechasReserva');
+		Route::get('reservas/credito', 'ReservaController@getCuentasCredito');
+		Route::post('confirmar/pago', 'ReservaController@confirmarPagoReserva');
+
 
 		Route::resource('user', 'UserController', ['except' => ['create', 'edit','store']]);
 		Route::resource('propiedad', 'PropiedadController', ['except' => ['create', 'edit', 'store']]);
@@ -214,8 +288,38 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::resource('huesped', 'HuespedController', ['except' => ['create', 'edit']]);
 		Route::resource('temporada', 'TemporadaController', ['except' => ['create', 'edit']]);
 		Route::resource('tipo/habitacion', 'TipoHabitacionController', ['except' => ['create', 'edit']]);
-
 		Route::resource('rol', 'RolController', ['except' => ['create', 'edit']]);
+		Route::resource('egreso', 'EgresoController', ['except' => ['create', 'edit']]);
 });
 
 });
+
+    Route::get('crear/permisos', 'RolController@crearPermisos');
+
+
+    Route::post('crear/zona/horaria', 'PropiedadController@crearZona');
+    Route::post('crear/pais', 'PropiedadController@crearPais');
+
+Route::post('evento', 'DashControllers\UserDashController@evento');
+
+Route::post('crear/user', 'DashControllers\UserDashController@CreateUserP');
+
+
+
+
+Route::post('cliente/stripe/crear','StripeController@ClienteStripeCrear');
+Route::post('plan/stripe/crear','StripeController@PlanStripeCrear');
+Route::post('subscripcion/stripe/crear','StripeController@SubscripcionStripeCrear');
+
+Route::post('tarjeta/stripe/crear','StripeController@tarjetaStripeCrear');
+Route::post('tarjeta/stripe/obtener','StripeController@tarjetaStripeObtener');
+Route::post('tarjeta/stripe/actualizar','StripeController@tarjetaStripeActualizar');
+Route::post('tarjeta/stripe/eliminar','StripeController@tarjetaStripeEliminar');
+
+Route::post('invoice/stripe/obtener','StripeController@InvoiceStripeObtener');
+
+
+
+
+
+Route::post('myallocator/configurar', 'MyallocatorController@Configuracion');

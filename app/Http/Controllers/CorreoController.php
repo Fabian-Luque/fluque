@@ -14,6 +14,7 @@ use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Support\Facades\Validator;
 use App\User;   
 use App\ResetPass; 
+use PDF;
 
 class CorreoController extends Controller {
     
@@ -108,6 +109,12 @@ class CorreoController extends Controller {
             $data['msg']    = $validator->messages();
         } else {
 
+            $pdf = PDF::loadView(
+                'pdf.comprobante_reserva_motor', [
+                    'propiedad' => "waaaaaaaaaaaaaaa" , 
+                ]
+            );
+
             try {
                 $path = 'auth.emails.correo';
 
@@ -115,7 +122,8 @@ class CorreoController extends Controller {
                     $path, 
                     ['request' => $request],
                     function($message) use ($request) {
-                        $message->to(
+                        $messa
+                        ge->to(
                             $request->destino, 
                             $request->destino
                         )->subject('Mensaje de GoFeels');

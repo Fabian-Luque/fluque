@@ -27,10 +27,11 @@
 </script>
 
 
-
+{!! $map['js'] !!} 
 {!! $map['html'] !!}
 
 <div id="mapa" ></div>
+
   
 <div id="fade" class="overlay"></div>
 <div id="light" class="modal">

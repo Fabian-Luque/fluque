@@ -1,5 +1,7 @@
 @extends('administrador.default')
+
 @section('content')
+
 <style type="text/css">
     body {
       background-color: #494a6b;

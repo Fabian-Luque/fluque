@@ -30,22 +30,47 @@
             <tr>
               <th class="data-tabla-detalles borde-derecha" style="text-align:left;"><p>Habitación</p></th>
               <th class="data-tabla-detalles borde-derecha" style="text-align:left;"><p>Huéspedes</p></th>
+              <th class="data-tabla-detalles borde-derecha" style="text-align:left;"><p>Check out</p></th>
+              <th class="data-tabla-detalles borde-derecha" style="text-align:left;"><p>Estado</p></th>
             </tr>
 
              @foreach($habitaciones as $habitacion)
-              @foreach($habitacion['reservas'] as $reserva)
-             
+
             <tr>
               <td class="data-tabla-detalles borde-derecha"><p>{{ $habitacion->nombre }}</p></td>
               
               <td class="data-tabla-detalles borde-derecha">
+                
+                @foreach($habitacion['reservas'] as $reserva)
+
                   @foreach($reserva['huespedes'] as $huesped)
-                  <p>{{ $huesped->nombre }} {{ $huesped->apellido }}</p>
+
+                    <p>{{ $huesped->nombre }} {{ $huesped->apellido }}</p>
+
                   @endforeach
+
+                @endforeach
+                
               </td>
+
+
+              <td class="data-tabla-detalles borde-derecha">
+
+
+                @foreach($habitacion['reservas'] as $reserva)
+
+                    <p>{{ $reserva->checkout->format('d-m-Y') }}</p>
+                   
+                @endforeach
+
+              
+
+              </td>
+              <td class="data-tabla-detalles borde-derecha"><p>{{ $habitacion->estado }}</p></td>
+
+
             </tr>
-              @endforeach
-               
+
             @endforeach
 
           </table>
