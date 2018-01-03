@@ -120,10 +120,13 @@ class CorreoController extends Controller {
                         $array['destino'], 
                         $array['destino']
                     )->subject('Restablecer contraseña GoFeels');
+                    
+                    /*
                     $message->attachData(
                         $array['pdf'], 
                         'comprobante.pdf'
                     );
+                    */
                 }
             );
 
