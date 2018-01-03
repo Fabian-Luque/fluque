@@ -1916,7 +1916,7 @@ class ReservaController extends Controller
         ->where('checkin', '<=' , $fecha)
         ->where('checkout', '>=', $fecha)
         ->with(['cliente' => function ($q){
-            $q->select('clientes.id','nombre' ,'apellido', 'paises.nombre as pais' ,'regiones.nombre as region', 'ciudad', 'direccion', 'telefono', 'email')
+            $q->select('clientes.id','clientes.nombre' ,'apellido', 'paises.nombre as pais' ,'regiones.nombre as region', 'ciudad', 'direccion', 'telefono', 'email')
                 ->join('paises', 'paises.id', '=' ,'pais_id')
                 ->join('regiones', 'regiones.id', '=' ,'region_id');}])
         ->with(['habitacion' => function ($q){
