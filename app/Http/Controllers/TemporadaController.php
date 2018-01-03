@@ -242,15 +242,16 @@ class TemporadaController extends Controller
                 $periodos     = [];
                 $dias         = [];
                 $auxInicio    = new Carbon($fecha_inicio);
+                $inicio       = $auxInicio->subMonths(4);
                 $auxFin       = new Carbon($fecha_termino);
 
-                while ($auxInicio <= $auxFin) {
+                while ($inicio <= $auxFin) {
 
                     $fecha = Calendario::whereHas('temporada', function ($query) use ($propiedad_id) {
 
                         $query->where('propiedad_id', $propiedad_id);
 
-                    })->where('fecha', $auxInicio)->with('temporada')->first();
+                    })->where('fecha', $inicio)->with('temporada')->first();
 
                     if (!is_null($fecha)) {
 
@@ -310,7 +311,7 @@ class TemporadaController extends Controller
                         }
                     }
 
-                    $auxInicio->addDay();
+                    $inicio->addDay();
 
                 } // fin while
 
