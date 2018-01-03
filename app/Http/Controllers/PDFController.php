@@ -1156,12 +1156,30 @@ class PDFController extends Controller
 
             $pdf = PDF::loadView('pdf.comprobante_reserva_resumen', ['propiedad' => $propiedad , 'cliente'=> $cliente ,'reservas_pdf'=> $reservas_pdf, 'nombre_moneda' => $nombre_moneda,'iva_reservas' => $iva_reservas,'total' => $total,'por_pagar' => $por_pagar]);
 
-        }
-        
+        }           
+
+        $array = array(
+            'pdf' => $pdf->stream(), 
+            'destino' => $cliente->email,
+            'vista' => "correos.comprobante_reserva",
+        ); 
+
+        Mail::send(
+            $array['vista'], 
+            ['array' => $array],
+            function($message) use ($array) {
+                $message->to(
+                    $array['destino'], 
+                    $array['destino']
+                )->subject('Comprobante de reserva resumen '. $propiedad->nombre);
+                $message->attachData(
+                    $array['pdf'], 
+                    'comprobante.pdf'
+                );
+            }
+        );
 
         return $pdf->download('archivo.pdf');
-
-
     }
 
 

@@ -12,7 +12,8 @@ use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\PasswordBroker;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Support\Facades\Validator;
-use App\User;   
+use App\User;  
+use App\Propiedad; 
 use App\ResetPass; 
 use PDF;
 
@@ -94,52 +95,44 @@ class CorreoController extends Controller {
 
 
     public function SendFileByEmail(Request $request) {
-        $rules = array(
-            'destino'                => 'required',
-            'pdf'               => 'required',
-            'namefile'               => 'required',
-            'user_name'            => 'required',
-        );
-
-        $validator = Validator::make($request->all(), $rules);
-
-        if ($validator->fails()) {
-
-            $data['errors'] = true;
-            $data['msg']    = $validator->messages();
-        } else {
-
-            $pdf = PDF::loadView(
-                'pdf.comprobante_reserva_motor', [
-                    'propiedad' => "waaaaaaaaaaaaaaa" , 
-                ]
+        try {
+            $ped = PDF::loadView(
+                "auth.emails.correo",
+                []
             );
 
-            try {
-                $path = 'auth.emails.correo';
+            $propiedad = Propiedad::find(4);
+            
 
-                Mail::send(
-                    $path, 
-                    ['request' => $request],
-                    function($message) use ($request) {
-                        $messa
-                        ge->to(
-                            $request->destino, 
-                            $request->destino
-                        )->subject('Mensaje de GoFeels');
-                        $message->attach(
-                            $request->pdf,
-                            ['as' => $request->namefile]
-                        );
-                    }
-                );
-                
-                $data['errors'] = false;
-                $data['msg']    = 'Correo enviado de forma exitoso';
-            } catch (Exception $e) {
-                $data['errors'] = true;
-                $data['msg']    = 'Error al enviar datos';
-            }
+            $array = array(
+                'pdf' => $ped->stream(), 
+                'namefile' => "miarch.pdf",
+                'destino' => $request->destino,
+                'vista' => "correos.comprobante_reserva",
+                'propiedad' => $propiedad,
+            ); 
+
+            Mail::send(
+                $array['vista'], 
+                ['array' => $array],
+                function($message) use ($array) {
+                    $message->to(
+                        $array['destino'], 
+                        $array['destino']
+                    )->subject('Restablecer contraseña GoFeels');
+                    $message->attachData(
+                        $array['pdf'], 
+                        'comprobante.pdf'
+                    );
+                }
+            );
+
+
+            $data['errors'] = false;
+            $data['msg']    = 'Correo enviado de forma exitoso';
+        } catch (Exception $e) {
+            $data['errors'] = true;
+            $data['msg']    = 'Error al enviar datos';
         }
         return Response::json($data); 
     }

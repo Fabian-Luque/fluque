@@ -621,9 +621,23 @@ class MotorRaController extends Controller
                     Event::fire(
                         new ReservasMotorEvent($propiedad_id)
                     );
+
+                    $array = array(
+                        'destino'   => $request->destino,
+                        'vista'     => 'correos.aviso_reserva_motor',
+                        'propiedad' => $propiedad,
+                    ); 
+
+                    Mail::send(
+                        $array['vista'], 
+                        ['array' => $array],
+                        function($message) use ($array) {
+                            $message->to($array['destino'], $name = "no reply");
+                            $message->subject('Reserva en proceso - ' . $array['propiedad']->nombre);
+                        }
+                    );
                 }
             }
-
         } else {
             $retorno = array(
                 'msj'    => "Incompleto",
