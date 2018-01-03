@@ -1958,7 +1958,7 @@ class ReservaController extends Controller
 
         //Actividades del dia
 
-        $reservas_dia = Reserva::select('reservas.id','numero_reserva', 'noches' ,'checkin', 'checkout' ,'clientes.nombre as nombre_cliente', 'clientes.apellido as apellido_cliente' ,'habitacion_id', 'observacion', 'estado_reserva.nombre as estado')
+        $reservas_dia = Reserva::select('reservas.id','numero_reserva', 'monto_total' ,'noches' ,'checkin', 'checkout' ,'clientes.nombre as nombre_cliente', 'clientes.apellido as apellido_cliente' ,'habitacion_id', 'observacion', 'estado_reserva.nombre as estado')
         ->WhereHas('habitacion', function($query) use($id){
             $query->where('propiedad_id', $id);})
         ->whereBetween('reservas.created_at', [$startDate, $endDate])
