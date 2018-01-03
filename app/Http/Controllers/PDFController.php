@@ -23,6 +23,7 @@ use App\TipoFuente;
 use App\Caja;
 use \Carbon\Carbon;
 use Response;
+use \Mail;
 
 class PDFController extends Controller
 {
