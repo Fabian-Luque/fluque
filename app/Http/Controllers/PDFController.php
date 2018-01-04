@@ -21,6 +21,7 @@ use App\TipoCliente;
 use App\Servicio;
 use App\TipoFuente;
 use App\Caja;
+use App\Jobs\SendMail;
 use \Carbon\Carbon;
 use Response;
 use \Mail;
@@ -1161,56 +1162,56 @@ class PDFController extends Controller
 
         if ($request->has('flag_envio')) {
             if (isset($cliente->email) && $request->flag_envio == 0) {
-                $array = array(
-                    'pdf' => $pdf->stream(), 
-                    'destino' => $cliente->email,
-                    'vista' => "correos.comprobante_reserva",
-                ); 
+                if ($request->has('flag_envio_prop')) {
+                    $job = (new SendMail(
+                        $propiedad,
+                        $propiedad->email,
+                        "correos.comprobante_reserva",
+                        $pdf->stream(),
+                        "comprobante_reserva_.pdf"
+                    ));
 
-                Mail::send(
-                    $array['vista'], 
-                    ['array' => $array],
-                    function($message) use ($array) {
-                        $message->to(
-                            $array['destino'], 
-                            $array['destino']
-                        )->subject('Comprobante de reserva resumen '. $propiedad->nombre);
-                        $message->attachData(
-                            $array['pdf'], 
-                            'comprobante.pdf'
-                        );
-                    }
-                );
+                    $this->dispatch($job);
+                } 
+                $job = (new SendMail(
+                    $propiedad,
+                    $cliente->email,
+                    "correos.comprobante_reserva",
+                    $pdf->stream(),
+                    "comprobante_reserva_.pdf"
+                ));
+
+                $this->dispatch($job);
             } elseif ($request->flag_envio == 1) {
                 return $pdf->download('archivo.pdf');
             } else {
                 if (isset($cliente->email)) {
-                    $array = array(
-                        'pdf' => $pdf->stream(), 
-                        'destino' => $cliente->email,
-                        'vista' => "correos.comprobante_reserva",
-                    ); 
+                    if ($request->has('flag_envio_prop')) {
+                        $job = (new SendMail(
+                            $propiedad,
+                            $propiedad->email,
+                            "correos.comprobante_reserva",
+                            $pdf->stream(),
+                            "comprobante_reserva_.pdf"
+                        ));
 
-                    Mail::send(
-                        $array['vista'], 
-                        ['array' => $array],
-                        function($message) use ($array) {
-                            $message->to(
-                                $array['destino'], 
-                                $array['destino']
-                            )->subject('Comprobante de reserva resumen '. $propiedad->nombre);
-                            $message->attachData(
-                                $array['pdf'], 
-                                'comprobante.pdf'
-                            );
-                        }
-                    );
+                        $this->dispatch($job);
+                    } 
+                    $job = (new SendMail(
+                        $propiedad,
+                        $cliente->email,
+                        "correos.comprobante_reserva",
+                        $pdf->stream(),
+                        "comprobante_reserva_.pdf"
+                    ));
+
+                    $this->dispatch($job);
                     return $pdf->download('archivo.pdf');
                 }
             }
-        }        
-
-        
+        } else {
+            return $pdf->download('archivo.pdf');
+        } 
     }
 
 
