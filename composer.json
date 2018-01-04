@@ -14,7 +14,7 @@
         "barryvdh/laravel-dompdf": "^0.7.0",
         "doctrine/dbal": "~2.5",
         "laravelcollective/html": "^5.2",
-        "guzzlehttp/guzzle": "^6.3",
+        "guzzlehttp/guzzle": "^6.0",
         "grimzy/laravel-mysql-spatial": "^2.0",
         "stevebauman/location": "^2.0",
         "genealabs/phpgmaps": "^0.4.1",

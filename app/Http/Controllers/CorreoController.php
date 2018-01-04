@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Validator;
 use App\User;  
 use App\Propiedad; 
 use App\ResetPass; 
+use App\Jobs\SendMail;
 use PDF;
 
 class CorreoController extends Controller {
@@ -95,48 +96,34 @@ class CorreoController extends Controller {
 
 
     public function SendFileByEmail(Request $request) {
-        try {
-            $ped = PDF::loadView(
-                "auth.emails.correo",
-                []
-            );
-
-            $propiedad = Propiedad::find(4);
-            
+        $propiedad = Propiedad::find(4);
 
             $array = array(
-                'pdf' => $ped->stream(), 
+          
                 'namefile' => "miarch.pdf",
                 'destino' => $request->destino,
                 'vista' => "correos.comprobante_reserva",
                 'propiedad' => $propiedad,
             ); 
 
-            Mail::send(
-                $array['vista'], 
-                ['array' => $array],
-                function($message) use ($array) {
-                    $message->to(
-                        $array['destino'], 
-                        $array['destino']
-                    )->subject('Restablecer contraseña GoFeels');
-                    
-                    /*
-                    $message->attachData(
-                        $array['pdf'], 
-                        'comprobante.pdf'
-                    );
-                    */
-                }
-            );
+            $job = (new SendMail(
+                $propiedad,
+                "dheresmann2012@alu.uct.cl",
+                "correos.comprobante_reserva"
+            ));
 
+            $this->dispatch($job);
 
             $data['errors'] = false;
             $data['msg']    = 'Correo enviado de forma exitoso';
-        } catch (Exception $e) {
-            $data['errors'] = true;
-            $data['msg']    = 'Error al enviar datos';
-        }
+    
         return Response::json($data); 
     }
 }
+
+
+
+
+
+
+
