@@ -72,7 +72,7 @@ class CajaController extends Controller
                         $egreso += $egreso_caja->monto;
                     }
                 }
-                foreach ($caja_abierta->montos as $monto) {
+                foreach ($caja->montos as $monto) {
                     if ($monto->tipo_moneda_id == $tipo_moneda->id && $monto->tipo_monto_id == 1) {
                         $ingreso += $monto->monto;
                     }
