@@ -250,6 +250,12 @@ class CajaController extends Controller
                     }
                 }
 
+                foreach ($caja_abierta->montos as $monto) {
+                    if ($monto->tipo_moneda_id == $tipo_moneda->id && $monto->tipo_monto_id == 1) {
+                        $ingreso += $monto->monto;
+                    }
+                }
+
                 $moneda['nombre']               = $tipo_moneda->nombre;
                 $moneda['cantidad_decimales']   = $tipo_moneda->cantidad_decimales;
                 $moneda['ingreso']              = $ingreso;

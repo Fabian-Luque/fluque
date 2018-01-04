@@ -1914,11 +1914,6 @@ class ReservaController extends Controller
             $query->where('propiedad_id', $id);})
         ->where('checkin', '<=' , $fecha)
         ->where('checkout', '>=', $fecha)
-        // ->with('cliente.region', 'cliente.pais')
-        // ->with(['cliente' => function ($q){
-        //     $q->select('clientes.id','clientes.nombre' ,'apellido', 'paises.nombre as pais' ,'regiones.nombre as region', 'ciudad', 'direccion', 'telefono', 'email')
-        //         ->join('paises', 'paises.id', '=' ,'pais_id')
-        //         ->join('regiones', 'regiones.id', '=' ,'region_id');}])
         ->with(['cliente' => function ($q){
             $q->select('clientes.id','clientes.nombre' ,'apellido','ciudad','rut', 'giro' ,'direccion', 'telefono', 'email', 'tipo_cliente_id' ,'region_id', 'pais_id')
                 ->with('region', 'pais');}])
