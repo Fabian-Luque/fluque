@@ -1921,7 +1921,7 @@ class ReservaController extends Controller
         //         ->join('paises', 'paises.id', '=' ,'pais_id')
         //         ->join('regiones', 'regiones.id', '=' ,'region_id');}])
         ->with(['cliente' => function ($q){
-            $q->select('clientes.id','clientes.nombre' ,'apellido','ciudad', 'direccion', 'telefono', 'email', 'region_id', 'pais_id')
+            $q->select('clientes.id','clientes.nombre' ,'apellido','ciudad', 'direccion', 'telefono', 'email', 'tipo_cliente_id' ,'region_id', 'pais_id')
                 ->with('region', 'pais');}])
         ->with(['habitacion' => function ($q){
             $q->select('habitaciones.id', 'habitaciones.nombre', 'tipo_habitacion.nombre as tipo_habitacion')
