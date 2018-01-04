@@ -1908,9 +1908,12 @@ class ReservaController extends Controller
         $startDate = Carbon::today()->startOfDay();
         $endDate   = Carbon::today()->endOfDay();
 
+        return $reservas = Reserva::whereHas('habitacion', function($query){
+                    $query->where('propiedad_id', 10);})->toSql();
+
 
         // Reservas de hoy
-        $reservas_hoy = Reserva::select('reservas.id','numero_reserva','ocupacion','checkin', 'checkout', 'habitacion_id', 'observacion', 'estado_reserva_id', 'estado_reserva.nombre as estado', 'cliente_id')
+        $reservas_hoy = Reserva::select('reservas.id','numero_reserva','ocupacion','checkin', 'checkout', 'habitacion_id', 'observacion', 'monto_por_pagar' , 'estado_reserva_id', 'estado_reserva.nombre as estado', 'cliente_id')
         ->whereHas('habitacion', function($query) use($id){
             $query->where('propiedad_id', $id);})
         ->where('checkin', '<=' , $fecha)
