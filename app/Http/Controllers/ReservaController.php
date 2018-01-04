@@ -1910,25 +1910,24 @@ class ReservaController extends Controller
 
 
         // Reservas de hoy
-        $reservas_hoy = Reserva::select('reservas.id','numero_reserva', 'checkin', 'checkout', 'habitacion_id', 'observacion', 'estado_reserva_id', 'estado_reserva.nombre as estado', 'cliente_id')
+        $reservas_hoy = Reserva::select('reservas.id','numero_reserva','ocupacion','checkin', 'checkout', 'habitacion_id', 'observacion', 'estado_reserva_id', 'estado_reserva.nombre as estado', 'cliente_id')
         ->whereHas('habitacion', function($query) use($id){
             $query->where('propiedad_id', $id);})
         ->where('checkin', '<=' , $fecha)
         ->where('checkout', '>=', $fecha)
-        ->with('cliente.region', 'cliente.pais')
+        // ->with('cliente.region', 'cliente.pais')
         // ->with(['cliente' => function ($q){
         //     $q->select('clientes.id','clientes.nombre' ,'apellido', 'paises.nombre as pais' ,'regiones.nombre as region', 'ciudad', 'direccion', 'telefono', 'email')
         //         ->join('paises', 'paises.id', '=' ,'pais_id')
         //         ->join('regiones', 'regiones.id', '=' ,'region_id');}])
+        ->with(['cliente' => function ($q){
+            $q->select('clientes.id','clientes.nombre' ,'apellido','ciudad', 'direccion', 'telefono', 'email', 'region_id', 'pais_id')
+                ->with('region', 'pais');}])
         ->with(['habitacion' => function ($q){
             $q->select('habitaciones.id', 'habitaciones.nombre', 'tipo_habitacion.nombre as tipo_habitacion')
                 ->join('tipo_habitacion', 'tipo_habitacion.id', '=' ,'tipo_habitacion_id');}])
         ->join('estado_reserva', 'estado_reserva.id', '=', 'estado_reserva_id')
         ->get();
-
-        // $reservas_hoy = Reserva::whereHas('habitacion', function($query) use($id){
-        //             $query->where('propiedad_id', $id);
-        // })->where('checkin', '<=' , $fecha)->where('checkout', '>=', $fecha)->with('habitacion.tipoHabitacion')->with('huespedes')->with('cliente.pais', 'cliente.region')->with('estadoReserva')->get();
 
         $entradas              = 0;
         $salidas               = 0;
@@ -1971,14 +1970,6 @@ class ReservaController extends Controller
         ->with('tipoMoneda')
         ->get();
 
-
-        // $reservas_dia = Reserva::whereHas('habitacion', function($query) use($id){
-
-        //             $query->where('propiedad_id', $id);
-
-        // })->whereBetween('created_at', [$startDate, $endDate])->with('habitacion.tipoHabitacion')->with('huespedes')->with('cliente')->with('estadoReserva')->with('metodoPago')->with('tipoFuente')->get();
-
-
         //reservas no show
 
         $reservas_no_show = Reserva::select('reservas.id','numero_reserva', 'checkin', 'clientes.nombre as nombre_cliente', 'clientes.apellido as apellido_cliente' ,'habitacion_id', 'observacion', 'estado_reserva.nombre as estado')
@@ -1993,23 +1984,6 @@ class ReservaController extends Controller
         ->join('estado_reserva', 'estado_reserva.id', '=', 'estado_reserva_id')
         ->get();
 
-
-        // $reservas = Reserva::select('reservas.id', 'numero_reserva' ,'checkin', 'habitacion_id', 'estado_reserva_id' ,'checkout','ocupacion', 'monto_total','estado_reserva.nombre as estado' ,'cliente_id', 'clientes.nombre as nombre_cliente', 'clientes.apellido as apellido_cliente', 'noches', 'tipo_moneda.nombre as nombre_moneda', 'cantidad_decimales', 'monto_por_pagar')
-        // ->whereHas('habitacion', function($query) use($id){
-        //     $query->where('propiedad_id', $id);})
-        // ->with(['huespedes' => function ($q){
-        //     $q->select('huespedes.id', 'nombre', 'apellido');}])
-        // ->with('habitacion.tipoHabitacion')
-        // ->with('cliente.pais', 'cliente.region')
-        // ->join('clientes', 'clientes.id','=','cliente_id')
-        // ->join('tipo_moneda', 'tipo_moneda.id', '=', 'tipo_moneda_id')
-        // ->join('estado_reserva', 'estado_reserva.id', '=', 'estado_reserva_id')
-        // ->orderBy('reservas.id', 'desc')
-        // ->take(50)
-        // ->get();
-
-
-
         //PORCENTAJE OCUPACION GRAFICO
 
         $reservas = Reserva::select('reservas.id','numero_reserva', 'checkin', 'checkout')
@@ -2019,12 +1993,6 @@ class ReservaController extends Controller
         ->where('checkout', '<=', $fecha_fin)
         ->whereIn('estado_reserva_id', [3,4,5,6])
         ->get();
-
-        // $reservas = Reserva::whereHas('habitacion', function($query) use($id){
-
-        //             $query->where('propiedad_id', $id);
-
-        // })->where('checkin','>=' ,$fecha_inicio)->where('checkout', '<=', $fecha_fin)->where('estado_reserva_id', '!=', 1)->where('estado_reserva_id', '!=', 2)->where('estado_reserva_id', '!=', 6)->where('estado_reserva_id', '!=', 7)->get();
 
         $numero_habitaciones = $propiedad->numero_habitaciones;
         $auxInicio           = new Carbon($fecha_inicio);
