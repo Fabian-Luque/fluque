@@ -1921,7 +1921,7 @@ class ReservaController extends Controller
         //         ->join('paises', 'paises.id', '=' ,'pais_id')
         //         ->join('regiones', 'regiones.id', '=' ,'region_id');}])
         ->with(['cliente' => function ($q){
-            $q->select('clientes.id','clientes.nombre' ,'apellido','ciudad', 'direccion', 'telefono', 'email', 'tipo_cliente_id' ,'region_id', 'pais_id')
+            $q->select('clientes.id','clientes.nombre' ,'apellido','ciudad','rut', 'giro' ,'direccion', 'telefono', 'email', 'tipo_cliente_id' ,'region_id', 'pais_id')
                 ->with('region', 'pais');}])
         ->with(['habitacion' => function ($q){
             $q->select('habitaciones.id', 'habitaciones.nombre', 'tipo_habitacion.nombre as tipo_habitacion')
@@ -1941,14 +1941,12 @@ class ReservaController extends Controller
                 } 
                 $entradas++;
             }
-
             if ($reserva->checkout == $fecha_hoy && $reserva->estado_reserva_id !=1 && $reserva->estado_reserva_id !=2 && $reserva->estado_reserva_id !=6 && $reserva->estado_reserva_id !=7) {
                 if ($reserva->estado_reserva_id == 3) {
                     array_push($salidas_hoy, $reserva);
                 } 
                 $salidas++;
             }
-
             if ($reserva->estado_reserva_id == 3) {
                 if ($reserva->checkout >= $fecha_hoy) {
                 $habitaciones_ocupadas++;
