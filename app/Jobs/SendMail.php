@@ -22,7 +22,7 @@ class SendMail extends Job implements ShouldQueue {
      *
      * @return void
      */ 
-    public function __construct(Propiedad $propiedad, $cliente_email, $propiedad_email, $vista_coreo, $vista_pdf, $nombre_pdf, $arr) {
+    public function __construct($propiedad, $cliente_email, $propiedad_email, $vista_coreo, $vista_pdf, $nombre_pdf, $arr) {
         echo "empezo";
 
         $this->array = array(
