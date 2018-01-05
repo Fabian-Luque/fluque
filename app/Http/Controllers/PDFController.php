@@ -1173,7 +1173,7 @@ class PDFController extends Controller
                     'por_pagar'     => $por_pagar
                 );
 
-                $pdf = $this->EnvioCorreo(
+                $pdf = Parent::EnvioCorreo(
                     $propiedad->first(),
                     $cliente[0]->email,
                     $arr,
@@ -1197,7 +1197,7 @@ class PDFController extends Controller
                     'por_pagar'     => $por_pagar
                 );
 
-                $this->EnvioCorreo(
+                $pdf = Parent::EnvioCorreo(
                     $propiedad->first(),
                     $cliente[0]->email,
                     $arr,
@@ -1221,7 +1221,7 @@ class PDFController extends Controller
                 'por_pagar'     => $por_pagar
             );
 
-            $this->EnvioCorreo(
+            $pdf = Parent::EnvioCorreo(
                 $propiedad->first(),
                 $cliente[0]->email,
                 $arr,
