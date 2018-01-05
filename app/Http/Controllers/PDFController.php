@@ -1218,7 +1218,7 @@ class PDFController extends Controller
                 );
 
                 $pdf = $this->EnvioCorreo(
-                    $propiedad->first()
+                    $propiedad->first(),
                     $cliente[0]->email,
                     $arr,
                     "correos.comprobante_reserva",
@@ -1242,7 +1242,7 @@ class PDFController extends Controller
                 );
 
                 $this->EnvioCorreo(
-                    $propiedad->first()
+                    $propiedad->first(),
                     $cliente[0]->email,
                     $arr,
                     "correos.comprobante_reserva",
@@ -1266,7 +1266,7 @@ class PDFController extends Controller
             );
 
             $this->EnvioCorreo(
-                $propiedad->first()
+                $propiedad->first(),
                 $cliente[0]->email,
                 $arr,
                 "correos.comprobante_reserva",
