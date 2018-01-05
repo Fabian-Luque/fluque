@@ -36,21 +36,7 @@ class SendMail extends Job implements ShouldQueue {
         ); 
         echo "\nse construyo\n";
 
-        $arr = $this->array;
-        $glue = ",";
-
-        $ret = '';
-
-        foreach($arr as $piece)
-        {
-            if(is_array($piece))
-                $ret .= $glue . implode_r($glue, $piece);
-            else
-                $ret .= $glue . $piece;
-        }
-
-        echo $ret;
-
+        echo $propiedad;
     }
 
     /**
