@@ -1219,7 +1219,7 @@ class PDFController extends Controller
 
                 $pdf = $this->EnvioCorreo(
                     $propiedad,
-                    $cliente->email,
+                    $cliente[0]->email,
                     $arr,
                     "correos.comprobante_reserva",
                     "pdf.comprobante_reserva_resumen",
@@ -1243,7 +1243,7 @@ class PDFController extends Controller
 
                 $this->EnvioCorreo(
                     $propiedad,
-                    $cliente->email,
+                    $cliente[0]->email,
                     $arr,
                     "correos.comprobante_reserva",
                     "pdf.comprobante_reserva_resumen",
@@ -1267,7 +1267,7 @@ class PDFController extends Controller
 
             $this->EnvioCorreo(
                 $propiedad,
-                $cliente->email,
+                $cliente[0]->email,
                 $arr,
                 "correos.comprobante_reserva",
                 "pdf.comprobante_reserva_resumen",
