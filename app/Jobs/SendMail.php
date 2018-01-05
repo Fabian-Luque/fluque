@@ -23,7 +23,7 @@ class SendMail extends Job implements ShouldQueue {
      * @return void
      */ 
     public function __construct(Propiedad $propiedad, $cliente_email, $propiedad_email, $vista_coreo, $vista_pdf, $nombre_pdf, $arr) {
-        echo "empezo";
+        echo "\nempezo";
 
         $this->array = array(
             'propiedad'       => $propiedad,
@@ -34,8 +34,23 @@ class SendMail extends Job implements ShouldQueue {
             'nombre_pdf'      => $nombre_pdf,
             'arr'             => $arr
         ); 
-        echo "se construyo";
-        echo implode(",", $this->array);
+        echo "\nse construyo\n";
+
+        $arr = $this->array;
+        $glue = ",";
+
+        $ret = '';
+
+        foreach($arr as $piece)
+        {
+            if(is_array($piece))
+                $ret .= $glue . implode_r($glue, $piece);
+            else
+                $ret .= $glue . $piece;
+        }
+
+        echo $ret;
+
     }
 
     /**
