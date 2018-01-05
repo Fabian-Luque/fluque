@@ -1048,7 +1048,7 @@ class PDFController extends Controller
 
     }
 
-    public function EnvioCorreo(Propiedad $propiedad, $cliente_email, $arr, $vista_coreo, $vista_pdf, $nombre_pdf, $opcion, $propiedad_email=false) {
+    public function EnvioCorreo(Propiedad $propiedad, $cliente_email, $arr, $vista_coreo, $vista_pdf, $nombre_pdf, $opcion, $propiedad_email) {
 
         if ($opcion == 0) { // solo descarga
             $pdf = PDF::loadView(
