@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesResources;
 use App\Propiedad;
 use PDF;
+use App\Jobs\SendMail;
 
 class Controller extends BaseController
 {
