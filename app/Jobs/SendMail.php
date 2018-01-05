@@ -51,7 +51,7 @@ class SendMail extends Job implements ShouldQueue {
 
         try {
             $mailer->send(
-                $this->array['vista'], 
+                $this->array['vista_coreo'], 
                 ['array' => $array],
                 function($message) use ($array) {
                     $message->to(
