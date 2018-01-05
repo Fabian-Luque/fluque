@@ -94,8 +94,14 @@ class CorreoController extends Controller {
         }
     }
 
+    public function ejemplo(){
+        dd("holaaaaa");
+    }
+
 
     public function SendFileByEmail(Request $request) {
+
+        $this->ejemplo();
         $propiedad = Propiedad::find(4);
 
             $array = array(
@@ -106,10 +112,18 @@ class CorreoController extends Controller {
                 'propiedad' => $propiedad,
             ); 
 
+            $ped = PDF::loadView(
+                            "auth.emails.correo", [
+                                
+                            ]
+                        );
+
             $job = (new SendMail(
                 $propiedad,
                 "dheresmann2012@alu.uct.cl",
-                "correos.comprobante_reserva"
+                "correos.comprobante_reserva",
+                "auth.emails.correo",
+                "comprobante_reserva.pdf"
             ));
 
             $this->dispatch($job);

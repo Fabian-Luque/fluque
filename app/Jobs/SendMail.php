@@ -9,6 +9,8 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use \Mail;
+use PDF;
+use Barryvdh\DomPDF\Facade as PDFF;
 
 class SendMail extends Job implements ShouldQueue {
     use InteractsWithQueue, SerializesModels;
@@ -19,15 +21,17 @@ class SendMail extends Job implements ShouldQueue {
      * Create a new job instance.
      *
      * @return void
-     */
-    public function __construct(Propiedad $propiedad, $destino, $vista, $pdf=null, $nombre_pdf=null) {
+     */ 
+    public function __construct(Propiedad $propiedad, $destino, $destino_copia, $vista, $nombre_pdf="",$pdf) {
         echo "empezo";
+
         $this->array = array(
-            'destino' => $destino,
-            'vista' => $vista,
-            'propiedad' => $propiedad,
-            'pdf' => $pdf,
-            'nombre_pdf' => $nombre_pdf,
+            'destino'       => $destino,
+            'destino_copia' => $destino_copia,
+            'vista'         => $vista,
+            'propiedad'     => $propiedad,
+            'nombre_pdf'    => $nombre_pdf,
+            'pdf'           => $pdf,
         ); 
         echo "se construyo";
     }
@@ -41,13 +45,11 @@ class SendMail extends Job implements ShouldQueue {
     public function handle(Mailer $mailer) {
         echo "funcaaa";
         echo $this->array['vista'];
-        
-        echo "\n";
-        echo $this->array['pdf'];
 
         $array = $this->array;
+
         try {
-            Mail::send(
+            $mailer->send(
                 $this->array['vista'], 
                 ['array' => $array],
                 function($message) use ($array) {
@@ -56,9 +58,13 @@ class SendMail extends Job implements ShouldQueue {
                         $array['destino']
                     )->subject('Mensaje de '.$array['propiedad']->nombre);
                     
+                    if ($array['destino_copia'] != false) {
+                        $message->cc($array['destino_copia']);
+                    }
+
                     if ($array['pdf'] != null) {
                         $message->attachData(
-                            $array['pdf'], 
+                            $array['pdf']->stream(), 
                             $array['nombre_pdf']
                         );
                     }
