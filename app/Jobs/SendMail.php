@@ -35,8 +35,7 @@ class SendMail extends Job implements ShouldQueue {
             'arr'             => $arr
         ); 
         echo "se construyo";
-
-        echo $this->array;
+        echo implode(",", $this->array);
     }
 
     /**
