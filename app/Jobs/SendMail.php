@@ -47,8 +47,6 @@ class SendMail extends Job implements ShouldQueue {
      */
     public function handle(Mailer $mailer) {
         echo "funcaaa";
-        echo $this->array['vista'];
-
         $array = $this->array;
 
         try {
