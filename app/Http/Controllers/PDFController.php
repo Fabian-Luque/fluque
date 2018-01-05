@@ -1277,7 +1277,11 @@ class PDFController extends Controller
             );
         }   
 
-        return $pdf->download('comprobante_reserva_resumen.pdf');
+        if (empty($pdf) != 1) {
+           return $pdf->download('comprobante_reserva_resumen.pdf');
+        } else {
+            return;
+        }  
     }
 
 
