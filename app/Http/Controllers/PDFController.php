@@ -1048,18 +1048,48 @@ class PDFController extends Controller
 
     }
 
-    public function EnvioCorreo($propiedad, $cliente_email, $arr, $vista_coreo, $vista_pdf, $nombre_pdf, $propiedad_email=false) {
-        $job = new SendMail(
-            $propiedad,
-            $cliente_email,
-            $propiedad_email,
-            $vista_coreo,
-            $vista_pdf,
-            $nombre_pdf,
-            $arr
-        );
+    public function EnvioCorreo($propiedad, $cliente_email, $arr, $vista_coreo, $vista_pdf, $nombre_pdf, $opcion, $propiedad_email=false) {
 
-        $this->dispatch($job);
+        if ($opcion == 0) { // solo descarga
+            $pdf = PDF::loadView(
+                $vista_pdf, 
+                $arr
+            );
+
+            return $pdf;
+        } elseif ($opcion == 1) { // solo envio de correo
+            $job = new SendMail(
+                $propiedad,
+                $cliente_email,
+                $propiedad_email,
+                $vista_coreo,
+                $vista_pdf,
+                $nombre_pdf,
+                $arr
+            );
+
+            $this->dispatch($job);
+            return;
+        } else { // ambos!!!!!!!!!!!!!!!!!!!!
+            $job = new SendMail(
+                $propiedad,
+                $cliente_email,
+                $propiedad_email,
+                $vista_coreo,
+                $vista_pdf,
+                $nombre_pdf,
+                $arr
+            );
+
+            $this->dispatch($job);
+
+            $pdf = PDF::loadView(
+                $vista_pdf, 
+                $arr
+            );
+
+            return $pdf;
+        } 
     }
 
     public function comprobanteReservaResumen(Request $request) {
@@ -1187,13 +1217,14 @@ class PDFController extends Controller
                     'por_pagar'     => $por_pagar
                 );
 
-                $this->EnvioCorreo(
+                $pdf = $this->EnvioCorreo(
                     $propiedad,
                     $cliente->email,
                     $arr,
                     "correos.comprobante_reserva",
                     "pdf.comprobante_reserva_resumen",
                     "comprobante_reserva.pdf",
+                    $request->opcion,
                     $correo_prop
                 );
             } else {
@@ -1217,6 +1248,7 @@ class PDFController extends Controller
                     "correos.comprobante_reserva",
                     "pdf.comprobante_reserva_resumen",
                     "comprobante_reserva.pdf",
+                    $request->opcion,
                     $correo_prop
                 );
             }
@@ -1240,6 +1272,7 @@ class PDFController extends Controller
                 "correos.comprobante_reserva",
                 "pdf.comprobante_reserva_resumen",
                 "comprobante_reserva.pdf",
+                $request->opcion,
                 $correo_prop
             );
         }   
