@@ -11,8 +11,7 @@ use App\Propiedad;
 use PDF;
 use App\Jobs\SendMail;
 
-class Controller extends BaseController
-{
+class Controller extends BaseController {
     use AuthorizesRequests, AuthorizesResources, DispatchesJobs, ValidatesRequests;
 
     public function EnvioCorreo(Propiedad $propiedad, $cliente_email, $arr, $vista_coreo, $vista_pdf, $nombre_pdf, $opcion, $propiedad_email) {
