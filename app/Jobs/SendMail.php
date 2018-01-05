@@ -22,16 +22,17 @@ class SendMail extends Job implements ShouldQueue {
      *
      * @return void
      */ 
-    public function __construct(Propiedad $propiedad, $destino, $destino_copia, $vista, $nombre_pdf="",$pdf) {
+    public function __construct(Propiedad $propiedad, $cliente_email, $propiedad_email, $vista_coreo, $vista_pdf, $nombre_pdf, $arr) {
         echo "empezo";
 
         $this->array = array(
-            'destino'       => $destino,
-            'destino_copia' => $destino_copia,
-            'vista'         => $vista,
-            'propiedad'     => $propiedad,
-            'nombre_pdf'    => $nombre_pdf,
-            'pdf'           => $pdf,
+            'propiedad'       => $propiedad,
+            'cliente_email'   => $cliente_email,
+            'propiedad_email' => $propiedad_email,
+            'vista_coreo'     => $vista_coreo,
+            'vista_pdf'       => $vista_pdf,
+            'nombre_pdf'      => $nombre_pdf,
+            'arr'             => $arr
         ); 
         echo "se construyo";
     }
@@ -54,17 +55,22 @@ class SendMail extends Job implements ShouldQueue {
                 ['array' => $array],
                 function($message) use ($array) {
                     $message->to(
-                        $array['destino'], 
-                        $array['destino']
+                        $array['cliente_email'], 
+                        $array['cliente_email']
                     )->subject('Mensaje de '.$array['propiedad']->nombre);
                     
-                    if ($array['destino_copia'] != false) {
-                        $message->cc($array['destino_copia']);
+                    if ($array['propiedad_email'] != false) {
+                        $message->cc($array['propiedad_email']);
                     }
 
-                    if ($array['pdf'] != null) {
+                    if (empty($array['arr']) != 1) {
+                        $pdf = PDF::loadView(
+                            $array['vista_pdf'], 
+                            $array['arr']
+                        );
+
                         $message->attachData(
-                            $array['pdf']->stream(), 
+                            $pdf->stream(), 
                             $array['nombre_pdf']
                         );
                     }
