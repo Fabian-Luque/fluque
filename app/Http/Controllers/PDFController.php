@@ -1048,7 +1048,7 @@ class PDFController extends Controller
 
     }
 
-    public function EnvioCorreo($propiedad, $cliente_email, $arr, $vista_coreo, $vista_pdf, $nombre_pdf, $opcion, $propiedad_email) {
+    public function EnvioCorreo(Propiedad $propiedad, $cliente_email, $arr, $vista_coreo, $vista_pdf, $nombre_pdf, $opcion, $propiedad_email) {
 
         if ($opcion == 0) { // solo descarga
             $pdf = PDF::loadView(
@@ -1218,7 +1218,7 @@ class PDFController extends Controller
                 );
 
                 $pdf = $this->EnvioCorreo(
-                    $propiedad,
+                    $propiedad->first()
                     $cliente[0]->email,
                     $arr,
                     "correos.comprobante_reserva",
@@ -1242,7 +1242,7 @@ class PDFController extends Controller
                 );
 
                 $this->EnvioCorreo(
-                    $propiedad,
+                    $propiedad->first()
                     $cliente[0]->email,
                     $arr,
                     "correos.comprobante_reserva",
@@ -1266,7 +1266,7 @@ class PDFController extends Controller
             );
 
             $this->EnvioCorreo(
-                $propiedad,
+                $propiedad->first()
                 $cliente[0]->email,
                 $arr,
                 "correos.comprobante_reserva",
