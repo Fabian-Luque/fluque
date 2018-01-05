@@ -26,8 +26,9 @@ use \Carbon\Carbon;
 use Response;
 use \Mail;
 
-class PDFController extends Controller
-{
+class PDFController extends Controller {
+    public function __construct() {
+    }
 
     public function reservas(Request $request, Reserva $reserva)
     {
@@ -1173,7 +1174,7 @@ class PDFController extends Controller
                     'por_pagar'     => $por_pagar
                 );
 
-                $pdf = Parent::EnvioCorreo(
+                $pdf = $this->EnvioCorreo(
                     $propiedad->first(),
                     $cliente[0]->email,
                     $arr,
@@ -1197,7 +1198,7 @@ class PDFController extends Controller
                     'por_pagar'     => $por_pagar
                 );
 
-                $pdf = Parent::EnvioCorreo(
+                $pdf = $this->EnvioCorreo(
                     $propiedad->first(),
                     $cliente[0]->email,
                     $arr,
@@ -1221,7 +1222,7 @@ class PDFController extends Controller
                 'por_pagar'     => $por_pagar
             );
 
-            $pdf = Parent::EnvioCorreo(
+            $pdf = $this->EnvioCorreo(
                 $propiedad->first(),
                 $cliente[0]->email,
                 $arr,
