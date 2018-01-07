@@ -112,7 +112,6 @@ class MotorRaController extends Controller
 
                 $disponibles = $disponibles - count($reservas);
                 if ($disponibles > 0) {
-                    // $tipo->cantidad_disponibles = ($disponibles - count($reservas));
                     $tipo->cantidad_disponibles = $disponibles;
                     array_push($tipos_habitacion, $tipo);
                 }
