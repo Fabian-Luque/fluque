@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit983cb86d0d3688ec8020575c97ab7085
+class ComposerStaticInit285cf197481f369bc05a1c91b72dad05
 {
     public static $files = array (
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
@@ -642,7 +642,7 @@ class ComposerStaticInit983cb86d0d3688ec8020575c97ab7085
         'App\\UbicacionProp' => __DIR__ . '/../..' . '/app/UbicacionProp.php',
         'App\\User' => __DIR__ . '/../..' . '/app/User.php',
         'App\\ZonaHoraria' => __DIR__ . '/../..' . '/app/ZonaHoraria.php',
-        'App\\clases\\DiseñoMapa' => __DIR__ . '/../..' . '/app/clases/DiseñoMapa.php',
+        'App\\clases\\DiseñoMapa' => __DIR__ . '/../..' . '/app/clases/DiseñoMapa.php',
         'Barryvdh\\Cors\\HandleCors' => __DIR__ . '/..' . '/barryvdh/laravel-cors/src/HandleCors.php',
         'Barryvdh\\Cors\\HandlePreflight' => __DIR__ . '/..' . '/barryvdh/laravel-cors/src/HandlePreflight.php',
         'Barryvdh\\Cors\\HandlePreflightSimple' => __DIR__ . '/..' . '/barryvdh/laravel-cors/src/HandlePreflightSimple.php',
@@ -791,7 +791,6 @@ class ComposerStaticInit983cb86d0d3688ec8020575c97ab7085
         'CreateReservasTable' => __DIR__ . '/../..' . '/database/migrations/2016_11_08_000631_create_reservas_table.php',
         'CreateServiciosTable' => __DIR__ . '/../..' . '/database/migrations/2016_10_27_185614_create_servicios_table.php',
         'CreateTableInfoMyallocator' => __DIR__ . '/../..' . '/database/migrations/2016_10_02_054110_create_table_info_myallocator.php',
-        'CreateTableTarifas' => __DIR__ . '/../..' . '/database/migrations/2017_12_10_044141_create_table_tarifas.php',
         'CreateTemporadasTable' => __DIR__ . '/../..' . '/database/migrations/2017_05_24_214748_create_temporadas_table.php',
         'CreateTipoClienteTable' => __DIR__ . '/../..' . '/database/migrations/2016_11_07_222413_create_tipo_cliente_table.php',
         'CreateTipoCobroTable' => __DIR__ . '/../..' . '/database/migrations/2016_10_01_224725_create_tipo_cobro_table.php',
@@ -4397,9 +4396,11 @@ class ComposerStaticInit983cb86d0d3688ec8020575c97ab7085
         'Symfony\\Component\\Debug\\Debug' => __DIR__ . '/..' . '/symfony/debug/Debug.php',
         'Symfony\\Component\\Debug\\DebugClassLoader' => __DIR__ . '/..' . '/symfony/debug/DebugClassLoader.php',
         'Symfony\\Component\\Debug\\ErrorHandler' => __DIR__ . '/..' . '/symfony/debug/ErrorHandler.php',
+        'Symfony\\Component\\Debug\\ErrorHandlerCanary' => __DIR__ . '/..' . '/symfony/debug/ErrorHandler.php',
         'Symfony\\Component\\Debug\\ExceptionHandler' => __DIR__ . '/..' . '/symfony/debug/ExceptionHandler.php',
         'Symfony\\Component\\Debug\\Exception\\ClassNotFoundException' => __DIR__ . '/..' . '/symfony/debug/Exception/ClassNotFoundException.php',
         'Symfony\\Component\\Debug\\Exception\\ContextErrorException' => __DIR__ . '/..' . '/symfony/debug/Exception/ContextErrorException.php',
+        'Symfony\\Component\\Debug\\Exception\\DummyException' => __DIR__ . '/..' . '/symfony/debug/Exception/DummyException.php',
         'Symfony\\Component\\Debug\\Exception\\FatalErrorException' => __DIR__ . '/..' . '/symfony/debug/Exception/FatalErrorException.php',
         'Symfony\\Component\\Debug\\Exception\\FatalThrowableError' => __DIR__ . '/..' . '/symfony/debug/Exception/FatalThrowableError.php',
         'Symfony\\Component\\Debug\\Exception\\FlattenException' => __DIR__ . '/..' . '/symfony/debug/Exception/FlattenException.php',
@@ -4919,10 +4920,10 @@ class ComposerStaticInit983cb86d0d3688ec8020575c97ab7085
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit983cb86d0d3688ec8020575c97ab7085::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit983cb86d0d3688ec8020575c97ab7085::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit983cb86d0d3688ec8020575c97ab7085::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit983cb86d0d3688ec8020575c97ab7085::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit285cf197481f369bc05a1c91b72dad05::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit285cf197481f369bc05a1c91b72dad05::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit285cf197481f369bc05a1c91b72dad05::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit285cf197481f369bc05a1c91b72dad05::$classMap;
 
         }, null, ClassLoader::class);
     }
