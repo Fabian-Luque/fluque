@@ -43,7 +43,6 @@
               <th class="data-tabla-detalles borde-derecha"><p>Check out</p></th>
               <th class="data-tabla-detalles borde-derecha"><p>Habitación/Tipo</p></th>
               <th class="data-tabla-detalles borde-derecha"><p>Cliente</p></th>
-              <th class="data-tabla-detalles borde-derecha"><p>Monto total</p></th>
               <th class="data-tabla-detalles borde-derecha"><p>Estado</p></th>
             </tr>
 
@@ -75,9 +74,6 @@
               </td>
               <td class="data-tabla-detalles borde-derecha" style="text-align:center;">
                 <p>{{ $reserva['cliente']['nombre'] }} {{ $reserva['cliente']['apellido'] }}</p>
-              </td>
-              <td class="data-tabla-detalles borde-derecha" style="text-align:center;">
-                <p>{{ $reserva['tipoMoneda']['nombre'] }} ${{ $reserva['monto_alojamiento'] }}</p>
               </td>
               <td class="data-tabla-detalles borde-derecha" style="text-align:center;">
                 <p>{{ $reserva['estadoReserva']['nombre'] }}</p>
