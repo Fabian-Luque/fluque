@@ -275,6 +275,11 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::post('confirmar/pago', 'ReservaController@confirmarPagoReserva');
 
 
+		// rutas mapa geolozalizacion 
+		Route::get('mapa/disponibilidad/habitacion', 'ReservaMapaController@getDisponibilidad');
+		Route::post('mapa/reserva/habitacion', 'ReservaMapaController@reserva');
+		Route::get('obtener/reservas/mapa', 'ReservaMapaController@getReservasMapa');
+
 		Route::resource('user', 'UserController', ['except' => ['create', 'edit','store']]);
 		Route::resource('propiedad', 'PropiedadController', ['except' => ['create', 'edit', 'store']]);
 		Route::resource('habitacion', 'HabitacionController', ['except' => ['create', 'edit']]);

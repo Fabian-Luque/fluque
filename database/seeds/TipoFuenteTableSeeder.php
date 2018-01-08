@@ -50,6 +50,11 @@ class TipoFuenteTableSeeder extends Seeder
 
                 'nombre' => 'Airbnb',
 
+            ],
+            [
+
+                'nombre' => 'Gofeels',
+
             ]
 
     		]);

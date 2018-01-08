@@ -46,6 +46,7 @@ class TipoHabitacionController extends Controller
             'capacidad'        => 'required|numeric',
             'cantidad'         => 'numeric',
             'disponible_venta' => 'numeric',
+            'venta_propiedad'  => 'numeric',
             'propiedad_id'     => 'required|numeric',
         );
 
@@ -233,19 +234,18 @@ class TipoHabitacionController extends Controller
 
         if ($request->has('disponible_venta')) {
             $disponible_venta = $request->input('disponible_venta');
-        } else {
-            $retorno = array(
-                'msj'    => "Solicitud incompleta",
-                'errors' => true);
-            return Response::json($retorno, 400);
+            $tipo_habitacion->update(array('disponible_venta' => $disponible_venta));
         }
-            
-        $tipo_habitacion->update(array('disponible_venta' => $disponible_venta));
 
-            $data = [
-                'errors' => false,
-                'msj'    => 'Tipo Habitacion actualizado satisfactoriamente',];
-            return Response::json($data, 201);
+        if ($request->has('venta_propiedad')) {
+            $venta_propiedad = $request->input('venta_propiedad');
+            $tipo_habitacion->update(array('venta_propiedad' => $venta_propiedad));
+        }
+
+        $data = [
+            'errors' => false,
+            'msj'    => 'Tipo Habitacion actualizado satisfactoriamente',];
+        return Response::json($data, 201);
     }
 
 	public function destroy($id)
