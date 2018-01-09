@@ -181,14 +181,23 @@ class UserDashController extends Controller {
                 $propiedad = Propiedad::find($request->id);
                 $propiedad->update($request->all());  
 
-                $ubicacion           = new UbicacionProp();
-                    $ubicacion->prop_id  = $propiedad->id;
+               $ubicacion = UbicacionProp::where('id', $propiedad->id)->first(); 
+
+               if (!is_null($ubicacion)) {
                     $ubicacion->location = new Point(
                         $request->longitud,
-                        $request->latitud 
+                        $request->latitud
                     );
-                $ubicacion->save();  
-                
+               } else {
+                    $ubicacion = new UbicacionProp(); 
+                    $ubicacion->prop_id = $propiedad->id;
+                    $ubicacion->location = new Point(
+                        $request->longitud,
+                        $request->latitud
+                    );
+               }
+                $ubicacion->save();
+
                 $data['msg'] = 'Registro Actualizado Satisfactoriamente';
             } else {
                 $data['msg'] = 'Error. El correo ingresado ya esta en uso';
