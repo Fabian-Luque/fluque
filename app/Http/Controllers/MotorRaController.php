@@ -24,10 +24,14 @@ use App\ZonaHoraria;
 use JWTAuth;
 use Storage;
 use Aws\S3\Exception\S3Exception;
+use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 use Html;
 
-
 class MotorRaController extends Controller {
+    public function GetImagesFolder(Request $request) {
+        $files = Storage::disk('s3')->allFiles();
+        return Response::json($files);
+    }
 
     public function UploadImage(Request $request) {
         try {
@@ -59,18 +63,26 @@ class MotorRaController extends Controller {
     public function GetImage(Request $request) {
         try {
             if ( $request->has('name') &&  $request->has('nombre_prop')) {
-
-                $retorno['error'] = true;
-                $retorno['msj'] = Storage::disk('s3')->get(
+                $image = Storage::disk('s3')->get(
                     $request->nombre_prop."/".$request->name
                 );
+                $response = new Response($image, 200, [
+                    'Content-Type' => $attachment->type,
+                ]);
+                $retorno['error'] = true;
+                $retorno['msj'] = $response;
+
+
             } else {
                 $retorno['error'] = true;
                 $retorno['msj'] = "Datos requeridos";
             }
         } catch (S3Exception $e) {
             $retorno['error'] = true;
-            $retorno['msj'] = $e->getMessage();
+            $retorno['msj'] = "Error: ".$e->getMessage();
+        } catch (FileNotFoundException $e) {
+            $retorno['error'] = true;
+            $retorno['msj'] = "Error: ".$e->getMessage();
         }
         return Response::json($retorno);
     }

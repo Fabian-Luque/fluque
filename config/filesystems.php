@@ -18,7 +18,7 @@ return [
             'key' => 'AKIAJLXU6MQ62S62Q7TA',
             'secret' => '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',
             'region' => 'sa-east-1',
-            'bucket' => 'gofeels-images',
+            'bucket' => 'gofeels-props-images',
         ],
     ],
 ];
