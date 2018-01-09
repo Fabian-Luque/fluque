@@ -18,13 +18,63 @@ use App\ColorMotor;
 use App\ClasificacionColor;
 use App\MotorPropiedad;
 use Response;
-use Validator;
+use Illuminate\Support\Facades\Validator;
 use \Carbon\Carbon;
 use App\ZonaHoraria;
 use JWTAuth;
+use Storage;
+use Aws\S3\Exception\S3Exception;
+use Html;
 
-class MotorRaController extends Controller
-{
+
+class MotorRaController extends Controller {
+
+    public function UploadImage(Request $request) {
+        try {
+            if ( $request->has('name') &&  $request->has('nombre_prop')) {
+                $image = $request->file('image');
+                $t = Storage::disk('s3')->put(
+                    $request->nombre_prop."/".$request->name, 
+                    file_get_contents($image), 
+                    'public' 
+                );
+                $imageName = Storage::disk('s3')->url($request->name);
+
+                $retorno['error'] = true;
+                $retorno['msj'] = Storage::disk('s3')->get(
+                    $request->nombre_prop."/".$request->name
+                );
+            } else {
+                $retorno['error'] = true;
+                $retorno['msj'] = "Datos requeridos";
+            }
+        } catch (S3Exception $e) {
+            $retorno['error'] = true;
+            $retorno['msj'] = $e->getMessage();
+        }
+        return Response::json($retorno);
+    }
+
+
+    public function GetImage(Request $request) {
+        try {
+            if ( $request->has('name') &&  $request->has('nombre_prop')) {
+
+                $retorno['error'] = true;
+                $retorno['msj'] = Storage::disk('s3')->get(
+                    $request->nombre_prop."/".$request->name
+                );
+            } else {
+                $retorno['error'] = true;
+                $retorno['msj'] = "Datos requeridos";
+            }
+        } catch (S3Exception $e) {
+            $retorno['error'] = true;
+            $retorno['msj'] = $e->getMessage();
+        }
+        return Response::json($retorno);
+    }
+
     public function getDisponibilidad(Request $request)
 	{
         if ($request->has('fecha_inicio') && $request->has('fecha_fin')) {
