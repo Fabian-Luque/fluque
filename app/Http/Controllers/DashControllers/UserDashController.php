@@ -162,45 +162,48 @@ class UserDashController extends Controller {
             'numero_habitaciones'   => 'numeric',
             'tipo_propiedad_id'     => 'numeric',
             'estado_cuenta_id'      => 'numeric',
-            'name'     => '',
-            'email'    => 'email',
-            'phone'    => '',
-            'rol_id'   => 'numeric',
-            'estado_id'=> 'numeric',
-            'latitud'  => 'required',
-            'longitud' => 'required',
+            'name'                  => '',
+            'email'                 => 'email',
+            'phone'                 => '',
+            'rol_id'                => 'numeric',
+            'estado_id'             => 'numeric',
+            'latitud'               => 'required',
+            'longitud'              => 'required',
         );
 
         $validator = Validator::make($request->all(), $rules);
         $data['accion'] = 'Actualizar Registro';
 
         if (!$validator->fails()) {
+
             $usuario = User::find($request->id);
-            if (!isset($us->email)) {
-                $usuario->update($request->all());
-                $propiedad = Propiedad::find($request->id);
-                $propiedad->update($request->all());  
+            $propiedad_id = $usuario->propiedad[0]['id'];
 
-               $ubicacion = UbicacionProp::where('id', $propiedad->id)->first(); 
+            $usuario->update($request->all());
+            $propiedad = Propiedad::find($propiedad_id);
+            $propiedad->update($request->all());  
 
-               if (is_null($ubicacion)) {
-                    $ubicacion->location = new Point(
-                        $request->longitud,
-                        $request->latitud
-                    );
+            $ubicacion = UbicacionProp::where('prop_id', $propiedad->id)->first(); 
+
+           if (is_null($ubicacion)) {
+                $ubicacion           = new UbicacionProp();
+                $ubicacion->prop_id  = $propiedad_id;
+                $ubicacion->location = new Point(
+                    $request->longitud,
+                    $request->latitud 
+                );
                 $ubicacion->save();
-               } else {
-                    $location = new Point(
-                        $request->longitud,
-                        $request->latitud
-                    );
-                    $ubicacion->update(array('location' => $location));
-               }
 
-                $data['msg'] = 'Registro Actualizado Satisfactoriamente';
-            } else {
-                $data['msg'] = 'Error. El correo ingresado ya esta en uso';
-            }
+           } else {
+                $location = new Point(
+                    $request->longitud,
+                    $request->latitud
+                );
+                $ubicacion->update(array('location' => $location));
+           }
+
+            $data['msg'] = 'Registro Actualizado Satisfactoriamente';
+
         } else {
             $data['msg'] = "";
             foreach ($validator->messages()->all() as $msg) {
