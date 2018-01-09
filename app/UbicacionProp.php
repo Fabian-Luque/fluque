@@ -13,7 +13,8 @@ class UbicacionProp extends Model {
 
     protected $fillable = [
         'id',
-        'prop_id'
+        'prop_id',
+        'location'
     ];
 
     protected $spatialFields = [

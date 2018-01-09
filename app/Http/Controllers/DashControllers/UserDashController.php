@@ -188,15 +188,14 @@ class UserDashController extends Controller {
                         $request->longitud,
                         $request->latitud
                     );
+                $ubicacion->save();
                } else {
-                    $ubicacion = new UbicacionProp(); 
-                    $ubicacion->prop_id = $propiedad->id;
-                    $ubicacion->location = new Point(
+                    $location = new Point(
                         $request->longitud,
                         $request->latitud
                     );
+                    $ubicacion->update(array('location' => $location));
                }
-                $ubicacion->save();
 
                 $data['msg'] = 'Registro Actualizado Satisfactoriamente';
             } else {
