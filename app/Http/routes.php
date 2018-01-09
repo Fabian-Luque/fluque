@@ -104,8 +104,8 @@ Route::group(['prefix' => 'dash', 'middleware' => ['auth']],
         
     Route::post('crear/user', 'DashControllers\UserDashController@CreateUser')->name('crear.user');
 
-    Route::post('obtener/user', 'DashControllers\UserDashController@ReadUser');
     Route::post('actualizar/user', 'DashControllers\UserDashController@UpdateUser')->name('editar.user');
+    Route::post('obtener/user', 'DashControllers\UserDashController@ReadUser');
     Route::post('eliminar/user', 'DashControllers\UserDashController@DeleteUser');
   }
 );

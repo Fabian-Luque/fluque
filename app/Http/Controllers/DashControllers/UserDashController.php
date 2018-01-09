@@ -156,12 +156,12 @@ class UserDashController extends Controller {
 
     public function UpdateUser(Request $request)  {
         $rules = array(
-            'nombre'     => '',
-            'direccion'     => '',
-            'ciudad'     => '',
-            'numero_habitaciones'     => 'numeric',
+            'nombre'                => '',
+            'direccion'             => '',
+            'ciudad'                => '',
+            'numero_habitaciones'   => 'numeric',
             'tipo_propiedad_id'     => 'numeric',
-            'estado_cuenta_id'     => 'numeric',
+            'estado_cuenta_id'      => 'numeric',
             'name'     => '',
             'email'    => 'email',
             'phone'    => '',
@@ -183,7 +183,7 @@ class UserDashController extends Controller {
 
                $ubicacion = UbicacionProp::where('id', $propiedad->id)->first(); 
 
-               if (!is_null($ubicacion)) {
+               if (is_null($ubicacion)) {
                     $ubicacion->location = new Point(
                         $request->longitud,
                         $request->latitud
