@@ -10,7 +10,7 @@ use LRedis;
 class ReservasMotorEventListener {
     CONST EVENT = 'message';
     CONST CHANNEL = 'message';
-    
+
     public function __construct() {
     }
 
