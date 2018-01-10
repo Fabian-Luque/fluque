@@ -12,9 +12,10 @@ class ChatEvent extends Event {
 
     public function __construct($propiedad_id) {
         $this->data = $propiedad_id;
+        $this->evento = "chat";
     }
 
     public function broadcastOn() {
-        return ['chat'];
+        return ['message'];
     }
 }

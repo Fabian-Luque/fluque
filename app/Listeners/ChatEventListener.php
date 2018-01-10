@@ -8,11 +8,10 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use LRedis;
 
 class ChatEventListener {
-    CONST EVENT = 'chat';
-    CONST CHANNEL = 'chat';
+    CONST EVENT = 'message';
+    CONST CHANNEL = 'message';
 
     public function __construct() {
-        //
     }
 
     public function handle(ChatEvent $event) {
