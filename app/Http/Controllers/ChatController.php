@@ -44,21 +44,21 @@ class ChatController extends Controller {
     }
 
     public function GetAllMessages(Request $request) {
-        if ($request->has('emisor_id')) {
+        if ($request->has('emisor_id') && $request->has('receptor_id')) {
             $mensajes = Mensajeria::where(
                 'emisor_id',
                 $request->emisor_id
+            )->where(
+                'receptor_id',
+                $request->receptor_id
             )->get();
             
             $retorno['errors'] = false;
-            $retorno["msj"] = $mensajes; 
-        } elseif ($request->has('emisor_id') && $request->has('receptor_id')) {
+            $retorno["msj"] = $mensajes;
+        } elseif ($request->has('receptor_id')) {
             $mensajes = Mensajeria::where(
                 'receptor_id',
                 $request->receptor_id
-            )->where(
-                'emisor_id',
-                $request->emisor_id
             )->get();
             
             $retorno['errors'] = false;
