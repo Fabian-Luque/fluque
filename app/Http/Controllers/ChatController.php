@@ -69,6 +69,41 @@ class ChatController extends Controller {
         }
         return Response::json($retorno);
     }
+
+    public function GetConversacion(Request $request) {
+        $validator = Validator::make(
+            $request->all(), 
+            array(
+                'emisor_id'   => 'required',
+                'receptor_id' => 'required',
+                'limit'       => 'required'
+            )
+        );
+
+        if ($validator->fails()) {
+            $retorno['errors'] = true;
+            $retorno["msj"] = $validator->errors();
+        } else {
+            $mensajes = Mensajeria::where(
+                'emisor_id',
+                $request->emisor_id
+            )->where(
+                'receptor_id',
+                $request->receptor_id
+            )->orWhere(
+                'receptor_id',
+                $request->emisor_id
+            )->orWhere(
+                'emisor_id',
+                $request->receptor_id
+            )->orderBy('created_at')
+            ->take($request->limit)->get();
+            
+            $retorno['errors'] = false;
+            $retorno["msj"] = $mensajes;
+        } 
+        return Response::json($retorno);
+    }
 }
 
 
