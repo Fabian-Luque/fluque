@@ -8,7 +8,6 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
 class ReservasMotorEvent extends Event {
     use SerializesModels;
-
     public $data;
     public $evento;
 
