@@ -262,7 +262,10 @@ class GeoController extends Controller {
                 $fecha_fin    = $request->fecha_fin;
 
                 foreach ($propiedades as $prop) {
-                    $prop->propiedad = Propiedad::find($prop->prop_id);
+                    $prop->propiedad  = Propiedad::find($prop->prop_id);
+                    $property         = Propiedad::where('id', $prop->prop_id)->with('tiposHabitacion')->first();
+                    $tipos_habitacion = $property->tiposHabitacion;
+                    $config           = $tipos_habitacion->where('venta_propiedad', 0);
 
                     $habitaciones_disponibles = Habitacion::where(
                         'propiedad_id', 
@@ -291,7 +294,7 @@ class GeoController extends Controller {
 
                     $prop->n_habitaciones_disponibles = $habitaciones_disponibles->count();
 
-                    if ($habitaciones_disponibles->count() != 0) {
+                    if ($habitaciones_disponibles->count() != 0 && count($tipos_habitacion) != count($config)) {
                         $prop->disponible = true;
                     } else {
                         $prop->disponible = false;
