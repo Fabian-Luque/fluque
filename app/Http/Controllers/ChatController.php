@@ -8,6 +8,8 @@ use App\Http\Requests;
 use Response;
 use App\Mensajeria;   
 use Illuminate\Support\Facades\Validator;
+use App\Events\ChatEvent;
+use Illuminate\Support\Facades\Event;
 
 class ChatController extends Controller {
     public function SendMessage(Request $request) {
@@ -29,6 +31,10 @@ class ChatController extends Controller {
         	$mensaje->receptor_id = $request->receptor_id;
         	$mensaje->mensaje 	  = $request->mensaje;
         	$mensaje->save();
+
+            Event::fire(
+                new ChatEvent($mensaje->receptor_id)
+            );
 
         	$retorno['errors'] = true;
         	$retorno["msj"] = "mensaje enviado correctamente"
