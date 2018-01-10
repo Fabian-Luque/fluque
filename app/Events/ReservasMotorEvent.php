@@ -11,6 +11,7 @@ class ReservasMotorEvent extends Event {
     use SerializesModels;
 
     public $data;
+    public $evento;
 
     public function __construct($propiedad_id) {
         $this->data = $propiedad_id;
