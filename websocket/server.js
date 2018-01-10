@@ -15,16 +15,12 @@ io.on(
     }
 );
 
-
-
 //cuando llegue un mensaje a redis 
 r.on('message', function(channel, messageStr){
     console.log(channel);
     var message = JSON.parse(messageStr);
     console.log(message);
-    console.log(message.data);
-    console.log('canal' + message.data);
-    io.emit('canal' + message.data, message);    
+    io.emit(message.evento +'-canal' + message.data, message);    
 });
 
 http.listen(3000, function(){
