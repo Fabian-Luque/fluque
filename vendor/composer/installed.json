@@ -5492,17 +5492,17 @@
     },
     {
         "name": "symfony/debug",
-        "version": "v2.8.33",
-        "version_normalized": "2.8.33.0",
+        "version": "v2.8.32",
+        "version_normalized": "2.8.32.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/debug.git",
-            "reference": "546db6f2bf8aefb43f37ce6f2f67fb700c51c1c2"
+            "reference": "e72a0340dc2e273b3c4398d8eef9157ba51d8b95"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/debug/zipball/546db6f2bf8aefb43f37ce6f2f67fb700c51c1c2",
-            "reference": "546db6f2bf8aefb43f37ce6f2f67fb700c51c1c2",
+            "url": "https://api.github.com/repos/symfony/debug/zipball/e72a0340dc2e273b3c4398d8eef9157ba51d8b95",
+            "reference": "e72a0340dc2e273b3c4398d8eef9157ba51d8b95",
             "shasum": ""
         },
         "require": {
@@ -5516,7 +5516,7 @@
             "symfony/class-loader": "~2.2|~3.0.0",
             "symfony/http-kernel": "~2.3.24|~2.5.9|^2.6.2|~3.0.0"
         },
-        "time": "2018-01-03T17:12:09+00:00",
+        "time": "2017-11-19T19:05:05+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -5551,17 +5551,17 @@
     },
     {
         "name": "symfony/yaml",
-        "version": "v3.3.15",
-        "version_normalized": "3.3.15.0",
+        "version": "v3.3.14",
+        "version_normalized": "3.3.14.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/yaml.git",
-            "reference": "7c80d81b5805589be151b85b0df785f0dc3269cf"
+            "reference": "36353762fdca3a0ecdce4640764efc885df979f6"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/yaml/zipball/7c80d81b5805589be151b85b0df785f0dc3269cf",
-            "reference": "7c80d81b5805589be151b85b0df785f0dc3269cf",
+            "url": "https://api.github.com/repos/symfony/yaml/zipball/36353762fdca3a0ecdce4640764efc885df979f6",
+            "reference": "36353762fdca3a0ecdce4640764efc885df979f6",
             "shasum": ""
         },
         "require": {
@@ -5573,7 +5573,7 @@
         "suggest": {
             "symfony/console": "For validating YAML files using the lint command"
         },
-        "time": "2018-01-03T07:37:11+00:00",
+        "time": "2017-12-04T14:51:35+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {

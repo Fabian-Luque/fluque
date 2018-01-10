@@ -324,3 +324,9 @@ Route::post('invoice/stripe/obtener','StripeController@InvoiceStripeObtener');
 
 
 Route::post('myallocator/configurar', 'MyallocatorController@Configuracion');
+
+
+
+Route::post('mensaje/enviar', 'ChatController@SendMessage');
+
+
