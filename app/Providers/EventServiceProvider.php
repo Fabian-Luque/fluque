@@ -15,6 +15,9 @@ class EventServiceProvider extends ServiceProvider {
         'App\Events\ReservasMotorEvent' => [
             'App\Listeners\ReservasMotorEventListener',
         ],
+        'App\Events\ChatEvent' => [
+            'App\Listeners\ChatEventListener',
+        ],
     ];
 
     /**
