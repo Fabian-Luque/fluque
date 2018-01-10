@@ -218,7 +218,7 @@ class ReservaMapaController extends Controller
 
             $hab_disponibles = [];
             foreach ($tipos_habitacion as $tipo) {
-                if ($tipo->disponible_venta > 0) {
+                if ($tipo->venta_propiedad > 0) {
                     array_push($hab_disponibles, $tipo);
                 }
             }
