@@ -17,7 +17,7 @@ io.on(
 );
 
 //cuando llegue un mensaje a redis 
-r.on('chat', function(channel, messageStr){
+r.on('chat', function(channel, messageStr) {
     var message = JSON.parse(messageStr);
     console.log(message.data);
     console.log('chat-canal' + message.data);
@@ -26,6 +26,7 @@ r.on('chat', function(channel, messageStr){
 
 //cuando llegue un mensaje a redis 
 r.on('message', function(channel, messageStr){
+    console.log(channel);
     var message = JSON.parse(messageStr);
     console.log(message.data);
     console.log('canal' + message.data);

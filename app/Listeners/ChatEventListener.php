@@ -6,14 +6,13 @@ use App\Events\ChatEvent;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use LRedis;
-use Response;
 
 class ChatEventListener {
-
     CONST EVENT = 'chat';
     CONST CHANNEL = 'chat';
 
     public function __construct() {
+        //
     }
 
     public function handle(ChatEvent $event) {
