@@ -2,7 +2,7 @@
 
 namespace App\Listeners;
 
-use App\Events\ReservasMotorEvent;
+use App\Events\ChatEvent;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use LRedis;
@@ -16,7 +16,7 @@ class ChatEventListener {
     public function __construct() {
     }
 
-    public function handle(ReservasMotorEvent $event) {
+    public function handle(ChatEvent $event) {
         $redis = LRedis::connection();
         $redis->publish(self::CHANNEL, json_encode($event));
     }
