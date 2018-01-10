@@ -96,7 +96,7 @@ class ChatController extends Controller {
             )->orWhere(
                 'emisor_id',
                 $request->receptor_id
-            )->orderBy('created_at')
+            )->orderBy('created_at', 'desc')
             ->take($request->limit)->get();
             
             $retorno['errors'] = false;
