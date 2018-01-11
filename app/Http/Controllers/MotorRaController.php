@@ -343,10 +343,10 @@ class MotorRaController extends Controller
         //         $query->where('tipo_fuente_id', 1)->where('habitacion_id', null);
         //     });
         // })
-        ->with(['reservas' => function ($query){
-        $query->whereIn('estado_reserva_id', [1,2,3,4,5])->orderby('n_reserva_motor')->with('TipoMoneda')->with('tipoHabitacion');
-        }])
-        ->get();
+        // ->with(['reservas' => function ($query){
+        // $query->whereIn('estado_reserva_id', [1,2,3,4,5])->orderby('n_reserva_motor')->with('TipoMoneda')->with('tipoHabitacion');
+        // }])
+        // ->get();
 
 
         $data = []; //Arreglo principal
