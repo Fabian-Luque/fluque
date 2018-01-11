@@ -326,14 +326,28 @@ class MotorRaController extends Controller
             return Response::json($retorno, 400);
         }
 
-        $clientes = Cliente::with('tipoCliente')->with('region')->with('pais')
-        ->with(['reservas' => function ($query) use($propiedad_id){
-            $query->whereHas('tipoHabitacion', function($query) use($propiedad_id){
+        // $clientes = Cliente::with('tipoCliente')->with('region')->with('pais')
+        // ->with(['reservas' => function ($query) use($propiedad_id){
+        //     $query->whereHas('tipoHabitacion', function($query) use($propiedad_id){
+        //         $query->where('propiedad_id', $propiedad_id);
+        //     });
+        //     $query->where('habitacion_id', null)->whereIn('estado_reserva_id', [1,2,3,4,5])->orderby('n_reserva_motor')->with('TipoMoneda')->with('tipoHabitacion');
+        // }])
+        // ->get();
+
+        return $clientes = Cliente::where(function ($query) use ($propiedad_id) {
+            $query->whereHas('reservas.tipoHabitacion', function($query) use($propiedad_id){
                 $query->where('propiedad_id', $propiedad_id);
             });
-            $query->where('habitacion_id', null)->whereIn('estado_reserva_id', [1,2,3,4,5])->orderby('n_reserva_motor')->with('TipoMoneda')->with('tipoHabitacion');
+            $query->whereHas('reservas', function($query){
+                $query->where('tipo_fuente_id', 1)->where('habitacion_id', null);
+            });
+        })
+        ->with(['reservas' => function ($query){
+        $query->whereIn('estado_reserva_id', [1,2,3,4,5])->orderby('n_reserva_motor')->with('TipoMoneda')->with('tipoHabitacion');
         }])
         ->get();
+
 
         $data = []; //Arreglo principal
         $aux = 0; //aux de n_reserva_motor
