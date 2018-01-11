@@ -321,6 +321,8 @@
 
     <div class="contenedor">
 
+
+
       <div class="detalle-consumo">
         <h2 class="titulo">Políticas de la propiedad</h2>
 

@@ -25,6 +25,11 @@ Route::post('locate/prop', 'GeoController@AddLocatePropiedad');
 
 Route::get('hotelescercanos', 'GeoController@Gmaps');
 Route::post('hoteles/cercanos', 'GeoController@Gmaps');
+
+
+Route::post('ejmm', 'CorreoController@SendFileByEmail');
+
+
 Route::get(
   '/gmap', 
   function () {
@@ -146,7 +151,6 @@ Route::get('cantidad/tipo/habitacion', 'TipoHabitacionController@cantidadTipoHab
 Route::get('cliente/motor', 'ClienteController@index');
 Route::put('cliente/motor/{id}', 'ClienteController@update');
 Route::get('obtener/colores', 'MotorRaController@getColoresPropiedad');
-
 
 Route::get('reset/password/{token}', 'ApiAuthController@ResetPassword');
 
@@ -325,7 +329,11 @@ Route::post('invoice/stripe/obtener','StripeController@InvoiceStripeObtener');
 
 Route::post('myallocator/configurar', 'MyallocatorController@Configuracion');
 
+
 Route::post('mensaje/enviar', 'ChatController@SendMessage');
 Route::post('mensaje/obtener', 'ChatController@GetAllMessages');
 Route::post('conversacion/obtener', 'ChatController@GetConversacion');
+
+
+Route::post('pdf/comprobante/reserva/resumen2', 'PDFController@comprobanteReservaResumen');
 

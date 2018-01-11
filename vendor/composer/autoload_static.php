@@ -594,6 +594,7 @@ class ComposerStaticInit2cfc0f008051a7ed153648a0df3120f6
         'CreateRegionesTable' => __DIR__ . '/../..' . '/database/migrations/2016_10_01_202857_create_regiones_table.php',
         'CreateReservasTable' => __DIR__ . '/../..' . '/database/migrations/2016_11_08_000631_create_reservas_table.php',
         'CreateServiciosTable' => __DIR__ . '/../..' . '/database/migrations/2016_10_27_185614_create_servicios_table.php',
+        'CreateSessionsTable' => __DIR__ . '/../..' . '/database/migrations/2018_01_04_152821_create_sessions_table.php',
         'CreateTableInfoMyallocator' => __DIR__ . '/../..' . '/database/migrations/2016_10_02_054110_create_table_info_myallocator.php',
         'CreateTableMensajeria' => __DIR__ . '/../..' . '/database/migrations/2018_01_10_130956_create_table_mensajeria.php',
         'CreateTemporadasTable' => __DIR__ . '/../..' . '/database/migrations/2017_05_24_214748_create_temporadas_table.php',

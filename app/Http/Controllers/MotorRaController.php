@@ -490,50 +490,56 @@ class MotorRaController extends Controller
 
     }
 
-    public function reserva(Request $request)
-    {
+    public function reserva(Request $request) {
         $propiedad_id = null;
         if ($request->has('codigo')) {
             $codigo = $request->input('codigo');
-            $propiedad    = Propiedad::where('codigo', $codigo)->first();
+            $propiedad = Propiedad::where(
+                'codigo', 
+                $codigo
+            )->first();
+            
             $propiedad_id = $propiedad->id;
+            
             if (is_null($propiedad)) {
-                $retorno = array(
-                    'msj'    => "Propiedad no encontrada",
-                    'errors' => true);
+                $retorno['msj'] = "No se envia propiedad_id";
+                $retorno['errors'] = true;
                 return Response::json($retorno, 404);
             }
         } else {
-            $retorno = array(
-                'msj'    => "No se envia propiedad_id",
-                'errors' => true);
             return Response::json($retorno, 400);
         }
 
         if ($request->has('tipo_moneda_id') && $request->has('fecha_inicio') && $request->has('fecha_fin') && $request->has('iva') && $request->has('noches') && $request->has('habitaciones') && $request->has('cliente')) {
-            $tipo_moneda_id = $request->get('tipo_moneda_id');
-            $fecha_inicio   = $request->get('fecha_inicio');
-            $fecha_fin      = $request->get('fecha_fin');
-            $iva            = $request->get('iva');
-            $noches         = $request->get('noches');
-            $clientes       = $request['cliente'];
-            $habitaciones   = $request['habitaciones'];
+            $tipo_moneda_id = $request->tipo_moneda_id;
+            $fecha_inicio   = $request->fecha_inicio;
+            $fecha_fin      = $request->fecha_fin;
+            $iva            = $request->iva;
+            $noches         = $request->noches;
+            $clientes       = $request->cliente;
+            $habitaciones   = $request->habitaciones;
 
             if (!is_array($habitaciones)) {
                 $habitaciones = [];
-                $habitaciones . push($request['habitaciones']);
+                $habitaciones . push($request->habitaciones);
             }
 
-            $reservas = Reserva::whereHas('tipoHabitacion', function($query) use($propiedad_id){
-                $query->where('propiedad_id', $propiedad_id);
-            })
-            ->where('habitacion_id', null)
-            ->where('tipo_fuente_id', 1)
-            ->whereIn('estado_reserva_id', [1,2,3,4,5])
-            ->orderby('n_reserva_motor', 'DESC')
+            $reservas = Reserva::whereHas(
+                'tipoHabitacion', 
+                function($query) use($propiedad_id) {
+                    $query->where(
+                        'propiedad_id', 
+                        $propiedad_id
+                    );
+                }
+            )->where('habitacion_id', null)
+                ->where('tipo_fuente_id', 1)
+                ->whereIn('estado_reserva_id', [1,2,3,4,5])
+                ->orderby('n_reserva_motor', 'DESC')
             ->get();
 
-            $reserva  = $reservas->first();
+            $reserva = $reservas->first();
+            
             if (!is_null($reserva)) {
                 $n_reserva_motor = $reserva->n_reserva_motor;
             } else {
@@ -620,9 +626,19 @@ class MotorRaController extends Controller
                     Event::fire(
                         new ReservasMotorEvent($propiedad_id)
                     );
+
+                    $this->EnvioCorreo(
+                        $propiedad->first(),
+                        $cliente[0]->email,
+                        [],
+                        "correos.aviso_reserva_motor",
+                        "",
+                        "",
+                        $request->opcion,
+                        1
+                    );
                 }
             }
-
         } else {
             $retorno = array(
                 'msj'    => "Incompleto",
