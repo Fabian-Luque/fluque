@@ -404,16 +404,25 @@ class ReservaMapaController extends Controller
             return Response::json($retorno, 400);
         }
 
-        $clientes = Cliente::where(function ($query) use ($propiedad_id) {
-            $query->whereHas('reservas.tipoHabitacion', function($query) use($propiedad_id){
+        // $clientes = Cliente::where(function ($query) use ($propiedad_id) {
+        //     $query->whereHas('reservas.tipoHabitacion', function($query) use($propiedad_id){
+        //         $query->where('propiedad_id', $propiedad_id);
+        //     });
+        //     $query->whereHas('reservas', function($query){
+        //         $query->where('tipo_fuente_id', 9);
+        //     });
+        // })
+        // ->with(['reservas' => function ($query){
+        // $query->whereIn('estado_reserva_id', [1,2,3,4,5])->orderby('n_reserva_propiedad')->with('TipoMoneda')->with('tipoHabitacion');
+        // }])
+        // ->get();
+
+        $clientes = Cliente::with('tipoCliente')->with('region')->with('pais')
+        ->with(['reservas' => function ($query) use($propiedad_id){
+            $query->whereHas('tipoHabitacion', function($query) use($propiedad_id){
                 $query->where('propiedad_id', $propiedad_id);
             });
-            $query->whereHas('reservas', function($query){
-                $query->where('tipo_fuente_id', 9);
-            });
-        })
-        ->with(['reservas' => function ($query){
-        $query->whereIn('estado_reserva_id', [1,2,3,4,5])->orderby('n_reserva_propiedad')->with('TipoMoneda')->with('tipoHabitacion');
+            $query->where('habitacion_id', null)->where('tipo_fuente_id', 9)->whereIn('estado_reserva_id', [1,2,3,4,5])->orderby('n_reserva_motor')->with('TipoMoneda')->with('tipoHabitacion');
         }])
         ->get();
 
