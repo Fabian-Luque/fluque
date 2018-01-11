@@ -242,6 +242,7 @@ class GeoController extends Controller {
                 'radio'        => 'required',
                 'fecha_inicio' => 'required',
                 'fecha_fin'    => 'required',
+                'prop_id'      => 'required',
             )
         );
 
@@ -254,7 +255,8 @@ class GeoController extends Controller {
                 $propiedades = $u_props->getPropiedadesCercanas(
                     $request->latitud,
                     $request->longitud,
-                    $request->radio
+                    $request->radio,
+                    $request->prop_id
                 );
                 $propiedades = collect($propiedades);
 
