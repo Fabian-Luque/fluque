@@ -236,11 +236,6 @@ class PDFController extends Controller {
                         $egreso += $egreso_caja->monto;
                     }
                 }
-                foreach ($caja->montos as $monto) {
-                    if ($monto->tipo_moneda_id == $tipo_moneda->id && $monto->tipo_monto_id == 1) {
-                        $ingreso += $monto->monto;
-                    }
-                }
 
                 $moneda['nombre']               = $tipo_moneda->nombre;
                 $moneda['cantidad_decimales']   = $tipo_moneda->cantidad_decimales;
@@ -699,35 +694,35 @@ class PDFController extends Controller {
     }
 
 
-	public function estadoCuenta(Request $request)
+    public function estadoCuenta(Request $request)
     {
 
-		$reservas = $request['reservas'];
-		$propiedad_id = $request->input('propiedad_id');
-		$cliente_id = $request->input('cliente_id');
-		/*$iva = $request->input('iva');*/
+        $reservas = $request['reservas'];
+        $propiedad_id = $request->input('propiedad_id');
+        $cliente_id = $request->input('cliente_id');
+        /*$iva = $request->input('iva');*/
 
 
 
-		$propiedad = Propiedad::where('id', $propiedad_id)->with('pais', 'region')->get();
-		$cliente = Cliente::where('id', $cliente_id)->with('pais', 'region')->get();
+        $propiedad = Propiedad::where('id', $propiedad_id)->with('pais', 'region')->get();
+        $cliente = Cliente::where('id', $cliente_id)->with('pais', 'region')->get();
 
-		$propiedad_iva = 0;
-		foreach ($propiedad as $prop) {
-			
-			$propiedad_iva = $prop->iva;
+        $propiedad_iva = 0;
+        foreach ($propiedad as $prop) {
+            
+            $propiedad_iva = $prop->iva;
             $propiedad_iva = $propiedad_iva / 100;
 
-		}
+        }
 
-		$reservas_pdf = [];
-		$monto_alojamiento = 0;
-		$consumo = 0;
+        $reservas_pdf = [];
+        $monto_alojamiento = 0;
+        $consumo = 0;
         $iva_reservas            = null;
         $tipo_moneda_reservas    = null;
-		foreach($reservas as $id){
+        foreach($reservas as $id){
 
-		$reserva = Reserva::where('id', $id)->where('cliente_id', $cliente_id)->with('cliente.pais', 'cliente.region')->with('tipoMoneda')->with('habitacion.tipoHabitacion')->with('pagos.tipoMoneda', 'pagos.metodoPago', 'pagos.tipoComprobante')->with(['huespedes.servicios' => function ($q) use($id) {
+        $reserva = Reserva::where('id', $id)->where('cliente_id', $cliente_id)->with('cliente.pais', 'cliente.region')->with('tipoMoneda')->with('habitacion.tipoHabitacion')->with('pagos.tipoMoneda', 'pagos.metodoPago', 'pagos.tipoComprobante')->with(['huespedes.servicios' => function ($q) use($id) {
 
         $q->wherePivot('reserva_id', $id);}])->get();
 
@@ -769,21 +764,21 @@ class PDFController extends Controller {
 
 
 
-		foreach ($reserva as $ra) {
-			$monto_alojamiento += $ra->monto_alojamiento;
-			foreach($ra->huespedes as $huesped){
-				$huesped->monto_consumo = 0;
-				foreach($huesped->servicios as $servicio){
-					$huesped->monto_consumo += $servicio->pivot->precio_total;
-					$consumo += $servicio->pivot->precio_total;
-				}
-			}
-		}
+        foreach ($reserva as $ra) {
+            $monto_alojamiento += $ra->monto_alojamiento;
+            foreach($ra->huespedes as $huesped){
+                $huesped->monto_consumo = 0;
+                foreach($huesped->servicios as $servicio){
+                    $huesped->monto_consumo += $servicio->pivot->precio_total;
+                    $consumo += $servicio->pivot->precio_total;
+                }
+            }
+        }
 
-		array_push($reservas_pdf, $reserva);
+        array_push($reservas_pdf, $reserva);
 
 
-	}
+    }
 
         $auxMoneda     = TipoMoneda::where('id' , $tipo_moneda_reservas)->first();
         $nombre_moneda = $auxMoneda->nombre;
@@ -813,12 +808,12 @@ class PDFController extends Controller {
             $pdf = PDF::loadView('pdf.estado_cuenta', ['propiedad' => $propiedad , 'cliente'=> $cliente ,'reservas_pdf'=> $reservas_pdf, 'nombre_moneda' => $nombre_moneda,'iva_reservas' => $iva_reservas,'total' => $total]);
 
         }
-		
+        
 
-		return $pdf->download('archivo.pdf');
+        return $pdf->download('archivo.pdf');
 
 
-	}
+    }
 
 
     public function estadoCuentaResumen(Request $request)
@@ -1553,9 +1548,9 @@ class PDFController extends Controller {
     } 
 
 
-	public function reporte(Request $request)
-	{
-	    if($request->has('propiedad_id')){
+    public function reporte(Request $request)
+    {
+        if($request->has('propiedad_id')){
             $propiedad_id = $request->input('propiedad_id');
             $propiedad    = Propiedad::where('id', $request->input('propiedad_id'))->with('pais')->first();
 
@@ -1732,7 +1727,7 @@ class PDFController extends Controller {
 
             $pdf = PDF::loadView('pdf.reporte_diario', ['propiedad' => [$propiedad], 'fechas' => $fechas ,'reservas_realizadas'=> count($reservas_creadas),'reservas_anuladas' => count($reservas_anuladas), 'reservas_no_show' => count($reservas_no_show), 'ingresos_habitacion' => $ingresos_habitacion, 'ingresos_consumo' => $ingresos_consumos, 'ingresos_totales' => $ingresos_totales_dia, 'residentes_locales' => $residentes_pais_propiedad, 'residentes_extranjero' => $residentes_extranjero, 'ocupado' => $suma , 'disponible' => ($total_noches - $suma)]);
 
-			return $pdf->download('archivo.pdf');
+            return $pdf->download('archivo.pdf');
 
         } else {
             $retorno = array(
