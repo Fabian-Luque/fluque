@@ -21,11 +21,14 @@ use App\TipoCliente;
 use App\Servicio;
 use App\TipoFuente;
 use App\Caja;
+use App\Jobs\SendMail;
 use \Carbon\Carbon;
 use Response;
+use \Mail;
 
-class PDFController extends Controller
-{
+class PDFController extends Controller {
+    public function __construct() {
+    }
 
     public function reservas(Request $request, Reserva $reserva)
     {
@@ -1051,21 +1054,30 @@ class PDFController extends Controller
 
     }
 
-    public function comprobanteReservaResumen(Request $request)
-    {
-
+    public function comprobanteReservaResumen(Request $request) {
         $reservas     = $request['reservas'];
         $propiedad_id = $request->input('propiedad_id');
         $cliente_id   = $request->input('cliente_id');
-        $propiedad    = Propiedad::where('id', $propiedad_id)->with('pais', 'region')->get();
-        $cliente      = Cliente::where('id', $cliente_id)->with('pais', 'region')->get();
+        $propiedad    = Propiedad::where(
+            'id', 
+            $propiedad_id
+        )->with('pais', 'region')->get();
+        $cliente      = Cliente::where(
+            'id', 
+            $cliente_id
+        )->with('pais', 'region')->get();
+
+        if ($request->has('flag_envio')) {   
+            $correo_prop = $propiedad->email;
+        } else {
+            $correo_prop = false;
+        }
 
         $propiedad_iva = 0;
-        foreach ($propiedad as $prop) {
-            
+        
+        foreach ($propiedad as $prop) {    
             $propiedad_iva = $prop->iva;
             $propiedad_iva = $propiedad_iva / 100;
-
         }
 
         $reservas_pdf = [];
@@ -1074,99 +1086,164 @@ class PDFController extends Controller
         $por_pagar = 0;
         $iva_reservas            = null;
         $tipo_moneda_reservas    = null;
-        foreach($reservas as $id){
-
-        $reserva = Reserva::where('id', $id)->where('cliente_id', $cliente_id)->with('cliente.pais', 'cliente.region')->with('tipoMoneda')->with('habitacion.tipoHabitacion')->with('pagos.tipoMoneda', 'pagos.metodoPago', 'pagos.tipoComprobante')->with(['huespedes.servicios' => function ($q) use($id) {
-
-        $q->wherePivot('reserva_id', $id);}])->get();
-
-
-        if (count($reserva) == 0) {
-          $retorno = array(
-                'errors' => true,
-                'msj'    => " Las reservas no pertenecen al mismo cliente"
-          );
-          return Response::json($retorno, 400);
-        }
-
-
-        foreach ($reserva as $ra) {
-            if (is_null($iva_reservas)) {
-                $iva_reservas = $ra->iva;
-            } else {
-                if ($iva_reservas != $ra->iva) {
-                    $retorno = array(
-                        'errors' => true,
-                        'msj'    => " Error: Reservas con distinto impuesto "
+        
+        foreach($reservas as $id) {
+            $reserva = Reserva::where(
+                'id', 
+                $id
+            )->where(
+                'cliente_id', 
+                $cliente_id
+            )->with(
+                'cliente.pais', 
+                'cliente.region'
+            )->with('tipoMoneda')
+            ->with(
+                'habitacion.tipoHabitacion'
+            )->with(
+                'pagos.tipoMoneda', 
+                'pagos.metodoPago', 
+                'pagos.tipoComprobante'
+            )->with([
+                'huespedes.servicios' => function ($q) use($id) {
+                    $q->wherePivot(
+                        'reserva_id', 
+                        $id
                     );
-                    return Response::json($retorno, 400);
+                }]
+            )->get();
+
+            if (count($reserva) == 0) {
+                $retorno['errors'] = true;
+                $retorno['msj'] = " Las reservas no pertenecen al mismo cliente";
+              return Response::json($retorno, 400);
+            }
+
+            foreach ($reserva as $ra) {
+                if (is_null($iva_reservas)) {
+                    $iva_reservas = $ra->iva;
+                } else {
+                    if ($iva_reservas != $ra->iva) {
+                        $retorno['errors'] = true;
+                        $retorno['msj'] = " Error: Reservas con distinto impuesto ";
+                        return Response::json($retorno, 400);
+                    }
+                }
+
+                if (is_null($tipo_moneda_reservas)) {
+                    $tipo_moneda_reservas = $ra->tipo_moneda_id;
+                } else {
+                    if ($tipo_moneda_reservas != $ra->tipo_moneda_id) {
+                        $retorno['errors'] = true;
+                        $retorno['msj'] = " Error: Las reservas deben estar cursada con el mismo tipo de moneda ";
+                        return Response::json($retorno, 400);
+                    }
                 }
             }
 
-            if (is_null($tipo_moneda_reservas)) {
-                $tipo_moneda_reservas = $ra->tipo_moneda_id;
-            } else {
-                if ($tipo_moneda_reservas != $ra->tipo_moneda_id) {
-                    $retorno = array(
-                        'errors' => true,
-                        'msj'    => " Error: Las reservas deben estar cursada con el mismo tipo de moneda "
-                    );
-                    return Response::json($retorno, 400);
+            foreach ($reserva as $ra) {
+                $por_pagar += $ra->monto_por_pagar;
+                $monto_alojamiento += $ra->monto_alojamiento;
+                foreach($ra->huespedes as $huesped){
+                    $huesped->monto_consumo = 0;
+                    foreach($huesped->servicios as $servicio){
+                        $huesped->monto_consumo += $servicio->pivot->precio_total;
+                        $consumo += $servicio->pivot->precio_total;
+                    }
                 }
             }
+            array_push($reservas_pdf, $reserva);
         }
 
-
-
-        foreach ($reserva as $ra) {
-            $por_pagar += $ra->monto_por_pagar;
-            $monto_alojamiento += $ra->monto_alojamiento;
-            foreach($ra->huespedes as $huesped){
-                $huesped->monto_consumo = 0;
-                foreach($huesped->servicios as $servicio){
-                    $huesped->monto_consumo += $servicio->pivot->precio_total;
-                    $consumo += $servicio->pivot->precio_total;
-                }
-            }
-        }
-
-        array_push($reservas_pdf, $reserva);
-
-
-    }
-
-        $auxMoneda     = TipoMoneda::where('id' , $tipo_moneda_reservas)->first();
+        $auxMoneda     = TipoMoneda::where(
+            'id', 
+            $tipo_moneda_reservas
+        )->first();
         $nombre_moneda = $auxMoneda->nombre;
 
         if ($tipo_moneda_reservas == 1) {
-
             if ($iva_reservas == 1) {
                 $total         = $monto_alojamiento;
                 $neto          = ($total / ($propiedad_iva + 1 ));
                 $iva           = ($neto * $propiedad_iva);
-
                 
-                $pdf = PDF::loadView('pdf.comprobante_reserva_resumen', ['propiedad' => $propiedad , 'cliente'=> $cliente ,'reservas_pdf'=> $reservas_pdf, 'nombre_moneda' => $nombre_moneda,'iva_reservas' => $iva_reservas, 'neto' => $neto , 'iva' => $iva, 'total' => $total, 'por_pagar' => $por_pagar]);
-            
+                $arr = array(
+                    'propiedad'     => $propiedad, 
+                    'cliente'       => $cliente,
+                    'reservas_pdf'  => $reservas_pdf, 
+                    'nombre_moneda' => $nombre_moneda,
+                    'iva_reservas'  => $iva_reservas, 
+                    'neto'          => $neto, 
+                    'iva'           => $iva, 
+                    'total'         => $total, 
+                    'por_pagar'     => $por_pagar
+                );
+
+                $pdf = $this->EnvioCorreo(
+                    $propiedad->first(),
+                    $cliente[0]->email,
+                    $arr,
+                    "correos.comprobante_reserva",
+                    "pdf.comprobante_reserva_resumen",
+                    "comprobante_reserva.pdf",
+                    $request->opcion,
+                    $correo_prop
+                );
             } else {
 
                 $total = $monto_alojamiento;
-                $pdf   = PDF::loadView('pdf.comprobante_reserva_resumen', ['propiedad' => $propiedad, 'cliente'=> $cliente ,'reservas_pdf'=> $reservas_pdf, 'nombre_moneda' => $nombre_moneda,'iva_reservas' => $iva_reservas,'total' => $total,'por_pagar' => $por_pagar]);
-            
+
+                $arr = array(
+                    'propiedad'     => $propiedad, 
+                    'cliente'       => $cliente,
+                    'reservas_pdf'  => $reservas_pdf, 
+                    'nombre_moneda' => $nombre_moneda,
+                    'iva_reservas'  => $iva_reservas,
+                    'total'         => $total,
+                    'por_pagar'     => $por_pagar
+                );
+
+                $pdf = $this->EnvioCorreo(
+                    $propiedad->first(),
+                    $cliente[0]->email,
+                    $arr,
+                    "correos.comprobante_reserva",
+                    "pdf.comprobante_reserva_resumen",
+                    "comprobante_reserva.pdf",
+                    $request->opcion,
+                    $correo_prop
+                );
             }
-
-        }elseif($tipo_moneda_reservas == 2){
-
+        } elseif($tipo_moneda_reservas == 2){
             $total = $monto_alojamiento;
 
-            $pdf = PDF::loadView('pdf.comprobante_reserva_resumen', ['propiedad' => $propiedad , 'cliente'=> $cliente ,'reservas_pdf'=> $reservas_pdf, 'nombre_moneda' => $nombre_moneda,'iva_reservas' => $iva_reservas,'total' => $total,'por_pagar' => $por_pagar]);
+            $arr = array(
+                'propiedad'     => $propiedad, 
+                'cliente'       => $cliente,
+                'reservas_pdf'  => $reservas_pdf, 
+                'nombre_moneda' => $nombre_moneda,
+                'iva_reservas'  => $iva_reservas,
+                'total'         => $total,
+                'por_pagar'     => $por_pagar
+            );
 
-        }
-        
+            $pdf = $this->EnvioCorreo(
+                $propiedad->first(),
+                $cliente[0]->email,
+                $arr,
+                "correos.comprobante_reserva",
+                "pdf.comprobante_reserva_resumen",
+                "comprobante_reserva.pdf",
+                $request->opcion,
+                $correo_prop
+            );
+        }   
 
-        return $pdf->download('archivo.pdf');
-
-
+        if (empty($pdf) != 1) {
+           return $pdf->download('comprobante_reserva_resumen.pdf');
+        } else {
+            return;
+        }  
     }
 
 

@@ -8,13 +8,34 @@ use App\ZonaHoraria;
 use JWTAuth;
 use \Carbon\Carbon;
 
-class Reserva extends Model
-{
-    
+class Reserva extends Model {
 	use SoftDeletes;
     protected $table = 'reservas';
-
-	protected $fillable = ['numero_reserva', 'precio_habitacion','monto_alojamiento','noches','iva','descuento','observacion','detalle','monto_consumo','monto_total','monto_por_pagar','monto_sugerido','monto_por_pagar','ocupacion','tipo_fuente_id','habitacion_id','cliente_id','checkin','checkout','estado_reserva_id', 'n_reserva_motor', 'n_reserva_propiedad' ,'tipo_habitacion_id'];
+	protected $fillable = [
+		'numero_reserva', 
+		'precio_habitacion',
+		'monto_alojamiento',
+		'noches',
+		'iva',
+		'descuento',
+		'observacion',
+		'detalle',
+		'monto_consumo',
+		'monto_total',
+		'monto_por_pagar',
+		'monto_sugerido',
+		'monto_por_pagar',
+		'ocupacion',
+		'tipo_fuente_id',
+		'habitacion_id',
+		'cliente_id',
+		'checkin',
+		'checkout',
+		'estado_reserva_id', 
+		'n_reserva_motor', 
+		'n_reserva_propiedad',
+		'tipo_habitacion_id'
+	];
 
 	protected $dates = ['checkin', 'checkout'];
 

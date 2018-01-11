@@ -11,8 +11,12 @@ use Password;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\PasswordBroker;
 use Illuminate\Foundation\Auth\ResetsPasswords;
-use App\User;   
+use Illuminate\Support\Facades\Validator;
+use App\User;  
+use App\Propiedad; 
 use App\ResetPass; 
+use App\Jobs\SendMail;
+use PDF;
 
 class CorreoController extends Controller {
     
@@ -89,4 +93,51 @@ class CorreoController extends Controller {
             )->with('respuesta', $data);
         }
     }
+
+    public function ejemplo(){
+        dd("holaaaaa");
+    }
+
+
+    public function SendFileByEmail(Request $request) {
+
+        $this->ejemplo();
+        $propiedad = Propiedad::find(4);
+
+            $array = array(
+          
+                'namefile' => "miarch.pdf",
+                'destino' => $request->destino,
+                'vista' => "correos.comprobante_reserva",
+                'propiedad' => $propiedad,
+            ); 
+
+            $ped = PDF::loadView(
+                            "auth.emails.correo", [
+                                
+                            ]
+                        );
+
+            $job = (new SendMail(
+                $propiedad,
+                "dheresmann2012@alu.uct.cl",
+                "correos.comprobante_reserva",
+                "auth.emails.correo",
+                "comprobante_reserva.pdf"
+            ));
+
+            $this->dispatch($job);
+
+            $data['errors'] = false;
+            $data['msg']    = 'Correo enviado de forma exitoso';
+    
+        return Response::json($data); 
+    }
 }
+
+
+
+
+
+
+
