@@ -1405,15 +1405,7 @@ class PDFController extends Controller {
 
         }
         
-        $pdf = PDF::loadView(
-            'pdf.pagos', [
-                'propiedad' => [$propiedad], 
-                'fecha_inicio' => $fecha_inicio, 
-                'fecha_fin' => $fecha_fin, 
-                'fechas' => $fechas_montos, 
-                'ingresos_totales' => $montos_totales
-            ]
-        );
+        $pdf = PDF::loadView('pdf.pagos', ['propiedad' => [$propiedad], 'fecha_inicio' => $fecha_inicio, 'fecha_fin' => $fecha_fin, 'fechas' => $fechas_montos, 'ingresos_totales' => $montos_totales]);
 
         return $pdf->download('archivo.pdf');
 
