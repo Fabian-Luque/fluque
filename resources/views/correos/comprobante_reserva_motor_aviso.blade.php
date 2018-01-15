@@ -373,7 +373,7 @@ a[x-apple-data-detectors=true] {
                   
                     <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 45px; padding-left: 0px; padding-top: 0px; padding-bottom: 0px;"><![endif]-->
 <div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 45px; padding-left: 0px; padding-top: 0px; padding-bottom: 0px;"> 
-  <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 14px;line-height: 17px;text-align: justify"><span style="color: rgb(0, 0, 0); font-size: 14px; line-height: 16px;">{{ $array['cliente']->nombre }}</span></p></div>  
+  <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 14px;line-height: 17px;text-align: justify"><span style="color: rgb(0, 0, 0); font-size: 14px; line-height: 16px;">{{ $array['arr']['cliente'][0]->nombre }}</span></p></div>  
 </div>
 <!--[if mso]></td></tr></table><![endif]-->
 
@@ -381,7 +381,7 @@ a[x-apple-data-detectors=true] {
                   
                     <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 45px; padding-left: 0px; padding-top: 0px; padding-bottom: 0px;"><![endif]-->
 <div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 45px; padding-left: 0px; padding-top: 0px; padding-bottom: 0px;"> 
-  <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 14px;line-height: 17px;text-align: justify"><span style="color: rgb(0, 0, 0); font-size: 14px; line-height: 16px;">{{ $array['cliente']->email }}</span></p></div>  
+  <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 14px;line-height: 17px;text-align: justify"><span style="color: rgb(0, 0, 0); font-size: 14px; line-height: 16px;">{{ $array['arr']['cliente'][0]->email }}</span></p></div>  
 </div>
 <!--[if mso]></td></tr></table><![endif]-->
 
@@ -389,7 +389,7 @@ a[x-apple-data-detectors=true] {
                   
                     <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 45px; padding-left: 0px; padding-top: 0px; padding-bottom: 0px;"><![endif]-->
 <div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 45px; padding-left: 0px; padding-top: 0px; padding-bottom: 0px;"> 
-  <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 14px;line-height: 17px;text-align: justify"><span style="color: rgb(0, 0, 0); font-size: 14px; line-height: 16px;">{{ $array['cliente']->rut }}</span></p></div>  
+  <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 14px;line-height: 17px;text-align: justify"><span style="color: rgb(0, 0, 0); font-size: 14px; line-height: 16px;">{{ $array['arr']['cliente'][0]->rut }}</span></p></div>  
 </div>
 <!--[if mso]></td></tr></table><![endif]-->
 
@@ -534,6 +534,9 @@ a[x-apple-data-detectors=true] {
       </div>
     </div>    <div style="background-color:#161821;">
       <div style="Margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid four-up ">
+
+@foreach({{ $array['reservas_pdf'] }} as $reserva)    
+<!-- cada reserva -->
         <div style="border-collapse: collapse;display: table;width: 100%;background-color:#ffffff;">
           <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background-color:#161821;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width: 625px;"><tr class="layout-full-width" style="background-color:#ffffff;"><![endif]-->
 
@@ -561,7 +564,7 @@ a[x-apple-data-detectors=true] {
                   
                     <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 0px; padding-left: 50px; padding-top: 0px; padding-bottom: 0px;"><![endif]-->
 <div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 0px; padding-left: 50px; padding-top: 0px; padding-bottom: 0px;"> 
-  <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 12px;line-height: 14px;text-align: left"><span style="color: rgb(0, 0, 0); font-size: 12px; line-height: 14px;">{{ $array['reserva']->ocupacion }}</span></p></div>  
+  <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 12px;line-height: 14px;text-align: left"><span style="color: rgb(0, 0, 0); font-size: 12px; line-height: 14px;">{{ $reserva->ocupacion }}</span></p></div>  
 </div>
 <!--[if mso]></td></tr></table><![endif]-->
 
@@ -577,7 +580,7 @@ a[x-apple-data-detectors=true] {
                   
                     <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 0px; padding-left: 50px; padding-top: 0px; padding-bottom: 0px;"><![endif]-->
 <div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 0px; padding-left: 50px; padding-top: 0px; padding-bottom: 0px;"> 
-  <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 12px;line-height: 14px;text-align: left"><span style="color: rgb(0, 0, 0); font-size: 12px; line-height: 14px;">{{ $array['reserva']->noches }}</span></p></div> 
+  <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 12px;line-height: 14px;text-align: left"><span style="color: rgb(0, 0, 0); font-size: 12px; line-height: 14px;">{{ $reserva->noches }}</span></p></div> 
 </div>
 <!--[if mso]></td></tr></table><![endif]-->
 
@@ -593,7 +596,7 @@ a[x-apple-data-detectors=true] {
                   
                     <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 50px; padding-left: 50px; padding-top: 0px; padding-bottom: 0px;"><![endif]-->
 <div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 50px; padding-left: 50px; padding-top: 0px; padding-bottom: 0px;">  
-  <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 12px;line-height: 14px;text-align: left"><span style="color: rgb(0, 0, 0); font-size: 12px; line-height: 14px;">{{ $array['reserva']->monto_total }}</span></p></div>  
+  <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 12px;line-height: 14px;text-align: left"><span style="color: rgb(0, 0, 0); font-size: 12px; line-height: 14px;">{{ $reserva->monto_total }}</span></p></div>  
 </div>
 <!--[if mso]></td></tr></table><![endif]-->
 
@@ -603,6 +606,9 @@ a[x-apple-data-detectors=true] {
             </div>
           <!--[if (mso)|(IE)]></td></tr></table></td></tr></table><![endif]-->
         </div>
+<!-- cada reserva -->
+@endforeach
+
       </div>
     </div>    <div style="background-color:#161821;">
       <div style="Margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid ">
