@@ -653,7 +653,7 @@ class MotorRaController extends Controller
                         "pdf.aviso_reserva_motor",
                         "comprobante_reserva_motor.pdf",
                         "",
-                        $request->opcion
+                        1
                     );
                 }
             }
