@@ -641,28 +641,34 @@ class MotorRaController extends Controller
                         new ReservasMotorEvent($propiedad_id)
                     );
 
+                    $arr = array(
+                        'propiedad'     => $propiedad
+                    );
+
                     $this->EnvioCorreo(
                         $propiedad,
                         $cliente->email,
-                        [],
+                        $arr,
                         "correos.aviso_reserva_motor",
+                        "correos.aviso_reserva_motor",
+                        "comprobante_reserva_motor.pdf"
                         "",
-                        "",
-                        $request->opcion,
-                        1
+                        $request->opcion
                     );
                 }
             }
         } else {
             $retorno = array(
                 'msj'    => "Incompleto",
-                'errors' => true);
+                'errors' => true
+            );
             return Response::json($retorno, 400);
         }
         
         $retorno = array(
             'msj'       => "Reserva creada satisfactoriamente",
-            'errors'    => false);
+            'errors'    => false
+        );
         return Response::json($retorno, 201);
     }
 
