@@ -651,7 +651,7 @@ class MotorRaController extends Controller
                         $arr,
                         "correos.aviso_reserva_motor",
                         "correos.aviso_reserva_motor",
-                        "comprobante_reserva_motor.pdf"
+                        "comprobante_reserva_motor.pdf",
                         "",
                         $request->opcion
                     );
