@@ -649,7 +649,7 @@ class MotorRaController extends Controller
                         $propiedad,
                         $cliente->email,
                         $arr,
-                        "correos.aviso_reserva_motor",
+                        "correos.aviso_reserva",
                         "pdf.aviso_reserva_motor",
                         "comprobante_reserva_motor.pdf",
                         "",
