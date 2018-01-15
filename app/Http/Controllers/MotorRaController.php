@@ -642,8 +642,8 @@ class MotorRaController extends Controller
                     );
 
                     $this->EnvioCorreo(
-                        $propiedad->first(),
-                        $cliente[0]->email,
+                        $propiedad,
+                        $cliente->email,
                         [],
                         "correos.aviso_reserva_motor",
                         "",
@@ -752,39 +752,34 @@ class MotorRaController extends Controller
                 }
             )->orderby('id','DESC')
             ->where('numero_reserva', '!=', null)
-            ->where('n_reserva_motor', $reserva->n_reserva_motor);
+            ->where('n_reserva_motor', $reserva->n_reserva_motor); /
             
             $propiedad = Propiedad::find($propiedad_id);
 
             $arr = array(
-                    'propiedad'     => $propiedad, 
-                    'cliente'       => $cliente,
-                    'reservas_pdf'  => $reservas_pdf, 
-                    'nombre_moneda' => $reserva->tipoMoneda->nombre,
-                    'iva_reservas'  => $iva_reservas, 
-                    'neto'          => $neto, 
-                    'iva'           => $iva, 
-                    'total'         => $total, 
-                    'por_pagar'     => $por_pagar
-                );
+                'propiedad'     => $propiedad, 
+                'cliente'       => $reserva->cliente,
+                'reservas_pdf'  => $reservas_pdf, 
+                'nombre_moneda' => $reserva->tipoMoneda->nombre
+            );
 
             $pdf = $this->EnvioCorreo(
                 $propiedad,
                 $cliente[0]->email,
                 $arr,
-                "correos.comprobante_reserva",
-                "pdf.comprobante_reserva_resumen",
+                "correos.comprobante_reserva_motor",
+                "correos.comprobante_reserva_motor",
                 "comprobante_reserva.pdf",
-                $request->opcion,
-                $correo_prop
+                1,
+                $propiedad->email
             );
 
             $retorno['errors'] = false;
             $retorno['msj'] = "Habitación asignada, y total de reservas aprobadas";
+        } else {
+            $retorno['errors'] = false;
+            $retorno['msj'] = "Habitación asignada";
         }
-
-        $retorno['errors'] = false;
-        $retorno['msj'] = "Habitación asignada";
         return Response::json($retorno, 201);
     }
 
