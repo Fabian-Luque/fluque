@@ -10,7 +10,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use \Mail;
 use PDF;
-use Barryvdh\DomPDF\Facade as PDFF;
+
 
 class SendMail extends Job implements ShouldQueue {
     use InteractsWithQueue, SerializesModels;
@@ -63,7 +63,7 @@ class SendMail extends Job implements ShouldQueue {
                         $message->cc($array['propiedad_email']);
                     }
 
-                    if (empty($array['arr']) != 1) {
+                    if (strlen($array['vista_pdf']) != 0) {
                         $pdf = PDF::loadView(
                             $array['vista_pdf'], 
                             $array['arr']

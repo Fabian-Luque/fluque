@@ -649,11 +649,11 @@ class MotorRaController extends Controller
                         $propiedad,
                         $cliente->email,
                         $arr,
-                        "correos.aviso_reserva",
-                        "pdf.aviso_reserva_motor",
-                        "comprobante_reserva_motor.pdf",
+                        "correos.aviso_reserva_motor",
                         "",
-                        1
+                        "",
+                        1,
+                        ""
                     );
                 }
             }
@@ -671,8 +671,7 @@ class MotorRaController extends Controller
 
     }
 
-    public function asignarHabitacion(Request $request)
-    {
+    public function asignarHabitacion(Request $request) {
         if ($request->has('reserva_id')) {
             $reserva_id = $request->input('reserva_id');
             $reserva = Reserva::where('id', $reserva_id)->first();
@@ -685,7 +684,8 @@ class MotorRaController extends Controller
         } else {
             $retorno = array(
                 'msj'    => "No se envia reserva_id",
-                'errors' => true);
+                'errors' => true
+            );
             return Response::json($retorno, 400);
         }
 
