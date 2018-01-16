@@ -500,7 +500,7 @@ class MotorRaController extends Controller
         }
 
 
-        return $data;
+        return array_reverse($data);
 
     }
 
