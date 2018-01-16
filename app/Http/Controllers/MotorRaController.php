@@ -736,11 +736,25 @@ class MotorRaController extends Controller
 
         $reserva->update(array('numero_reserva' => $numero , 'habitacion_id' => $habitacion_id));
 
+        if ($request->has('terminado')) {
+            $reservas = Reserva::whereHas(
+                'habitacion', 
+                function($query) use ($propiedad_id) {
+                    $query->where('propiedad_id', $propiedad_id);
+                }
+            )->orderby('id','DESC')
+            ->where('numero_reserva', '!=', null)
+            ->where('numero_reserva', '!=', null);
+
+            $retorno['errors'] = false;
+            $retorno['msj'] = 'Habitacion asignada';
+            return Response::json($retorno, 200);
+        }
+
         $retorno = [
             'errors' => false,
-            'msj'    => 'HabitaciÃ³n asignada',];
+            'msj'    => 'Habitacion asignada',];
         return Response::json($retorno, 201);
-
     }
 
     public function asignarColorMotor(Request $request)
