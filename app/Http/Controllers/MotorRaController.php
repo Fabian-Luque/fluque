@@ -750,7 +750,7 @@ class MotorRaController extends Controller
             ->where('numero_reserva', '!=', null);
             
             $arr = array(
-                'propiedad'     => Propiedad::find($propiedad_id),
+                'propiedad'     => $propiedad,
                 'reservas_pdf'  => $reservas,
                 'cliente'       => $reserva->cliente,
                 'reserva'       => $reserva
