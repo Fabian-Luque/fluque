@@ -355,17 +355,16 @@ a[x-apple-data-detectors=true] {
                   
                     <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 10px; padding-left: 10px; padding-top: 0px; padding-bottom: 5px;"><![endif]-->
 <div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 10px; padding-left: 10px; padding-top: 0px; padding-bottom: 5px;">  
-  <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 12px;line-height: 14px;text-align: center"><span style="font-size: 10px; line-height: 12px; color: rgb(0, 0, 0);">&#160;Mensaje enviado por&#160;<span style="color: rgb(0, 104, 165); font-size: 10px; line-height: 12px;"><strong>{{ $array['propiedad']->nombre }}</strong></span></span></p><p style="margin: 0;font-size: 12px;line-height: 14px;text-align: center"><span style="font-size: 10px; line-height: 12px; color: rgb(0, 0, 0);">&#160; &#160;&#160;@if(!empty($array['propiedad']->direccion))
-      {{ $array['propiedad']->direccion }}
-    @endif @if(!empty($array['propiedad']->ciudad)), {{ $array['propiedad']->ciudad }}
-    @endif @if(!empty($array['propiedad']->pais)), {{ $array['propiedad']->pais->nombre }}
+  <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;">
+    <p style="margin: 0;font-size: 12px;line-height: 14px;text-align: center">
+      <span style="font-size: 10px; line-height: 12px; color: rgb(0, 0, 0);">&#160;Mensaje enviado por&#160;<span style="color: rgb(0, 104, 165); font-size: 10px; line-height: 12px;"><strong>{{ $array['propiedad']->nombre }}</strong></span>
+      </span></p><p style="margin: 0;font-size: 12px;line-height: 14px;text-align: center"><span style="font-size: 10px; line-height: 12px; color: rgb(0, 0, 0);">&#160; &#160;&#160;@if(!empty($array['propiedad']->direccion))
+      {{ $array['propiedad']->direccion }} @endif @if(!empty($array['propiedad']->ciudad)), {{ $array['propiedad']->ciudad }} @endif @if(!empty($array['propiedad']->pais)), {{ $array['propiedad']->pais->nombre }}
     @endif</span></p></div>  
+</div> 
 </div>
-<!--[if mso]></td></tr></table><![endif]-->    
-              <!--[if (!mso)&(!IE)]><!--></div><!--<![endif]-->
               </div>
             </div>
-          <!--[if (mso)|(IE)]></td></tr></table></td></tr></table><![endif]-->
         </div>
       </div>
     </div>    <div style="background-color:transparent;">
