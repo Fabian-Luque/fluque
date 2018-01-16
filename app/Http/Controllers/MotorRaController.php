@@ -721,11 +721,14 @@ class MotorRaController extends Controller
             return Response::json($retorno, 400);
         }
 
-        $reservas = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
-            $query->where('propiedad_id', $propiedad_id);})
-        ->orderby('id','DESC')
-        ->where('numero_reserva', '!=', null)
-        ->take(1)
+        $reservas = Reserva::whereHas(
+            'habitacion', 
+            function($query) use ($propiedad_id) {
+                $query->where('propiedad_id', $propiedad_id);
+            }
+        )->orderby('id','DESC')
+            ->where('numero_reserva', '!=', null)
+            ->take(1)
         ->first();
 
         if (!is_null($reservas)) {
@@ -736,11 +739,43 @@ class MotorRaController extends Controller
 
         $reserva->update(array('numero_reserva' => $numero , 'habitacion_id' => $habitacion_id));
 
+        if ($request->has('terminado')) {
+            $reservas = Reserva::whereHas(
+                'habitacion', 
+                function($query) use ($propiedad_id) {
+                    $query->where('propiedad_id', $propiedad_id);
+                }
+            )->orderby('id','DESC')
+            ->where('numero_reserva', '!=', null)
+            ->where('numero_reserva', '!=', null);
+            
+            $arr = array(
+                'propiedad'     => Propiedad::find($propiedad_id),
+                'reservas_pdf'  => $reservas,
+                'cliente'       => $reserva->cliente,
+                'reserva'       => $reserva
+            );
+
+            $this->EnvioCorreo(
+                $propiedad,
+                $reserva->cliente,
+                $arr,
+                "correos.comprobante_reserva_motor",
+                "",
+                "",
+                1,
+                ""
+            );
+
+            $retorno['errors'] = false;
+            $retorno['msj'] = 'Habitacion asignada, y comprobante enviado';
+            return Response::json($retorno, 200);
+        }
+
         $retorno = [
             'errors' => false,
-            'msj'    => 'HabitaciÃ³n asignada',];
+            'msj'    => 'Habitacion asignada',];
         return Response::json($retorno, 201);
-
     }
 
     public function asignarColorMotor(Request $request)
