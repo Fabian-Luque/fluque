@@ -721,11 +721,14 @@ class MotorRaController extends Controller
             return Response::json($retorno, 400);
         }
 
-        $reservas = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
-            $query->where('propiedad_id', $propiedad_id);})
-        ->orderby('id','DESC')
-        ->where('numero_reserva', '!=', null)
-        ->take(1)
+        $reservas = Reserva::whereHas(
+            'habitacion', 
+            function($query) use ($propiedad_id) {
+                $query->where('propiedad_id', $propiedad_id);
+            }
+        )->orderby('id','DESC')
+            ->where('numero_reserva', '!=', null)
+            ->take(1)
         ->first();
 
         if (!is_null($reservas)) {
@@ -745,9 +748,27 @@ class MotorRaController extends Controller
             )->orderby('id','DESC')
             ->where('numero_reserva', '!=', null)
             ->where('numero_reserva', '!=', null);
+            
+            $arr = array(
+                'propiedad'     => Propiedad::find($propiedad_id),
+                'reservas_pdf'  => $reservas,
+                'cliente'       => $reserva->cliente,
+                'reserva'       => $reserva
+            );
+
+            $this->EnvioCorreo(
+                $propiedad,
+                $reserva->cliente,
+                $arr,
+                "correos.comprobante_reserva_motor",
+                "",
+                "",
+                1,
+                ""
+            );
 
             $retorno['errors'] = false;
-            $retorno['msj'] = 'Habitacion asignada';
+            $retorno['msj'] = 'Habitacion asignada, y comprobante enviado';
             return Response::json($retorno, 200);
         }
 
