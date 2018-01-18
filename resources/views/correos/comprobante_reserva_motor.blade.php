@@ -191,14 +191,14 @@ a[x-apple-data-detectors=true] {
   </style>
   <!--[if IE]><div class="ie-browser"><![endif]-->
   <!--[if mso]><div class="mso-container"><![endif]-->
-  <table class="nl-container" style="border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;min-width: 320px;Margin: 0 auto;background-color: #161821;width: 100%" cellpadding="0" cellspacing="0">
+  <table class="nl-container" style="border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;min-width: 320px;margin: 0 auto;background-color: #161821;width: 100%" cellpadding="0" cellspacing="0">
   <tbody>
   <tr style="vertical-align: top">
     <td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top">
     <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td align="center" style="background-color: #161821;"><![endif]-->
 
     <div style="background-color:transparent;">
-      <div style="Margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: transparent;" class="block-grid ">
+      <div style="margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: transparent;" class="block-grid ">
         <div style="border-collapse: collapse;display: table;width: 100%;background-color:transparent;">
           <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background-color:transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width: 625px;"><tr class="layout-full-width" style="background-color:transparent;"><![endif]-->
 
@@ -233,7 +233,7 @@ a[x-apple-data-detectors=true] {
         </div>
       </div>
     </div>    <div style="background-color:#161821;">
-      <div style="Margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid ">
+      <div style="margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid ">
         <div style="border-collapse: collapse;display: table;width: 100%;background-color:#ffffff;">
           <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background-color:#161821;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width: 625px;"><tr class="layout-full-width" style="background-color:#ffffff;"><![endif]-->
 
@@ -256,7 +256,7 @@ a[x-apple-data-detectors=true] {
         </div>
       </div>
     </div>    <div style="background-color:#161821;">
-      <div style="Margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid ">
+      <div style="margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid ">
         <div style="border-collapse: collapse;display: table;width: 100%;background-color:#ffffff;">
 
             <div class="col num12" style="min-width: 320px;max-width: 625px;display: table-cell;vertical-align: top;">
@@ -288,7 +288,7 @@ a[x-apple-data-detectors=true] {
         </div>
       </div>
     </div>    <div style="background-color:#161821;">
-      <div style="Margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid ">
+      <div style="margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid ">
         <div style="border-collapse: collapse;display: table;width: 100%;background-color:#ffffff;">
 
             <div class="col num12" style="min-width: 320px;max-width: 625px;display: table-cell;vertical-align: top;">
@@ -308,7 +308,7 @@ a[x-apple-data-detectors=true] {
         </div>
       </div>
     </div>    <div style="background-color:#161821;">
-      <div style="Margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid ">
+      <div style="margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid ">
         <div style="border-collapse: collapse;display: table;width: 100%;background-color:#ffffff;">
 
             <div class="col num12" style="min-width: 320px;max-width: 625px;display: table-cell;vertical-align: top;">
@@ -329,7 +329,7 @@ a[x-apple-data-detectors=true] {
         </div>
       </div>
     </div>    <div style="background-color:#161821;">
-      <div style="Margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid two-up ">
+      <div style="margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid two-up ">
         <div style="border-collapse: collapse;display: table;width: 100%;background-color:#ffffff;">
           <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background-color:#161821;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width: 625px;"><tr class="layout-full-width" style="background-color:#ffffff;"><![endif]-->
 
@@ -373,7 +373,7 @@ a[x-apple-data-detectors=true] {
                   
                     <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 45px; padding-left: 0px; padding-top: 0px; padding-bottom: 0px;"><![endif]-->
 <div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 45px; padding-left: 0px; padding-top: 0px; padding-bottom: 0px;"> 
-  <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 14px;line-height: 17px;text-align: justify"><span style="color: rgb(0, 0, 0); font-size: 14px; line-height: 16px;">{{ $array['arr']['cliente'][0]->nombre }}</span></p></div>  
+  <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 14px;line-height: 17px;text-align: justify"><span style="color: rgb(0, 0, 0); font-size: 14px; line-height: 16px;">{{ $array['arr']['cliente']->nombre }}</span></p></div>  
 </div>
 <!--[if mso]></td></tr></table><![endif]-->
 
@@ -381,7 +381,7 @@ a[x-apple-data-detectors=true] {
                   
                     <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 45px; padding-left: 0px; padding-top: 0px; padding-bottom: 0px;"><![endif]-->
 <div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 45px; padding-left: 0px; padding-top: 0px; padding-bottom: 0px;"> 
-  <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 14px;line-height: 17px;text-align: justify"><span style="color: rgb(0, 0, 0); font-size: 14px; line-height: 16px;">{{ $array['arr']['cliente'][0]->email }}</span></p></div>  
+  <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 14px;line-height: 17px;text-align: justify"><span style="color: rgb(0, 0, 0); font-size: 14px; line-height: 16px;">{{ $array['arr']['cliente']->email }}</span></p></div>  
 </div>
 <!--[if mso]></td></tr></table><![endif]-->
 
@@ -389,7 +389,7 @@ a[x-apple-data-detectors=true] {
                   
                     <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 45px; padding-left: 0px; padding-top: 0px; padding-bottom: 0px;"><![endif]-->
 <div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 45px; padding-left: 0px; padding-top: 0px; padding-bottom: 0px;"> 
-  <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 14px;line-height: 17px;text-align: justify"><span style="color: rgb(0, 0, 0); font-size: 14px; line-height: 16px;">{{ $array['arr']['cliente'][0]->rut }}</span></p></div>  
+  <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 14px;line-height: 17px;text-align: justify"><span style="color: rgb(0, 0, 0); font-size: 14px; line-height: 16px;">{{ $array['arr']['cliente']->rut }}</span></p></div>  
 </div>
 <!--[if mso]></td></tr></table><![endif]-->
 
@@ -401,7 +401,7 @@ a[x-apple-data-detectors=true] {
         </div>
       </div>
     </div>    <div style="background-color:#161821;">
-      <div style="Margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid ">
+      <div style="margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid ">
         <div style="border-collapse: collapse;display: table;width: 100%;background-color:#ffffff;">
           <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background-color:#161821;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width: 625px;"><tr class="layout-full-width" style="background-color:#ffffff;"><![endif]-->
 
@@ -436,7 +436,7 @@ a[x-apple-data-detectors=true] {
         </div>
       </div>
     </div>    <div style="background-color:#161821;">
-      <div style="Margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid ">
+      <div style="margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid ">
         <div style="border-collapse: collapse;display: table;width: 100%;background-color:#ffffff;">
           <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background-color:#161821;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width: 625px;"><tr class="layout-full-width" style="background-color:#ffffff;"><![endif]-->
 
@@ -448,7 +448,7 @@ a[x-apple-data-detectors=true] {
                   
                     <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 10px; padding-left: 45px; padding-top: 10px; padding-bottom: 5px;"><![endif]-->
 <div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 10px; padding-left: 45px; padding-top: 10px; padding-bottom: 5px;"> 
-  <div style="line-height:14px;font-size:12px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;line-height: 14px;font-size: 12px"><span style="font-size: 14px; line-height: 16px;"><strong><span style="color: rgb(33, 150, 243); line-height: 16px; font-size: 14px;">﻿Habitaciones</span></strong></span><br></p><p style="margin: 0;line-height: 14px;font-size: 12px"><span style="color: rgb(51, 51, 51); font-size: 12px; line-height: 14px;">﻿Numero de reserva {{ $array['reserva']->numero_reserva }}&#160;</span><br></p></div> 
+  <div style="line-height:14px;font-size:12px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;line-height: 14px;font-size: 12px"><span style="font-size: 14px; line-height: 16px;"><strong><span style="color: rgb(33, 150, 243); line-height: 16px; font-size: 14px;">﻿Habitaciones</span></strong></span><br></p><p style="margin: 0;line-height: 14px;font-size: 12px"><span style="color: rgb(51, 51, 51); font-size: 12px; line-height: 14px;">﻿Numero de reserva {{ $array['arr']['reserva']->numero_reserva }}&#160;</span><br></p></div> 
 </div>
 
 <!--[if mso]></td></tr></table><![endif]-->
@@ -461,7 +461,7 @@ a[x-apple-data-detectors=true] {
         </div>
       </div>
     </div>    <div style="background-color:#161821;">
-      <div style="Margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid four-up ">
+      <div style="margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid four-up ">
         <div style="border-collapse: collapse;display: table;width: 100%;background-color:#ffffff;">
           <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background-color:#161821;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width: 625px;"><tr class="layout-full-width" style="background-color:#ffffff;"><![endif]-->
 
@@ -608,7 +608,7 @@ a[x-apple-data-detectors=true] {
 
       </div>
     </div>    <div style="background-color:#161821;">
-      <div style="Margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid ">
+      <div style="margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid ">
         <div style="border-collapse: collapse;display: table;width: 100%;background-color:#ffffff;">
           <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background-color:#161821;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width: 625px;"><tr class="layout-full-width" style="background-color:#ffffff;"><![endif]-->
 
@@ -643,7 +643,7 @@ a[x-apple-data-detectors=true] {
         </div>
       </div>
     </div>    <div style="background-color:#161821;">
-      <div style="Margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid three-up ">
+      <div style="margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid three-up ">
         <div style="border-collapse: collapse;display: table;width: 100%;background-color:#ffffff;">
           <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background-color:#161821;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width: 625px;"><tr class="layout-full-width" style="background-color:#ffffff;"><![endif]-->
 
@@ -733,8 +733,8 @@ a[x-apple-data-detectors=true] {
   <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;">
     <p style="margin: 0;font-size: 12px;line-height: 14px">
 
-    $iva = ($array['reserva']->monto_total * 19) / 100;
-    $subtotal = $array['reserva']->monto_total - $iva;
+    $iva = ($array['arr']['reserva']->monto_total * 19) / 100;
+    $subtotal = $array['arr']['reserva']->monto_total - $iva;
 
   {{ $subtotal }}
 </p></div>  
@@ -753,7 +753,7 @@ a[x-apple-data-detectors=true] {
                   
                     <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 0px; padding-left: 0px; padding-top: 0px; padding-bottom: 0px;"><![endif]-->
 <div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 0px; padding-left: 0px; padding-top: 0px; padding-bottom: 0px;">  
-  <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 12px;line-height: 14px">{{ $array['reserva']->monto_total }}</p></div> 
+  <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 12px;line-height: 14px">{{ $array['arr']['reserva']->monto_total }}</p></div> 
 </div>
 <!--[if mso]></td></tr></table><![endif]-->
 
@@ -782,7 +782,7 @@ a[x-apple-data-detectors=true] {
 <div style="color:#555555;line-height:150%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 0px; padding-left: 0px; padding-top: 5px; padding-bottom: 0px;">  
   <div style="font-size:12px;line-height:18px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 12px;line-height: 18px"><span style="color: rgb(0, 0, 0); font-size: 12px; line-height: 18px;"><strong>
 
-$porpagar = $array['reserva']->monto_total - $array['reserva']->monto_por_pagar;
+$porpagar = $array['arr']['reserva']->monto_total - $array['arr']['reserva']->monto_por_pagar;
 
   {{ $porpagar }}
 </strong></span></p></div> 
@@ -794,7 +794,7 @@ $porpagar = $array['reserva']->monto_total - $array['reserva']->monto_por_pagar;
         </div>
       </div>
     </div>    <div style="background-color:#161821;">
-      <div style="Margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid ">
+      <div style="margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid ">
         <div style="border-collapse: collapse;display: table;width: 100%;background-color:#ffffff;">
           <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background-color:#161821;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width: 625px;"><tr class="layout-full-width" style="background-color:#ffffff;"><![endif]-->
 
@@ -829,7 +829,7 @@ $porpagar = $array['reserva']->monto_total - $array['reserva']->monto_por_pagar;
         </div>
       </div>
     </div>    <div style="background-color:#161821;">
-      <div style="Margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid ">
+      <div style="margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid ">
         <div style="border-collapse: collapse;display: table;width: 100%;background-color:#ffffff;">
           <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background-color:#161821;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width: 625px;"><tr class="layout-full-width" style="background-color:#ffffff;"><![endif]-->
 
@@ -849,7 +849,7 @@ $porpagar = $array['reserva']->monto_total - $array['reserva']->monto_por_pagar;
         </div>
       </div>
     </div>    <div style="background-color:#161821;">
-      <div style="Margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid ">
+      <div style="margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid ">
         <div style="border-collapse: collapse;display: table;width: 100%;background-color:#ffffff;">
             <div class="col num12" style="min-width: 320px;max-width: 625px;display: table-cell;vertical-align: top;">
               <div style="background-color: transparent; width: 100% !important;">
@@ -897,7 +897,7 @@ Banco: {{ $array['propiedad']->cuentasBancaria->nombre_banco }}
   </div>
       </div>
     </div>    <div style="background-color:#161821;">
-      <div style="Margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid ">
+      <div style="margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid ">
         <div style="border-collapse: collapse;display: table;width: 100%;background-color:#ffffff;">
 
             <div class="col num12" style="min-width: 320px;max-width: 625px;display: table-cell;vertical-align: top;">
@@ -930,7 +930,7 @@ Banco: {{ $array['propiedad']->cuentasBancaria->nombre_banco }}
         </div>
       </div>
     </div>    <div style="background-color:#161821;">
-      <div style="Margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid ">
+      <div style="margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid ">
         <div style="border-collapse: collapse;display: table;width: 100%;background-color:#ffffff;">
           <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background-color:#161821;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width: 625px;"><tr class="layout-full-width" style="background-color:#ffffff;"><![endif]-->
 
@@ -954,7 +954,7 @@ Banco: {{ $array['propiedad']->cuentasBancaria->nombre_banco }}
         </div>
       </div>
     </div>    <div style="background-color:#161821;">
-      <div style="Margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid ">
+      <div style="margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid ">
         <div style="border-collapse: collapse;display: table;width: 100%;background-color:#ffffff;">
           <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background-color:#161821;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width: 625px;"><tr class="layout-full-width" style="background-color:#ffffff;"><![endif]-->
 
@@ -983,7 +983,7 @@ Banco: {{ $array['propiedad']->cuentasBancaria->nombre_banco }}
         </div>
       </div>
     </div>    <div style="background-color:#161821;">
-      <div style="Margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid ">
+      <div style="margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid ">
         <div style="border-collapse: collapse;display: table;width: 100%;background-color:#ffffff;">
           <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background-color:#161821;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width: 625px;"><tr class="layout-full-width" style="background-color:#ffffff;"><![endif]-->
 
@@ -1018,7 +1018,7 @@ Banco: {{ $array['propiedad']->cuentasBancaria->nombre_banco }}
         </div>
       </div>
     </div>    <div style="background-color:#161821;">
-      <div style="Margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid ">
+      <div style="margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid ">
         <div style="border-collapse: collapse;display: table;width: 100%;background-color:#ffffff;">
           <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background-color:#161821;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width: 625px;"><tr class="layout-full-width" style="background-color:#ffffff;"><![endif]-->
 
@@ -1042,7 +1042,7 @@ Banco: {{ $array['propiedad']->cuentasBancaria->nombre_banco }}
         </div>
       </div>
     </div>    <div style="background-color:transparent;">
-      <div style="Margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: transparent;" class="block-grid ">
+      <div style="margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: transparent;" class="block-grid ">
         <div style="border-collapse: collapse;display: table;width: 100%;background-color:transparent;">
           <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background-color:transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width: 625px;"><tr class="layout-full-width" style="background-color:transparent;"><![endif]-->
 

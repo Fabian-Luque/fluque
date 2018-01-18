@@ -746,11 +746,11 @@ class MotorRaController extends Controller
                 'propiedad'     => $propiedad,
                 'cliente'       => $reserva->cliente,
                 'reserva'       => $reserva
-            );
+            ); 
 
             $this->EnvioCorreo(
                 $propiedad,
-                $reserva->cliente,
+                $reserva->cliente->email,
                 $arr,
                 "correos.comprobante_reserva_motor",
                 "",

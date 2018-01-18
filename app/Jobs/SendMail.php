@@ -54,7 +54,7 @@ class SendMail extends Job implements ShouldQueue {
                     'habitacion', 
                     function($query) use ($propiedad_id) {
                         $query->where('propiedad_id', $propiedad_id);
-                    }
+                    }$array['arr']['reserva']
                 )->orderby('id','DESC')
                 ->where('numero_reserva', '!=', null)
                 ->where('n_reserva_motor', $array['arr']['reserva']->n_reserva_motor);
