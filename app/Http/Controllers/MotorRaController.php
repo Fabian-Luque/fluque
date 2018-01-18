@@ -747,7 +747,7 @@ class MotorRaController extends Controller
                 }
             )->orderby('id','DESC')
             ->where('numero_reserva', '!=', null)
-            ->where('numero_reserva', '!=', null);
+            ->where('n_reserva_motor', $reserva->n_reserva_motor);
             
             $arr = array(
                 'propiedad'     => $propiedad,
