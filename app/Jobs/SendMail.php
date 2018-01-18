@@ -59,6 +59,8 @@ class SendMail extends Job implements ShouldQueue {
                 ->where('numero_reserva', '!=', null)
                 ->where('n_reserva_motor', $array['arr']['reserva']->n_reserva_motor);
 
+                echo "comprobante_reservas!!!";
+
                 $this->array['reservas_pdf'] = $reservas;
             } 
 
