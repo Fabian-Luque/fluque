@@ -335,6 +335,18 @@ class MotorRaController extends Controller
         // }])
         // ->get();
 
+
+        //consulta master 
+
+        // $clientes = Cliente::with('tipoCliente')->with('region')->with('pais')
+        // ->with(['reservas' => function ($query) use($propiedad_id){
+        //     $query->whereHas('tipoHabitacion', function($query) use($propiedad_id){
+        //         $query->where('propiedad_id', $propiedad_id);
+        //     });
+        //     $query->where('habitacion_id', null)->whereIn('estado_reserva_id', [1,2,3,4,5])->orderby('n_reserva_motor')->with('TipoMoneda')->with('tipoHabitacion');
+        // }])
+        // ->get();
+
         $clientes = Cliente::where(function ($query) use ($propiedad_id) {
             $query->whereHas('reservas.tipoHabitacion', function($query) use($propiedad_id){
                 $query->where('propiedad_id', $propiedad_id);
