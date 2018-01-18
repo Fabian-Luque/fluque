@@ -35,8 +35,6 @@ class SendMail extends Job implements ShouldQueue {
             'arr'             => $arr
         ); 
         echo "\nse construyo\n";
-
-        echo $propiedad;
     }
 
     /**

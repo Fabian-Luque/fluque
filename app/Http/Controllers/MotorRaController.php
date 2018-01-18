@@ -751,7 +751,7 @@ class MotorRaController extends Controller
             
             $arr = array(
                 'propiedad'     => $propiedad,
-                'reservas_pdf'  => $reservas,
+                'reservas_pdf'  => $reservas->toArray(),
                 'cliente'       => $reserva->cliente,
                 'reserva'       => $reserva
             );
