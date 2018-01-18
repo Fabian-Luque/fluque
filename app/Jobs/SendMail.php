@@ -32,7 +32,8 @@ class SendMail extends Job implements ShouldQueue {
             'vista_pdf'       => $vista_pdf,
             'nombre_pdf'      => $nombre_pdf,
             'arr'             => $arr,
-            'opp'             => $opp
+            'opp'             => $opp,
+            'reservas_pdf'    => null
         ); 
     }
 
@@ -61,12 +62,19 @@ class SendMail extends Job implements ShouldQueue {
 
                 echo "comprobante_reservas!!!";
 
-                $this->array['reservas_pdf'] = $reservas;
-            } 
+                $data_cooreo = [
+                    'reservas_pdf' => $reservas,
+                    'array'        => $array
+                ];
+            } else {
+                $data_cooreo = [
+                    'array' => $array
+                ];
+            }
 
             $mailer->send(
                 $this->array['vista_coreo'], 
-                ['array' => $array],
+                $data_cooreo,
                 function($message) use ($array) {
                     $message->to(
                         $array['cliente_email'], 
