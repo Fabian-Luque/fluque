@@ -749,6 +749,10 @@ class MotorRaController extends Controller
             ->where('numero_reserva', '!=', null)
             ->where('n_reserva_motor', $reserva->n_reserva_motor);
             
+            foreach ($reservas as $res) {
+                $res = $res->toArray();
+            }
+
             $arr = array(
                 'propiedad'     => $propiedad,
                 'reservas_pdf'  => $reservas->toArray(),
