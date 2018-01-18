@@ -1182,7 +1182,8 @@ class PDFController extends Controller {
                     "pdf.comprobante_reserva_resumen",
                     "comprobante_reserva.pdf",
                     $request->opcion,
-                    $correo_prop
+                    $correo_prop,
+                    ""
                 );
             } else {
 
@@ -1206,7 +1207,8 @@ class PDFController extends Controller {
                     "pdf.comprobante_reserva_resumen",
                     "comprobante_reserva.pdf",
                     $request->opcion,
-                    $correo_prop
+                    $correo_prop,
+                    ""
                 );
             }
         } elseif($tipo_moneda_reservas == 2){
@@ -1230,7 +1232,8 @@ class PDFController extends Controller {
                 "pdf.comprobante_reserva_resumen",
                 "comprobante_reserva.pdf",
                 $request->opcion,
-                $correo_prop
+                $correo_prop,
+                ""
             );
         }   
 

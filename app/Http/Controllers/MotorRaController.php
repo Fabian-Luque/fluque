@@ -653,6 +653,7 @@ class MotorRaController extends Controller
                         "",
                         "",
                         1,
+                        "",
                         ""
                     );
                 }
@@ -740,22 +741,9 @@ class MotorRaController extends Controller
         $reserva->update(array('numero_reserva' => $numero , 'habitacion_id' => $habitacion_id));
 
         if ($request->has('terminado')) {
-            $reservas = Reserva::whereHas(
-                'habitacion', 
-                function($query) use ($propiedad_id) {
-                    $query->where('propiedad_id', $propiedad_id);
-                }
-            )->orderby('id','DESC')
-            ->where('numero_reserva', '!=', null)
-            ->where('n_reserva_motor', $reserva->n_reserva_motor);
-            
-            foreach ($reservas as $res) {
-                $res = $res->toArray();
-            }
 
             $arr = array(
                 'propiedad'     => $propiedad,
-                'reservas_pdf'  => $reservas,
                 'cliente'       => $reserva->cliente,
                 'reserva'       => $reserva
             );
@@ -768,7 +756,8 @@ class MotorRaController extends Controller
                 "",
                 "",
                 1,
-                ""
+                "",
+                "reservas-varias"
             );
 
             $retorno['errors'] = false;

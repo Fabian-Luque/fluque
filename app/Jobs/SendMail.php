@@ -10,7 +10,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use \Mail;
 use PDF;
-
+use App\Reserva;
 
 class SendMail extends Job implements ShouldQueue {
     use InteractsWithQueue, SerializesModels;
@@ -22,8 +22,7 @@ class SendMail extends Job implements ShouldQueue {
      *
      * @return void
      */ 
-    public function __construct(Propiedad $propiedad, $cliente_email, $propiedad_email, $vista_coreo, $vista_pdf, $nombre_pdf, $arr) {
-        echo "\nempezo";
+    public function __construct(Propiedad $propiedad, $cliente_email, $propiedad_email, $vista_coreo, $vista_pdf, $nombre_pdf, $arr, $opp) {
 
         $this->array = array(
             'propiedad'       => $propiedad,
@@ -32,9 +31,9 @@ class SendMail extends Job implements ShouldQueue {
             'vista_coreo'     => $vista_coreo,
             'vista_pdf'       => $vista_pdf,
             'nombre_pdf'      => $nombre_pdf,
-            'arr'             => $arr
+            'arr'             => $arr,
+            'opp'             => $opp
         ); 
-        echo "\nse construyo\n";
     }
 
     /**
@@ -46,6 +45,21 @@ class SendMail extends Job implements ShouldQueue {
     public function handle(Mailer $mailer) {
         echo "funcaaa";
         $array = $this->array;
+
+        if (strcmp($this->array['opp'], "reservas-varias") == 0) {
+            $propiedad_id = $array['propiedad']->id;
+
+            $reservas = Reserva::whereHas(
+                'habitacion', 
+                function($query) use ($propiedad_id) {
+                    $query->where('propiedad_id', $propiedad_id);
+                }
+            )->orderby('id','DESC')
+            ->where('numero_reserva', '!=', null)
+            ->where('n_reserva_motor', $array['arr']->n_reserva_motor);
+
+            array_push($array['arr'], "reservas_pdf" => $reservas);
+        } 
 
         try {
             $mailer->send(

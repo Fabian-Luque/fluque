@@ -14,7 +14,7 @@ use App\Jobs\SendMail;
 class Controller extends BaseController {
     use AuthorizesRequests, AuthorizesResources, DispatchesJobs, ValidatesRequests;
 
-    public function EnvioCorreo(Propiedad $propiedad, $cliente_email, $arr, $vista_coreo, $vista_pdf, $nombre_pdf, $opcion, $propiedad_email) {
+    public function EnvioCorreo(Propiedad $propiedad, $cliente_email, $arr, $vista_coreo, $vista_pdf, $nombre_pdf, $opcion, $propiedad_email, $opp) {
 
         if ($opcion == 0) { // solo descarga
             $pdf = PDF::loadView(
@@ -31,7 +31,8 @@ class Controller extends BaseController {
                 $vista_coreo,
                 $vista_pdf,
                 $nombre_pdf,
-                $arr
+                $arr,
+                $opp
             );
 
             $this->dispatch($job);
@@ -44,7 +45,8 @@ class Controller extends BaseController {
                 $vista_coreo,
                 $vista_pdf,
                 $nombre_pdf,
-                $arr
+                $arr,
+                $opp
             );
 
             $this->dispatch($job);
