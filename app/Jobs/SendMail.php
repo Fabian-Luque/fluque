@@ -44,7 +44,6 @@ class SendMail extends Job implements ShouldQueue {
      * @return void
      */
     public function handle(Mailer $mailer) {
-        echo "funcaaa";
         $array = $this->array;
 
         try {
@@ -60,21 +59,27 @@ class SendMail extends Job implements ShouldQueue {
                 ->where('numero_reserva', '!=', null)
                 ->where('n_reserva_motor', $array['arr']['reserva']->n_reserva_motor);
 
-                echo "comprobante_reservas!!!";
+                $iva = ($array['arr']['reserva']->monto_total * 19) / 100;
+                $subtotal = $array['arr']['reserva']->monto_total - $iva;
 
-                $data_cooreo = [
+                $porpagar = $array['arr']['reserva']->monto_total - $array['arr']['reserva']->monto_por_pagar;
+
+                $data_correo = [
                     'reservas_pdf' => $reservas,
-                    'array'        => $array
+                    'array'        => $array,
+                    'iva'          => $iva,
+                    'subtotal'     => $subtotal,
+                    'porpagar'     => $porpagar
                 ];
             } else {
-                $data_cooreo = [
+                $data_correo = [
                     'array' => $array
                 ];
             }
 
             $mailer->send(
                 $this->array['vista_coreo'], 
-                $data_cooreo,
+                $data_correo,
                 function($message) use ($array) {
                     $message->to(
                         $array['cliente_email'], 
@@ -101,7 +106,6 @@ class SendMail extends Job implements ShouldQueue {
         } catch(\Exception $e){
             echo "error ".$e->getMessage();
         }
-        echo "\nexito";
     }
 
     public function failed() {

@@ -733,8 +733,7 @@ a[x-apple-data-detectors=true] {
   <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;">
     <p style="margin: 0;font-size: 12px;line-height: 14px">
 
-    $iva = ($array['arr']['reserva']->monto_total * 19) / 100;
-    $subtotal = $array['arr']['reserva']->monto_total - $iva;
+
 
   {{ $subtotal }}
 </p></div>  
@@ -781,9 +780,6 @@ a[x-apple-data-detectors=true] {
                     <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 0px; padding-left: 0px; padding-top: 5px; padding-bottom: 0px;"><![endif]-->
 <div style="color:#555555;line-height:150%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 0px; padding-left: 0px; padding-top: 5px; padding-bottom: 0px;">  
   <div style="font-size:12px;line-height:18px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 12px;line-height: 18px"><span style="color: rgb(0, 0, 0); font-size: 12px; line-height: 18px;"><strong>
-
-$porpagar = $array['arr']['reserva']->monto_total - $array['arr']['reserva']->monto_por_pagar;
-
   {{ $porpagar }}
 </strong></span></p></div> 
 </div>
