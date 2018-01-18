@@ -857,32 +857,32 @@ a[x-apple-data-detectors=true] {
   </p>
   <p style="margin: 0;font-size: 12px;line-height: 18px">
     <span style="color: rgb(0, 0, 0); font-size: 12px; line-height: 18px;">
-    Titular: {{ $array['propiedad']->cuentasBancaria->titular }}
+    Titular: {{ $array['propiedad']->cuentasBancaria[0]->titular }}
   </span>
   </p>
   <p style="margin: 0;font-size: 12px;line-height: 18px">
   <span style="color: rgb(0, 0, 0); font-size: 12px; line-height: 18px;">
-  Rut: {{ $array['propiedad']->cuentasBancaria->rut }}
+  Rut: {{ $array['propiedad']->cuentasBancaria[0]->rut }}
 </span>
 </p>
 <p style="margin: 0;font-size: 12px;line-height: 18px">
   <span style="color: rgb(0, 0, 0); font-size: 12px; line-height: 18px;">
-  Email: {{ $array['propiedad']->cuentasBancaria->email }}
+  Email: {{ $array['propiedad']->cuentasBancaria[0]->email }}
 </span>
 </p>
 <p style="margin: 0;font-size: 12px;line-height: 18px">
 <span style="color: rgb(0, 0, 0); font-size: 12px; line-height: 18px;">
-Banco: {{ $array['propiedad']->cuentasBancaria->nombre_banco }}
+Banco: {{ $array['propiedad']->cuentasBancaria[0]->nombre_banco }}
 </span>
 </p>
 <p style="margin: 0;font-size: 12px;line-height: 18px">
 <span style="color: rgb(0, 0, 0); font-size: 12px; line-height: 18px;">
-  Numero cuenta: {{ $array['propiedad']->cuentasBancaria->numero_cuenta }}
+  Numero cuenta: {{ $array['propiedad']->cuentasBancaria[0]->numero_cuenta }}
 </span>
 </p>
 <p style="margin: 0;font-size: 12px;line-height: 18px">
   <span style="color: rgb(0, 0, 0); font-size: 12px; line-height: 18px;">
-  Tipo cuenta: {{ $array['propiedad']->cuentasBancaria->tipoCuenta->nombre }}
+  Tipo cuenta: {{ $array['propiedad']->cuentasBancaria[0]->tipoCuenta->nombre }}
 </span>
 </p>
 </div> 
