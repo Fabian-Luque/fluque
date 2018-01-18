@@ -46,22 +46,22 @@ class SendMail extends Job implements ShouldQueue {
         echo "funcaaa";
         $array = $this->array;
 
-        if (strcmp($this->array['opp'], "reservas-varias") == 0) {
-            $propiedad_id = $array['propiedad']->id;
-
-            $reservas = Reserva::whereHas(
-                'habitacion', 
-                function($query) use ($propiedad_id) {
-                    $query->where('propiedad_id', $propiedad_id);
-                }
-            )->orderby('id','DESC')
-            ->where('numero_reserva', '!=', null)
-            ->where('n_reserva_motor', $array['arr']->n_reserva_motor);
-
-            $this->array['reservas_pdf'] = $reservas;
-        } 
-
         try {
+            if (strcmp($this->array['opp'], "reservas-varias") == 0) {
+                $propiedad_id = $array['propiedad']->id;
+
+                $reservas = Reserva::whereHas(
+                    'habitacion', 
+                    function($query) use ($propiedad_id) {
+                        $query->where('propiedad_id', $propiedad_id);
+                    }
+                )->orderby('id','DESC')
+                ->where('numero_reserva', '!=', null)
+                ->where('n_reserva_motor', $array['arr']['reserva']->n_reserva_motor);
+
+                $this->array['reservas_pdf'] = $reservas;
+            } 
+            
             $mailer->send(
                 $this->array['vista_coreo'], 
                 ['array' => $array],
