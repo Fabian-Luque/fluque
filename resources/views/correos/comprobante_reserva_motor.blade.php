@@ -547,7 +547,7 @@ a[x-apple-data-detectors=true] {
                   
                     <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 0px; padding-left: 50px; padding-top: 0px; padding-bottom: 0px;"><![endif]-->
 <div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 0px; padding-left: 50px; padding-top: 0px; padding-bottom: 0px;"> 
-  <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 12px;line-height: 14px;text-align: left"><span style="color: rgb(0, 0, 0); font-size: 12px; line-height: 14px;">{{ $reserva->checkin->format('d-m-Y') }}-{{ $reserva->checkout->format('d-m-Y') }}</span></p></div> 
+  <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 12px;line-height: 14px;text-align: left"><span style="color: rgb(0, 0, 0); font-size: 12px; line-height: 14px;">{{ $reserva['checkin'] }}-{{ $reserva->checkout->format('d-m-Y') }}</span></p></div> 
 </div>
 <!--[if mso]></td></tr></table><![endif]-->
 
