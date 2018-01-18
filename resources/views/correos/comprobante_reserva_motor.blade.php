@@ -533,9 +533,8 @@ a[x-apple-data-detectors=true] {
         </div>
       </div>
     </div>    <div style="background-color:#161821;">
-      <div style="Margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid four-up ">
-
-@foreach({{ $array['reservas_pdf'] }} as $reserva)    
+      <div style="margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid four-up ">
+@foreach($array['reservas_pdf'] as $reserva)    
 <!-- cada reserva -->
         <div style="border-collapse: collapse;display: table;width: 100%;background-color:#ffffff;">
           <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background-color:#161821;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width: 625px;"><tr class="layout-full-width" style="background-color:#ffffff;"><![endif]-->
@@ -733,10 +732,9 @@ a[x-apple-data-detectors=true] {
 <div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 0px; padding-left: 0px; padding-top: 0px; padding-bottom: 0px;">  
   <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;">
     <p style="margin: 0;font-size: 12px;line-height: 14px">
-  <?php  
+
     $iva = ($array['reserva']->monto_total * 19) / 100;
     $subtotal = $array['reserva']->monto_total - $iva;
-  ?>
 
   {{ $subtotal }}
 </p></div>  
@@ -783,9 +781,9 @@ a[x-apple-data-detectors=true] {
                     <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 0px; padding-left: 0px; padding-top: 5px; padding-bottom: 0px;"><![endif]-->
 <div style="color:#555555;line-height:150%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 0px; padding-left: 0px; padding-top: 5px; padding-bottom: 0px;">  
   <div style="font-size:12px;line-height:18px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 12px;line-height: 18px"><span style="color: rgb(0, 0, 0); font-size: 12px; line-height: 18px;"><strong>
-<?php 
-  $porpagar = $array['reserva']->monto_total - $array['reserva']->monto_por_pagar;
-?>
+
+$porpagar = $array['reserva']->monto_total - $array['reserva']->monto_por_pagar;
+
   {{ $porpagar }}
 </strong></span></p></div> 
 </div>
@@ -967,11 +965,9 @@ Banco: {{ $array['propiedad']->cuentasBancaria->nombre_banco }}
 
                   
                     <div style="font-size: 16px;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; text-align: center;"><div style="padding-left: 20px; padding-right: 20px;">
-<?php 
-$prop = $array['propiedad'];
-?>
+
   <ul>
-          @foreach($prop->politicas as $politica)
+          @foreach($array['propiedad']->politicas as $politica)
             <li>{{ $politica->descripcion }}</li>
           @endforeach
   </ul>
