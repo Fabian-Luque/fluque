@@ -675,7 +675,7 @@ class MotorRaController extends Controller
     public function prueba(Request $request) {
         $propiedad_id = $request->prop_id;
         $reservas = Reserva::whereHas(
-                    'habitacion',
+                    'tipoHabitacion',
                     function($query) use ($propiedad_id) {
                         $query->where('propiedad_id', $propiedad_id);
                     }
