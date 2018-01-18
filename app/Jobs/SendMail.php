@@ -32,8 +32,7 @@ class SendMail extends Job implements ShouldQueue {
             'vista_pdf'       => $vista_pdf,
             'nombre_pdf'      => $nombre_pdf,
             'arr'             => $arr,
-            'opp'             => $opp,
-            'reservas_pdf'    => null
+            'opp'             => $opp
         ); 
     }
 
@@ -60,10 +59,11 @@ class SendMail extends Job implements ShouldQueue {
                 ->where('n_reserva_motor', $array['arr']['reserva']->n_reserva_motor);
 
                 $iva = ($array['arr']['reserva']->monto_total * 19) / 100;
+                echo "iva".$iva;
                 $subtotal = $array['arr']['reserva']->monto_total - $iva;
-
+                echo "subtotal".$subtotal;
                 $porpagar = $array['arr']['reserva']->monto_total - $array['arr']['reserva']->monto_por_pagar;
-
+                echo "porpagar".$porpagar;
                 $data_correo = [
                     'reservas_pdf' => $reservas,
                     'array'        => $array,
