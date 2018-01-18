@@ -347,6 +347,15 @@ class MotorRaController extends Controller
         // }])
         // ->get();
 
+
+        // return $clientes = Cliente::whereHas('reservas.tipoHabitacion', function($query) use($propiedad_id){
+        //     $query->where('propiedad_id', $propiedad_id);
+        // })
+        // ->with(['reservas' => function ($query){
+        // $query->where('habitacion_id', null)->where('tipo_fuente_id', 1)->whereIn('estado_reserva_id', [1,2,3,4,5])->orderby('n_reserva_motor')->with('TipoMoneda')->with('tipoHabitacion');
+        // }])
+        // ->get();
+
         $clientes = Cliente::where(function ($query) use ($propiedad_id) {
             $query->whereHas('reservas.tipoHabitacion', function($query) use($propiedad_id){
                 $query->where('propiedad_id', $propiedad_id);
@@ -355,9 +364,17 @@ class MotorRaController extends Controller
                 $query->where('tipo_fuente_id', 1)->where('habitacion_id', null);
             });
         })
-        ->with(['reservas' => function ($query){
-        $query->where('habitacion_id', null)->where('tipo_fuente_id', 1)->whereIn('estado_reserva_id', [1,2,3,4,5])->orderby('n_reserva_motor')->with('TipoMoneda')->with('tipoHabitacion');
-        }])
+        ->with(['reservas' => function ($query) use ($propiedad_id){
+                $query->whereHas('tipoHabitacion', function($query) use($propiedad_id){
+                        $query->where('propiedad_id', $propiedad_id);
+                    })
+                    ->where('habitacion_id', null)
+                    ->where('tipo_fuente_id', 1)
+                    ->whereIn('estado_reserva_id', [1,2,3,4,5])
+                    ->orderby('n_reserva_motor')
+                    ->with('TipoMoneda')
+                    ->with('tipoHabitacion');
+            }])
         ->get();
 
 
@@ -369,7 +386,7 @@ class MotorRaController extends Controller
             $total    = 0;
             $aux_reservas = []; //Arreglo aux de reserva del mismo cliente y misma operacion desde el motor
 
-                $reservas = $cliente->reservas; 
+                $reservas = $cliente['reservas']; 
                 $cantidad = count($reservas) - 1;
                 foreach ($reservas as $reserva) {
 
@@ -511,6 +528,7 @@ class MotorRaController extends Controller
             }
         }
 
+        // return $data;
 
         return array_reverse($data);
 
