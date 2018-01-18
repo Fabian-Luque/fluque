@@ -65,7 +65,7 @@ class SendMail extends Job implements ShouldQueue {
                 $porpagar = $array['arr']['reserva']->monto_total - $array['arr']['reserva']->monto_por_pagar;
                 echo "porpagar".$porpagar;
                 $data_correo = [
-                    'reservas_pdf' => $reservas,
+                    'reservaspdf'  => $reservas,
                     'array'        => $array,
                     'iva'          => $iva,
                     'subtotal'     => $subtotal,
