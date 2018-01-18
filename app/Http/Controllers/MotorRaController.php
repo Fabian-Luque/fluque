@@ -680,7 +680,6 @@ class MotorRaController extends Controller
                         $query->where('propiedad_id', $propiedad_id);
                     }
                 )->orderby('id','DESC')
-                ->where('numero_reserva', '!=', null)
                 ->where('n_reserva_motor', $request->n_reserva_motor);
         return Response::json($reservas);
     }
