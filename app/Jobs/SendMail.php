@@ -50,20 +50,25 @@ class SendMail extends Job implements ShouldQueue {
                 $propiedad_id = $array['propiedad']->id;
 
                 $reservas = Reserva::whereHas(
-                    'habitacion', 
+                    'tipoHabitacion',
                     function($query) use ($propiedad_id) {
                         $query->where('propiedad_id', $propiedad_id);
                     }
                 )->orderby('id','DESC')
-                ->where('numero_reserva', '!=', null)
-                ->where('n_reserva_motor', $array['arr']['reserva']->n_reserva_motor);
+                ->where('n_reserva_motor', $array['arr']['reserva']->n_reserva_motor)
+                ->whereIn('estado_reserva_id', [1,2,3,4,5])
+                ->get();
 
-                $iva = ($array['arr']['reserva']->monto_total * 19) / 100;
-                echo "iva".$iva;
-                $subtotal = $array['arr']['reserva']->monto_total - $iva;
-                echo "subtotal".$subtotal;
-                $porpagar = $array['arr']['reserva']->monto_total - $array['arr']['reserva']->monto_por_pagar;
-                echo "porpagar".$porpagar;
+                $iva = 0;
+                $subtotal = 0;
+                $porpagar = 0;
+
+                foreach ($reservas as $res) {
+                    $iva += ($res->monto_total * 19) / 100;
+                    $subtotal = $res->monto_total - $iva;
+                    $porpagar = $res->monto_total - $res->monto_por_pagar;
+                }
+
                 $data_correo = [
                     'reservaspdf'  => $reservas,
                     'array'        => $array,

@@ -460,7 +460,10 @@ a[x-apple-data-detectors=true] {
           <!--[if (mso)|(IE)]></td></tr></table></td></tr></table><![endif]-->
         </div>
       </div>
-    </div>    <div style="background-color:#161821;">
+    </div>    
+
+@foreach($reservaspdf as $reserva) 
+    <div style="background-color:#161821;">
       <div style="margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid four-up ">
         <div style="border-collapse: collapse;display: table;width: 100%;background-color:#ffffff;">
           <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background-color:#161821;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width: 625px;"><tr class="layout-full-width" style="background-color:#ffffff;"><![endif]-->
@@ -532,9 +535,10 @@ a[x-apple-data-detectors=true] {
           <!--[if (mso)|(IE)]></td></tr></table></td></tr></table><![endif]-->
         </div>
       </div>
-    </div>    <div style="background-color:#161821;">
+    </div>    
+    <div style="background-color:#161821;">
       <div style="margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid four-up ">
-@foreach($reservas_pdf as $reserva)    
+   
 <!-- cada reserva -->
         <div style="border-collapse: collapse;display: table;width: 100%;background-color:#ffffff;">
           <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background-color:#161821;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width: 625px;"><tr class="layout-full-width" style="background-color:#ffffff;"><![endif]-->
@@ -604,10 +608,10 @@ a[x-apple-data-detectors=true] {
           <!--[if (mso)|(IE)]></td></tr></table></td></tr></table><![endif]-->
         </div>
 <!-- cada reserva -->
-@endforeach
-
       </div>
-    </div>    <div style="background-color:#161821;">
+    </div>    
+@endforeach
+    <div style="background-color:#161821;">
       <div style="margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid ">
         <div style="border-collapse: collapse;display: table;width: 100%;background-color:#ffffff;">
           <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background-color:#161821;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width: 625px;"><tr class="layout-full-width" style="background-color:#ffffff;"><![endif]-->
