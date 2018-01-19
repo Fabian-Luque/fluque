@@ -700,28 +700,28 @@ class MotorRaController extends Controller
                 $reserva->monto_deposito        = $habitacion['monto_deposito'];
                 $reserva->n_reserva_motor       = $n_reserva_motor + 1;
                 $reserva->save();
+            }
 
-                if ($propiedad_id != null) {
-                    Event::fire(
-                        new ReservasMotorEvent($propiedad_id)
-                    );
+            if ($propiedad_id != null) {
+                Event::fire(
+                    new ReservasMotorEvent($propiedad_id)
+                );
 
-                    $arr = array(
-                        'propiedad'     => $propiedad
-                    );
+                $arr = array(
+                    'propiedad'     => $propiedad
+                );
 
-                    $this->EnvioCorreo(
-                        $propiedad,
-                        $cliente->email,
-                        $arr,
-                        "correos.aviso_reserva_motor",
-                        "",
-                        "",
-                        1,
-                        "",
-                        ""
-                    );
-                }
+                $this->EnvioCorreo(
+                    $propiedad,
+                    $cliente->email,
+                    $arr,
+                    "correos.aviso_reserva_motor",
+                    "",
+                    "",
+                    1,
+                    "",
+                    ""
+                );
             }
         } else {
             $retorno = array(
