@@ -167,8 +167,8 @@ class UserDashController extends Controller {
             'phone'                 => '',
             'rol_id'                => 'numeric',
             'estado_id'             => 'numeric',
-            'latitud'               => 'required',
-            'longitud'              => 'required',
+            'latitud'               => '',
+            'longitud'              => '',
         );
 
         $validator = Validator::make($request->all(), $rules);
