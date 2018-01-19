@@ -499,6 +499,28 @@ a[x-apple-data-detectors=true] {
     </div>
   </div>
 </div>
+
+<div style="border-top:0px solid transparent;border-left:0px solid transparent;border-bottom:0px solid transparent;border-right:0px solid transparent;padding-top:5px;padding-bottom:5px;padding-right:50px;padding-left:50px">
+
+                    <table border="0" cellpadding="0" cellspacing="0" width="100%" class="m_725001896146686302divider" style="border-collapse:collapse;table-layout:fixed;border-spacing:0;vertical-align:top;min-width:100%">
+    <tbody>
+        <tr style="vertical-align:top">
+            <td class="m_725001896146686302divider_inner" style="word-break:break-word;border-collapse:collapse!important;vertical-align:top;padding-right:0px;padding-left:0px;padding-top:0px;padding-bottom:0px;min-width:100%">
+                <table class="m_725001896146686302divider_content" align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;table-layout:fixed;border-spacing:0;vertical-align:top;border-top:1px solid #161821">
+                    <tbody>
+                        <tr style="vertical-align:top">
+                            <td style="word-break:break-word;border-collapse:collapse!important;vertical-align:top">
+                                <span></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    </tbody>
+</table>
+                  
+              </div>
 <!-- aquiiiiii -->  
     <div style="background-color:#161821;">
       <div style="margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid ">
@@ -556,7 +578,7 @@ a[x-apple-data-detectors=true] {
               <!--[if (!mso)&(!IE)]><!--></div><!--<![endif]-->
               </div>
             </div>
-              <!--[if (mso)|(IE)]></td><td align="center" width="208" style=" width:208px; padding-right: 0px; padding-left: 0px; padding-top:5px; padding-bottom:5px; border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent;" valign="top"><![endif]-->
+             
             <div class="col num4" style="max-width: 320px;min-width: 208px;display: table-cell;vertical-align: top;">
               <div style="background-color: transparent; width: 100% !important;">
               <!--[if (!mso)&(!IE)]><!--><div style="border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent; padding-top:5px; padding-bottom:5px; padding-right: 0px; padding-left: 0px;"><!--<![endif]-->
@@ -603,9 +625,7 @@ a[x-apple-data-detectors=true] {
         </tr>
     </tbody>
 </table>
-                  
-                  
-                    <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 0px; padding-left: 60px; padding-top: 5px; padding-bottom: 0px;"><![endif]-->
+  
 <div style="color:#555555;line-height:150%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 0px; padding-left: 60px; padding-top: 5px; padding-bottom: 0px;"> 
   <div style="font-size:12px;line-height:18px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 12px;line-height: 18px;text-align: left"><strong><span style="color: rgb(0, 0, 0); font-size: 12px; line-height: 18px;">Por pagar:</span></strong></p></div>  
 </div>
@@ -615,7 +635,7 @@ a[x-apple-data-detectors=true] {
               <!--[if (!mso)&(!IE)]><!--></div><!--<![endif]-->
               </div>
             </div>
-              <!--[if (mso)|(IE)]></td><td align="center" width="208" style=" width:208px; padding-right: 0px; padding-left: 0px; padding-top:5px; padding-bottom:5px; border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent;" valign="top"><![endif]-->
+      
             <div class="col num4" style="max-width: 320px;min-width: 208px;display: table-cell;vertical-align: top;">
               <div style="background-color: transparent; width: 100% !important;">
               <!--[if (!mso)&(!IE)]><!--><div style="border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent; padding-top:5px; padding-bottom:5px; padding-right: 0px; padding-left: 0px;"><!--<![endif]-->
@@ -682,7 +702,10 @@ a[x-apple-data-detectors=true] {
           <!--[if (mso)|(IE)]></td></tr></table></td></tr></table><![endif]-->
         </div>
       </div>
-    </div>    <div style="background-color:#161821;">
+    </div>    
+
+
+    <div style="background-color:#161821;">
       <div style="margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid ">
         <div style="border-collapse: collapse;display: table;width: 100%;background-color:#ffffff;">
           <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background-color:#161821;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width: 625px;"><tr class="layout-full-width" style="background-color:#ffffff;"><![endif]-->
