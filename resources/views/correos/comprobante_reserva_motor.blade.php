@@ -470,34 +470,32 @@ a[x-apple-data-detectors=true] {
 <div style="background-color:#161821;">
   <div style="margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid four-up ">
     <div style="border-collapse: collapse;display: table;width: 100%;background-color:#ffffff;">
-        <center>
-        <table id="t659344" class="wdn_responsive_table flush-left" style="width: 100%;" cellpadding="10"><caption>&nbsp;</caption>
-        <thead>
-        <tr>
-        <th id="t659344_row_0col_0" style="width: 55px; text-align: left;" colspan="1">Numero</th>
-        <th id="t659344_row_0col_1" style="width: 56px; text-align: left;" colspan="1">Checkin</th>
-        <th id="t659344_row_0col_2" style="width: 64px; text-align: left;" colspan="1">Checkout</th>
-        <th id="t659344_row_0col_3" style="width: 76px; text-align: left;" colspan="1">Huespedes</th>
-        <th id="t659344_row_0col_4" style="width: 53px; text-align: left;" colspan="1">Noches</th>
-        <th id="t659344_row_0col_5" style="width: 52.5px; text-align: left;" colspan="1">Total</th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach($reservaspdf as $reserva)
-        <tr>
-        <td style="width: 55px; text-align: left;" colspan="1" headers="t659344_row_0col_0" data-header="Numero
-        ">Numeror</td>
-        <td style="width: 56px; text-align: left;" colspan="1" headers="t659344_row_0col_1" data-header="Checkin">{{ $reserva['checkin'] }}</td>
-        <td style="width: 64px; text-align: left;" colspan="1" headers="t659344_row_0col_2" data-header="Checkout
-        ">{{ $reserva->checkout->format('d-m-Y') }}</td>
-        <td style="width: 76px; text-align: left;" colspan="1" headers="t659344_row_0col_3" data-header="Huespedes">{{ $reserva->ocupacion }}</td>
-        <td style="width: 53px; text-align: left;" colspan="1" headers="t659344_row_0col_4" data-header="Noches">{{ $reserva->noches }}</td>
-        <td style="width: 52.5px; text-align: left;" colspan="1" headers="t659344_row_0col_5" data-header="Total">{{ $reserva->monto_total }}</td>
-        </tr>
-        @endforeach
-        </tbody>
-        </table>
-        </center>
+        
+<div style="padding-left: 45px; padding-right: 45px;"><center>
+<table id="t659344" class="wdn_responsive_table flush-left" style="width: 99.0451%;" cellpadding="10"><caption>&nbsp;</caption>
+<thead>
+<tr>
+<th id="t659344_row_0col_1" style="width: 14%; text-align: left;" colspan="1">Checkin</th>
+<th id="t659344_row_0col_2" style="width: 16%; text-align: left;" colspan="1">Checkout</th>
+<th id="t659344_row_0col_3" style="width: 19%; text-align: left;" colspan="1">Huespedes</th>
+<th id="t659344_row_0col_4" style="width: 14%; text-align: left;" colspan="1">Noches</th>
+<th id="t659344_row_0col_5" style="width: 12.9735%; text-align: left;" colspan="1">Total</th>
+</tr>
+</thead>
+<tbody>
+  @foreach($reservaspdf as $reserva)
+<tr>
+<td style="width: 14%; text-align: left;" colspan="1" headers="t659344_row_0col_1" data-header="Checkin">{{ $reserva->checkin->format('d-m-Y') }}</td>
+<td style="width: 16%; text-align: left;" colspan="1" headers="t659344_row_0col_2" data-header="Checkout
+">{{ $reserva->checkout->format('d-m-Y') }}</td>
+<td style="width: 19%; text-align: left;" colspan="1" headers="t659344_row_0col_3" data-header="Huespedes">{{ $reserva->ocupacion }}</td>
+<td style="width: 14%; text-align: left;" colspan="1" headers="t659344_row_0col_4" data-header="Noches">{{ $reserva->noches }}</td>
+<td style="width: 12.9735%; text-align: left;" colspan="1" headers="t659344_row_0col_5" data-header="Total">{{ $reserva->monto_total }}</td>
+</tr>
+@endforeach
+</tbody>
+</table>
+</center></div>
     </div>
   </div>
 </div>
