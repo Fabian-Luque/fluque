@@ -2,30 +2,20 @@
 
 namespace App\Listeners;
 
-use App\Events\ReservasMapaEvent;
+use App\Events\ReservasMotorEvent;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use LRedis;
 
-class ReservasMapaEventListener
-{
-    /**
-     * Create the event listener.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
+class ReservasMapaEventListener {
+    CONST EVENT = 'message';
+    CONST CHANNEL = 'message';
+
+    public function __construct() {
     }
 
-    /**
-     * Handle the event.
-     *
-     * @param  ReservasMapaEvent  $event
-     * @return void
-     */
-    public function handle(ReservasMapaEvent $event)
-    {
-        //
+    public function handle(ReservasMotorEvent $event) {
+        $redis = LRedis::connection();
+        $redis->publish(self::CHANNEL, json_encode($event));
     }
 }
