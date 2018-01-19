@@ -379,15 +379,17 @@ class MotorRaController extends Controller
 
 
         $data = []; //Arreglo principal
-        $aux = 0; //aux de n_reserva_motor
+        $aux  = 0; //aux de n_reserva_motor
+
 
         foreach ($clientes as $cliente) {
             $suma_deposito = 0;
-            $total    = 0;
-            $aux_reservas = []; //Arreglo aux de reserva del mismo cliente y misma operacion desde el motor
+            $total         = 0;
+            $aux_reservas  = []; //Arreglo aux de reserva del mismo cliente y misma operacion desde el motor
 
-                $reservas = $cliente['reservas']; 
+                $reservas = $cliente['reservas'];
                 $cantidad = count($reservas) - 1;
+
                 foreach ($reservas as $reserva) {
 
                 if ($aux != $reserva->n_reserva_motor) {
@@ -516,7 +518,7 @@ class MotorRaController extends Controller
                         $aux_cliente['reservas']                = $aux_reservas;
 
                         array_push($data, $aux_cliente);
-                        $aux_reservas = [];
+                        $aux_reservas  = [];
                         $suma_deposito = 0;
                         $total         = 0;
                     } else {
@@ -528,9 +530,42 @@ class MotorRaController extends Controller
             }
         }
 
-        // return $data;
+        $reservas_mapa = $this->getReservasMapa(
+            $propiedad_id
+        );
+        // junta reservas motor y mapa
 
-        return array_reverse($data);
+        $resultado = array_merge($data, $reservas_mapa);
+
+        $reservas_motor = [];
+        $i = 0;
+        $j = 0;
+        foreach ($resultado as $cliente) {
+                if ($i == 0) {
+                    array_push($reservas_motor, $cliente);
+                } else {
+                    $k = true;
+                    foreach ($reservas_motor as $cte) {
+                        if ($k) {
+                            if ( $cliente['reservas'][0]['created_at'] <= $cte['reservas'][0]['created_at'] ) {
+                                array_splice($reservas_motor, $j, 0, $cliente);
+                                $k = false;
+                            }
+
+                            $j++;
+                            if ($j == count($reservas_motor)) {
+                                array_push($reservas_motor, $cliente);
+                                $k = false;
+                            }
+                        }
+
+                    }
+                    $j = 0;
+                }
+            $i++;
+        }
+        return array_reverse($reservas_motor);
+
 
     }
 
