@@ -598,9 +598,6 @@ a[x-apple-data-detectors=true] {
 </table>
 </div>
 
-
-
-
         </div>
       </div>
     </div>  
