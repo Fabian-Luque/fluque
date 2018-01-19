@@ -462,155 +462,46 @@ a[x-apple-data-detectors=true] {
       </div>
     </div>    
 
-@foreach($reservaspdf as $reserva) 
-    <div style="background-color:#161821;">
-      <div style="margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid four-up ">
-        <div style="border-collapse: collapse;display: table;width: 100%;background-color:#ffffff;">
-          <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background-color:#161821;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width: 625px;"><tr class="layout-full-width" style="background-color:#ffffff;"><![endif]-->
+ 
 
-              <!--[if (mso)|(IE)]><td align="center" width="156" style=" width:156px; padding-right: 0px; padding-left: 0px; padding-top:5px; padding-bottom:5px; border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent;" valign="top"><![endif]-->
-            <div class="col num3" style="max-width: 320px;min-width: 156px;display: table-cell;vertical-align: top;">
-              <div style="background-color: transparent; width: 100% !important;">
-              <!--[if (!mso)&(!IE)]><!--><div style="border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent; padding-top:5px; padding-bottom:5px; padding-right: 0px; padding-left: 0px;"><!--<![endif]-->
 
-                  
-                    <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 0px; padding-left: 50px; padding-top: 0px; padding-bottom: 0px;"><![endif]-->
-<div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 0px; padding-left: 50px; padding-top: 0px; padding-bottom: 0px;"> 
-  <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 12px;line-height: 14px;text-align: left"><strong><span style="color: rgb(0, 0, 0); font-size: 12px; line-height: 14px;">Checkin-Checkout</span></strong></p></div>  
+
+
+<div style="background-color:#161821;">
+  <div style="margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid four-up ">
+    <div style="border-collapse: collapse;display: table;width: 100%;background-color:#ffffff;">
+        <center>
+        <table id="t659344" class="wdn_responsive_table flush-left" style="width: 100%;" cellpadding="10"><caption>&nbsp;</caption>
+        <thead>
+        <tr>
+        <th id="t659344_row_0col_0" style="width: 55px; text-align: left;" colspan="1">Numero</th>
+        <th id="t659344_row_0col_1" style="width: 56px; text-align: left;" colspan="1">Checkin</th>
+        <th id="t659344_row_0col_2" style="width: 64px; text-align: left;" colspan="1">Checkout</th>
+        <th id="t659344_row_0col_3" style="width: 76px; text-align: left;" colspan="1">Huespedes</th>
+        <th id="t659344_row_0col_4" style="width: 53px; text-align: left;" colspan="1">Noches</th>
+        <th id="t659344_row_0col_5" style="width: 52.5px; text-align: left;" colspan="1">Total</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach($reservaspdf as $reserva)
+        <tr>
+        <td style="width: 55px; text-align: left;" colspan="1" headers="t659344_row_0col_0" data-header="Numero
+        ">Numeror</td>
+        <td style="width: 56px; text-align: left;" colspan="1" headers="t659344_row_0col_1" data-header="Checkin">{{ $reserva['checkin'] }}</td>
+        <td style="width: 64px; text-align: left;" colspan="1" headers="t659344_row_0col_2" data-header="Checkout
+        ">{{ $reserva->checkout->format('d-m-Y') }}</td>
+        <td style="width: 76px; text-align: left;" colspan="1" headers="t659344_row_0col_3" data-header="Huespedes">{{ $reserva->ocupacion }}</td>
+        <td style="width: 53px; text-align: left;" colspan="1" headers="t659344_row_0col_4" data-header="Noches">{{ $reserva->noches }}</td>
+        <td style="width: 52.5px; text-align: left;" colspan="1" headers="t659344_row_0col_5" data-header="Total">{{ $reserva->monto_total }}</td>
+        </tr>
+        @endforeach
+        </tbody>
+        </table>
+        </center>
+    </div>
+  </div>
 </div>
-<!--[if mso]></td></tr></table><![endif]-->
-
-                  
-              <!--[if (!mso)&(!IE)]><!--></div><!--<![endif]-->
-              </div>
-            </div>
-              <!--[if (mso)|(IE)]></td><td align="center" width="156" style=" width:156px; padding-right: 0px; padding-left: 0px; padding-top:5px; padding-bottom:5px; border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent;" valign="top"><![endif]-->
-            <div class="col num3" style="max-width: 320px;min-width: 156px;display: table-cell;vertical-align: top;">
-              <div style="background-color: transparent; width: 100% !important;">
-              <!--[if (!mso)&(!IE)]><!--><div style="border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent; padding-top:5px; padding-bottom:5px; padding-right: 0px; padding-left: 0px;"><!--<![endif]-->
-
-                  
-                    <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 0px; padding-left: 50px; padding-top: 0px; padding-bottom: 0px;"><![endif]-->
-<div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 0px; padding-left: 50px; padding-top: 0px; padding-bottom: 0px;"> 
-  <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 12px;line-height: 14px;text-align: left"><span style="color: rgb(0, 0, 0); font-size: 12px; line-height: 14px;"><strong>Huespedes</strong></span></p></div> 
-</div>
-<!--[if mso]></td></tr></table><![endif]-->
-
-                  
-              <!--[if (!mso)&(!IE)]><!--></div><!--<![endif]-->
-              </div>
-            </div>
-              <!--[if (mso)|(IE)]></td><td align="center" width="156" style=" width:156px; padding-right: 0px; padding-left: 0px; padding-top:5px; padding-bottom:5px; border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent;" valign="top"><![endif]-->
-            <div class="col num3" style="max-width: 320px;min-width: 156px;display: table-cell;vertical-align: top;">
-              <div style="background-color: transparent; width: 100% !important;">
-              <!--[if (!mso)&(!IE)]><!--><div style="border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent; padding-top:5px; padding-bottom:5px; padding-right: 0px; padding-left: 0px;"><!--<![endif]-->
-
-                  
-                    <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 0px; padding-left: 50px; padding-top: 0px; padding-bottom: 0px;"><![endif]-->
-<div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 0px; padding-left: 50px; padding-top: 0px; padding-bottom: 0px;"> 
-  <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 12px;line-height: 14px;text-align: left"><strong><span style="color: rgb(0, 0, 0); font-size: 12px; line-height: 14px;">Noches</span></strong></p></div>  
-</div>
-<!--[if mso]></td></tr></table><![endif]-->
-
-                  
-              <!--[if (!mso)&(!IE)]><!--></div><!--<![endif]-->
-              </div>
-            </div>
-              <!--[if (mso)|(IE)]></td><td align="center" width="156" style=" width:156px; padding-right: 0px; padding-left: 0px; padding-top:5px; padding-bottom:5px; border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent;" valign="top"><![endif]-->
-            <div class="col num3" style="max-width: 320px;min-width: 156px;display: table-cell;vertical-align: top;">
-              <div style="background-color: transparent; width: 100% !important;">
-              <!--[if (!mso)&(!IE)]><!--><div style="border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent; padding-top:5px; padding-bottom:5px; padding-right: 0px; padding-left: 0px;"><!--<![endif]-->
-
-                  
-                    <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 50px; padding-left: 50px; padding-top: 0px; padding-bottom: 0px;"><![endif]-->
-<div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 50px; padding-left: 50px; padding-top: 0px; padding-bottom: 0px;">  
-  <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 12px;line-height: 14px;text-align: left"><strong><span style="color: rgb(0, 0, 0); font-size: 12px; line-height: 14px;">Total</span></strong></p></div> 
-</div>
-<!--[if mso]></td></tr></table><![endif]-->
-
-                  
-              <!--[if (!mso)&(!IE)]><!--></div><!--<![endif]-->
-              </div>
-            </div>
-          <!--[if (mso)|(IE)]></td></tr></table></td></tr></table><![endif]-->
-        </div>
-      </div>
-    </div>    
-    <div style="background-color:#161821;">
-      <div style="margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid four-up ">
-   
-<!-- cada reserva -->
-        <div style="border-collapse: collapse;display: table;width: 100%;background-color:#ffffff;">
-          <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background-color:#161821;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width: 625px;"><tr class="layout-full-width" style="background-color:#ffffff;"><![endif]-->
-
-              <!--[if (mso)|(IE)]><td align="center" width="156" style=" width:156px; padding-right: 0px; padding-left: 0px; padding-top:5px; padding-bottom:5px; border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent;" valign="top"><![endif]-->
-            <div class="col num3" style="max-width: 320px;min-width: 156px;display: table-cell;vertical-align: top;">
-              <div style="background-color: transparent; width: 100% !important;">
-              <!--[if (!mso)&(!IE)]><!--><div style="border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent; padding-top:5px; padding-bottom:5px; padding-right: 0px; padding-left: 0px;"><!--<![endif]-->
-
-                  
-                    <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 0px; padding-left: 50px; padding-top: 0px; padding-bottom: 0px;"><![endif]-->
-<div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 0px; padding-left: 50px; padding-top: 0px; padding-bottom: 0px;"> 
-  <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 12px;line-height: 14px;text-align: left"><span style="color: rgb(0, 0, 0); font-size: 12px; line-height: 14px;">{{ $reserva['checkin'] }}-{{ $reserva->checkout->format('d-m-Y') }}</span></p></div> 
-</div>
-<!--[if mso]></td></tr></table><![endif]-->
-
-                  
-              <!--[if (!mso)&(!IE)]><!--></div><!--<![endif]-->
-              </div>
-            </div>
-              <!--[if (mso)|(IE)]></td><td align="center" width="156" style=" width:156px; padding-right: 0px; padding-left: 0px; padding-top:5px; padding-bottom:5px; border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent;" valign="top"><![endif]-->
-            <div class="col num3" style="max-width: 320px;min-width: 156px;display: table-cell;vertical-align: top;">
-              <div style="background-color: transparent; width: 100% !important;">
-              <!--[if (!mso)&(!IE)]><!--><div style="border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent; padding-top:5px; padding-bottom:5px; padding-right: 0px; padding-left: 0px;"><!--<![endif]-->
-
-                  
-                    <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 0px; padding-left: 50px; padding-top: 0px; padding-bottom: 0px;"><![endif]-->
-<div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 0px; padding-left: 50px; padding-top: 0px; padding-bottom: 0px;"> 
-  <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 12px;line-height: 14px;text-align: left"><span style="color: rgb(0, 0, 0); font-size: 12px; line-height: 14px;">{{ $reserva->ocupacion }}</span></p></div>  
-</div>
-<!--[if mso]></td></tr></table><![endif]-->
-
-                  
-              <!--[if (!mso)&(!IE)]><!--></div><!--<![endif]-->
-              </div>
-            </div>
-              <!--[if (mso)|(IE)]></td><td align="center" width="156" style=" width:156px; padding-right: 0px; padding-left: 0px; padding-top:5px; padding-bottom:5px; border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent;" valign="top"><![endif]-->
-            <div class="col num3" style="max-width: 320px;min-width: 156px;display: table-cell;vertical-align: top;">
-              <div style="background-color: transparent; width: 100% !important;">
-              <!--[if (!mso)&(!IE)]><!--><div style="border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent; padding-top:5px; padding-bottom:5px; padding-right: 0px; padding-left: 0px;"><!--<![endif]-->
-
-                  
-                    <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 0px; padding-left: 50px; padding-top: 0px; padding-bottom: 0px;"><![endif]-->
-<div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 0px; padding-left: 50px; padding-top: 0px; padding-bottom: 0px;"> 
-  <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 12px;line-height: 14px;text-align: left"><span style="color: rgb(0, 0, 0); font-size: 12px; line-height: 14px;">{{ $reserva->noches }}</span></p></div> 
-</div>
-<!--[if mso]></td></tr></table><![endif]-->
-
-                  
-              <!--[if (!mso)&(!IE)]><!--></div><!--<![endif]-->
-              </div>
-            </div>
-              <!--[if (mso)|(IE)]></td><td align="center" width="156" style=" width:156px; padding-right: 0px; padding-left: 0px; padding-top:5px; padding-bottom:5px; border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent;" valign="top"><![endif]-->
-            <div class="col num3" style="max-width: 320px;min-width: 156px;display: table-cell;vertical-align: top;">
-              <div style="background-color: transparent; width: 100% !important;">
-              <!--[if (!mso)&(!IE)]><!--><div style="border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent; padding-top:5px; padding-bottom:5px; padding-right: 0px; padding-left: 0px;"><!--<![endif]-->
-
-                  
-                    <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 50px; padding-left: 50px; padding-top: 0px; padding-bottom: 0px;"><![endif]-->
-<div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 50px; padding-left: 50px; padding-top: 0px; padding-bottom: 0px;">  
-  <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 12px;line-height: 14px;text-align: left"><span style="color: rgb(0, 0, 0); font-size: 12px; line-height: 14px;">{{ $reserva->monto_total }}</span></p></div>  
-</div>
-<!--[if mso]></td></tr></table><![endif]-->
-              <!--[if (!mso)&(!IE)]><!--></div><!--<![endif]-->
-              </div>
-            </div>
-          <!--[if (mso)|(IE)]></td></tr></table></td></tr></table><![endif]-->
-        </div>
-<!-- cada reserva -->
-      </div>
-    </div>    
-@endforeach
+<!-- aquiiiiii -->  
     <div style="background-color:#161821;">
       <div style="margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid ">
         <div style="border-collapse: collapse;display: table;width: 100%;background-color:#ffffff;">
