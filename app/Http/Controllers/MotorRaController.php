@@ -326,39 +326,70 @@ class MotorRaController extends Controller
             return Response::json($retorno, 400);
         }
 
-        $clientes = Cliente::with('tipoCliente')->with('region')->with('pais')
-        ->with(['reservas' => function ($query) use($propiedad_id){
-            $query->whereHas('tipoHabitacion', function($query) use($propiedad_id){
-                $query->where('propiedad_id', $propiedad_id);
-            });
-            $query->where('habitacion_id', null)->where('tipo_fuente_id', 1)->whereIn('estado_reserva_id', [1,2,3,4,5])->orderby('n_reserva_motor')->with('TipoMoneda')->with('tipoHabitacion');
-        }])
-        ->get();
-
-        // $clientes = Cliente::where(function ($query) use ($propiedad_id) {
-        //     $query->whereHas('reservas.tipoHabitacion', function($query) use($propiedad_id){
+        // $clientes = Cliente::with('tipoCliente')->with('region')->with('pais')
+        // ->with(['reservas' => function ($query) use($propiedad_id){
+        //     $query->whereHas('tipoHabitacion', function($query) use($propiedad_id){
         //         $query->where('propiedad_id', $propiedad_id);
         //     });
-        //     $query->whereHas('reservas', function($query){
-        //         $query->where('tipo_fuente_id', 1)->where('habitacion_id', null);
-        //     });
-        // })
-        // ->with(['reservas' => function ($query){
-        // $query->whereIn('estado_reserva_id', [1,2,3,4,5])->orderby('n_reserva_motor')->with('TipoMoneda')->with('tipoHabitacion');
+        //     $query->where('habitacion_id', null)->where('tipo_fuente_id', 1)->whereIn('estado_reserva_id', [1,2,3,4,5])->orderby('n_reserva_motor')->with('TipoMoneda')->with('tipoHabitacion');
         // }])
         // ->get();
 
 
+        //consulta master 
+
+        // $clientes = Cliente::with('tipoCliente')->with('region')->with('pais')
+        // ->with(['reservas' => function ($query) use($propiedad_id){
+        //     $query->whereHas('tipoHabitacion', function($query) use($propiedad_id){
+        //         $query->where('propiedad_id', $propiedad_id);
+        //     });
+        //     $query->where('habitacion_id', null)->whereIn('estado_reserva_id', [1,2,3,4,5])->orderby('n_reserva_motor')->with('TipoMoneda')->with('tipoHabitacion');
+        // }])
+        // ->get();
+
+
+        // return $clientes = Cliente::whereHas('reservas.tipoHabitacion', function($query) use($propiedad_id){
+        //     $query->where('propiedad_id', $propiedad_id);
+        // })
+        // ->with(['reservas' => function ($query){
+        // $query->where('habitacion_id', null)->where('tipo_fuente_id', 1)->whereIn('estado_reserva_id', [1,2,3,4,5])->orderby('n_reserva_motor')->with('TipoMoneda')->with('tipoHabitacion');
+        // }])
+        // ->get();
+
+        $clientes = Cliente::where(function ($query) use ($propiedad_id) {
+            $query->whereHas('reservas.tipoHabitacion', function($query) use($propiedad_id){
+                $query->where('propiedad_id', $propiedad_id);
+            });
+            $query->whereHas('reservas', function($query){
+                $query->where('tipo_fuente_id', 1)->where('habitacion_id', null);
+            });
+        })
+        ->with(['reservas' => function ($query) use ($propiedad_id){
+                $query->whereHas('tipoHabitacion', function($query) use($propiedad_id){
+                        $query->where('propiedad_id', $propiedad_id);
+                    })
+                    ->where('habitacion_id', null)
+                    ->where('tipo_fuente_id', 1)
+                    ->whereIn('estado_reserva_id', [1,2,3,4,5])
+                    ->orderby('n_reserva_motor')
+                    ->with('TipoMoneda')
+                    ->with('tipoHabitacion');
+            }])
+        ->get();
+
+
         $data = []; //Arreglo principal
-        $aux = 0; //aux de n_reserva_motor
+        $aux  = 0; //aux de n_reserva_motor
+
 
         foreach ($clientes as $cliente) {
             $suma_deposito = 0;
-            $total    = 0;
-            $aux_reservas = []; //Arreglo aux de reserva del mismo cliente y misma operacion desde el motor
+            $total         = 0;
+            $aux_reservas  = []; //Arreglo aux de reserva del mismo cliente y misma operacion desde el motor
 
-                $reservas = $cliente->reservas; 
+                $reservas = $cliente['reservas'];
                 $cantidad = count($reservas) - 1;
+
                 foreach ($reservas as $reserva) {
 
                 if ($aux != $reserva->n_reserva_motor) {
@@ -487,7 +518,7 @@ class MotorRaController extends Controller
                         $aux_cliente['reservas']                = $aux_reservas;
 
                         array_push($data, $aux_cliente);
-                        $aux_reservas = [];
+                        $aux_reservas  = [];
                         $suma_deposito = 0;
                         $total         = 0;
                     } else {
@@ -499,8 +530,42 @@ class MotorRaController extends Controller
             }
         }
 
+        $reservas_mapa = $this->getReservasMapa(
+            $propiedad_id
+        );
+        // junta reservas motor y mapa
 
-        return $data;
+        $resultado = array_merge($data, $reservas_mapa);
+
+        $reservas_motor = [];
+        $i = 0;
+        $j = 0;
+        foreach ($resultado as $cliente) {
+                if ($i == 0) {
+                    array_push($reservas_motor, $cliente);
+                } else {
+                    $k = true;
+                    foreach ($reservas_motor as $cte) {
+                        if ($k) {
+                            if ( $cliente['reservas'][0]['created_at'] <= $cte['reservas'][0]['created_at'] ) {
+                                array_splice($reservas_motor, $j, 0, $cliente);
+                                $k = false;
+                            }
+
+                            $j++;
+                            if ($j == count($reservas_motor)) {
+                                array_push($reservas_motor, $cliente);
+                                $k = false;
+                            }
+                        }
+
+                    }
+                    $j = 0;
+                }
+            $i++;
+        }
+        return array_reverse($reservas_motor);
+
 
     }
 
