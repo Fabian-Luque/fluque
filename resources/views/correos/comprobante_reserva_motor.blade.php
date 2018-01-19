@@ -496,17 +496,13 @@ a[x-apple-data-detectors=true] {
 </tbody>
 </table>
 </center></div>
-    </div>
-  </div>
-</div>
-
 <div style="border-top:0px solid transparent;border-left:0px solid transparent;border-bottom:0px solid transparent;border-right:0px solid transparent;padding-top:5px;padding-bottom:5px;padding-right:50px;padding-left:50px">
 
-                    <table border="0" cellpadding="0" cellspacing="0" width="100%" class="m_725001896146686302divider" style="border-collapse:collapse;table-layout:fixed;border-spacing:0;vertical-align:top;min-width:100%">
+                    <table border="0" cellpadding="0" cellspacing="0" width="100%" class="m_720230848285830759divider" style="border-collapse:collapse;table-layout:fixed;border-spacing:0;vertical-align:top;min-width:100%">
     <tbody>
         <tr style="vertical-align:top">
-            <td class="m_725001896146686302divider_inner" style="word-break:break-word;border-collapse:collapse!important;vertical-align:top;padding-right:0px;padding-left:0px;padding-top:0px;padding-bottom:0px;min-width:100%">
-                <table class="m_725001896146686302divider_content" align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;table-layout:fixed;border-spacing:0;vertical-align:top;border-top:1px solid #161821">
+            <td class="m_720230848285830759divider_inner" style="word-break:break-word;border-collapse:collapse!important;vertical-align:top;padding-right:0px;padding-left:0px;padding-top:0px;padding-bottom:0px;min-width:100%">
+                <table class="m_720230848285830759divider_content" align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;table-layout:fixed;border-spacing:0;vertical-align:top;border-top:1px solid #161821">
                     <tbody>
                         <tr style="vertical-align:top">
                             <td style="word-break:break-word;border-collapse:collapse!important;vertical-align:top">
@@ -519,8 +515,14 @@ a[x-apple-data-detectors=true] {
         </tr>
     </tbody>
 </table>
-                  
               </div>
+    </div>
+  </div>
+</div>
+
+
+
+
 <!-- aquiiiiii -->  
     <div style="background-color:#161821;">
       <div style="margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid ">
@@ -557,153 +559,53 @@ a[x-apple-data-detectors=true] {
           <!--[if (mso)|(IE)]></td></tr></table></td></tr></table><![endif]-->
         </div>
       </div>
-    </div>    <div style="background-color:#161821;">
-      <div style="margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid three-up ">
-        <div style="border-collapse: collapse;display: table;width: 100%;background-color:#ffffff;">
-          <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background-color:#161821;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width: 625px;"><tr class="layout-full-width" style="background-color:#ffffff;"><![endif]-->
-
-              <!--[if (mso)|(IE)]><td align="center" width="208" style=" width:208px; padding-right: 0px; padding-left: 0px; padding-top:5px; padding-bottom:5px; border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent;" valign="top"><![endif]-->
-            <div class="col num4" style="max-width: 320px;min-width: 208px;display: table-cell;vertical-align: top;">
-              <div style="background-color: transparent; width: 100% !important;">
-              <!--[if (!mso)&(!IE)]><!--><div style="border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent; padding-top:5px; padding-bottom:5px; padding-right: 0px; padding-left: 0px;"><!--<![endif]-->
-
-                  
-                    <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 0px; padding-left: 50px; padding-top: 0px; padding-bottom: 0px;"><![endif]-->
-<div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 0px; padding-left: 50px; padding-top: 0px; padding-bottom: 0px;"> 
-  <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 12px;line-height: 14px"><span style="color: rgb(0, 0, 0); font-size: 12px; line-height: 14px;"><strong><span style="font-size: 14px; line-height: 16px;">Total</span></strong></span></p></div> 
-</div>
-<!--[if mso]></td></tr></table><![endif]-->
-
-                  
-              <!--[if (!mso)&(!IE)]><!--></div><!--<![endif]-->
-              </div>
-            </div>
-             
-            <div class="col num4" style="max-width: 320px;min-width: 208px;display: table-cell;vertical-align: top;">
-              <div style="background-color: transparent; width: 100% !important;">
-              <!--[if (!mso)&(!IE)]><!--><div style="border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent; padding-top:5px; padding-bottom:5px; padding-right: 0px; padding-left: 0px;"><!--<![endif]-->
-
-                  
-                    <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 0px; padding-left: 60px; padding-top: 0px; padding-bottom: 0px;"><![endif]-->
-<div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 0px; padding-left: 60px; padding-top: 0px; padding-bottom: 0px;"> 
-  <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 12px;line-height: 14px;text-align: left"><span style="color: rgb(0, 0, 0); font-size: 12px; line-height: 14px;">Sub total:</span></p></div> 
-</div>
-<!--[if mso]></td></tr></table><![endif]-->
-
-                  
-                  
-                    <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 0px; padding-left: 60px; padding-top: 0px; padding-bottom: 0px;"><![endif]-->
-<div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 0px; padding-left: 60px; padding-top: 0px; padding-bottom: 0px;"> 
-  <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 12px;line-height: 14px;text-align: left"><span style="color: rgb(0, 0, 0); font-size: 12px; line-height: 14px;">Iva:</span></p></div> 
-</div>
-<!--[if mso]></td></tr></table><![endif]-->
-
-                  
-                  
-                    <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 0px; padding-left: 60px; padding-top: 0px; padding-bottom: 0px;"><![endif]-->
-<div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 0px; padding-left: 60px; padding-top: 0px; padding-bottom: 0px;"> 
-  <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 12px;line-height: 14px;text-align: left"><span style="color: rgb(0, 0, 0); font-size: 12px; line-height: 14px;">Total:</span></p></div> 
-</div>
-<!--[if mso]></td></tr></table><![endif]-->
-
-                  
-                  
-                    <table border="0" cellpadding="0" cellspacing="0" width="100%" class="divider" style="border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;min-width: 100%;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%">
-    <tbody>
-        <tr style="vertical-align: top">
-            <td class="divider_inner" style="word-break: break-word;border-collapse: collapse !important;vertical-align: top;padding-right: 0px;padding-left: 0px;padding-top: 0px;padding-bottom: 0px;min-width: 100%;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%">
-                <table class="divider_content" align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;border-top: 1px solid #161821;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%">
-                    <tbody>
-                        <tr style="vertical-align: top">
-                            <td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%">
-                                <span></span>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </td>
-        </tr>
-    </tbody>
-</table>
-  
-<div style="color:#555555;line-height:150%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 0px; padding-left: 60px; padding-top: 5px; padding-bottom: 0px;"> 
-  <div style="font-size:12px;line-height:18px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 12px;line-height: 18px;text-align: left"><strong><span style="color: rgb(0, 0, 0); font-size: 12px; line-height: 18px;">Por pagar:</span></strong></p></div>  
-</div>
-<!--[if mso]></td></tr></table><![endif]-->
-
-                  
-              <!--[if (!mso)&(!IE)]><!--></div><!--<![endif]-->
-              </div>
-            </div>
-      
-            <div class="col num4" style="max-width: 320px;min-width: 208px;display: table-cell;vertical-align: top;">
-              <div style="background-color: transparent; width: 100% !important;">
-              <!--[if (!mso)&(!IE)]><!--><div style="border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent; padding-top:5px; padding-bottom:5px; padding-right: 0px; padding-left: 0px;"><!--<![endif]-->
-
-                  
-                    <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 0px; padding-left: 0px; padding-top: 0px; padding-bottom: 0px;"><![endif]-->
-<div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 0px; padding-left: 0px; padding-top: 0px; padding-bottom: 0px;">  
-  <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;">
-    <p style="margin: 0;font-size: 12px;line-height: 14px">
-
-
-
-  {{ $subtotal }}
-</p></div>  
-</div>
-<!--[if mso]></td></tr></table><![endif]-->
-
-                  
-                  
-                    <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 0px; padding-left: 0px; padding-top: 0px; padding-bottom: 0px;"><![endif]-->
-<div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 0px; padding-left: 0px; padding-top: 0px; padding-bottom: 0px;">  
-  <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 12px;line-height: 14px">{{ $iva }}</p></div> 
-</div>
-<!--[if mso]></td></tr></table><![endif]-->
-
-                  
-                  
-                    <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 0px; padding-left: 0px; padding-top: 0px; padding-bottom: 0px;"><![endif]-->
-<div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 0px; padding-left: 0px; padding-top: 0px; padding-bottom: 0px;">  
-  <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 12px;line-height: 14px">{{ $array['arr']['reserva']->monto_total }}</p></div> 
-</div>
-<!--[if mso]></td></tr></table><![endif]-->
-
-                  
-                  
-                    <table border="0" cellpadding="0" cellspacing="0" width="100%" class="divider" style="border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;min-width: 100%;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%">
-    <tbody>
-        <tr style="vertical-align: top">
-            <td class="divider_inner" style="word-break: break-word;border-collapse: collapse !important;vertical-align: top;padding-right: 50px;padding-left: 0px;padding-top: 0px;padding-bottom: 0px;min-width: 100%;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%">
-                <table class="divider_content" align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;border-top: 1px solid #161821;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%">
-                    <tbody>
-                        <tr style="vertical-align: top">
-                            <td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%">
-                                <span></span>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </td>
-        </tr>
-    </tbody>
-</table>
-                  
-                  
-                    <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 0px; padding-left: 0px; padding-top: 5px; padding-bottom: 0px;"><![endif]-->
-<div style="color:#555555;line-height:150%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 0px; padding-left: 0px; padding-top: 5px; padding-bottom: 0px;">  
-  <div style="font-size:12px;line-height:18px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 12px;line-height: 18px"><span style="color: rgb(0, 0, 0); font-size: 12px; line-height: 18px;"><strong>
-  {{ $porpagar }}
-</strong></span></p></div> 
-</div>
-</div><!--<![endif]-->
-              </div>
-            </div>
-          <!--[if (mso)|(IE)]></td></tr></table></td></tr></table><![endif]-->
-        </div>
-      </div>
     </div>    
 
+
+<!-- inittttt -->
+
+    <div style="background-color:#161821;">
+      <div style="margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word; background-color: #ffffff;" class="block-grid three-up ">
+        <div style="border-collapse: collapse;display: table;width: 100%;background-color:#ffffff;">
+
+
+
+<div style="position: absolute; right: 0; padding-right: 45px;">
+<table id="t984116" class="wdn_responsive_table flush-left" style="width: 234px; height: 150px;" cellpadding="10"><caption>&nbsp;</caption>
+<tbody>
+<tr style="height: 10px;">
+<th id="t984116_row_0col_0" style="width: 83px; text-align: left; height: 18px;" colspan="1">Sub total:</th>
+<td style="width: 99px; text-align: left; height: 18px;" colspan="1" headers="t984116_row_0col_0">{{ $subtotal }}</td>
+</tr>
+<tr style="height: 10px;">
+<th id="t984116_row_1col_0" style="width: 83px; text-align: left; height: 18px;" colspan="1">Iva:</th>
+<td style="width: 99px; text-align: left; height: 18px;" colspan="1" headers="t984116_row_1col_0">{{ $iva }}</td>
+</tr>
+<tr style="height: 10px;">
+<th id="t984116_row_2col_0" style="width: 83px; text-align: left; height: 16px;" colspan="1">Total:</th>
+<td style="width: 99px; text-align: left; height: 16px;" colspan="1" headers="t984116_row_2col_0">{{ $total }}</td>
+</tr>
+</tbody>
+</table>
+<hr style="width: 238px; background: black;" />
+<table id="t984116" class="wdn_responsive_table flush-left" style="width: 238px; height: 44px;" cellpadding="10">
+<tbody>
+<tr style="height: 18px;">
+<th id="t984116_row_3col_0" style="width: 79px; text-align: left; height: 18px;" colspan="1">Por pagar:</th>
+<td style="width: 103px; text-align: left; height: 18px;" colspan="1" headers="t984116_row_3col_0">{{ $porpagar }}</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+
+
+        </div>
+      </div>
+    </div>  
+
+<!-- inittttt -->
 
     <div style="background-color:#161821;">
       <div style="margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid ">
