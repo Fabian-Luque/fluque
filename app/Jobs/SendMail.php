@@ -65,8 +65,8 @@ class SendMail extends Job implements ShouldQueue {
 
                 foreach ($reservas as $res) {
                     $iva += ($res->monto_total * 19) / 100;
-                    $subtotal = $res->monto_total - $iva;
-                    $porpagar = $res->monto_total - $res->monto_por_pagar;
+                    $subtotal += $res->monto_total - $iva;
+                    $porpagar += $res->monto_por_pagar;
                 }
 
                 $data_correo = [
