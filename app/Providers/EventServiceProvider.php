@@ -18,8 +18,8 @@ class EventServiceProvider extends ServiceProvider {
         'App\Events\ChatEvent' => [
             'App\Listeners\ChatEventListener',
         ],
-        'App\Events\ActionDone' => [
-            'App\Listeners\ThingToDoAfterEventWasFired',
+        'App\Events\ReservasMotorEvent' => [
+            'App\Listeners\ReservasMapaEventListener',
         ],
     ];
 
