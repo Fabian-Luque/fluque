@@ -536,36 +536,40 @@ class MotorRaController extends Controller
         // junta reservas motor y mapa
 
         $resultado = array_merge($data, $reservas_mapa);
+        $aux         = 0;
+        $aux_cliente = null;
 
-        $reservas_motor = [];
         $i = 0;
-        $j = 0;
-        foreach ($resultado as $cliente) {
-                if ($i == 0) {
-                    array_push($reservas_motor, $cliente);
+        $reservas_final = [];
+        while (count($resultado) != 0) {
+            foreach ($resultado as $cliente) {
+                if ($aux == 0) {
+                    $aux = $cliente['reservas'][0]['created_at'];
+                    $aux_cliente = $cliente;
+
                 } else {
-                    $k = true;
-                    foreach ($reservas_motor as $cte) {
-                        if ($k) {
-                            if ( $cliente['reservas'][0]['created_at'] <= $cte['reservas'][0]['created_at'] ) {
-                                array_splice($reservas_motor, $j, 0, $cliente);
-                                $k = false;
-                            }
 
-                            $j++;
-                            if ($j == count($reservas_motor)) {
-                                array_push($reservas_motor, $cliente);
-                                $k = false;
-                            }
-                        }
-
-                    }
-                    $j = 0;
+                    if ($aux < $cliente['reservas'][0]['created_at']) {
+                        $aux = $cliente['reservas'][0]['created_at'];
+                        $aux_cliente = $cliente;
+                    } 
                 }
-            $i++;
-        }
-        return $reservas_motor;
+                
 
+                $i++;
+                if ($i == count($resultado)) {
+                    
+                    $posicion = array_search($aux_cliente, $resultado);
+                    unset($resultado[$posicion]);
+
+                    array_push($reservas_final, $aux_cliente);
+                    $aux = 0;
+                    $i = 0;
+                }
+            }
+        }
+
+        return $reservas_final;              
 
     }
 
