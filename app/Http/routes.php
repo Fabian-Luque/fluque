@@ -334,11 +334,14 @@ Route::post('myallocator/configurar', 'MyallocatorController@Configuracion');
 Route::post('mensaje/enviar', 'ChatController@SendMessage');
 Route::post('mensaje/obtener', 'ChatController@GetAllMessages');
 Route::post('conversacion/obtener', 'ChatController@GetConversacion');
-
+Route::post('mensaje/obtener/ultimos', 'ChatController@GetMessagesByReceptor');
 
 Route::post('pdf/comprobante/reserva/resumen2', 'PDFController@comprobanteReservaResumen');
 
 
 
 Route::post('asignar/prueba', 'MotorRaController@prueba');
+
+
+
 

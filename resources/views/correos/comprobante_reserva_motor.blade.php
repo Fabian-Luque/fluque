@@ -652,7 +652,7 @@ a[x-apple-data-detectors=true] {
                   
                     <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 10px; padding-left: 45px; padding-top: 5px; padding-bottom: 5px;"><![endif]-->
 <div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 10px; padding-left: 45px; padding-top: 5px; padding-bottom: 5px;">  
-  <div style="line-height:14px;font-size:12px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;line-height: 14px;font-size: 12px"><span style="font-size: 14px; line-height: 16px;"><strong><span style="color: rgb(33, 150, 243); line-height: 16px; font-size: 14px;">I</span>Intrucciones de pago</strong></span><br></p></div> 
+  <div style="line-height:14px;font-size:12px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;line-height: 14px;font-size: 12px"><span style="font-size: 14px; line-height: 16px;"><strong><span style="color: rgb(33, 150, 243); line-height: 16px; font-size: 14px;"></span>Intrucciones de pago</strong></span><br></p></div> 
 </div>
 </div>
     </div>
