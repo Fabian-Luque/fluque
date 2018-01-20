@@ -69,28 +69,6 @@ class Controller extends BaseController {
             return Response::json($retorno, 404);
         }
 
-        // $clientes = Cliente::where(function ($query) use ($propiedad_id) {
-        //     $query->whereHas('reservas.tipoHabitacion', function($query) use($propiedad_id){
-        //         $query->where('propiedad_id', $propiedad_id);
-        //     });
-        //     $query->whereHas('reservas', function($query){
-        //         $query->where('tipo_fuente_id', 9);
-        //     });
-        // })
-        // ->with(['reservas' => function ($query){
-        // $query->whereIn('estado_reserva_id', [1,2,3,4,5])->orderby('n_reserva_propiedad')->with('TipoMoneda')->with('tipoHabitacion');
-        // }])
-        // ->get();
-
-        // $clientes = Cliente::with('tipoCliente')->with('region')->with('pais')
-        // ->with(['reservas' => function ($query) use($propiedad_id){
-        //     $query->whereHas('tipoHabitacion', function($query) use($propiedad_id){
-        //         $query->where('propiedad_id', $propiedad_id);
-        //     });
-        //     $query->where('habitacion_id', null)->where('tipo_fuente_id', 9)->whereIn('estado_reserva_id', [1,2,3,4,5])->orderby('n_reserva_propiedad')->with('TipoMoneda')->with('tipoHabitacion');
-        // }])
-        // ->get();
-
         $clientes = Cliente::where(function ($query) use ($propiedad_id) {
             $query->whereHas('reservas.tipoHabitacion', function($query) use($propiedad_id){
                 $query->where('propiedad_id', $propiedad_id);
@@ -262,35 +240,7 @@ class Controller extends BaseController {
             }
         }
 
-        $fechas_reserva = [];
-        $i = 0;
-        $j = 0;
-        foreach ($data as $cliente) {
-                if ($i == 0) {
-                    array_push($fechas_reserva, $cliente);
-                } else {
-                    $k = true;
-                    foreach ($fechas_reserva as $cte) {
-                        if ($k) {
-                            if ( $cliente['reservas'][0]['created_at'] <= $cte['reservas'][0]['created_at'] ) {
-                                array_splice($fechas_reserva, $j, 0, $cliente);
-                                $k = false;
-                            }
-
-                            $j++;
-                            if ($j == count($fechas_reserva)) {
-                                array_push($fechas_reserva, $cliente);
-                                $k = false;
-                            }
-                        }
-
-                    }
-                    $j = 0;
-                }
-            $i++;
-        }
-
-        return $fechas_reserva;
+        return $data;
 
     }
 
