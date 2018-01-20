@@ -189,6 +189,11 @@ class PermisosTableSeeder extends Seeder
                 'nombre'        => 'Pagos pendientes',
                 'seccion_id'    => 4,
 
+            ],
+            [
+                'nombre'        => 'Red de hoteles',
+                'seccion_id'    => 2,
+
             ]
 
     		
