@@ -94,7 +94,7 @@ class ChatController extends Controller {
                 $aux->push($mensajes[($len - 1)]);
 
                 $retorno['errors'] = false;
-                $retorno["msj"] = $aux->all();
+                $retorno["msj"] = array_reverse($aux->all());
             } else {
                 $retorno['errors'] = true;
                 $retorno["msj"] = "No existen mensajes para dicho receptor";
