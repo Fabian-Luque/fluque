@@ -76,7 +76,7 @@ class ChatController extends Controller {
             $mensajes = Mensajeria::where(
                 'receptor_id',
                 $request->receptor_id
-            )->orderBy('created_at', 'asc')
+            )->orderBy('created_at', 'desc')
              ->orderBy('emisor_id', 'asc')
             ->get();
 
@@ -94,7 +94,7 @@ class ChatController extends Controller {
             } else {
                 $aux->push($mensajes[($len - 1)]);
             }
-            
+
             $retorno['errors'] = false;
             $retorno["msj"] = $aux->all();
         } else {
