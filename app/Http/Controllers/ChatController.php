@@ -70,6 +70,40 @@ class ChatController extends Controller {
         return Response::json($retorno);
     }
 
+    public function GetMessagesByReceptor(Request $request) {
+        if ($request->has('receptor_id')) {
+
+            $mensajes = Mensajeria::where(
+                'receptor_id',
+                $request->receptor_id
+            )->orderBy('created_at', 'desc')
+             ->orderBy('emisor_id', 'asc')
+            ->get();
+
+            $aux = collect([]);
+            $emisores = $mensajes->lists('emisor_id');
+            $len = $mensajes->count();
+
+            if ($len != 0) {
+                for ($i = 1; $i < $mensajes->count(); $i++) { 
+                    if ($mensajes[($i - 1)]->emisor_id != $mensajes[$i]->emisor_id) {
+                        $aux->push($mensajes[($i-1)]);
+                    } 
+                }
+                $aux->push($mensajes[($len - 1)]);
+            } else {
+                $aux->push($mensajes[($len - 1)]);
+            }
+
+            $retorno['errors'] = false;
+            $retorno["msj"] = $aux->all();
+        } else {
+            $retorno['errors'] = true;
+            $retorno["msj"] = "Datos requeridos";
+        }
+        return Response::json($retorno);
+    }
+
     public function GetConversacion(Request $request) {
         $validator = Validator::make(
             $request->all(), 
