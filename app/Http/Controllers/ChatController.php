@@ -77,7 +77,7 @@ class ChatController extends Controller {
                 $request->receptor_id
             )
             ->with('emisor')
-            ->orderBy('created_at', 'asc')
+            ->orderBy('created_at', 'DESC')
              ->orderBy('emisor_id', 'asc')
             ->get();
             $len = $mensajes->count();
