@@ -72,31 +72,31 @@ class ChatController extends Controller {
 
     public function GetMessagesByReceptor(Request $request) {
         if ($request->has('receptor_id')) {
-
             $mensajes = Mensajeria::where(
                 'receptor_id',
                 $request->receptor_id
-            )->orderBy('created_at', 'desc')
+            )->orderBy('created_at', 'asc')
              ->orderBy('emisor_id', 'asc')
             ->get();
-
-            $aux = collect([]);
-            $emisores = $mensajes->lists('emisor_id');
             $len = $mensajes->count();
 
             if ($len != 0) {
+                $aux = collect([]);
+                $emisores = $mensajes->lists('emisor_id');
+
                 for ($i = 1; $i < $mensajes->count(); $i++) { 
                     if ($mensajes[($i - 1)]->emisor_id != $mensajes[$i]->emisor_id) {
                         $aux->push($mensajes[($i-1)]);
                     } 
                 }
                 $aux->push($mensajes[($len - 1)]);
-            } else {
-                $aux->push($mensajes[($len - 1)]);
-            }
 
-            $retorno['errors'] = false;
-            $retorno["msj"] = $aux->all();
+                $retorno['errors'] = false;
+                $retorno["msj"] = $aux->all();
+            } else {
+                $retorno['errors'] = true;
+                $retorno["msj"] = "No existen mensajes para dicho receptor";
+            }
         } else {
             $retorno['errors'] = true;
             $retorno["msj"] = "Datos requeridos";
