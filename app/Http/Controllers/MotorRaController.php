@@ -704,27 +704,28 @@ class MotorRaController extends Controller
                 $reserva->monto_deposito        = $habitacion['monto_deposito'];
                 $reserva->n_reserva_motor       = $n_reserva_motor + 1;
                 $reserva->save();
+            }
 
-                if ($propiedad_id != null) {
-                    Event::fire(
-                        new ReservasMotorEvent($propiedad_id)
-                    );
+            if ($propiedad_id != null) {
+                Event::fire(
+                    new ReservasMotorEvent($propiedad_id)
+                );
 
-                    $arr = array(
-                        'propiedad'     => $propiedad
-                    );
+                $arr = array(
+                    'propiedad'     => $propiedad
+                );
 
-                    $this->EnvioCorreo(
-                        $propiedad,
-                        $cliente->email,
-                        $arr,
-                        "correos.aviso_reserva_motor",
-                        "",
-                        "",
-                        1,
-                        ""
-                    );
-                }
+                $this->EnvioCorreo(
+                    $propiedad,
+                    $cliente->email,
+                    $arr,
+                    "correos.aviso_reserva_motor",
+                    "",
+                    "",
+                    1,
+                    "",
+                    ""
+                );
             }
         } else {
             $retorno = array(
@@ -738,6 +739,18 @@ class MotorRaController extends Controller
             'errors'    => false);
         return Response::json($retorno, 201);
 
+    }
+
+    public function prueba(Request $request) {
+        $propiedad_id = $request->prop_id;
+        $reservas = Reserva::whereHas(
+                    'tipoHabitacion',
+                    function($query) use ($propiedad_id) {
+                        $query->where('propiedad_id', $propiedad_id);
+                    }
+                )->orderby('id','DESC')
+                ->where('n_reserva_motor', $request->n_reserva_motor);
+        return Response::json($reservas);
     }
 
     public function asignarHabitacion(Request $request) {
@@ -809,31 +822,23 @@ class MotorRaController extends Controller
         $reserva->update(array('numero_reserva' => $numero , 'habitacion_id' => $habitacion_id));
 
         if ($request->has('terminado')) {
-            $reservas = Reserva::whereHas(
-                'habitacion', 
-                function($query) use ($propiedad_id) {
-                    $query->where('propiedad_id', $propiedad_id);
-                }
-            )->orderby('id','DESC')
-            ->where('numero_reserva', '!=', null)
-            ->where('numero_reserva', '!=', null);
-            
+
             $arr = array(
-                'propiedad'     => Propiedad::find($propiedad_id),
-                'reservas_pdf'  => $reservas,
+                'propiedad'     => $propiedad,
                 'cliente'       => $reserva->cliente,
                 'reserva'       => $reserva
-            );
+            ); 
 
             $this->EnvioCorreo(
                 $propiedad,
-                $reserva->cliente,
+                $reserva->cliente->email,
                 $arr,
                 "correos.comprobante_reserva_motor",
                 "",
                 "",
                 1,
-                ""
+                "",
+                "reservas-varias"
             );
 
             $retorno['errors'] = false;
