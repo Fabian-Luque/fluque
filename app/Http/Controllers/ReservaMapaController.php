@@ -21,6 +21,9 @@ use Validator;
 use \Carbon\Carbon;
 use App\ZonaHoraria;
 use JWTAuth;
+use App\Events\ReservasMapaEvent;
+use Illuminate\Support\Facades\Event;
+
 
 class ReservaMapaController extends Controller
 {
@@ -372,6 +375,25 @@ class ReservaMapaController extends Controller
                 $reserva->save();
             }
 
+            Event::fire(
+                new ReservasMapaEvent($propiedad_id)
+            );
+
+            $arr = array(
+                'propiedad' => $propiedad
+            );
+
+            $this->EnvioCorreo(
+                $propiedad,
+                $cliente->email,
+                $arr,
+                "correos.aviso_reserva_motor",
+                "",
+                "",
+                1,
+                "",
+                ""
+            );
         } else {
             $retorno = array(
                 'msj'    => "Incompleto",

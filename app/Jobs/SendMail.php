@@ -10,7 +10,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use \Mail;
 use PDF;
-
+use App\Reserva;
 
 class SendMail extends Job implements ShouldQueue {
     use InteractsWithQueue, SerializesModels;
@@ -22,8 +22,7 @@ class SendMail extends Job implements ShouldQueue {
      *
      * @return void
      */ 
-    public function __construct(Propiedad $propiedad, $cliente_email, $propiedad_email, $vista_coreo, $vista_pdf, $nombre_pdf, $arr) {
-        echo "\nempezo";
+    public function __construct(Propiedad $propiedad, $cliente_email, $propiedad_email, $vista_coreo, $vista_pdf, $nombre_pdf, $arr, $opp) {
 
         $this->array = array(
             'propiedad'       => $propiedad,
@@ -32,11 +31,9 @@ class SendMail extends Job implements ShouldQueue {
             'vista_coreo'     => $vista_coreo,
             'vista_pdf'       => $vista_pdf,
             'nombre_pdf'      => $nombre_pdf,
-            'arr'             => $arr
+            'arr'             => $arr,
+            'opp'             => $opp
         ); 
-        echo "\nse construyo\n";
-
-        echo $propiedad;
     }
 
     /**
@@ -46,13 +43,51 @@ class SendMail extends Job implements ShouldQueue {
      * @return void
      */
     public function handle(Mailer $mailer) {
-        echo "funcaaa";
         $array = $this->array;
 
         try {
+            if (strcmp($this->array['opp'], "reservas-varias") == 0) {
+                $propiedad_id = $array['propiedad']->id;
+
+                $reservas = Reserva::whereHas(
+                    'tipoHabitacion',
+                    function($query) use ($propiedad_id) {
+                        $query->where('propiedad_id', $propiedad_id);
+                    }
+                )->orderby('id','DESC')
+                ->where('n_reserva_motor', $array['arr']['reserva']->n_reserva_motor)
+                ->whereIn('estado_reserva_id', [1,2,3,4,5])
+                ->get();
+
+                $iva = 0;
+                $subtotal = 0;
+                $porpagar = 0;
+
+                foreach ($reservas as $res) {
+                    $total += $res->monto_total;
+                    $subtotal += $res->monto_total - $iva;
+                    $porpagar += $res->monto_por_pagar;
+                }
+
+                $iva = ($total * 19) / 100;
+
+                $data_correo = [
+                    'reservaspdf'  => $reservas,
+                    'array'        => $array,
+                    'iva'          => $iva,
+                    'subtotal'     => $subtotal,
+                    'porpagar'     => $porpagar,
+                    'total'        => $total
+                ];
+            } else {
+                $data_correo = [
+                    'array' => $array
+                ];
+            }
+
             $mailer->send(
                 $this->array['vista_coreo'], 
-                ['array' => $array],
+                $data_correo,
                 function($message) use ($array) {
                     $message->to(
                         $array['cliente_email'], 
@@ -79,7 +114,6 @@ class SendMail extends Job implements ShouldQueue {
         } catch(\Exception $e){
             echo "error ".$e->getMessage();
         }
-        echo "\nexito";
     }
 
     public function failed() {
