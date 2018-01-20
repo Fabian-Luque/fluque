@@ -76,7 +76,7 @@ class ChatController extends Controller {
             $mensajes = Mensajeria::where(
                 'receptor_id',
                 $request->receptor_id
-            )->orderBy('created_at', 'desc')
+            )->orderBy('created_at', 'asc')
              ->orderBy('emisor_id', 'asc')
             ->get();
 
