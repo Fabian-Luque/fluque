@@ -18,6 +18,10 @@ class Mensajeria extends Model {
 		'created_at'
 	];
 
+	public function emisor() {
+        return $this->belongsTo('App\Propiedad', 'emisor_id'); 
+    }
+
 	public function getCreatedAtAttribute($value)
     {
         $token = JWTAuth::getToken();
