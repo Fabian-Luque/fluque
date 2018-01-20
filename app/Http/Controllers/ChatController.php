@@ -76,20 +76,22 @@ class ChatController extends Controller {
             $mensajes = Mensajeria::where(
                 'receptor_id',
                 $request->receptor_id
-            )->orderBy('created_at', 'asc')->get();
+            )->orderBy('created_at', 'asc')
+             ->orderBy('emisor_id', 'asc')
+            ->get();
 
             $aux = collect([]);
             $emisores = $mensajes->lists('emisor_id');
+            $len = $mensajes->count();
 
-            for ($i = 1; $i < $mensajes->count(); $i++) { 
-                if ($mensajes[($i - 1)]->emisor == $mensajes[$i]->emisor_id) {
-                    $aux->push($mensajes[($i-1)]);
-                } 
-            }
-            $len = $aux->count();
-            $len2 = $mensajes->count();
-            if ($len == 0 && $len2 == 0) {
-                $len = $mensajes->count();
+            if ($len != 0) {
+                for ($i = 1; $i < $mensajes->count(); $i++) { 
+                    if ($mensajes[($i - 1)]->emisor_id != $mensajes[$i]->emisor_id) {
+                        $aux->push($mensajes[($i-1)]);
+                    } 
+                }
+                $aux->push($mensajes[($len - 1)]);
+            } else {
                 $aux->push($mensajes[($len - 1)]);
             }
             
