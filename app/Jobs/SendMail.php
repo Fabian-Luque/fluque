@@ -59,9 +59,10 @@ class SendMail extends Job implements ShouldQueue {
                 ->whereIn('estado_reserva_id', [1,2,3,4,5])
                 ->get();
 
-                $iva = 0;
+                $iva      = 0;
                 $subtotal = 0;
                 $porpagar = 0;
+                $total    = 0;
 
                 foreach ($reservas as $res) {
                     $total += $res->monto_total;
