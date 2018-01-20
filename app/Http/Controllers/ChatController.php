@@ -87,7 +87,8 @@ class ChatController extends Controller {
                 } 
             }
             $len = $aux->count();
-            if ($len == 0) {
+            $len2 = $mensajes->count();
+            if ($len == 0 && $len2 == 0) {
                 $len = $mensajes->count();
                 $aux->push($mensajes[($len - 1)]);
             }
