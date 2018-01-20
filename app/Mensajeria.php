@@ -3,6 +3,9 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\ZonaHoraria;
+use JWTAuth;
+use \Carbon\Carbon;
 
 class Mensajeria extends Model {
    
@@ -28,5 +31,5 @@ class Mensajeria extends Model {
         } 
     } 
 
-	
+
 }
