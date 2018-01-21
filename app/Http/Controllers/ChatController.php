@@ -132,24 +132,43 @@ class ChatController extends Controller {
             ->take($request->limit)
             ->get();
 
-
-            // $mensajes = Mensajeria::where(
-            //     'emisor_id',
-            //     $request->emisor_id
-            // )->where(
-            //     'receptor_id',
-            //     $request->receptor_id
-            // )->orWhere(
-            //     'receptor_id',
-            //     $request->emisor_id
-            // )->orWhere(
-            //     'emisor_id',
-            //     $request->receptor_id
-            // )->orderBy('created_at', 'desc')
-            // ->take($request->limit)->get();
+            foreach ($mensajes as $mensaje) {
+                $mensaje->update([
+                    'estado' => 1
+                ]);
+            }
             
             $retorno['errors'] = false;
             $retorno["msj"] = $mensajes;
+        } 
+        return Response::json($retorno);
+    }
+
+    public function EstadoMensaje(Request $request) {
+        $validator = Validator::make(
+            $request->all(), 
+            array(
+                'mensaje_id'   => 'required'
+            )
+        );
+
+        if ($validator->fails()) {
+            $retorno['errors'] = true;
+            $retorno["msj"] = $validator->errors();
+        } else {
+            $mensaje = Mensajeria::find($request->mensaje_id);
+
+            if (!is_null($mensaje)) {
+                $mensaje->update([
+                    'estado' => 1
+                ]);
+
+                $retorno['errors'] = false;
+                $retorno["msj"] = "El mensaje ha sido visto";
+            } else {
+                $retorno['errors'] = true;
+                $retorno["msj"] = "Mensaje no encontrado";
+            }
         } 
         return Response::json($retorno);
     }
