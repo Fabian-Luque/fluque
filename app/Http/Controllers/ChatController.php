@@ -120,20 +120,33 @@ class ChatController extends Controller {
             $retorno['errors'] = true;
             $retorno["msj"] = $validator->errors();
         } else {
-            $mensajes = Mensajeria::where(
+
+            $emisor_id   = $request->emisor_id;
+            $receptor_id = $request->receptor_id;
+
+            $mensajes = Mensajeria::whereIn(
                 'emisor_id',
-                $request->emisor_id
-            )->where(
-                'receptor_id',
-                $request->receptor_id
-            )->orWhere(
-                'receptor_id',
-                $request->emisor_id
-            )->orWhere(
-                'emisor_id',
-                $request->receptor_id
-            )->orderBy('created_at', 'desc')
-            ->take($request->limit)->get();
+                [$emisor_id, $receptor_id])
+            ->whereIn('receptor_id', [$emisor_id, $receptor_id])
+            ->orderBy('created_at', 'DESC')
+            ->take($request->limit)
+            ->get();
+
+
+            // $mensajes = Mensajeria::where(
+            //     'emisor_id',
+            //     $request->emisor_id
+            // )->where(
+            //     'receptor_id',
+            //     $request->receptor_id
+            // )->orWhere(
+            //     'receptor_id',
+            //     $request->emisor_id
+            // )->orWhere(
+            //     'emisor_id',
+            //     $request->receptor_id
+            // )->orderBy('created_at', 'desc')
+            // ->take($request->limit)->get();
             
             $retorno['errors'] = false;
             $retorno["msj"] = $mensajes;
