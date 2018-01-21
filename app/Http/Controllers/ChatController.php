@@ -132,21 +132,11 @@ class ChatController extends Controller {
             ->take($request->limit)
             ->get();
 
-
-            // $mensajes = Mensajeria::where(
-            //     'emisor_id',
-            //     $request->emisor_id
-            // )->where(
-            //     'receptor_id',
-            //     $request->receptor_id
-            // )->orWhere(
-            //     'receptor_id',
-            //     $request->emisor_id
-            // )->orWhere(
-            //     'emisor_id',
-            //     $request->receptor_id
-            // )->orderBy('created_at', 'desc')
-            // ->take($request->limit)->get();
+            foreach ($mensajes as $mensaje) {
+                $mensajes->update([
+                    'estado' => 1
+                ]);
+            }
             
             $retorno['errors'] = false;
             $retorno["msj"] = $mensajes;
