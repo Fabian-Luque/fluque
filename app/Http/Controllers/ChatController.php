@@ -153,4 +153,33 @@ class ChatController extends Controller {
         } 
         return Response::json($retorno);
     }
+
+    public function EstadoMensaje(Request $request) {
+        $validator = Validator::make(
+            $request->all(), 
+            array(
+                'mensaje_id'   => 'required'
+            )
+        );
+
+        if ($validator->fails()) {
+            $retorno['errors'] = true;
+            $retorno["msj"] = $validator->errors();
+        } else {
+            $mensaje = Mensajeria::find($request->mensaje_id)
+
+            if (!is_null($mensaje)) {
+                $mensaje->update([
+                    'estado' => 1
+                ]);
+
+                $retorno['errors'] = false;
+                $retorno["msj"] = "El mensaje ha sido visto";
+            } else {
+                $retorno['errors'] = true;
+                $retorno["msj"] = "Mensaje no encontrado";
+            }
+        } 
+        return Response::json($retorno);
+    }
 }
