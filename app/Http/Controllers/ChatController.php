@@ -166,7 +166,7 @@ class ChatController extends Controller {
             $retorno['errors'] = true;
             $retorno["msj"] = $validator->errors();
         } else {
-            $mensaje = Mensajeria::find($request->mensaje_id)
+            $mensaje = Mensajeria::find($request->mensaje_id);
 
             if (!is_null($mensaje)) {
                 $mensaje->update([
