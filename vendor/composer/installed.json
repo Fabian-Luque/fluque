@@ -2268,130 +2268,6 @@
         ]
     },
     {
-        "name": "cartalyst/collections",
-        "version": "v1.1.0",
-        "version_normalized": "1.1.0.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/cartalyst/collections.git",
-            "reference": "2b39755c52cb69e9ac4014891d857629f682da90"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/cartalyst/collections/zipball/2b39755c52cb69e9ac4014891d857629f682da90",
-            "reference": "2b39755c52cb69e9ac4014891d857629f682da90",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.4.0"
-        },
-        "require-dev": {
-            "mockery/mockery": "~0.9",
-            "phpunit/phpunit": "~4.4"
-        },
-        "time": "2015-03-06T21:10:35+00:00",
-        "type": "library",
-        "extra": {
-            "component": "package",
-            "branch-alias": {
-                "dev-master": "1.0.x-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Cartalyst\\Collections\\": "src/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "BSD-3-Clause"
-        ],
-        "authors": [
-            {
-                "name": "Cartalyst LLC",
-                "email": "help@cartalyst.com"
-            },
-            {
-                "name": "Bruno Gaspar",
-                "email": "bruno.gaspar@cartalyst.com",
-                "role": "Developer"
-            },
-            {
-                "name": "Dan Syme",
-                "email": "dan.syme@cartalyst.com",
-                "role": "Project Lead"
-            },
-            {
-                "name": "Suhayb Wardany",
-                "email": "su.wardany@cartalyst.com",
-                "role": "Developer"
-            }
-        ],
-        "description": "Collection Abstaction library for PHP.",
-        "keywords": [
-            "cartalyst",
-            "collections",
-            "php"
-        ]
-    },
-    {
-        "name": "cartalyst/stripe",
-        "version": "v2.1.0",
-        "version_normalized": "2.1.0.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/cartalyst/stripe.git",
-            "reference": "2090e9917c9b7d72880d23084e546943edc26259"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/cartalyst/stripe/zipball/2090e9917c9b7d72880d23084e546943edc26259",
-            "reference": "2090e9917c9b7d72880d23084e546943edc26259",
-            "shasum": ""
-        },
-        "require": {
-            "cartalyst/collections": "~1.0",
-            "guzzlehttp/guzzle": "~6.0",
-            "php": ">=5.5.9"
-        },
-        "require-dev": {
-            "mockery/mockery": "~0.9",
-            "phpunit/phpunit": "~4.8"
-        },
-        "time": "2017-05-10T01:18:57+00:00",
-        "type": "library",
-        "extra": {
-            "component": "package",
-            "branch-alias": {
-                "dev-master": "2.0.x-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Cartalyst\\Stripe\\": "src/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "BSD-3-Clause"
-        ],
-        "authors": [
-            {
-                "name": "Cartalyst LLC",
-                "email": "help@cartalyst.com",
-                "homepage": "https://cartalyst.com"
-            }
-        ],
-        "description": "A comprehensive Stripe API package.",
-        "keywords": [
-            "cartalyst",
-            "php",
-            "stripe"
-        ]
-    },
-    {
         "name": "doctrine/lexer",
         "version": "v1.0.1",
         "version_normalized": "1.0.1.0",
@@ -3356,122 +3232,6 @@
         "description": "MySQL spatial data types extension for Laravel."
     },
     {
-        "name": "stripe/stripe-php",
-        "version": "v3.23.0",
-        "version_normalized": "3.23.0.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/stripe/stripe-php.git",
-            "reference": "c702a2ed92f4b39603c4a796492d87bcc16c819c"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/stripe/stripe-php/zipball/c702a2ed92f4b39603c4a796492d87bcc16c819c",
-            "reference": "c702a2ed92f4b39603c4a796492d87bcc16c819c",
-            "shasum": ""
-        },
-        "require": {
-            "ext-curl": "*",
-            "ext-json": "*",
-            "ext-mbstring": "*",
-            "php": ">=5.3.3"
-        },
-        "require-dev": {
-            "phpunit/phpunit": "~4.0",
-            "satooshi/php-coveralls": "~0.6.1",
-            "squizlabs/php_codesniffer": "~2.0"
-        },
-        "time": "2016-09-15T18:16:59+00:00",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "2.0-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Stripe\\": "lib/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Stripe and contributors",
-                "homepage": "https://github.com/stripe/stripe-php/contributors"
-            }
-        ],
-        "description": "Stripe PHP Library",
-        "homepage": "https://stripe.com/",
-        "keywords": [
-            "api",
-            "payment processing",
-            "stripe"
-        ]
-    },
-    {
-        "name": "laravel/cashier",
-        "version": "v5.0.15",
-        "version_normalized": "5.0.15.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/laravel/cashier.git",
-            "reference": "8fac59e82ab4b317930e7571ada1caa27fbc7648"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/laravel/cashier/zipball/8fac59e82ab4b317930e7571ada1caa27fbc7648",
-            "reference": "8fac59e82ab4b317930e7571ada1caa27fbc7648",
-            "shasum": ""
-        },
-        "require": {
-            "illuminate/filesystem": "~5.0",
-            "illuminate/support": "~5.0",
-            "nesbot/carbon": "~1.0",
-            "php": ">=5.4.0",
-            "stripe/stripe-php": "~3.0",
-            "symfony/http-kernel": "~2.3"
-        },
-        "require-dev": {
-            "illuminate/routing": "~5.0",
-            "illuminate/view": "~5.0",
-            "mockery/mockery": "~0.9",
-            "phpunit/phpunit": "~4.0"
-        },
-        "time": "2016-03-19T03:00:12+00:00",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "4.0-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-0": {
-                "Laravel\\Cashier\\": "src/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Taylor Otwell",
-                "email": "taylorotwell@gmail.com"
-            }
-        ],
-        "description": "Laravel Cashier provides an expressive, fluent interface to Stripe's subscription billing services.",
-        "keywords": [
-            "billing",
-            "laravel",
-            "stripe"
-        ]
-    },
-    {
         "name": "laravelcollective/html",
         "version": "v5.2.6",
         "version_normalized": "5.2.6.0",
@@ -3771,108 +3531,6 @@
         ]
     },
     {
-        "name": "maxmind-db/reader",
-        "version": "v1.2.0",
-        "version_normalized": "1.2.0.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/maxmind/MaxMind-DB-Reader-php.git",
-            "reference": "1647820dfbcb552222fb5feb3a8387e2636394c9"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/maxmind/MaxMind-DB-Reader-php/zipball/1647820dfbcb552222fb5feb3a8387e2636394c9",
-            "reference": "1647820dfbcb552222fb5feb3a8387e2636394c9",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.4"
-        },
-        "require-dev": {
-            "friendsofphp/php-cs-fixer": "2.*",
-            "phpunit/phpunit": "4.*",
-            "satooshi/php-coveralls": "1.0.*",
-            "squizlabs/php_codesniffer": "3.*"
-        },
-        "suggest": {
-            "ext-bcmath": "bcmath or gmp is required for decoding larger integers with the pure PHP decoder",
-            "ext-gmp": "bcmath or gmp is required for decoding larger integers with the pure PHP decoder",
-            "ext-maxminddb": "A C-based database decoder that provides significantly faster lookups"
-        },
-        "time": "2017-10-27T19:15:33+00:00",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "MaxMind\\Db\\": "src/MaxMind/Db"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "Apache-2.0"
-        ],
-        "authors": [
-            {
-                "name": "Gregory J. Oschwald",
-                "email": "goschwald@maxmind.com",
-                "homepage": "http://www.maxmind.com/"
-            }
-        ],
-        "description": "MaxMind DB Reader API",
-        "homepage": "https://github.com/maxmind/MaxMind-DB-Reader-php",
-        "keywords": [
-            "database",
-            "geoip",
-            "geoip2",
-            "geolocation",
-            "maxmind"
-        ]
-    },
-    {
-        "name": "maxmind/web-service-common",
-        "version": "v0.0.4",
-        "version_normalized": "0.0.4.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/maxmind/web-service-common-php.git",
-            "reference": "f26fce5281290973beeeca3e33847887177dd138"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/maxmind/web-service-common-php/zipball/f26fce5281290973beeeca3e33847887177dd138",
-            "reference": "f26fce5281290973beeeca3e33847887177dd138",
-            "shasum": ""
-        },
-        "require": {
-            "ext-curl": "*",
-            "ext-json": "*",
-            "php": ">=5.3"
-        },
-        "require-dev": {
-            "phpunit/phpunit": "4.6.*"
-        },
-        "time": "2015-07-21T20:07:31+00:00",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "MaxMind\\": "src"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "Apache-2.0"
-        ],
-        "authors": [
-            {
-                "name": "Gregory Oschwald",
-                "email": "goschwald@maxmind.com"
-            }
-        ],
-        "description": "Internal MaxMind Web Service API",
-        "homepage": "https://github.com/maxmind/mm-web-service-api-php"
-    },
-    {
         "name": "predis/predis",
         "version": "v1.1.1",
         "version_normalized": "1.1.1.0",
@@ -3922,111 +3580,6 @@
             "nosql",
             "predis",
             "redis"
-        ]
-    },
-    {
-        "name": "geoip2/geoip2",
-        "version": "v2.3.3",
-        "version_normalized": "2.3.3.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/maxmind/GeoIP2-php.git",
-            "reference": "ee15b2e466dd09fd2246cf64efa1aa9eca988b86"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/maxmind/GeoIP2-php/zipball/ee15b2e466dd09fd2246cf64efa1aa9eca988b86",
-            "reference": "ee15b2e466dd09fd2246cf64efa1aa9eca988b86",
-            "shasum": ""
-        },
-        "require": {
-            "maxmind-db/reader": "~1.0",
-            "maxmind/web-service-common": "~0.0.3",
-            "php": ">=5.3.1"
-        },
-        "require-dev": {
-            "phpunit/phpunit": "4.2.*"
-        },
-        "time": "2015-09-24T17:29:28+00:00",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "GeoIp2\\": "src"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "Apache-2.0"
-        ],
-        "authors": [
-            {
-                "name": "Gregory J. Oschwald",
-                "email": "goschwald@maxmind.com",
-                "homepage": "http://www.maxmind.com/"
-            }
-        ],
-        "description": "MaxMind GeoIP2 PHP API",
-        "homepage": "https://github.com/maxmind/GeoIP2-php",
-        "keywords": [
-            "IP",
-            "geoip",
-            "geoip2",
-            "geolocation",
-            "maxmind"
-        ]
-    },
-    {
-        "name": "stevebauman/location",
-        "version": "v2.0.1",
-        "version_normalized": "2.0.1.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/stevebauman/location.git",
-            "reference": "3b350cc75cdf577d78084d70cd8b75363383db81"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/stevebauman/location/zipball/3b350cc75cdf577d78084d70cd8b75363383db81",
-            "reference": "3b350cc75cdf577d78084d70cd8b75363383db81",
-            "shasum": ""
-        },
-        "require": {
-            "geoip2/geoip2": "2.3.*",
-            "illuminate/support": "5.*",
-            "php": ">=5.5.9"
-        },
-        "require-dev": {
-            "mockery/mockery": "~0.9",
-            "orchestra/testbench": "~3.2"
-        },
-        "time": "2017-01-26T14:46:46+00:00",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Stevebauman\\Location\\": "src/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Steve Bauman",
-                "email": "steven_bauman@outlook.com"
-            }
-        ],
-        "description": "Retrieve a users location by their IP Address using Laravel 5",
-        "keywords": [
-            "IP",
-            "geo",
-            "geo-location",
-            "geoip",
-            "laravel",
-            "location",
-            "php"
         ]
     },
     {
@@ -5605,5 +5158,452 @@
         ],
         "description": "Symfony Yaml Component",
         "homepage": "https://symfony.com"
+    },
+    {
+        "name": "cartalyst/collections",
+        "version": "v1.1.0",
+        "version_normalized": "1.1.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/cartalyst/collections.git",
+            "reference": "2b39755c52cb69e9ac4014891d857629f682da90"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/cartalyst/collections/zipball/2b39755c52cb69e9ac4014891d857629f682da90",
+            "reference": "2b39755c52cb69e9ac4014891d857629f682da90",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.4.0"
+        },
+        "require-dev": {
+            "mockery/mockery": "~0.9",
+            "phpunit/phpunit": "~4.4"
+        },
+        "time": "2015-03-06T21:10:35+00:00",
+        "type": "library",
+        "extra": {
+            "component": "package",
+            "branch-alias": {
+                "dev-master": "1.0.x-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Cartalyst\\Collections\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-3-Clause"
+        ],
+        "authors": [
+            {
+                "name": "Cartalyst LLC",
+                "email": "help@cartalyst.com"
+            },
+            {
+                "name": "Bruno Gaspar",
+                "email": "bruno.gaspar@cartalyst.com",
+                "role": "Developer"
+            },
+            {
+                "name": "Dan Syme",
+                "email": "dan.syme@cartalyst.com",
+                "role": "Project Lead"
+            },
+            {
+                "name": "Suhayb Wardany",
+                "email": "su.wardany@cartalyst.com",
+                "role": "Developer"
+            }
+        ],
+        "description": "Collection Abstaction library for PHP.",
+        "keywords": [
+            "cartalyst",
+            "collections",
+            "php"
+        ]
+    },
+    {
+        "name": "cartalyst/stripe",
+        "version": "v2.1.0",
+        "version_normalized": "2.1.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/cartalyst/stripe.git",
+            "reference": "2090e9917c9b7d72880d23084e546943edc26259"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/cartalyst/stripe/zipball/2090e9917c9b7d72880d23084e546943edc26259",
+            "reference": "2090e9917c9b7d72880d23084e546943edc26259",
+            "shasum": ""
+        },
+        "require": {
+            "cartalyst/collections": "~1.0",
+            "guzzlehttp/guzzle": "~6.0",
+            "php": ">=5.5.9"
+        },
+        "require-dev": {
+            "mockery/mockery": "~0.9",
+            "phpunit/phpunit": "~4.8"
+        },
+        "time": "2017-05-10T01:18:57+00:00",
+        "type": "library",
+        "extra": {
+            "component": "package",
+            "branch-alias": {
+                "dev-master": "2.0.x-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Cartalyst\\Stripe\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-3-Clause"
+        ],
+        "authors": [
+            {
+                "name": "Cartalyst LLC",
+                "email": "help@cartalyst.com",
+                "homepage": "https://cartalyst.com"
+            }
+        ],
+        "description": "A comprehensive Stripe API package.",
+        "keywords": [
+            "cartalyst",
+            "php",
+            "stripe"
+        ]
+    },
+    {
+        "name": "stripe/stripe-php",
+        "version": "v3.23.0",
+        "version_normalized": "3.23.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/stripe/stripe-php.git",
+            "reference": "c702a2ed92f4b39603c4a796492d87bcc16c819c"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/stripe/stripe-php/zipball/c702a2ed92f4b39603c4a796492d87bcc16c819c",
+            "reference": "c702a2ed92f4b39603c4a796492d87bcc16c819c",
+            "shasum": ""
+        },
+        "require": {
+            "ext-curl": "*",
+            "ext-json": "*",
+            "ext-mbstring": "*",
+            "php": ">=5.3.3"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "~4.0",
+            "satooshi/php-coveralls": "~0.6.1",
+            "squizlabs/php_codesniffer": "~2.0"
+        },
+        "time": "2016-09-15T18:16:59+00:00",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "2.0-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Stripe\\": "lib/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Stripe and contributors",
+                "homepage": "https://github.com/stripe/stripe-php/contributors"
+            }
+        ],
+        "description": "Stripe PHP Library",
+        "homepage": "https://stripe.com/",
+        "keywords": [
+            "api",
+            "payment processing",
+            "stripe"
+        ]
+    },
+    {
+        "name": "laravel/cashier",
+        "version": "v5.0.15",
+        "version_normalized": "5.0.15.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/laravel/cashier.git",
+            "reference": "8fac59e82ab4b317930e7571ada1caa27fbc7648"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/laravel/cashier/zipball/8fac59e82ab4b317930e7571ada1caa27fbc7648",
+            "reference": "8fac59e82ab4b317930e7571ada1caa27fbc7648",
+            "shasum": ""
+        },
+        "require": {
+            "illuminate/filesystem": "~5.0",
+            "illuminate/support": "~5.0",
+            "nesbot/carbon": "~1.0",
+            "php": ">=5.4.0",
+            "stripe/stripe-php": "~3.0",
+            "symfony/http-kernel": "~2.3"
+        },
+        "require-dev": {
+            "illuminate/routing": "~5.0",
+            "illuminate/view": "~5.0",
+            "mockery/mockery": "~0.9",
+            "phpunit/phpunit": "~4.0"
+        },
+        "time": "2016-03-19T03:00:12+00:00",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "4.0-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "Laravel\\Cashier\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Taylor Otwell",
+                "email": "taylorotwell@gmail.com"
+            }
+        ],
+        "description": "Laravel Cashier provides an expressive, fluent interface to Stripe's subscription billing services.",
+        "keywords": [
+            "billing",
+            "laravel",
+            "stripe"
+        ]
+    },
+    {
+        "name": "maxmind-db/reader",
+        "version": "v1.2.0",
+        "version_normalized": "1.2.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/maxmind/MaxMind-DB-Reader-php.git",
+            "reference": "1647820dfbcb552222fb5feb3a8387e2636394c9"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/maxmind/MaxMind-DB-Reader-php/zipball/1647820dfbcb552222fb5feb3a8387e2636394c9",
+            "reference": "1647820dfbcb552222fb5feb3a8387e2636394c9",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.4"
+        },
+        "require-dev": {
+            "friendsofphp/php-cs-fixer": "2.*",
+            "phpunit/phpunit": "4.*",
+            "satooshi/php-coveralls": "1.0.*",
+            "squizlabs/php_codesniffer": "3.*"
+        },
+        "suggest": {
+            "ext-bcmath": "bcmath or gmp is required for decoding larger integers with the pure PHP decoder",
+            "ext-gmp": "bcmath or gmp is required for decoding larger integers with the pure PHP decoder",
+            "ext-maxminddb": "A C-based database decoder that provides significantly faster lookups"
+        },
+        "time": "2017-10-27T19:15:33+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "MaxMind\\Db\\": "src/MaxMind/Db"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "Apache-2.0"
+        ],
+        "authors": [
+            {
+                "name": "Gregory J. Oschwald",
+                "email": "goschwald@maxmind.com",
+                "homepage": "http://www.maxmind.com/"
+            }
+        ],
+        "description": "MaxMind DB Reader API",
+        "homepage": "https://github.com/maxmind/MaxMind-DB-Reader-php",
+        "keywords": [
+            "database",
+            "geoip",
+            "geoip2",
+            "geolocation",
+            "maxmind"
+        ]
+    },
+    {
+        "name": "maxmind/web-service-common",
+        "version": "v0.0.4",
+        "version_normalized": "0.0.4.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/maxmind/web-service-common-php.git",
+            "reference": "f26fce5281290973beeeca3e33847887177dd138"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/maxmind/web-service-common-php/zipball/f26fce5281290973beeeca3e33847887177dd138",
+            "reference": "f26fce5281290973beeeca3e33847887177dd138",
+            "shasum": ""
+        },
+        "require": {
+            "ext-curl": "*",
+            "ext-json": "*",
+            "php": ">=5.3"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "4.6.*"
+        },
+        "time": "2015-07-21T20:07:31+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "MaxMind\\": "src"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "Apache-2.0"
+        ],
+        "authors": [
+            {
+                "name": "Gregory Oschwald",
+                "email": "goschwald@maxmind.com"
+            }
+        ],
+        "description": "Internal MaxMind Web Service API",
+        "homepage": "https://github.com/maxmind/mm-web-service-api-php"
+    },
+    {
+        "name": "geoip2/geoip2",
+        "version": "v2.3.3",
+        "version_normalized": "2.3.3.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/maxmind/GeoIP2-php.git",
+            "reference": "ee15b2e466dd09fd2246cf64efa1aa9eca988b86"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/maxmind/GeoIP2-php/zipball/ee15b2e466dd09fd2246cf64efa1aa9eca988b86",
+            "reference": "ee15b2e466dd09fd2246cf64efa1aa9eca988b86",
+            "shasum": ""
+        },
+        "require": {
+            "maxmind-db/reader": "~1.0",
+            "maxmind/web-service-common": "~0.0.3",
+            "php": ">=5.3.1"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "4.2.*"
+        },
+        "time": "2015-09-24T17:29:28+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "GeoIp2\\": "src"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "Apache-2.0"
+        ],
+        "authors": [
+            {
+                "name": "Gregory J. Oschwald",
+                "email": "goschwald@maxmind.com",
+                "homepage": "http://www.maxmind.com/"
+            }
+        ],
+        "description": "MaxMind GeoIP2 PHP API",
+        "homepage": "https://github.com/maxmind/GeoIP2-php",
+        "keywords": [
+            "IP",
+            "geoip",
+            "geoip2",
+            "geolocation",
+            "maxmind"
+        ]
+    },
+    {
+        "name": "stevebauman/location",
+        "version": "v2.0.1",
+        "version_normalized": "2.0.1.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/stevebauman/location.git",
+            "reference": "3b350cc75cdf577d78084d70cd8b75363383db81"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/stevebauman/location/zipball/3b350cc75cdf577d78084d70cd8b75363383db81",
+            "reference": "3b350cc75cdf577d78084d70cd8b75363383db81",
+            "shasum": ""
+        },
+        "require": {
+            "geoip2/geoip2": "2.3.*",
+            "illuminate/support": "5.*",
+            "php": ">=5.5.9"
+        },
+        "require-dev": {
+            "mockery/mockery": "~0.9",
+            "orchestra/testbench": "~3.2"
+        },
+        "time": "2017-01-26T14:46:46+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Stevebauman\\Location\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Steve Bauman",
+                "email": "steven_bauman@outlook.com"
+            }
+        ],
+        "description": "Retrieve a users location by their IP Address using Laravel 5",
+        "keywords": [
+            "IP",
+            "geo",
+            "geo-location",
+            "geoip",
+            "laravel",
+            "location",
+            "php"
+        ]
     }
 ]

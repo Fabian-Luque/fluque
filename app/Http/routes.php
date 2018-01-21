@@ -335,6 +335,7 @@ Route::post('mensaje/enviar', 'ChatController@SendMessage');
 Route::post('mensaje/obtener', 'ChatController@GetAllMessages');
 Route::post('conversacion/obtener', 'ChatController@GetConversacion');
 Route::post('mensaje/obtener/ultimos', 'ChatController@GetMessagesByReceptor');
+Route::post('mensaje/estado', 'ChatController@EstadoMensaje');
 
 Route::post('pdf/comprobante/reserva/resumen2', 'PDFController@comprobanteReservaResumen');
 

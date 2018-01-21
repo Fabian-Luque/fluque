@@ -15,6 +15,7 @@ class Mensajeria extends Model {
 		'emisor_id', 
 		'receptor_id', 
 		'mensaje', 
+        'estado', 
 		'created_at'
 	];
 
