@@ -152,6 +152,8 @@ Route::get('cliente/motor', 'ClienteController@index');
 Route::put('cliente/motor/{id}', 'ClienteController@update');
 Route::get('obtener/colores', 'MotorRaController@getColoresPropiedad');
 
+
+
 Route::get('reset/password/{token}', 'ApiAuthController@ResetPassword');
 
 Route::group(['as' => 'api.jarvis.'], function() {
@@ -279,6 +281,7 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::post('cambiar/fechas/reserva', 'ReservaController@cambiarFechasReserva');
 		Route::get('reservas/credito', 'ReservaController@getCuentasCredito');
 		Route::post('confirmar/pago', 'ReservaController@confirmarPagoReserva');
+		Route::post('obtener/reservas/cliente', 'MotorRaController@getReservasCliente');
 
 
 		// rutas mapa geolozalizacion 
