@@ -76,7 +76,7 @@ class ChatController extends Controller {
                 'receptor_id',
                 $request->receptor_id
             )
-            ->with('emisor')
+            ->with('propiedad')
             ->orderBy('created_at', 'asc')
              ->orderBy('emisor_id', 'asc')
             ->get();

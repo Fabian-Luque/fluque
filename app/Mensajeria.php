@@ -18,7 +18,7 @@ class Mensajeria extends Model {
 		'created_at'
 	];
 
-	public function emisor() {
+	public function propiedad() {
         return $this->belongsTo('App\Propiedad', 'emisor_id'); 
     }
 
