@@ -133,7 +133,7 @@ class ChatController extends Controller {
             ->get();
 
             foreach ($mensajes as $mensaje) {
-                $mensajes->update([
+                $mensaje->update([
                     'estado' => 1
                 ]);
             }
