@@ -1069,8 +1069,7 @@ cellspacing="0" cellpadding="0">
                           ¡Gracias por su
                           reserva!&nbsp;</span></strong></span>
                         </p>
-                        <p style=
-                        "margin: 0; font-size: 14px; line-height: 17px; text-align: center;">
+                        <p style="margin: 0; font-size: 14px; line-height: 17px; text-align: center;">
                         <strong><span style=
                         "font-size: 10px; line-height: 12px; color: #000000;">
                           {{ $array['propiedad']->nombre
