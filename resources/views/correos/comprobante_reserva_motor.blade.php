@@ -702,12 +702,7 @@ cellspacing="0" cellpadding="0">
             </div>
           </div>
         </div>
-        <div style="background-color: #161821;">
-          <div class="block-grid four-up" style=
-          "margin: 0 auto; min-width: 320px; max-width: 625px; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; background-color: #ffffff;">
-          &nbsp;
-          </div>
-        </div><!-- inittttt --><!-- inittttt -->
+<!-- inittttt --><!-- inittttt -->
         <div style="background-color: #161821;">
           <div class="block-grid" style=
           "margin: 0 auto; min-width: 320px; max-width: 625px; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; background-color: #ffffff;">
@@ -776,7 +771,7 @@ cellspacing="0" cellpadding="0">
                       <p style=
                       "margin: 0; line-height: 14px; font-size: 12px;">
                         <span style=
-                        "font-size: 14px; line-height: 16px; color: #000000;">
+                        "font-size: 14px; line-height: 16px; color: #2196f3;">
                           <strong>Intrucciones de
                           pago</strong></span>
                         </p>
