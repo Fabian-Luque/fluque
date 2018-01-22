@@ -842,7 +842,7 @@ class MotorRaController extends Controller
                 $reserva->cliente->email,
                 $arr,
                 "correos.comprobante_reserva_motor",
-                "",
+                "", // correo de la propiedad
                 "",
                 1,
                 "",
