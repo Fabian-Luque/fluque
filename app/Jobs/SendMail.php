@@ -76,7 +76,7 @@ class SendMail extends Job implements ShouldQueue {
                 }
 
                 $iva = ($total * $array['propiedad']->iva) / 100;
-                $subtotal = $subtotal - $iva;
+                $subtotal = $total - $iva;
 
                 $data_correo = [
                     'reservaspdf'  => $reservas,
