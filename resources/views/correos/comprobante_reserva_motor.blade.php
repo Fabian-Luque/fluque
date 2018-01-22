@@ -643,7 +643,7 @@ cellspacing="0" cellpadding="0">
                           "width: 12.9735%; text-align: left;"
                           colspan="1" headers="t659344_row_0col_5"
                           data-header="Total">
-                            {{ $reserva->monto_total }}
+                            {{ $nombre_moneda }} ${{ $reserva->monto_total }}
                           </td>
                         </tr>
                         @endforeach
@@ -676,7 +676,7 @@ cellspacing="0" cellpadding="0">
                           <strong>&nbsp;Sub total</strong>
                         </td>
                         <td style="width: 101.062px;">
-                          <strong>{{ $nombre_moneda }}{{ $subtotal }}</strong>
+                          <strong>{{ $nombre_moneda }} ${{ $subtotal }}</strong>
                         </td>
                       </tr>
                       <tr>
@@ -684,7 +684,7 @@ cellspacing="0" cellpadding="0">
                           <strong>&nbsp;Total</strong>
                         </td>
                         <td style="width: 101.062px;">
-                          <strong>{{ $nombre_moneda }}{{ $total }}</strong>
+                          <strong>{{ $nombre_moneda }} ${{ $total }}</strong>
                         </td>
                       </tr>
                       <tr>
@@ -692,7 +692,7 @@ cellspacing="0" cellpadding="0">
                           <strong>&nbsp;Por pagar</strong>
                         </td>
                         <td style="width: 101.062px;">
-                          <strong>{{ $nombre_moneda }}{{ $porpagar }}</strong>
+                          <strong>{{ $nombre_moneda }} ${{ $porpagar }}</strong>
                         </td>
                       </tr>
                     </tbody>
