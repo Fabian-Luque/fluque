@@ -45,7 +45,7 @@
                         <td class="data-tabla-cliente"><p class="nombre">{{ $cte->rut }}</p></td>
                     </tr>
                     <tr>
-                        <th class="head-tabla-cliente"><p class="align-left">DirecciÃ³n</p></th>
+                        <th class="head-tabla-cliente"><p class="align-left">Dirección</p></th>
                         <td class="data-tabla-cliente"><p class="nombre">{{ $cte->direccion }}</p></td>
                     </tr>
                     <tr>
@@ -53,11 +53,11 @@
                         <td class="data-tabla-cliente"><p class="nombre">{{ $cte->ciudad }}</p></td>
                     </tr>
                     <tr>
-                        <th class="head-tabla-cliente"><p class="align-left">PaÃ­s</p></th>
+                        <th class="head-tabla-cliente"><p class="align-left">País</p></th>
                         <td class="data-tabla-cliente"><p class="nombre"></p></td>
                     </tr>
                     <tr>
-                        <th class="head-tabla-cliente"><p class="align-left">TelÃ©fono</p></th>
+                        <th class="head-tabla-cliente"><p class="align-left">Teléfono</p></th>
                         <td class="data-tabla-cliente"><p class="nombre">{{ $cte->telefono }}</p></td>
                     </tr>
                     <tr>
@@ -78,7 +78,7 @@
                         <td class="data-tabla-cliente"><p class="nombre">{{ $cte->rut }}</p></td>
                     </tr>
                     <tr>
-                        <th class="head-tabla-cliente"><p class="align-left">DirecciÃ³n</p></th>
+                        <th class="head-tabla-cliente"><p class="align-left">Dirección</p></th>
                         <td class="data-tabla-cliente"><p class="nombre">{{ $cte->direccion }}</p></td>
                     </tr>
                     <tr>
@@ -86,11 +86,11 @@
                         <td class="data-tabla-cliente"><p class="nombre">{{ $cte->ciudad }}</p></td>
                     </tr>
                     <tr>
-                        <th class="head-tabla-cliente"><p class="align-left">PaÃ­s</p></th>
+                        <th class="head-tabla-cliente"><p class="align-left">País</p></th>
                         <td class="data-tabla-cliente"><p class="nombre">{{ $cte->pais->nombre }}</p><</td>
                     </tr>
                     <tr>
-                        <th class="head-tabla-cliente"><p class="align-left">TelÃ©fono</p></th>
+                        <th class="head-tabla-cliente"><p class="align-left">Teléfono</p></th>
                         <td class="data-tabla-cliente"><p class="nombre">{{ $cte->telefono }}</p></td>
                     </tr>
                     <tr>
@@ -116,7 +116,7 @@
                     </tr>
 
                     <tr>
-                        <th class="head-tabla-cliente"><p class="align-left">DirecciÃ³n</p></th>
+                        <th class="head-tabla-cliente"><p class="align-left">Dirección</p></th>
                         <td class="data-tabla-cliente"><p class="nombre">{{ $cte->direccion }}</p></td>
                     </tr>
                     <tr>
@@ -124,11 +124,11 @@
                         <td class="data-tabla-cliente"><p class="nombre">{{ $cte->ciudad }}</p></td>
                     </tr>
                     <tr>
-                        <th class="head-tabla-cliente"><p class="align-left">PaÃ­s</p></th>
+                        <th class="head-tabla-cliente"><p class="align-left">Paí­s</p></th>
                         <td class="data-tabla-cliente"><p class="nombre"></p></td>
                     </tr>
                     <tr>
-                        <th class="head-tabla-cliente"><p class="align-left">TelÃ©fono</p></th>
+                        <th class="head-tabla-cliente"><p class="align-left">Teléfono</p></th>
                         <td class="data-tabla-cliente"><p class="nombre">{{ $cte->telefono }}</p></td>
                     </tr>
                     <tr>
@@ -150,7 +150,7 @@
                     </tr>
 
                     <tr>
-                        <th class="head-tabla-cliente"><p class="align-left">DirecciÃ³n</p></th>
+                        <th class="head-tabla-cliente"><p class="align-left">Dirección</p></th>
                         <td class="data-tabla-cliente"><p class="nombre">{{ $cte->direccion }}</p></td>
                     </tr>
                     <tr>
@@ -158,11 +158,11 @@
                         <td class="data-tabla-cliente"><p class="nombre">{{ $cte->ciudad }}</p></td>
                     </tr>
                     <tr>
-                        <th class="head-tabla-cliente"><p class="align-left">PaÃ­s</p></th>
+                        <th class="head-tabla-cliente"><p class="align-left">País</p></th>
                         <td class="data-tabla-cliente"><p class="nombre">{{ $cte->pais->nombre }}</p><</td>
                     </tr>
                     <tr>
-                        <th class="head-tabla-cliente"><p class="align-left">TelÃ©fono</p></th>
+                        <th class="head-tabla-cliente"><p class="align-left">Teléfono</p></th>
                         <td class="data-tabla-cliente"><p class="nombre">{{ $cte->telefono }}</p></td>
                     </tr>
                     <tr>
@@ -180,7 +180,7 @@
         <!--  Fin cliente  -->
         <div class="detalles">
           <div class="titulo">
-            <h3 class="">Detalles de las reservas/estadÃ­as</h3>
+            <h3 class="">Detalles de las reservas/estadías</h3>
           </div>
 
           <table class="tabla-detalles">
@@ -190,7 +190,7 @@
 
             <tr>
               <td class="data-tabla-detalles borde-derecha">
-                <p class="titulo">Reserva NÂº {{ $reserva->numero_reserva }} - Tipo de habitaciÃ³n: {{ $reserva->habitacion->tipoHabitacion->nombre }} - {{ $reserva->ocupacion }} HuÃ©spedes -
+                <p class="titulo">Reserva Nº {{ $reserva->numero_reserva }} - Tipo de habitaciÃ³n: {{ $reserva->habitacion->tipoHabitacion->nombre }} - {{ $reserva->ocupacion }} HuÃ©spedes -
                   {{ $reserva->noches }} Noches - Checkin {{ $reserva->checkin->format('d-m-Y') }} - Checkout {{ $reserva->checkout->format('d-m-Y') }} - Incluye: {{ $reserva->detalle }}</p>
               </td>
               <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{ number_format($reserva->monto_alojamiento) }}</p></td>
