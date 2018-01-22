@@ -643,7 +643,7 @@ cellspacing="0" cellpadding="0">
                           "width: 12.9735%; text-align: left;"
                           colspan="1" headers="t659344_row_0col_5"
                           data-header="Total">
-                            {{ $reserva->monto_total }}
+                            {{ $nombre_moneda }} ${{ $reserva->monto_total }}
                           </td>
                         </tr>
                         @endforeach
@@ -676,7 +676,7 @@ cellspacing="0" cellpadding="0">
                           <strong>&nbsp;Sub total</strong>
                         </td>
                         <td style="width: 101.062px;">
-                          <strong>{{ $nombre_moneda }}{{ $subtotal }}</strong>
+                          <strong>{{ $nombre_moneda }} ${{ $subtotal }}</strong>
                         </td>
                       </tr>
                       <tr>
@@ -684,7 +684,7 @@ cellspacing="0" cellpadding="0">
                           <strong>&nbsp;Total</strong>
                         </td>
                         <td style="width: 101.062px;">
-                          <strong>{{ $nombre_moneda }}{{ $total }}</strong>
+                          <strong>{{ $nombre_moneda }} ${{ $total }}</strong>
                         </td>
                       </tr>
                       <tr>
@@ -692,7 +692,7 @@ cellspacing="0" cellpadding="0">
                           <strong>&nbsp;Por pagar</strong>
                         </td>
                         <td style="width: 101.062px;">
-                          <strong>{{ $nombre_moneda }}{{ $porpagar }}</strong>
+                          <strong>{{ $nombre_moneda }} ${{ $porpagar }}</strong>
                         </td>
                       </tr>
                     </tbody>
@@ -702,12 +702,7 @@ cellspacing="0" cellpadding="0">
             </div>
           </div>
         </div>
-        <div style="background-color: #161821;">
-          <div class="block-grid four-up" style=
-          "margin: 0 auto; min-width: 320px; max-width: 625px; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; background-color: #ffffff;">
-          &nbsp;
-          </div>
-        </div><!-- inittttt --><!-- inittttt -->
+<!-- inittttt --><!-- inittttt -->
         <div style="background-color: #161821;">
           <div class="block-grid" style=
           "margin: 0 auto; min-width: 320px; max-width: 625px; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; background-color: #ffffff;">
@@ -776,7 +771,7 @@ cellspacing="0" cellpadding="0">
                       <p style=
                       "margin: 0; line-height: 14px; font-size: 12px;">
                         <span style=
-                        "font-size: 14px; line-height: 16px; color: #000000;">
+                        "font-size: 14px; line-height: 16px; color: #2196f3;">
                           <strong>Intrucciones de
                           pago</strong></span>
                         </p>
