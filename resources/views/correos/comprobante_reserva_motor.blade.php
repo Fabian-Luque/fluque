@@ -702,7 +702,11 @@ cellspacing="0" cellpadding="0">
             </div>
           </div>
         </div>
-<!-- inittttt --><!-- inittttt -->
+        <div style="background-color: #161821;">
+          <div class="block-grid four-up" style=
+          "margin: 0 auto; min-width: 320px; max-width: 625px; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; background-color: #ffffff;">
+          </div>
+        </div><!-- inittttt --><!-- inittttt -->
         <div style="background-color: #161821;">
           <div class="block-grid" style=
           "margin: 0 auto; min-width: 320px; max-width: 625px; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; background-color: #ffffff;">
@@ -733,7 +737,6 @@ cellspacing="0" cellpadding="0">
                                 <tr style="vertical-align: top;">
                                   <td style=
                                   "word-break: break-word; border-collapse: collapse !important; vertical-align: top; mso-line-height-rule: exactly; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%;">
-                                  &nbsp;
                                   </td>
                                 </tr>
                               </tbody>
