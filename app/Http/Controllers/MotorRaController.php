@@ -552,6 +552,7 @@ class MotorRaController extends Controller
 
         $cliente = Cliente::where('id', $cliente_id)
         ->with('tipoCliente')
+        ->with('pais', 'region')
         ->with(['reservas' => function ($query) use ($reservas) {
                 $query->whereIn('id', $reservas)
                     ->whereIn('estado_reserva_id', [1,2,3,4,5])
