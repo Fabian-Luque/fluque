@@ -190,7 +190,7 @@
 
             <tr>
               <td class="data-tabla-detalles borde-derecha">
-                <p class="titulo">Reserva Nº {{ $reserva->numero_reserva }} - Tipo de habitaciÃ³n: {{ $reserva->habitacion->tipoHabitacion->nombre }} - {{ $reserva->ocupacion }} HuÃ©spedes -
+                <p class="titulo">Reserva Nº {{ $reserva->numero_reserva }} - Tipo de habitación: {{ $reserva->habitacion->tipoHabitacion->nombre }} - {{ $reserva->ocupacion }} Huéspedes -
                   {{ $reserva->noches }} Noches - Checkin {{ $reserva->checkin->format('d-m-Y') }} - Checkout {{ $reserva->checkout->format('d-m-Y') }} - Incluye: {{ $reserva->detalle }}</p>
               </td>
               <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{ number_format($reserva->monto_alojamiento) }}</p></td>
@@ -248,12 +248,12 @@
           <div class="detalles" style="margin:20px 0px;">
             <table class="tabla-detalles">
               <tr>
-               <th class="data-tabla-detalles borde-derecha"><p>NÂº Reserva</p></th>
+               <th class="data-tabla-detalles borde-derecha"><p>Nº Reserva</p></th>
                 <th class="data-tabla-detalles borde-derecha"><p>Tipo de pago</p></th>
                 <th class="data-tabla-detalles borde-derecha"><p>Fecha</p></th>
-                <th class="data-tabla-detalles borde-derecha"><p>MÃ©todo de pago</p></th>
+                <th class="data-tabla-detalles borde-derecha"><p>Método de pago</p></th>
                 <th class="data-tabla-detalles borde-derecha"><p>Tipo de comprobante</p></th>
-                <th class="data-tabla-detalles borde-derecha"><p>NÂº de operaciÃ³n</p></th>
+                <th class="data-tabla-detalles borde-derecha"><p>Nº de operación</p></th>
                 <th class="data-tabla-detalles borde-derecha"><p>Monto</p></th>
               </tr>
 
