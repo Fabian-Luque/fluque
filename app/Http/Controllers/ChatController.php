@@ -79,7 +79,7 @@ class ChatController extends Controller {
              ->orderBy('emisor_id')
             ->get();
 
-            $recep_ids->lists('receptor_id');
+            $recep_ids = $msj_emisor->lists('receptor_id');
             $mensajes = collect([]);
 
             foreach ($recep_ids as $id) {
