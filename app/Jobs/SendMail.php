@@ -68,7 +68,7 @@ class SendMail extends Job implements ShouldQueue {
                 $porpagar = 0;
                 $total    = 0;
 
-                $nombre_moneda = $reservas->tipoMoneda[0]->nombre;
+                $nombre_moneda = $reservas[0]->tipoMoneda[0]->nombre;
 
                 foreach ($reservas as $res) {
                     $total += $res->monto_total;
