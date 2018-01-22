@@ -324,7 +324,7 @@ a[x-apple-data-detectors=true] {
 </tr>
 <tr>
 <td style="width: 129px;">&nbsp;<strong>Rut o pasaporte:</strong></td>
-<td style="width: 222px;">{{&nbsp;$array['arr']['cliente']->rut }}</td>
+<td style="width: 222px;">{{$array['arr']['cliente']->rut }}</td>
 </tr>
 </tbody>
 </table>
