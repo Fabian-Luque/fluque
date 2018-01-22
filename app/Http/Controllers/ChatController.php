@@ -110,7 +110,7 @@ class ChatController extends Controller {
         ->get();
 
         foreach ($mensajes as $mensaje) {
-            if ($mensaje->estado == 0 && $mensaje->receptor_id == $request->prop_id) {
+            if ($mensaje->estado == 0 && $mensaje->receptor_id == $receptor_id) {
                 $mensaje->update([
                     'estado' => 1
                 ]);
