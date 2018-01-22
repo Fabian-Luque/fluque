@@ -12,6 +12,7 @@ use App\ZonaHoraria;
 use App\Estado;
 use App\Caja;
 use App\Reserva;
+use App\Mensajeria; 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Response;
@@ -29,9 +30,16 @@ class UserController extends Controller {
 
             $reservas = Reserva::whereHas('tipoHabitacion', function ($query) use ($propiedad_id) {
                         $query->where('propiedad_id', $propiedad_id);})
-                        ->where('habitacion_id', null)
-                        ->whereIn('estado_reserva_id', [1,2,3,4,5])
-                        ->get();
+            ->where('habitacion_id', null)
+            ->where('tipo_fuente_id', 1)
+            ->whereIn('estado_reserva_id', [1,2,3,4,5])
+            ->get();
+
+            $mensajes = Mensajeria::where(
+                'receptor_id',
+                $propiedad_id)
+            ->where('estado', 0)
+            ->get();
 
             foreach ($users as $user) {
                 foreach ($user['propiedad'] as $propiedad) {
@@ -42,6 +50,7 @@ class UserController extends Controller {
                         $propiedad->caja_abierta = 0;
                     }
                     $propiedad->reservas_motor = count($reservas);
+                    $propiedad->mensajes_sin_leer = count($mensajes);
                 }
             }
 
