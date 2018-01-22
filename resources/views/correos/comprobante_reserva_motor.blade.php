@@ -418,7 +418,6 @@ a[x-apple-data-detectors=true] {
                      <div style="border-collapse: collapse; display: table; width: 100%; background-color: #ffffff;">
                         <div style="padding-left: 45px; padding-right: 45px;">
                            <center>
-                              @foreach($reservaspdf as $reserva)@endforeach
                               <table id="t659344" class="wdn_responsive_table flush-left" style="width: 99.0451%;" cellpadding="10">
                                  <caption>&nbsp;</caption>
                                  <thead>
@@ -431,6 +430,7 @@ a[x-apple-data-detectors=true] {
                                     </tr>
                                  </thead>
                                  <tbody>
+                                    @foreach($reservaspdf as $reserva)
                                     <tr>
                                        <td style="width: 14%; text-align: left;" colspan="1" headers="t659344_row_0col_1" data-header="Checkin">{{ $reserva->checkin->format('d-m-Y') }}</td>
                                        <td style="width: 16%; text-align: left;" colspan="1" headers="t659344_row_0col_2" data-header="Checkout
@@ -439,6 +439,7 @@ a[x-apple-data-detectors=true] {
                                        <td style="width: 14%; text-align: left;" colspan="1" headers="t659344_row_0col_4" data-header="Noches">{{ $reserva->noches }}</td>
                                        <td style="width: 12.9735%; text-align: left;" colspan="1" headers="t659344_row_0col_5" data-header="Total">{{ $reserva->monto_total }}</td>
                                     </tr>
+                                    @endforeach
                                  </tbody>
                               </table>
                            </center>
