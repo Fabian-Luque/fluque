@@ -144,6 +144,47 @@ class ChatController extends Controller {
         return Response::json($retorno);
     }
 
+        public function GetConversacion(Request $request) {
+        $validator = Validator::make(
+            $request->all(), 
+            array(
+                'emisor_id'   => 'required',
+                'receptor_id' => 'required',
+                'limit'       => 'required',
+                'prop_id'     => 'required'
+            )
+        );
+
+        if ($validator->fails()) {
+            $retorno['errors'] = true;
+            $retorno["msj"] = $validator->errors();
+        } else {
+
+            $emisor_id   = $request->emisor_id;
+            $receptor_id = $request->receptor_id;
+
+            $mensajes = Mensajeria::whereIn(
+                'emisor_id',
+                [$emisor_id, $receptor_id])
+            ->whereIn('receptor_id', [$emisor_id, $receptor_id])
+            ->orderBy('created_at', 'DESC')
+            ->take($request->limit)
+            ->get();
+
+            foreach ($mensajes as $mensaje) {
+                if ($mensaje->estado == 0 && $mensaje->receptor_id == $request->prop_id) {
+                    $mensaje->update([
+                        'estado' => 1
+                    ]);
+                }
+            }
+            
+            $retorno['errors'] = false;
+            $retorno["msj"] = $mensajes;
+        } 
+        return Response::json($retorno);
+    }
+
     public function GetConversacionEmisor(Request $request) {
         $validator = Validator::make(
             $request->all(), 

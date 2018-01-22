@@ -338,6 +338,8 @@ Route::post('mensaje/enviar', 'ChatController@SendMessage');
 Route::post('mensaje/obtener', 'ChatController@GetAllMessages');
 Route::post('conversacion/obtener/receptor', 'ChatController@GetConversacionReceptor');
 Route::post('conversacion/obtener/emisor', 'ChatController@GetConversacionEmisor');
+Route::post('conversacion/obtener', 'ChatController@GetConversacion');
+
 Route::post('mensaje/obtener/ultimos', 'ChatController@GetMessagesByReceptor');
 Route::post('mensaje/estado', 'ChatController@EstadoMensaje');
 
