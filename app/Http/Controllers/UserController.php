@@ -28,22 +28,29 @@ class UserController extends Controller {
             $users        = User::where('id', $id)->with('propiedad.tipoPropiedad','propiedad.pais','propiedad.region','propiedad.zonaHoraria' ,'propiedad.tipoMonedas', 'propiedad.tipoCobro')->with('rol.permisos')->get();
             $propiedad_id = $users[0]->propiedad[0]['id'];
 
-            $clientes = Cliente::where(function ($query) use ($propiedad_id) {
-                    $query->whereHas('reservas.tipoHabitacion', function($query) use($propiedad_id){
-                        $query->where('propiedad_id', $propiedad_id);
-                    });
-                    $query->whereHas('reservas', function($query){
-                        $query->where('habitacion_id', null);
-                    });
-                })
-            ->with(['reservas' => function ($query) use ($propiedad_id){
-                    $query->whereHas('tipoHabitacion', function($query) use($propiedad_id){
-                            $query->where('propiedad_id', $propiedad_id);
-                        })
-                        ->where('habitacion_id', null)
-                        ->whereIn('estado_reserva_id', [1,2,3,4,5]);
-                }])
+            // return $clientes = Cliente::where(function ($query) use ($propiedad_id) {
+            //         $query->whereHas('reservas.tipoHabitacion', function($query) use($propiedad_id){
+            //             $query->where('propiedad_id', $propiedad_id);
+            //         });
+            //         $query->whereHas('reservas', function($query){
+            //             $query->where('habitacion_id', null);
+            //         });
+            //     })
+            // ->get();
+            $clientes = [];
+
+            $reservas = Reserva::whereHas('tipoHabitacion', function ($query) use ($propiedad_id) {
+            $query->where('propiedad_id', $propiedad_id);})
+            ->where('habitacion_id', null)
+            ->whereIn('estado_reserva_id', [1,2,3,4,5])
+            ->with('cliente')
             ->get();
+
+            foreach ($reservas as $reserva) {
+                if (!in_array($reserva->cliente, $clientes)) {
+                    array_push($clientes, $reserva->cliente);
+                }
+            }
 
             $mensajes = Mensajeria::where(
                 'receptor_id',
