@@ -624,10 +624,11 @@ class MotorRaController extends Controller
                         $propiedad_id
                     );
                 }
-            )->where('habitacion_id', null)
-                ->where('tipo_fuente_id', 1)
-                ->whereIn('estado_reserva_id', [1,2,3,4,5])
-                ->orderby('n_reserva_motor', 'DESC')
+            )
+            // ->where('habitacion_id', null)
+            ->where('tipo_fuente_id', 1)
+            ->whereIn('estado_reserva_id', [1,2,3,4,5])
+            ->orderby('n_reserva_motor', 'DESC')
             ->get();
 
             $reserva = $reservas->first();

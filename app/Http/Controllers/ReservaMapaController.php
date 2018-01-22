@@ -285,7 +285,6 @@ class ReservaMapaController extends Controller
             $reservas = Reserva::whereHas('tipoHabitacion', function($query) use($propiedad_id){
                 $query->where('propiedad_id', $propiedad_id);
             })
-            ->where('habitacion_id', null)
             ->where('tipo_fuente_id', 9)
             ->whereIn('estado_reserva_id', [1,2,3,4,5])
             ->orderby('n_reserva_propiedad', 'DESC')
