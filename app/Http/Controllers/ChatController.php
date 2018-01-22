@@ -72,43 +72,51 @@ class ChatController extends Controller {
 
     public function GetMessagesByReceptor(Request $request) {
         if ($request->has('receptor_id')) {
-            $mensajes = Mensajeria::whereIn(
-                'receptor_id', [
-                    $request->emisor_id, 
-                    $request->receptor_id
-                ]
-            )->with('propiedad')
-             ->orderBy('created_at', 'asc')
-             ->orderBy('emisor_id', 'asc')
+            $msj_emisor = Mensajeria::where(
+                'emisor_id',
+                $request->receptor_id
+            )->orderBy('created_at', 'desc')
+             ->orderBy('emisor_id')
             ->get();
-            $len = $mensajes->count();
 
-            if ($len != 0) {
-                $aux = collect([]);
-                $emisores = $mensajes->lists('emisor_id');
+            $recep_ids->lists('receptor_id');
+            $mensajes = collect([]);
 
-                for ($i = 1; $i < $mensajes->count(); $i++) { 
-                    if ($mensajes[($i - 1)]->emisor_id != $mensajes[$i]->emisor_id) {
-                        if ($mensajes[($i - 1)]->emisor_id != $mensajes[$i]->receptor_id) {
-                            $aux->push($mensajes[($i-1)]);
-                        } else {
-                            $aux->push($mensajes[($i)]);
-                        }
-                    } 
-                }
-                $aux->push($mensajes[($len - 1)]);
-
-                $retorno['errors'] = false;
-                $retorno["msj"] = array_reverse($aux->all());
-            } else {
-                $retorno['errors'] = true;
-                $retorno["msj"] = "No existen mensajes para dicho receptor";
+            foreach ($recep_ids as $id) {
+                $mensajes->push(
+                    $this->GetConv(
+                        $id, 
+                        $request->receptor_id
+                    )
+                );
             }
+
+            $retorno['errors'] = false;
+            $retorno["msj"] = $mensajes;
         } else {
             $retorno['errors'] = true;
             $retorno["msj"] = "Datos requeridos";
         }
         return Response::json($retorno);
+    }
+
+    public function GetConv($emisor_id, $receptor_id) {
+        $mensajes = Mensajeria::whereIn(
+            'emisor_id',
+            [$emisor_id, $receptor_id])
+        ->whereIn('receptor_id', [$emisor_id, $receptor_id])
+        ->orderBy('created_at', 'DESC')
+        ->take(1)
+        ->get();
+
+        foreach ($mensajes as $mensaje) {
+            if ($mensaje->estado == 0 && $mensaje->receptor_id == $request->prop_id) {
+                $mensaje->update([
+                    'estado' => 1
+                ]);
+            }
+        }
+        return $mensajes;
     }
 
     public function GetConversacion(Request $request) {
