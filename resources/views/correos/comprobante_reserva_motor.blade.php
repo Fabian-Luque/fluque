@@ -676,15 +676,7 @@ cellspacing="0" cellpadding="0">
                           <strong>&nbsp;Sub total</strong>
                         </td>
                         <td style="width: 101.062px;">
-                          <strong>{{ $subtotal }}</strong>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td style="width: 72.5625px;">
-                          <strong>&nbsp;Iva</strong>
-                        </td>
-                        <td style="width: 101.062px;">
-                          <strong>{{ $iva }}</strong>
+                          <strong>{{ $nombre_moneda }}{{ $subtotal }}</strong>
                         </td>
                       </tr>
                       <tr>
@@ -692,7 +684,7 @@ cellspacing="0" cellpadding="0">
                           <strong>&nbsp;Total</strong>
                         </td>
                         <td style="width: 101.062px;">
-                          <strong>{{ $total }}</strong>
+                          <strong>{{ $nombre_moneda }}{{ $total }}</strong>
                         </td>
                       </tr>
                       <tr>
@@ -700,7 +692,7 @@ cellspacing="0" cellpadding="0">
                           <strong>&nbsp;Por pagar</strong>
                         </td>
                         <td style="width: 101.062px;">
-                          <strong>{{ $porpagar }}</strong>
+                          <strong>{{ $nombre_moneda }}{{ $porpagar }}</strong>
                         </td>
                       </tr>
                     </tbody>
