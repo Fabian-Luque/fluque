@@ -72,12 +72,13 @@ class ChatController extends Controller {
 
     public function GetMessagesByReceptor(Request $request) {
         if ($request->has('receptor_id')) {
-            $mensajes = Mensajeria::where(
-                'receptor_id',
-                $request->receptor_id
-            )
-            ->with('propiedad')
-            ->orderBy('created_at', 'asc')
+            $mensajes = Mensajeria::whereIn(
+                'receptor_id', [
+                    $request->emisor_id, 
+                    $request->receptor_id
+                ]
+            )->with('propiedad')
+             ->orderBy('created_at', 'asc')
              ->orderBy('emisor_id', 'asc')
             ->get();
             $len = $mensajes->count();
@@ -88,7 +89,11 @@ class ChatController extends Controller {
 
                 for ($i = 1; $i < $mensajes->count(); $i++) { 
                     if ($mensajes[($i - 1)]->emisor_id != $mensajes[$i]->emisor_id) {
-                        $aux->push($mensajes[($i-1)]);
+                        if ($mensajes[($i - 1)]->emisor_id != $mensajes[$i]->receptor_id) {
+                            $aux->push($mensajes[($i-1)]);
+                        } else {
+                            $aux->push($mensajes[($i)]);
+                        }
                     } 
                 }
                 $aux->push($mensajes[($len - 1)]);
