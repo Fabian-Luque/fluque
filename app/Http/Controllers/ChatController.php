@@ -42,16 +42,10 @@ class ChatController extends Controller {
                 0
             )->get();
 
-            $ids = array_unique(
-                $conv_no_leidas->pluck(
-                    'receptor_id'
-                )->all()
-            );
-
             Event::fire(
                 new ChatEvent(
                     $mensaje->receptor_id,
-                    count($ids)
+                    $conv_no_leidas->count()
                 )
             );
 
