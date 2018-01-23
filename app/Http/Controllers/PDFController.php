@@ -1547,7 +1547,7 @@ class PDFController extends Controller {
         $pdf = PDF::loadView('pdf.huesped', ['propiedad' => [$propiedad], 'fecha' =>  $fecha ,'habitaciones' => $habitaciones]);
 
         return $pdf->download('archivo.pdf');
-        
+
     } 
 
 
