@@ -124,6 +124,7 @@ class ChatController extends Controller {
             'emisor_id',
             [$emisor_id, $receptor_id])
         ->whereIn('receptor_id', [$emisor_id, $receptor_id])
+        ->with('propiedad')
         ->orderBy('created_at', 'DESC')
         ->take(1)
         ->get();
