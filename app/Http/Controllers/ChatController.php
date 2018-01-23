@@ -80,10 +80,28 @@ class ChatController extends Controller {
              ->take(7)
             ->get();
 
-            $recep_ids = $msj_emisor->lists('receptor_id');
+            $msj_receptor = Mensajeria::where(
+                'receptor_id',
+                $request->receptor_id
+            )->orderBy('created_at', 'desc')
+             ->orderBy('emisor_id')
+             ->take(7)
+            ->get();
+
+            $ids1 = $msj_emisor->lists('receptor_id');
+            $ids2 = $msj_emisor->lists('receptor_id');
+
+            $ids = array_merge($ids1, $ids2);
+            $indice = array_search(
+                $request->receptor_id,
+                $ids,
+                true
+            );
+            unset($ids[$indice]);
+
             $mensajes = collect([]);
 
-            foreach ($recep_ids as $id) {
+            foreach ($ids as $id) {
                 $mensajes->push(
                     $this->GetConv(
                         $id, 
