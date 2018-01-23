@@ -153,6 +153,7 @@ class ChatController extends Controller {
             $mensajes = Mensajeria::whereIn(
                 'emisor_id',
                 [$emisor_id, $receptor_id])
+            ->with('propiedad_emisor', 'propiedad_receptor')
             ->whereIn('receptor_id', [$emisor_id, $receptor_id])
             ->orderBy('created_at', 'DESC')
             ->take($request->limit)
