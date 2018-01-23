@@ -109,7 +109,7 @@ class ChatController extends Controller {
             }
 
             $retorno['errors'] = false;
-            $retorno["msj"] = $ultimos;
+            $retorno["msj"] = $ultimos->sortBy('created_at');
         } else {
             $retorno['errors'] = true;
             $retorno["msj"] = "Datos requeridos";
