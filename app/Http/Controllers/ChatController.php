@@ -34,8 +34,22 @@ class ChatController extends Controller {
             $mensaje->mensaje     = $request->mensaje;
             $mensaje->save();
 
+            $conv_no_leidas = Mensajeria::where(
+                'estado',
+                0
+            )->get();
+
+            $ids = array_unique(
+                $conv_no_leidas->pluck(
+                    'receptor_id'
+                )->all()
+            );
+
             Event::fire(
-                new ChatEvent($mensaje->receptor_id)
+                new ChatEvent(
+                    $mensaje->receptor_id,
+                    count($ids)
+                )
             );
 
             $retorno['errors'] = false;
@@ -111,7 +125,6 @@ class ChatController extends Controller {
                 ); 
             }
             // ordenar colecion 
-
             $flag = true;   
             $temp;  
 
