@@ -35,6 +35,9 @@ class ChatController extends Controller {
             $mensaje->save();
 
             $conv_no_leidas = Mensajeria::where(
+                'receptor_id',
+                $request->receptor_id
+            )->where(
                 'estado',
                 0
             )->get();
