@@ -19,8 +19,12 @@ class Mensajeria extends Model {
 		'created_at'
 	];
 
-	public function propiedad() {
+	public function propiedad_emisor() {
         return $this->belongsTo('App\Propiedad', 'emisor_id'); 
+    }
+
+    public function propiedad_receptor() {
+        return $this->belongsTo('App\Propiedad', 'receptor_id'); 
     }
 
 	public function getCreatedAtAttribute($value)
