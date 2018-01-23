@@ -77,6 +77,7 @@ class ChatController extends Controller {
                 $request->receptor_id
             )->orderBy('created_at', 'desc')
              ->orderBy('emisor_id')
+             ->take(7)
             ->get();
 
             $recep_ids = $msj_emisor->lists('receptor_id');
@@ -108,15 +109,7 @@ class ChatController extends Controller {
         ->orderBy('created_at', 'DESC')
         ->take(1)
         ->get();
-
-        foreach ($mensajes as $mensaje) {
-            if ($mensaje->estado == 0 && $mensaje->receptor_id == $receptor_id) {
-                $mensaje->update([
-                    'estado' => 1
-                ]);
-            }
-        }
-        return $mensajes;
+        return $mensajes[0];
     }
 
     public function GetConversacion(Request $request) {
