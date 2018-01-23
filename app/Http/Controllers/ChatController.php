@@ -77,7 +77,6 @@ class ChatController extends Controller {
                 $request->receptor_id
             )->orderBy('created_at', 'desc')
              ->orderBy('emisor_id')
-             ->take(7)
             ->get();
 
             $msj_receptor = Mensajeria::where(
@@ -85,33 +84,32 @@ class ChatController extends Controller {
                 $request->receptor_id
             )->orderBy('created_at', 'desc')
              ->orderBy('emisor_id')
-             ->take(7)
             ->get();
 
-            $ids1 = $msj_emisor->lists('receptor_id');
-            $ids2 = $msj_emisor->lists('receptor_id');
-
-            $ids = array_merge($ids1, $ids2);
-            $indice = array_search(
-                $request->receptor_id,
-                $ids,
-                true
+            $ids1 = $msj_emisor->pluck('receptor_id')->all();
+            $ids2 = $msj_receptor->pluck('emisor_id')->all();
+            $ids  = array_values(
+                array_unique(
+                    array_merge(
+                        $ids1, 
+                        $ids2
+                    )
+                )
             );
-            unset($ids[$indice]);
 
-            $mensajes = collect([]);
+            $ultimos = collect([]);
 
-            foreach ($ids as $id) {
-                $mensajes->push(
+            for ($i = 0; $i < count($ids); $i++) {
+                $ultimos->push(
                     $this->GetConv(
-                        $id, 
+                        $ids[$i], 
                         $request->receptor_id
                     )
-                );
+                ); 
             }
 
             $retorno['errors'] = false;
-            $retorno["msj"] = $mensajes;
+            $retorno["msj"] = $ultimos;
         } else {
             $retorno['errors'] = true;
             $retorno["msj"] = "Datos requeridos";
