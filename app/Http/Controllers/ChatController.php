@@ -114,7 +114,6 @@ class ChatController extends Controller {
                 ); 
             }
             // ordenar colecion 
-
             $flag = true;   
             $temp;  
 
@@ -134,7 +133,6 @@ class ChatController extends Controller {
             }
 
             // return $ultimos;
-
             foreach ($ultimos as $ultimo) {
                 if ($ultimo->propiedad_emisor->id != $receptor_id) {
                     $ultimo->chat_nombre       = $ultimo->propiedad_emisor->nombre;
@@ -146,8 +144,6 @@ class ChatController extends Controller {
                     $ultimo->chat_id = $ultimo->propiedad_receptor->id;
                 }
             }
-
-
 
             $retorno['errors'] = false;
             $retorno["msj"] = $ultimos;
