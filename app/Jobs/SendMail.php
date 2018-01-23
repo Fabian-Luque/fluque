@@ -52,33 +52,41 @@ class SendMail extends Job implements ShouldQueue {
                 $reservas = Reserva::whereHas(
                     'tipoHabitacion',
                     function($query) use ($propiedad_id) {
-                        $query->where('propiedad_id', $propiedad_id);
+                        $query->where(
+                            'propiedad_id', 
+                            $propiedad_id
+                        );
                     }
                 )->orderby('id','DESC')
-                ->where('n_reserva_motor', $array['arr']['reserva']->n_reserva_motor)
-                ->whereIn('estado_reserva_id', [1,2,3,4,5])
+                ->where(
+                    'n_reserva_motor', 
+                    $array['arr']['reserva']->n_reserva_motor
+                )->whereIn('estado_reserva_id', [1,2,3,4,5])
                 ->get();
 
-                $iva      = 0;
                 $subtotal = 0;
                 $porpagar = 0;
                 $total    = 0;
 
+                $nombre_moneda = $reservas[0]['tipoMoneda']->nombre;
+                $propiedad_iva = $array['propiedad']->iva;
+    
                 foreach ($reservas as $res) {
                     $total += $res->monto_total;
-                    $subtotal += $res->monto_total - $iva;
                     $porpagar += $res->monto_por_pagar;
                 }
 
-                $iva = ($total * 19) / 100;
+                $neto          = ($total / ($propiedad_iva + 1 ));
+                $iva           = ($neto * $propiedad_iva);
 
                 $data_correo = [
                     'reservaspdf'  => $reservas,
                     'array'        => $array,
                     'iva'          => $iva,
-                    'subtotal'     => $subtotal,
+                    'subtotal'     => $neto,
                     'porpagar'     => $porpagar,
-                    'total'        => $total
+                    'total'        => $total,
+                    'nombre_moneda'=> $nombre_moneda
                 ];
             } else {
                 $data_correo = [
@@ -94,8 +102,8 @@ class SendMail extends Job implements ShouldQueue {
                         $array['cliente_email'], 
                         $array['cliente_email']
                     )->subject('Mensaje de '.$array['propiedad']->nombre);
-                    
-                    if ($array['propiedad_email'] != false) {
+        
+                    if (strcmp($array['propiedad_email'], '') != 0) {
                         $message->cc($array['propiedad_email']);
                     }
 
@@ -113,7 +121,7 @@ class SendMail extends Job implements ShouldQueue {
                 }
             );
         } catch(\Exception $e){
-            echo "error ".$e->getMessage();
+            echo "Linea: ".$e->getLine()." error ".$e->getMessage();
         }
     }
 

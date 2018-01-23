@@ -538,6 +538,50 @@ class MotorRaController extends Controller
 
     }
 
+    public function getReservasCliente(Request $request)
+    {
+        if ($request->has('cliente_id') && $request->has('reservas') ){
+            $cliente_id = $request->cliente_id;
+            $reservas   = $request->reservas;
+        } else {
+            $retorno = array(
+                'msj'    => "Incompleto",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        $cliente = Cliente::where('id', $cliente_id)
+        ->with('tipoCliente')
+        ->with('pais', 'region')
+        ->with(['reservas' => function ($query) use ($reservas) {
+                $query->whereIn('id', $reservas)
+                    ->whereIn('estado_reserva_id', [1,2,3,4,5])
+                    ->with('TipoMoneda')
+                    ->with('tipoHabitacion');
+            }])
+        ->first();
+
+        $suma_deposito = 0;
+        $total         = 0;
+        $cantidad      = count($reservas) - 1;
+        $i = 0;
+        foreach ($cliente['reservas'] as $reserva) {
+            $suma_deposito += $reserva->monto_deposito;
+            $total         += $reserva->monto_total;
+            $i++;
+        }
+
+        $cliente->suma_deposito           = $suma_deposito;
+        $cliente->monto_total             = $total;
+        $cliente->nombre_moneda           = $cliente['reservas'][0]->tipoMoneda->nombre;       
+        $cliente->cantidad_decimales      = $cliente['reservas'][0]->tipoMoneda->cantidad_decimales; 
+        $cliente->tipo_moneda_id          = $cliente['reservas'][0]->tipoMoneda->id;  
+        $cliente->habitaciones_reservadas = $i;       
+
+        return $cliente;
+    }
+
+
     public function reserva(Request $request) {
         $propiedad_id = null;
         if ($request->has('codigo')) {
@@ -580,10 +624,11 @@ class MotorRaController extends Controller
                         $propiedad_id
                     );
                 }
-            )->where('habitacion_id', null)
-                ->where('tipo_fuente_id', 1)
-                ->whereIn('estado_reserva_id', [1,2,3,4,5])
-                ->orderby('n_reserva_motor', 'DESC')
+            )
+            // ->where('habitacion_id', null)
+            ->where('tipo_fuente_id', 1)
+            ->whereIn('estado_reserva_id', [1,2,3,4,5])
+            ->orderby('n_reserva_motor', 'DESC')
             ->get();
 
             $reserva = $reservas->first();
@@ -799,7 +844,7 @@ class MotorRaController extends Controller
                 $reserva->cliente->email,
                 $arr,
                 "correos.comprobante_reserva_motor",
-                "",
+                "", // correo de la propiedad
                 "",
                 1,
                 "",

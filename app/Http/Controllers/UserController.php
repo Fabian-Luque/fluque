@@ -12,6 +12,8 @@ use App\ZonaHoraria;
 use App\Estado;
 use App\Caja;
 use App\Reserva;
+use App\Mensajeria; 
+use App\Cliente; 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Response;
@@ -23,15 +25,23 @@ class UserController extends Controller {
     }
     public function show($id){
         try {
-            $users = User::where('id', $id)->with('propiedad.tipoPropiedad','propiedad.pais','propiedad.region','propiedad.zonaHoraria' ,'propiedad.tipoMonedas', 'propiedad.tipoCobro')->with('rol.permisos')->get();
-
+            $users        = User::where('id', $id)->with('propiedad.tipoPropiedad','propiedad.pais','propiedad.region','propiedad.zonaHoraria' ,'propiedad.tipoMonedas', 'propiedad.tipoCobro')->with('rol.permisos')->get();
             $propiedad_id = $users[0]->propiedad[0]['id'];
 
+            $clientes = [];
+
             $reservas = Reserva::whereHas('tipoHabitacion', function ($query) use ($propiedad_id) {
-                        $query->where('propiedad_id', $propiedad_id);})
-                        ->where('habitacion_id', null)
-                        ->whereIn('estado_reserva_id', [1,2,3,4,5])
-                        ->get();
+            $query->where('propiedad_id', $propiedad_id);})
+            ->where('habitacion_id', null)
+            ->whereIn('estado_reserva_id', [1,2,3,4,5])
+            ->with('cliente')
+            ->get();
+
+            foreach ($reservas as $reserva) {
+                if (!in_array($reserva->cliente, $clientes)) {
+                    array_push($clientes, $reserva->cliente);
+                }
+            }
 
             foreach ($users as $user) {
                 foreach ($user['propiedad'] as $propiedad) {
@@ -41,9 +51,19 @@ class UserController extends Controller {
                     } else {
                         $propiedad->caja_abierta = 0;
                     }
-                    $propiedad->reservas_motor = count($reservas);
+                    $propiedad->reservas_motor    = count($clientes);
                 }
             }
+
+            $conv_no_leidas = Mensajeria::where(
+                'receptor_id',
+                $propiedad_id
+            )->where(
+                'estado',
+                0
+            )->get();
+
+            $users[0]->msj_no = $conv_no_leidas->count();
 
             return $users;
             
