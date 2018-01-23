@@ -52,12 +52,6 @@ class UserController extends Controller {
                 }
             }
 
-            $mensajes = Mensajeria::where(
-                'receptor_id',
-                $propiedad_id)
-            ->where('estado', 0)
-            ->get();
-
             foreach ($users as $user) {
                 foreach ($user['propiedad'] as $propiedad) {
                     $caja_abierta    = Caja::where('propiedad_id', $propiedad->id)->where('estado_caja_id', 1)->first();
@@ -67,7 +61,6 @@ class UserController extends Controller {
                         $propiedad->caja_abierta = 0;
                     }
                     $propiedad->reservas_motor    = count($clientes);
-                    $propiedad->mensajes_sin_leer = count($mensajes);
                 }
             }
 

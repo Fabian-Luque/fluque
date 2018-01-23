@@ -87,6 +87,9 @@ class ChatController extends Controller {
 
     public function GetMessagesByReceptor(Request $request) {
         if ($request->has('receptor_id')) {
+
+            $receptor_id = $request->receptor_id;
+
             $msj_emisor = Mensajeria::where(
                 'emisor_id',
                 $request->receptor_id
@@ -143,6 +146,19 @@ class ChatController extends Controller {
                 }
             }
 
+            // return $ultimos;
+            foreach ($ultimos as $ultimo) {
+                if ($ultimo->propiedad_emisor->id != $receptor_id) {
+                    $ultimo->chat_nombre       = $ultimo->propiedad_emisor->nombre;
+                    $ultimo->chat_id = $ultimo->propiedad_emisor->id;
+                } 
+
+                if ($ultimo->propiedad_receptor->id != $receptor_id) {
+                    $ultimo->chat_nombre = $ultimo->propiedad_receptor->nombre;
+                    $ultimo->chat_id = $ultimo->propiedad_receptor->id;
+                }
+            }
+
             $retorno['errors'] = false;
             $retorno["msj"] = $ultimos;
         } else {
@@ -186,6 +202,7 @@ class ChatController extends Controller {
             $mensajes = Mensajeria::whereIn(
                 'emisor_id',
                 [$emisor_id, $receptor_id])
+            ->with('propiedad_emisor', 'propiedad_receptor')
             ->whereIn('receptor_id', [$emisor_id, $receptor_id])
             ->orderBy('created_at', 'DESC')
             ->take($request->limit)
