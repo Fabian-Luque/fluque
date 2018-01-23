@@ -10,6 +10,7 @@ use App\Mensajeria;
 use Illuminate\Support\Facades\Validator;
 use App\Events\ChatEvent;
 use Illuminate\Support\Facades\Event;
+use \Carbon\Carbon;
 
 class ChatController extends Controller {
     
@@ -107,9 +108,28 @@ class ChatController extends Controller {
                     )
                 ); 
             }
+            // ordenar colecion 
+
+            $flag = true;   
+            $temp;  
+
+            while ($flag) {
+                $flag = false;    
+                for($j = 0; $j < ($ultimos->count() - 1); $j++) {
+                    $aux1 = Carbon::parse($ultimos[$j]->updated_at);
+                    $aux2 = Carbon::parse($ultimos[$j + 1]->updated_at);
+                    
+                    if (!$aux1->gt($aux2)) {
+                        $temp = $ultimos[$j];                
+                        $ultimos[$j] = $ultimos[$j + 1];
+                        $ultimos[$j + 1] = $temp;
+                        $flag = true;          
+                    } 
+                }
+            }
 
             $retorno['errors'] = false;
-            $retorno["msj"] = $ultimos->sortBy('created_at');
+            $retorno["msj"] = $ultimos;
         } else {
             $retorno['errors'] = true;
             $retorno["msj"] = "Datos requeridos";
