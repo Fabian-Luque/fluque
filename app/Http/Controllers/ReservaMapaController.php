@@ -21,6 +21,9 @@ use Validator;
 use \Carbon\Carbon;
 use App\ZonaHoraria;
 use JWTAuth;
+use App\Events\ReservasMapaEvent;
+use Illuminate\Support\Facades\Event;
+
 
 class ReservaMapaController extends Controller
 {
@@ -218,7 +221,7 @@ class ReservaMapaController extends Controller
 
             $hab_disponibles = [];
             foreach ($tipos_habitacion as $tipo) {
-                if ($tipo->disponible_venta > 0) {
+                if ($tipo->venta_propiedad > 0) {
                     array_push($hab_disponibles, $tipo);
                 }
             }
@@ -282,7 +285,6 @@ class ReservaMapaController extends Controller
             $reservas = Reserva::whereHas('tipoHabitacion', function($query) use($propiedad_id){
                 $query->where('propiedad_id', $propiedad_id);
             })
-            ->where('habitacion_id', null)
             ->where('tipo_fuente_id', 9)
             ->whereIn('estado_reserva_id', [1,2,3,4,5])
             ->orderby('n_reserva_propiedad', 'DESC')
@@ -372,6 +374,25 @@ class ReservaMapaController extends Controller
                 $reserva->save();
             }
 
+            Event::fire(
+                new ReservasMapaEvent($propiedad_id)
+            );
+
+            $arr = array(
+                'propiedad' => $propiedad
+            );
+
+            $this->EnvioCorreo(
+                $propiedad,
+                $cliente->email,
+                $arr,
+                "correos.aviso_reserva_motor",
+                "",
+                "",
+                1,
+                "",
+                ""
+            );
         } else {
             $retorno = array(
                 'msj'    => "Incompleto",
@@ -385,213 +406,5 @@ class ReservaMapaController extends Controller
         return Response::json($retorno, 201);
 
     }
-
-    public function getReservasMapa(Request $request)
-    {
-        if ($request->has('propiedad_id')) {
-            $propiedad_id = $request->input('propiedad_id');
-            $propiedad    = Propiedad::where('id', $propiedad_id)->first();
-            if (is_null($propiedad)) {
-                $retorno = array(
-                    'msj'    => "Propiedad no encontrada",
-                    'errors' => true);
-                return Response::json($retorno, 404);
-            }
-        } else {
-            $retorno = array(
-                'msj'    => "No se envia propiedad_id",
-                'errors' => true);
-            return Response::json($retorno, 400);
-        }
-
-        $clientes = Cliente::where(function ($query) use ($propiedad_id) {
-            $query->whereHas('reservas.tipoHabitacion', function($query) use($propiedad_id){
-                $query->where('propiedad_id', $propiedad_id);
-            });
-            $query->whereHas('reservas', function($query){
-                $query->where('tipo_fuente_id', 9);
-            });
-        })
-        ->with(['reservas' => function ($query){
-        $query->whereIn('estado_reserva_id', [1,2,3,4,5])->orderby('n_reserva_propiedad')->with('TipoMoneda')->with('tipoHabitacion');
-        }])
-        ->get();
-
-
-       // return  $clientes = Cliente::whereHas('reservas.tipoHabitacion', function($query) use($propiedad_id){
-       //          $query->where('propiedad_id', $propiedad_id);
-       //  })
-       //  ->with(['reservas' => function ($query) use($propiedad_id){
-       //      $query->whereHas('tipoHabitacion', function($query) use($propiedad_id){
-       //          $query->where('propiedad_id', $propiedad_id);
-       //      });
-       //      $query->where('habitacion_id', null)->where('tipo_fuente_id', 9)->whereIn('estado_reserva_id', [1,2,3,4,5])->orderby('n_reserva_propiedad')->with('TipoMoneda')->with('tipoHabitacion');
-       //  }])
-       //  ->get();
-
-       //  return $clientes = Cliente::with('tipoCliente')->with('region')->with('pais')
-       //  ->with(['reservas' => function ($query) use($propiedad_id){
-       //      $query->whereHas('tipoHabitacion', function($query) use($propiedad_id){
-       //          $query->where('propiedad_id', $propiedad_id);
-       //      });
-       //      $query->where('habitacion_id', null)->where('tipo_fuente_id', 9)->whereIn('estado_reserva_id', [1,2,3,4,5])->orderby('n_reserva_propiedad')->with('TipoMoneda')->with('tipoHabitacion');
-       //  }])
-       //  ->get();
-
-        $data = []; //Arreglo principal
-        $aux = 0; //aux de n_reserva_propiedad
-
-        foreach ($clientes as $cliente) {
-            $suma_deposito = 0;
-            $total    = 0;
-            $aux_reservas = []; //Arreglo aux de reserva del mismo cliente y misma operacion desde el motor
-
-                $reservas = $cliente->reservas; 
-                $cantidad = count($reservas) - 1;
-                foreach ($reservas as $reserva) {
-
-                if ($aux != $reserva->n_reserva_propiedad) {
-                    $aux = $reserva->n_reserva_propiedad; //Lo igualo por si existe otra reserva con el mismo n_reserva_propiedad
-                    if (count($aux_reservas) != 0) {
-                        $aux_cliente['id']          = $cliente->id;
-                        $aux_cliente['nombre']      = $cliente->nombre;
-                        $aux_cliente['apellido']    = $cliente->apellido;
-                        $aux_cliente['rut']         = $cliente->rut;
-                        $aux_cliente['direccion']   = $cliente->direccion;
-                        $aux_cliente['ciudad']      = $cliente->ciudad;
-                        $aux_cliente['telefono']    = $cliente->telefono;
-                        $aux_cliente['email']       = $cliente->email;
-                        $aux_cliente['giro']        = $cliente->giro;
-                        $aux_cliente['pais']        = $cliente->pais;
-                        $aux_cliente['region']      = $cliente->region;
-                        $aux_cliente['tipo_cliente']      = $cliente->tipoCliente;
-                        $aux_cliente['suma_deposito']     = $suma_deposito;
-                        $aux_cliente['monto_total']       = $total;
-                        $aux_cliente['nombre_moneda']     = $reserva->tipoMoneda->nombre;
-                        $aux_cliente['cantidad_decimales']      = $reserva->tipoMoneda->cantidad_decimales;
-                        $aux_cliente['tipo_moneda_id']          = $reserva->tipo_moneda_id;
-                        $aux_cliente['habitaciones_reservadas'] = count($aux_reservas);
-                        $aux_cliente['reservas']                = $aux_reservas;
-
-                        array_push($data, $aux_cliente);
-                        $aux_reservas  = [];
-                        $suma_deposito = 0;
-                        $total         = 0;
-                        array_push($aux_reservas, $reserva);
-                        $suma_deposito += $reserva->monto_deposito;
-                        $total         += $reserva->monto_total;
-
-                        if ($reservas[$cantidad] == $reserva) {
-                            $aux_cliente['id']          = $cliente->id;
-                            $aux_cliente['nombre']      = $cliente->nombre;
-                            $aux_cliente['apellido']    = $cliente->apellido;
-                            $aux_cliente['rut']         = $cliente->rut;
-                            $aux_cliente['direccion']   = $cliente->direccion;
-                            $aux_cliente['ciudad']      = $cliente->ciudad;
-                            $aux_cliente['telefono']    = $cliente->telefono;
-                            $aux_cliente['email']       = $cliente->email;
-                            $aux_cliente['giro']        = $cliente->giro;
-                            $aux_cliente['pais']        = $cliente->pais;
-                            $aux_cliente['region']      = $cliente->region;
-                            $aux_cliente['tipo_cliente']      = $cliente->tipoCliente;
-                            $aux_cliente['suma_deposito']     = $suma_deposito;
-                            $aux_cliente['nombre_moneda']     = $reserva->tipoMoneda->nombre;
-                            $aux_cliente['cantidad_decimales'] = $reserva->tipoMoneda->cantidad_decimales;
-                            $aux_cliente['tipo_moneda_id']     = $reserva->tipo_moneda_id;
-                            $aux_cliente['suma_deposito']      = $suma_deposito;
-                            $aux_cliente['monto_total']        = $total;
-                            $aux_cliente['habitaciones_reservadas'] = count($aux_reservas);
-                            $aux_cliente['reservas']                = $aux_reservas;
-
-                            array_push($data, $aux_cliente);
-                            $aux_reservas = [];
-
-                        }
-                    } elseif (count($aux_reservas) == 0) {
-
-                        if ($reservas[$cantidad] == $reserva) {
-                            $suma_deposito = 0;
-                            $total         = 0;
-                            $suma_deposito += $reserva->monto_deposito;
-                            $total         += $reserva->monto_total;
-                            array_push($aux_reservas, $reserva);
-                            $aux_cliente['id']          = $cliente->id;
-                            $aux_cliente['nombre']      = $cliente->nombre;
-                            $aux_cliente['apellido']    = $cliente->apellido;
-                            $aux_cliente['rut']         = $cliente->rut;
-                            $aux_cliente['direccion']   = $cliente->direccion;
-                            $aux_cliente['ciudad']      = $cliente->ciudad;
-                            $aux_cliente['telefono']    = $cliente->telefono;
-                            $aux_cliente['email']       = $cliente->email;
-                            $aux_cliente['giro']        = $cliente->giro;
-                            $aux_cliente['pais']        = $cliente->pais;
-                            $aux_cliente['region']      = $cliente->region;
-                            $aux_cliente['tipo_cliente']            = $cliente->tipoCliente;
-                            $aux_cliente['suma_deposito']           = $suma_deposito;
-                            $aux_cliente['nombre_moneda']           = $reserva->tipoMoneda->nombre;
-                            $aux_cliente['cantidad_decimales']      = $reserva->tipoMoneda->cantidad_decimales;
-                            $aux_cliente['tipo_moneda_id']          = $reserva->tipo_moneda_id;
-                            $aux_cliente['suma_deposito']           = $suma_deposito;
-                            $aux_cliente['monto_total']             = $total;
-                            $aux_cliente['habitaciones_reservadas'] = count($aux_reservas);
-                            $aux_cliente['reservas']                = $aux_reservas;
-
-                            array_push($data, $aux_cliente);
-                            $suma_deposito = 0;
-                            $total         = 0;
-                            $aux_reservas = [];
-                        } else {
-
-                            $suma_deposito += $reserva->monto_deposito;
-                            $total         += $reserva->monto_total;
-                            array_push($aux_reservas, $reserva);
-                        }
-                    } 
-
-                } elseif($aux == $reserva->n_reserva_propiedad) {
-
-                    if ($reservas[$cantidad] == $reserva) {
-                        $suma_deposito += $reserva->monto_deposito;
-                        $total         += $reserva->monto_total;
-                        array_push($aux_reservas, $reserva);
-                        $aux_cliente['id']          = $cliente->id;
-                        $aux_cliente['nombre']      = $cliente->nombre;
-                        $aux_cliente['apellido']    = $cliente->apellido;
-                        $aux_cliente['rut']         = $cliente->rut;
-                        $aux_cliente['direccion']   = $cliente->direccion;
-                        $aux_cliente['ciudad']      = $cliente->ciudad;
-                        $aux_cliente['telefono']    = $cliente->telefono;
-                        $aux_cliente['email']       = $cliente->email;
-                        $aux_cliente['giro']        = $cliente->giro;
-                        $aux_cliente['pais']        = $cliente->pais;
-                        $aux_cliente['region']      = $cliente->region;
-                        $aux_cliente['tipo_cliente']        = $cliente->tipoCliente;
-                        $aux_cliente['suma_deposito']       = $suma_deposito;
-                        $aux_cliente['nombre_moneda']       = $reserva->tipoMoneda->nombre;
-                        $aux_cliente['cantidad_decimales']  = $reserva->tipoMoneda->cantidad_decimales;
-                        $aux_cliente['tipo_moneda_id']      = $reserva->tipo_moneda_id;
-                        $aux_cliente['suma_deposito']       = $suma_deposito;
-                        $aux_cliente['monto_total']         = $total;
-                        $aux_cliente['habitaciones_reservadas'] = count($aux_reservas);
-                        $aux_cliente['reservas']                = $aux_reservas;
-
-                        array_push($data, $aux_cliente);
-                        $aux_reservas = [];
-                        $suma_deposito = 0;
-                        $total         = 0;
-                    } else {
-                        $suma_deposito += $reserva->monto_deposito;
-                        $total         += $reserva->monto_total;
-                        array_push($aux_reservas, $reserva);
-                    }
-                }
-            }
-        }
-
-
-        return $data;
-
-    }
-
 
 }

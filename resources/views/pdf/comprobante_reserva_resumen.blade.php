@@ -124,7 +124,7 @@
                         <td class="data-tabla-cliente"><p class="nombre">{{ $cte->ciudad }}</p></td>
                     </tr>
                     <tr>
-                        <th class="head-tabla-cliente"><p class="align-left">País</p></th>
+                        <th class="head-tabla-cliente"><p class="align-left">Paí­s</p></th>
                         <td class="data-tabla-cliente"><p class="nombre"></p></td>
                     </tr>
                     <tr>
@@ -311,10 +311,9 @@
       </div>
 
       <div class="seccion">
-        <p class="firma">Firma Autorizada Recepción</p>
+        <p class="firma">Firma Autorizada RecepciÃ³n</p>
       </div>
     </div>
 
   </body>
 </html>
-

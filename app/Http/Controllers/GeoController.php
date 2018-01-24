@@ -98,6 +98,8 @@ class GeoController extends Controller {
         $marker['onclick'] = '';
 		$marker['infowindow_content'] = 'Mi Ubicacion';
 		$marker['icon'] = url('assets/img/marker_miposision.png');
+        $marker['label'] = 0;
+        $marker['id'] = 0;
 		$pgm->add_marker($marker);
 
         if ($hoteles->count() != 0) {
@@ -105,13 +107,14 @@ class GeoController extends Controller {
         		if (isset($hotel->id)) {
         			$marker = array();
         			$marker['position'] = ''.$hotel->location->getLat().', '.$hotel->location->getLng().'';
-					$marker['onclick'] = 'mostrar();';
+					$marker['onclick'] = 'mostrar('.$hotel->id.');';
 					$marker['icon'] = url('assets/img/marker_hotel.png');
+                    $marker['label'] = $hotel->id;
+                    $marker['id'] = $hotel->id;
 					$pgm->add_marker($marker);
         		}
         	}
     	}
-
         return view('administrador.gmap')->with(
         	'map', 
         	$pgm->create_map()
@@ -242,6 +245,7 @@ class GeoController extends Controller {
                 'radio'        => 'required',
                 'fecha_inicio' => 'required',
                 'fecha_fin'    => 'required',
+                'prop_id'      => 'required',
             )
         );
 
@@ -254,7 +258,8 @@ class GeoController extends Controller {
                 $propiedades = $u_props->getPropiedadesCercanas(
                     $request->latitud,
                     $request->longitud,
-                    $request->radio
+                    $request->radio,
+                    $request->prop_id
                 );
                 $propiedades = collect($propiedades);
 
@@ -262,7 +267,10 @@ class GeoController extends Controller {
                 $fecha_fin    = $request->fecha_fin;
 
                 foreach ($propiedades as $prop) {
-                    $prop->propiedad = Propiedad::find($prop->prop_id);
+                    $prop->propiedad  = Propiedad::find($prop->prop_id);
+                    $property         = Propiedad::where('id', $prop->prop_id)->with('tiposHabitacion')->first();
+                    $tipos_habitacion = $property->tiposHabitacion;
+                    $config           = $tipos_habitacion->where('venta_propiedad', 0);
 
                     $habitaciones_disponibles = Habitacion::where(
                         'propiedad_id', 
@@ -291,7 +299,7 @@ class GeoController extends Controller {
 
                     $prop->n_habitaciones_disponibles = $habitaciones_disponibles->count();
 
-                    if ($habitaciones_disponibles->count() != 0) {
+                    if ($habitaciones_disponibles->count() != 0 && count($tipos_habitacion) != count($config)) {
                         $prop->disponible = true;
                     } else {
                         $prop->disponible = false;

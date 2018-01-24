@@ -25,6 +25,11 @@ Route::post('locate/prop', 'GeoController@AddLocatePropiedad');
 
 Route::get('hotelescercanos', 'GeoController@Gmaps');
 Route::post('hoteles/cercanos', 'GeoController@Gmaps');
+
+
+Route::post('ejmm', 'CorreoController@SendFileByEmail');
+
+
 Route::get(
   '/gmap', 
   function () {
@@ -104,8 +109,8 @@ Route::group(['prefix' => 'dash', 'middleware' => ['auth']],
         
     Route::post('crear/user', 'DashControllers\UserDashController@CreateUser')->name('crear.user');
 
-    Route::post('obtener/user', 'DashControllers\UserDashController@ReadUser');
     Route::post('actualizar/user', 'DashControllers\UserDashController@UpdateUser')->name('editar.user');
+    Route::post('obtener/user', 'DashControllers\UserDashController@ReadUser');
     Route::post('eliminar/user', 'DashControllers\UserDashController@DeleteUser');
   }
 );
@@ -146,6 +151,7 @@ Route::get('cantidad/tipo/habitacion', 'TipoHabitacionController@cantidadTipoHab
 Route::get('cliente/motor', 'ClienteController@index');
 Route::put('cliente/motor/{id}', 'ClienteController@update');
 Route::get('obtener/colores', 'MotorRaController@getColoresPropiedad');
+
 
 
 Route::get('reset/password/{token}', 'ApiAuthController@ResetPassword');
@@ -255,6 +261,8 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::get('habitaciones/disponibles', 'MotorRaController@habitacionesDisponibles');
 		Route::get('obtener/reservas/motor', 'MotorRaController@getReservasMotor');
 		Route::post('asignar/habitacion', 'MotorRaController@asignarHabitacion');
+
+
 		Route::post('crear/cuenta/bancaria', 'PropiedadController@crearCuentaBancaria');
 		Route::put('editar/cuenta/bancaria/{id}', 'PropiedadController@editarCuentaBancaria');
 		Route::delete('eliminar/cuenta/bancaria/{id}', 'PropiedadController@eliminarCuentaBancaria');
@@ -273,12 +281,12 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::post('cambiar/fechas/reserva', 'ReservaController@cambiarFechasReserva');
 		Route::get('reservas/credito', 'ReservaController@getCuentasCredito');
 		Route::post('confirmar/pago', 'ReservaController@confirmarPagoReserva');
+		Route::post('obtener/reservas/cliente', 'MotorRaController@getReservasCliente');
 
 
 		// rutas mapa geolozalizacion 
 		Route::get('mapa/disponibilidad/habitacion', 'ReservaMapaController@getDisponibilidad');
 		Route::post('mapa/reserva/habitacion', 'ReservaMapaController@reserva');
-		Route::get('obtener/reservas/mapa', 'ReservaMapaController@getReservasMapa');
 
 		Route::resource('user', 'UserController', ['except' => ['create', 'edit','store']]);
 		Route::resource('propiedad', 'PropiedadController', ['except' => ['create', 'edit', 'store']]);
@@ -326,9 +334,24 @@ Route::post('invoice/stripe/obtener','StripeController@InvoiceStripeObtener');
 Route::post('myallocator/configurar', 'MyallocatorController@Configuracion');
 
 
+
 Route::post('upload/images', 'MotorRaController@UploadImage');
 Route::post('get/images', 'MotorRaController@GetImage');
 Route::post('get/images/folder', 'MotorRaController@GetImagesFolder');
 
+Route::post('mensaje/enviar', 'ChatController@SendMessage');
+Route::post('mensaje/obtener', 'ChatController@GetAllMessages');
+Route::post('conversacion/obtener', 'ChatController@GetConversacion');
 
+Route::post('mensaje/noleido', 'ChatController@ConvNoLeidas');
+
+Route::post('mensaje/obtener/ultimos', 'ChatController@GetMessagesByReceptor');
+Route::post('mensaje/estado', 'ChatController@EstadoMensaje');
+
+
+Route::post('pdf/comprobante/reserva/resumen2', 'PDFController@comprobanteReservaResumen');
+
+
+
+Route::post('asignar/prueba', 'MotorRaController@prueba');
 

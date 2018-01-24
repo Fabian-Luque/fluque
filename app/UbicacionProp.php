@@ -13,7 +13,8 @@ class UbicacionProp extends Model {
 
     protected $fillable = [
         'id',
-        'prop_id'
+        'prop_id',
+        'location'
     ];
 
     protected $spatialFields = [
@@ -24,13 +25,14 @@ class UbicacionProp extends Model {
   		return $this->hasOne('App\Propiedad');
 	}
 
-    public static function getPropiedadesCercanas($latitud, $longitud, $radio) {
+    public static function getPropiedadesCercanas($latitud, $longitud, $radio, $prop_id) {
         return DB::select(
-            'SELECT id, prop_id, X(location) as latitud, Y(location) as longitud, created_at, updated_at FROM ubicacion_propiedad WHERE haversine(location,?, ?) < ?', 
+            'SELECT id, prop_id, X(location) as latitud, Y(location) as longitud, created_at, updated_at FROM ubicacion_propiedad WHERE haversine(location,?, ?) < ? AND NOT prop_id = ?', 
             array(
                 $latitud,
                 $longitud,
-                $radio // KM ^ 2
+                $radio, // KM ^ 2
+                $prop_id
             )
         );
     }

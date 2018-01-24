@@ -44,15 +44,25 @@ class MotorRaController extends Controller {
                 );
                 $imageName = Storage::disk('s3')->url($request->name);
 
-                $retorno['error'] = true;
-                $retorno['msj'] = Storage::disk('s3')->get(
+                Storage::disk('s3')->get(
                     $request->nombre_prop."/".$request->name
                 );
+
+                //Storage::disk('s3')->allDirectories() directorios
+
+                //dd(Storage::disk('s3')->allFiles($request->nombre_prop));
+
+                $retorno['error'] = true;
+                $retorno['msj'] = 'Upload exitoso';
+                $retorno['img'] = 'https://s3-sa-east-1.amazonaws.com/gofeels-props-images/'.$request->nombre_prop."/".$request->name;
             } else {
                 $retorno['error'] = true;
                 $retorno['msj'] = "Datos requeridos";
             }
         } catch (S3Exception $e) {
+            $retorno['error'] = true;
+            $retorno['msj'] = $e->getMessage();
+        } catch (League\Flysystem\FilesystemNotFoundException $e) {
             $retorno['error'] = true;
             $retorno['msj'] = $e->getMessage();
         }
@@ -88,7 +98,7 @@ class MotorRaController extends Controller {
     }
 
     public function getDisponibilidad(Request $request)
-	{
+    {
         if ($request->has('fecha_inicio') && $request->has('fecha_fin')) {
             $inicio = new Carbon($request->input('fecha_inicio'));
             $fin    = new Carbon($request->input('fecha_fin'));
@@ -114,7 +124,7 @@ class MotorRaController extends Controller {
             return Response::json($retorno, 400);
         }
 
-        $propiedad_id 			   = $propiedad->id;
+        $propiedad_id              = $propiedad->id;
         $propiedad_monedas         = $propiedad->tipoMonedas; // monedas propiedad
         $tipo_habitacion_propiedad = $propiedad->tiposHabitacion;
 
@@ -388,25 +398,39 @@ class MotorRaController extends Controller {
             return Response::json($retorno, 400);
         }
 
-        $clientes = Cliente::with('tipoCliente')->with('region')->with('pais')
-        ->with(['reservas' => function ($query) use($propiedad_id){
-            $query->whereHas('tipoHabitacion', function($query) use($propiedad_id){
+        $clientes = Cliente::where(function ($query) use ($propiedad_id) {
+            $query->whereHas('reservas.tipoHabitacion', function($query) use($propiedad_id){
                 $query->where('propiedad_id', $propiedad_id);
             });
-            $query->where('habitacion_id', null)->whereIn('estado_reserva_id', [1,2,3,4,5])->orderby('n_reserva_motor')->with('TipoMoneda')->with('tipoHabitacion');
-        }])
+            $query->whereHas('reservas', function($query){
+                $query->where('tipo_fuente_id', 1)->where('habitacion_id', null);
+            });
+        })
+        ->with(['reservas' => function ($query) use ($propiedad_id){
+                $query->whereHas('tipoHabitacion', function($query) use($propiedad_id){
+                        $query->where('propiedad_id', $propiedad_id);
+                    })
+                    ->where('habitacion_id', null)
+                    ->where('tipo_fuente_id', 1)
+                    ->whereIn('estado_reserva_id', [1,2,3,4,5])
+                    ->orderby('n_reserva_motor')
+                    ->with('TipoMoneda')
+                    ->with('tipoHabitacion');
+            }])
         ->get();
 
+
         $data = []; //Arreglo principal
-        $aux = 0; //aux de n_reserva_motor
+        $aux  = 0; //aux de n_reserva_motor
 
         foreach ($clientes as $cliente) {
             $suma_deposito = 0;
-            $total    = 0;
-            $aux_reservas = []; //Arreglo aux de reserva del mismo cliente y misma operacion desde el motor
+            $total         = 0;
+            $aux_reservas  = []; //Arreglo aux de reserva del mismo cliente y misma operacion desde el motor
 
-                $reservas = $cliente->reservas; 
+                $reservas = $cliente['reservas'];
                 $cantidad = count($reservas) - 1;
+
                 foreach ($reservas as $reserva) {
 
                 if ($aux != $reserva->n_reserva_motor) {
@@ -535,7 +559,7 @@ class MotorRaController extends Controller {
                         $aux_cliente['reservas']                = $aux_reservas;
 
                         array_push($data, $aux_cliente);
-                        $aux_reservas = [];
+                        $aux_reservas  = [];
                         $suma_deposito = 0;
                         $total         = 0;
                     } else {
@@ -547,55 +571,140 @@ class MotorRaController extends Controller {
             }
         }
 
+        $reservas_mapa = $this->getReservasMapa(
+            $propiedad_id
+        );
+        // junta reservas motor y mapa
 
-        return $data;
+        $resultado   = array_merge($data, $reservas_mapa);
+        $aux         = 0;
+        $aux_cliente = null;
+        $i = 0;
+        $reservas_final = [];
+        while (count($resultado) != 0) {
+            foreach ($resultado as $cliente) {
+                if ($aux == 0) {
+                    $aux = $cliente['reservas'][0]['created_at'];
+                    $aux_cliente = $cliente;
+
+                } else {
+                    if ($aux < $cliente['reservas'][0]['created_at']) {
+                        $aux = $cliente['reservas'][0]['created_at'];
+                        $aux_cliente = $cliente;
+                    } 
+                }
+
+                $i++;
+                if ($i == count($resultado)) {
+                    $posicion = array_search($aux_cliente, $resultado);
+                    unset($resultado[$posicion]);
+
+                    array_push($reservas_final, $aux_cliente);
+                    $aux = 0;
+                    $i = 0;
+                }
+            }
+        }
+
+        return $reservas_final;              
 
     }
 
-    public function reserva(Request $request)
+    public function getReservasCliente(Request $request)
     {
-        $propiedad_id = null;
-        if ($request->has('codigo')) {
-            $codigo = $request->input('codigo');
-            $propiedad    = Propiedad::where('codigo', $codigo)->first();
-            $propiedad_id = $propiedad->id;
-            if (is_null($propiedad)) {
-                $retorno = array(
-                    'msj'    => "Propiedad no encontrada",
-                    'errors' => true);
-                return Response::json($retorno, 404);
-            }
+        if ($request->has('cliente_id') && $request->has('reservas') ){
+            $cliente_id = $request->cliente_id;
+            $reservas   = $request->reservas;
         } else {
             $retorno = array(
-                'msj'    => "No se envia propiedad_id",
+                'msj'    => "Incompleto",
                 'errors' => true);
             return Response::json($retorno, 400);
         }
 
+        $cliente = Cliente::where('id', $cliente_id)
+        ->with('tipoCliente')
+        ->with('pais', 'region')
+        ->with(['reservas' => function ($query) use ($reservas) {
+                $query->whereIn('id', $reservas)
+                    ->whereIn('estado_reserva_id', [1,2,3,4,5])
+                    ->with('TipoMoneda')
+                    ->with('tipoHabitacion');
+            }])
+        ->first();
+
+        $suma_deposito = 0;
+        $total         = 0;
+        $cantidad      = count($reservas) - 1;
+        $i = 0;
+        foreach ($cliente['reservas'] as $reserva) {
+            $suma_deposito += $reserva->monto_deposito;
+            $total         += $reserva->monto_total;
+            $i++;
+        }
+
+        $cliente->suma_deposito           = $suma_deposito;
+        $cliente->monto_total             = $total;
+        $cliente->nombre_moneda           = $cliente['reservas'][0]->tipoMoneda->nombre;       
+        $cliente->cantidad_decimales      = $cliente['reservas'][0]->tipoMoneda->cantidad_decimales; 
+        $cliente->tipo_moneda_id          = $cliente['reservas'][0]->tipoMoneda->id;  
+        $cliente->habitaciones_reservadas = $i;       
+
+        return $cliente;
+    }
+
+
+    public function reserva(Request $request) {
+        $propiedad_id = null;
+        if ($request->has('codigo')) {
+            $codigo = $request->input('codigo');
+            $propiedad = Propiedad::where(
+                'codigo', 
+                $codigo
+            )->first();
+            
+            $propiedad_id = $propiedad->id;
+            
+            if (is_null($propiedad)) {
+                $retorno['msj'] = "No se envia propiedad_id";
+                $retorno['errors'] = true;
+                return Response::json($retorno, 404);
+            }
+        } else {
+            return Response::json($retorno, 400);
+        }
+
         if ($request->has('tipo_moneda_id') && $request->has('fecha_inicio') && $request->has('fecha_fin') && $request->has('iva') && $request->has('noches') && $request->has('habitaciones') && $request->has('cliente')) {
-            $tipo_moneda_id = $request->get('tipo_moneda_id');
-            $fecha_inicio   = $request->get('fecha_inicio');
-            $fecha_fin      = $request->get('fecha_fin');
-            $iva            = $request->get('iva');
-            $noches         = $request->get('noches');
-            $clientes       = $request['cliente'];
-            $habitaciones   = $request['habitaciones'];
+            $tipo_moneda_id = $request->tipo_moneda_id;
+            $fecha_inicio   = $request->fecha_inicio;
+            $fecha_fin      = $request->fecha_fin;
+            $iva            = $request->iva;
+            $noches         = $request->noches;
+            $clientes       = $request->cliente;
+            $habitaciones   = $request->habitaciones;
 
             if (!is_array($habitaciones)) {
                 $habitaciones = [];
-                $habitaciones . push($request['habitaciones']);
+                $habitaciones . push($request->habitaciones);
             }
 
-            $reservas = Reserva::whereHas('tipoHabitacion', function($query) use($propiedad_id){
-                $query->where('propiedad_id', $propiedad_id);
-            })
-            ->where('habitacion_id', null)
+            $reservas = Reserva::whereHas(
+                'tipoHabitacion', 
+                function($query) use($propiedad_id) {
+                    $query->where(
+                        'propiedad_id', 
+                        $propiedad_id
+                    );
+                }
+            )
+            // ->where('habitacion_id', null)
             ->where('tipo_fuente_id', 1)
             ->whereIn('estado_reserva_id', [1,2,3,4,5])
             ->orderby('n_reserva_motor', 'DESC')
             ->get();
 
-            $reserva  = $reservas->first();
+            $reserva = $reservas->first();
+            
             if (!is_null($reserva)) {
                 $n_reserva_motor = $reserva->n_reserva_motor;
             } else {
@@ -677,14 +786,29 @@ class MotorRaController extends Controller {
                 $reserva->monto_deposito        = $habitacion['monto_deposito'];
                 $reserva->n_reserva_motor       = $n_reserva_motor + 1;
                 $reserva->save();
-
-                if ($propiedad_id != null) {
-                    Event::fire(
-                        new ReservasMotorEvent($propiedad_id)
-                    );
-                }
             }
 
+            if ($propiedad_id != null) {
+                Event::fire(
+                    new ReservasMotorEvent($propiedad_id)
+                );
+
+                $arr = array(
+                    'propiedad'     => $propiedad
+                );
+
+                $this->EnvioCorreo(
+                    $propiedad,
+                    $cliente->email,
+                    $arr,
+                    "correos.aviso_reserva_motor",
+                    "",
+                    "",
+                    1,
+                    "",
+                    ""
+                );
+            }
         } else {
             $retorno = array(
                 'msj'    => "Incompleto",
@@ -699,8 +823,19 @@ class MotorRaController extends Controller {
 
     }
 
-    public function asignarHabitacion(Request $request)
-    {
+    public function prueba(Request $request) {
+        $propiedad_id = $request->prop_id;
+        $reservas = Reserva::whereHas(
+                    'tipoHabitacion',
+                    function($query) use ($propiedad_id) {
+                        $query->where('propiedad_id', $propiedad_id);
+                    }
+                )->orderby('id','DESC')
+                ->where('n_reserva_motor', $request->n_reserva_motor);
+        return Response::json($reservas);
+    }
+
+    public function asignarHabitacion(Request $request) {
         if ($request->has('reserva_id')) {
             $reserva_id = $request->input('reserva_id');
             $reserva = Reserva::where('id', $reserva_id)->first();
@@ -713,7 +848,8 @@ class MotorRaController extends Controller {
         } else {
             $retorno = array(
                 'msj'    => "No se envia reserva_id",
-                'errors' => true);
+                'errors' => true
+            );
             return Response::json($retorno, 400);
         }
 
@@ -749,11 +885,14 @@ class MotorRaController extends Controller {
             return Response::json($retorno, 400);
         }
 
-        $reservas = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
-            $query->where('propiedad_id', $propiedad_id);})
-        ->orderby('id','DESC')
-        ->where('numero_reserva', '!=', null)
-        ->take(1)
+        $reservas = Reserva::whereHas(
+            'habitacion', 
+            function($query) use ($propiedad_id) {
+                $query->where('propiedad_id', $propiedad_id);
+            }
+        )->orderby('id','DESC')
+            ->where('numero_reserva', '!=', null)
+            ->take(1)
         ->first();
 
         if (!is_null($reservas)) {
@@ -764,11 +903,35 @@ class MotorRaController extends Controller {
 
         $reserva->update(array('numero_reserva' => $numero , 'habitacion_id' => $habitacion_id));
 
+        if ($request->has('terminado')) {
+
+            $arr = array(
+                'propiedad'     => $propiedad,
+                'cliente'       => $reserva->cliente,
+                'reserva'       => $reserva
+            ); 
+
+            $this->EnvioCorreo(
+                $propiedad,
+                $reserva->cliente->email,
+                $arr,
+                "correos.comprobante_reserva_motor",
+                "", // correo de la propiedad
+                "",
+                1,
+                "",
+                "reservas-varias"
+            );
+
+            $retorno['errors'] = false;
+            $retorno['msj'] = 'Habitacion asignada, y comprobante enviado';
+            return Response::json($retorno, 200);
+        }
+
         $retorno = [
             'errors' => false,
-            'msj'    => 'Habitación asignada',];
+            'msj'    => 'Habitacion asignada',];
         return Response::json($retorno, 201);
-
     }
 
     public function asignarColorMotor(Request $request)
