@@ -62,13 +62,29 @@ class MotorRaController extends Controller {
         } catch (S3Exception $e) {
             $retorno['error'] = true;
             $retorno['msj'] = $e->getMessage();
-        } catch (League\Flysystem\FilesystemNotFoundException $e) {
-            $retorno['error'] = true;
-            $retorno['msj'] = $e->getMessage();
-        }
+        } 
         return Response::json($retorno);
     }
 
+    public function GetAllImagesByDir(Request $request) {
+        if ($request->has('nombre_prop')) {
+            try {
+                $retorno['error'] = false;
+                $retorno['msj'] = "Listado de imagenes";
+                $retorno['url'] = "https://s3-sa-east-1.amazonaws.com/gofeels-props-images/";
+                $retorno['lista'] = Storage::disk('s3')->allFiles(
+                    $request->nombre_prop
+                );
+            } catch (S3Exception $e) {
+                $retorno['error'] = true;
+                $retorno['msj'] = $e->getMessage();
+            } 
+        } else {
+            $retorno['error'] = true;
+            $retorno['msj'] = "Datos requeridos";
+        }
+        return Response::json($retorno);
+    }
 
     public function GetImage(Request $request) {
         try {

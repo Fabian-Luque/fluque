@@ -337,7 +337,8 @@ Route::post('myallocator/configurar', 'MyallocatorController@Configuracion');
 
 Route::post('upload/images', 'MotorRaController@UploadImage');
 Route::post('get/images', 'MotorRaController@GetImage');
-Route::post('get/images/folder', 'MotorRaController@GetImagesFolder');
+Route::post('get/images/byfolder', 'MotorRaController@GetAllImagesByDir');
+
 
 Route::post('mensaje/enviar', 'ChatController@SendMessage');
 Route::post('mensaje/obtener', 'ChatController@GetAllMessages');
