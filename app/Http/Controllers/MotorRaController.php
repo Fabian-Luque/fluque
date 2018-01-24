@@ -28,14 +28,9 @@ use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 use Html;
 
 class MotorRaController extends Controller {
-    public function GetImagesFolder(Request $request) {
-        $files = Storage::disk('s3')->allFiles();
-        return Response::json($files);
-    }
-
     public function UploadImage(Request $request) {
         try {
-            if ( $request->has('name') &&  $request->has('nombre_prop')) {
+            if ( $request->has('nombre') &&  $request->has('nombre_prop')) {
                 $image = $request->file('image');
                 $t = Storage::disk('s3')->put(
                     $request->nombre_prop."/".$request->name, 
@@ -67,7 +62,16 @@ class MotorRaController extends Controller {
     }
 
     public function GetAllImagesByDir(Request $request) {
-        if ($request->has('nombre_prop')) {
+        if ($request->has('nombre_prop') && $request->has('nombre')) {
+            try {
+                $retorno['error'] = false;
+                $retorno['msj'] = "Listado de imagenes";
+                $retorno['img'] = "https://s3-sa-east-1.amazonaws.com/gofeels-props-images/".$request->has('nombre_prop')."/".$request->has('nombre');
+            } catch (S3Exception $e) {
+                $retorno['error'] = true;
+                $retorno['msj'] = $e->getMessage();
+            }
+        } elseif ($request->has('nombre_prop')) {
             try {
                 $retorno['error'] = false;
                 $retorno['msj'] = "Listado de imagenes";
