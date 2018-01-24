@@ -13,10 +13,11 @@ use App\Propiedad;
 use App\Cliente;
 use PDF;
 use App\Jobs\SendMail;
+use Illuminate\Support\Facades\Validator;
+use Response;
 
 class Controller extends BaseController {
     use AuthorizesRequests, AuthorizesResources, DispatchesJobs, ValidatesRequests;
-
 
     public function UploadImage(Request $request) {
         $validator = Validator::make(

@@ -31,25 +31,25 @@ class MotorRaController extends Controller {
     public function UploadImage(Request $request) {
         try {
             if ( $request->has('nombre') &&  $request->has('nombre_prop')) {
+                $validator = Validator::make(
+                    $request->all(), 
+                    array(
+                        'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                    )
+                );
+
+                $imageName = time().'.'.$request->image->getClientOriginalExtension();
                 $image = $request->file('image');
                 $t = Storage::disk('s3')->put(
-                    $request->nombre_prop."/".$request->name, 
+                    $imageName, 
                     file_get_contents($image), 
-                    'public' 
+                    'public'
                 );
-                $imageName = Storage::disk('s3')->url($request->name);
-
-                Storage::disk('s3')->get(
-                    $request->nombre_prop."/".$request->name
-                );
-
-                //Storage::disk('s3')->allDirectories() directorios
-
-                //dd(Storage::disk('s3')->allFiles($request->nombre_prop));
+                $imageName = Storage::disk('s3')->url($imageName);
 
                 $retorno['error'] = true;
                 $retorno['msj'] = 'Upload exitoso';
-                $retorno['img'] = 'https://s3-sa-east-1.amazonaws.com/gofeels-props-images/'.$request->nombre_prop."/".$request->name;
+                $retorno['img'] = 'https://s3-sa-east-1.amazonaws.com/gofeels-props-images/'.$request->nombre_prop."/".$request->nombre;
             } else {
                 $retorno['error'] = true;
                 $retorno['msj'] = "Datos requeridos";
@@ -66,7 +66,7 @@ class MotorRaController extends Controller {
             try {
                 $retorno['error'] = false;
                 $retorno['msj'] = "Listado de imagenes";
-                $retorno['img'] = "https://s3-sa-east-1.amazonaws.com/gofeels-props-images/".$request->has('nombre_prop')."/".$request->has('nombre');
+                $retorno['img'] = "https://s3-sa-east-1.amazonaws.com/gofeels-props-images/".$request->nombre_prop."/".$request->nombre;
             } catch (S3Exception $e) {
                 $retorno['error'] = true;
                 $retorno['msj'] = $e->getMessage();
