@@ -22,7 +22,8 @@
         "gabrielbull/websocket-client": "^0.3.1",
         "laravel/cashier": "^5.0",
         "cartalyst/stripe": "^2.1",
-        "league/flysystem-aws-s3-v3": "^1.0"
+        "league/flysystem-aws-s3-v3": "^1.0",
+        "slaughter550/intercom-laravel": "^3.1"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

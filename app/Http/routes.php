@@ -343,6 +343,8 @@ Route::post('delete/images', 'MotorRaController@DeleteImage');
 
 
 
+
+
 Route::post('mensaje/enviar', 'ChatController@SendMessage');
 Route::post('mensaje/obtener', 'ChatController@GetAllMessages');
 Route::post('conversacion/obtener', 'ChatController@GetConversacion');

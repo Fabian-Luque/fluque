@@ -15,6 +15,9 @@ use PDF;
 use App\Jobs\SendMail;
 use Illuminate\Support\Facades\Validator;
 use Response;
+use Intercom;
+use Intercom\IntercomMessages;
+use Intercom\IntercomClient;
 
 class Controller extends BaseController {
     use AuthorizesRequests, AuthorizesResources, DispatchesJobs, ValidatesRequests;

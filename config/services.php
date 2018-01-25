@@ -35,6 +35,11 @@ return [
         'secret' => env('STRIPE_SECRET'),
     ],
 
+    'intercom' => [
+        'app_id' => 'hhzjo61u',
+        'api_key' => 'dG9rOjJjZmE4YWU4XzMxMDFfNDMxOV9iYjIyX2QzYTRhM2Q2YTJlNToxOjA=',
+    ],
+
     'redis' => [
 
         'client' => 'predis',
