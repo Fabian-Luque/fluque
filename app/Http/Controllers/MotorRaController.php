@@ -835,7 +835,8 @@ class MotorRaController extends Controller {
                 );
 
                 $arr = array(
-                    'propiedad'     => $propiedad
+                    'propiedad'     => $propiedad,
+                    'de'            => $propiedad->nombre
                 );
 
                 $this->EnvioCorreo(
@@ -949,7 +950,8 @@ class MotorRaController extends Controller {
             $arr = array(
                 'propiedad'     => $propiedad,
                 'cliente'       => $reserva->cliente,
-                'reserva'       => $reserva
+                'reserva'       => $reserva,
+                'de'            => $propiedad->nombre
             ); 
 
             $this->EnvioCorreo(

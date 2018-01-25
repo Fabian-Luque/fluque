@@ -1171,7 +1171,8 @@ class PDFController extends Controller {
                     'neto'          => $neto, 
                     'iva'           => $iva, 
                     'total'         => $total, 
-                    'por_pagar'     => $por_pagar
+                    'por_pagar'     => $por_pagar,
+                    'de'            => $propiedad->nombre
                 );
 
                 $pdf = $this->EnvioCorreo(
@@ -1196,7 +1197,8 @@ class PDFController extends Controller {
                     'nombre_moneda' => $nombre_moneda,
                     'iva_reservas'  => $iva_reservas,
                     'total'         => $total,
-                    'por_pagar'     => $por_pagar
+                    'por_pagar'     => $por_pagar,
+                    'de'            => $propiedad->nombre
                 );
 
                 $pdf = $this->EnvioCorreo(
@@ -1221,7 +1223,8 @@ class PDFController extends Controller {
                 'nombre_moneda' => $nombre_moneda,
                 'iva_reservas'  => $iva_reservas,
                 'total'         => $total,
-                'por_pagar'     => $por_pagar
+                'por_pagar'     => $por_pagar,
+                'de'            => $propiedad->nombre
             );
 
             $pdf = $this->EnvioCorreo(
