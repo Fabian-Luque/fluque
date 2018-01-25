@@ -28,6 +28,27 @@ use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 use Html;
 
 class MotorRaController extends Controller {
+    public function DeleteImage(Request $request) {
+        try {
+            if ( $request->has('nombre') && $request->has('nombre_prop')) {
+                $imageName = Storage::disk('s3')->delete(
+                    $request->nombre_prop."/".$request->nombre
+                );
+
+                $retorno['error'] = false;
+                $retorno['msj'] = 'Delete exitoso';
+                $retorno['img'] = 'https://s3-sa-east-1.amazonaws.com/gofeels-props-images/'.$request->nombre_prop."/".$request->nombre;
+            } else {
+                $retorno['error'] = true;
+                $retorno['msj'] = "Datos requeridos";
+            }
+        } catch (S3Exception $e) {
+            $retorno['error'] = true;
+            $retorno['msj'] = $e->getMessage();
+        } 
+        return Response::json($retorno);
+    }
+    
     public function UploadImage(Request $request) {
         try {
             if ( $request->has('nombre') &&  $request->has('nombre_prop')) {
