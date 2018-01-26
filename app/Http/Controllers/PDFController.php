@@ -812,7 +812,8 @@ class PDFController extends Controller {
                     'iva_reservas'  => $iva_reservas, 
                     'neto'          => $neto, 
                     'iva'           => $iva, 
-                    'total'         => $total
+                    'total'         => $total,
+                    'de'            => $propiedad->nombre
                 );
 
                 $pdf = $this->EnvioCorreo(
@@ -835,7 +836,8 @@ class PDFController extends Controller {
                     'reservas_pdf'  => $reservas_pdf, 
                     'nombre_moneda' => $nombre_moneda,
                     'iva_reservas'  => $iva_reservas,
-                    'total'         => $total
+                    'total'         => $total,
+                    'de'            => $propiedad->nombre
                 );
 
                 $pdf = $this->EnvioCorreo(
@@ -858,7 +860,8 @@ class PDFController extends Controller {
                 'reservas_pdf'  => $reservas_pdf, 
                 'nombre_moneda' => $nombre_moneda,
                 'iva_reservas'  => $iva_reservas,
-                'total'         => $total
+                'total'         => $total,
+                'de'            => $propiedad->nombre
             );
 
             $pdf = $this->EnvioCorreo(
@@ -901,6 +904,12 @@ class PDFController extends Controller {
             $c_destino = $request->correo_x;
         } else {
             $c_destino = $cliente[0]->email;
+        }
+
+        if ($request->has('flag_envio')) {   
+            $correo_prop = $propiedad->email;
+        } else {
+            $correo_prop = false;
         }
 
         $propiedad_iva = 0;
@@ -994,7 +1003,8 @@ class PDFController extends Controller {
                     'iva_reservas'  => $iva_reservas, 
                     'neto'          => $neto, 
                     'iva'           => $iva, 
-                    'total'         => $total
+                    'total'         => $total,
+                    'de'            => $propiedad->nombre
                 );
 
                 $pdf = $this->EnvioCorreo(
@@ -1018,7 +1028,8 @@ class PDFController extends Controller {
                     'reservas_pdf'  => $reservas_pdf, 
                     'nombre_moneda' => $nombre_moneda,
                     'iva_reservas'  => $iva_reservas,
-                    'total'         => $total
+                    'total'         => $total,
+                    'de'            => $propiedad->nombre
                 );
 
                 $pdf = $this->EnvioCorreo(
@@ -1042,7 +1053,8 @@ class PDFController extends Controller {
                 'reservas_pdf'  => $reservas_pdf, 
                 'nombre_moneda' => $nombre_moneda,
                 'iva_reservas'  => $iva_reservas,
-                'total'         => $total
+                'total'         => $total,
+                'de'            => $propiedad->nombre
             );
 
             $pdf = $this->EnvioCorreo(
@@ -1081,6 +1093,14 @@ class PDFController extends Controller {
             $cliente_id
         )->with('pais', 'region')
         ->get();
+
+        if ($request->has('flag_envio')) {  
+            if ($request->flag_envio == true) {
+                $correo_prop = $propiedad->email;
+            } else {
+                $correo_prop = false;
+            }  
+        } 
 
         if ($request->has('correo_x')) {
             $c_destino = $request->correo_x;
@@ -1172,15 +1192,15 @@ class PDFController extends Controller {
                 $iva           = ($neto * $propiedad_iva);
 
                 $arr = array(
-                    'propiedad' => $propiedad, 
-                    'cliente'=> $cliente,
-                    'reservas_pdf'=> $reservas_pdf, 
+                    'propiedad'     => $propiedad, 
+                    'cliente'       => $cliente,
+                    'reservas_pdf'  => $reservas_pdf, 
                     'nombre_moneda' => $nombre_moneda,
-                    'iva_reservas' => $iva_reservas, 
-                    'neto' => $neto, 
-                    'iva' => $iva, 
-                    'total' => $total, 
-                    'por_pagar' => $por_pagar,
+                    'iva_reservas'  => $iva_reservas, 
+                    'neto'          => $neto, 
+                    'iva'           => $iva, 
+                    'total'         => $total, 
+                    'por_pagar'     => $por_pagar,
                     'de'            => $propiedad->nombre
                 );
 
@@ -1198,13 +1218,13 @@ class PDFController extends Controller {
             } else {
                 $total = $monto_alojamiento;
                 $arr = array(
-                    'propiedad' => $propiedad, 
-                    'cliente'=> $cliente,
-                    'reservas_pdf' => $reservas_pdf, 
+                    'propiedad'     => $propiedad, 
+                    'cliente'       => $cliente,
+                    'reservas_pdf'  => $reservas_pdf, 
                     'nombre_moneda' => $nombre_moneda,
-                    'iva_reservas' => $iva_reservas,
-                    'total' => $total,
-                    'por_pagar' => $por_pagar,
+                    'iva_reservas'  => $iva_reservas,
+                    'total'         => $total,
+                    'por_pagar'     => $por_pagar,
                     'de'            => $propiedad->nombre
                 );
 
@@ -1274,10 +1294,12 @@ class PDFController extends Controller {
             $c_destino = $cliente[0]->email;
         }
 
-        if ($request->has('flag_envio')) {   
-            $correo_prop = $propiedad->email;
-        } else {
-            $correo_prop = false;
+        if ($request->has('flag_envio')) {  
+            if ($request->flag_envio == true) {
+                $correo_prop = $propiedad->email;
+            } else {
+                $correo_prop = false;
+            }  
         }
 
         $propiedad_iva = 0;
