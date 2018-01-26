@@ -53,7 +53,7 @@ class MotorRaController extends Controller {
         $validator = Validator::make(
             $request->all(), 
             array(
-                'file' => 'required|dimensions:min_width=250,min_height=500|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'file' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
                 'nombre_prop' => 'required',
                 'nombre' => 'required'
             )
