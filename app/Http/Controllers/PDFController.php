@@ -711,6 +711,12 @@ class PDFController extends Controller {
         )->with('pais', 'region')
         ->get();
 
+        if ($request->has('correo_x')) {
+            $c_destino = $request->correo_x;
+        } else {
+            $c_destino = $cliente[0]->email;
+        }
+
         $propiedad_iva = 0;
         
         foreach ($propiedad as $prop) {    
@@ -809,9 +815,16 @@ class PDFController extends Controller {
                     'total'         => $total
                 );
 
-                $pdf = PDF::loadView(
-                    'pdf.estado_cuenta', 
-                    $arr
+                $pdf = $this->EnvioCorreo(
+                    $propiedad->first(),
+                    $c_destino,
+                    $arr,
+                    "correos.envio_pdf",
+                    'pdf.estado_cuenta',
+                    "estado_cuenta_resumen.pdf",
+                    $request->opcion,
+                    $correo_prop,
+                    ""
                 );
             
             } else {
@@ -825,9 +838,16 @@ class PDFController extends Controller {
                     'total'         => $total
                 );
 
-                $pdf = PDF::loadView(
-                    'pdf.estado_cuenta', 
-                    $arr
+                $pdf = $this->EnvioCorreo(
+                    $propiedad->first(),
+                    $c_destino,
+                    $arr,
+                    "correos.envio_pdf",
+                    'pdf.estado_cuenta',
+                    "estado_cuenta_resumen.pdf",
+                    $request->opcion,
+                    $correo_prop,
+                    ""
                 );
             }
         } elseif($tipo_moneda_reservas == 2) {
@@ -841,9 +861,16 @@ class PDFController extends Controller {
                 'total'         => $total
             );
 
-            $pdf = PDF::loadView(
-                'pdf.estado_cuenta', 
-                $arr
+            $pdf = $this->EnvioCorreo(
+                $propiedad->first(),
+                $c_destino,
+                $arr,
+                "correos.envio_pdf",
+                'pdf.estado_cuenta',
+                "estado_cuenta_resumen.pdf",
+                $request->opcion,
+                $correo_prop,
+                ""
             );
         }
         
@@ -974,7 +1001,7 @@ class PDFController extends Controller {
                     $propiedad->first(),
                     $c_destino,
                     $arr,
-                    "correos.comprobante_reserva",
+                    "correos.envio_pdf",
                     'pdf.estado_cuenta_resumen',
                     "estado_cuenta_resumen.pdf",
                     $request->opcion,
@@ -998,7 +1025,7 @@ class PDFController extends Controller {
                     $propiedad->first(),
                     $c_destino,
                     $arr,
-                    "correos.comprobante_reserva",
+                    "correos.envio_pdf",
                     'pdf.estado_cuenta_resumen',
                     "estado_cuenta_resumen.pdf",
                     $request->opcion,
@@ -1022,7 +1049,7 @@ class PDFController extends Controller {
                 $propiedad->first(),
                 $c_destino,
                 $arr,
-                "correos.comprobante_reserva",
+                "correos.envio_pdf",
                 'pdf.estado_cuenta_resumen',
                 "estado_cuenta_resumen.pdf",
                 $request->opcion,
@@ -1161,7 +1188,7 @@ class PDFController extends Controller {
                     $propiedad->first(),
                     $c_destino,
                     $arr,
-                    "correos.comprobante_reserva",
+                    "correos.envio_pdf",
                     'pdf.comprobante_reserva',
                     "comprobante_reserva.pdf",
                     $request->opcion,
@@ -1185,7 +1212,7 @@ class PDFController extends Controller {
                     $propiedad->first(),
                     $c_destino,
                     $arr,
-                    "correos.comprobante_reserva",
+                    "correos.envio_pdf",
                     'pdf.comprobante_reserva',
                     "comprobante_reserva.pdf",
                     $request->opcion,
@@ -1213,7 +1240,7 @@ class PDFController extends Controller {
                 $propiedad->first(),
                 $c_destino,
                 $arr,
-                "correos.comprobante_reserva",
+                "correos.envio_pdf",
                 "pdf.comprobante_reserva_resumen",
                 "comprobante_reserva.pdf",
                 $request->opcion,
@@ -1364,7 +1391,7 @@ class PDFController extends Controller {
                     $propiedad->first(),
                     $c_destino,
                     $arr,
-                    "correos.comprobante_reserva",
+                    "correos.envio_pdf",
                     "pdf.comprobante_reserva_resumen",
                     "comprobante_reserva.pdf",
                     $request->opcion,
@@ -1389,7 +1416,7 @@ class PDFController extends Controller {
                     $propiedad->first(),
                     $c_destino,
                     $arr,
-                    "correos.comprobante_reserva",
+                    "correos.envio_pdf",
                     "pdf.comprobante_reserva_resumen",
                     "comprobante_reserva.pdf",
                     $request->opcion,
@@ -1415,7 +1442,7 @@ class PDFController extends Controller {
                 $propiedad->first(),
                 $c_destino,
                 $arr,
-                "correos.comprobante_reserva",
+                "correos.envio_pdf",
                 "pdf.comprobante_reserva_resumen",
                 "comprobante_reserva.pdf",
                 $request->opcion,
