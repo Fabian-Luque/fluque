@@ -123,8 +123,6 @@ class MotorRaController extends Controller {
                 ]);
                 $retorno['error'] = true;
                 $retorno['msj'] = $response;
-
-
             } else {
                 $retorno['error'] = true;
                 $retorno['msj'] = "Datos requeridos";
