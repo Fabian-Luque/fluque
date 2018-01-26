@@ -31,6 +31,13 @@ Route::post('ejmm', 'CorreoController@SendFileByEmail');
 
 
 Route::get(
+  '/upload', 
+  function () {
+    return view('correos.testimg');
+  }
+);
+
+Route::get(
   '/gmap', 
   function () {
     return view('administrador.gmap');

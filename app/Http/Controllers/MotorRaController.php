@@ -50,35 +50,36 @@ class MotorRaController extends Controller {
     }
     
     public function UploadImage(Request $request) {
-        try {
-            if ( $request->has('nombre') &&  $request->has('nombre_prop')) {
-                $validator = Validator::make(
-                    $request->all(), 
-                    array(
-                        'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-                    )
-                );
-
-                $imageName = time().'.'.$request->image->getClientOriginalExtension();
-                $image = $request->file('image');
+        $validator = Validator::make(
+            $request->all(), 
+            array(
+                'file' => 'required|dimensions:min_width=250,min_height=500|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'nombre_prop' => 'required',
+                'nombre' => 'required'
+            )
+        );
+        if ($validator->fails()) {
+            $retorno['errors'] = true;
+            $retorno["msj"] = $validator->errors();
+        } else {
+            try {
+                $imageName = time().'.'.$request->file->getClientOriginalExtension();
+                $image = $request->file('file');
                 $t = Storage::disk('s3')->put(
-                    $imageName, 
+                    $request->nombre_prop."/".$request->nombre,//$imageName, 
                     file_get_contents($image), 
                     'public'
                 );
                 $imageName = Storage::disk('s3')->url($imageName);
 
-                $retorno['error'] = true;
+                $retorno['error'] = false;
                 $retorno['msj'] = 'Upload exitoso';
                 $retorno['img'] = 'https://s3-sa-east-1.amazonaws.com/gofeels-props-images/'.$request->nombre_prop."/".$request->nombre;
-            } else {
+            } catch (S3Exception $e) {
                 $retorno['error'] = true;
-                $retorno['msj'] = "Datos requeridos";
-            }
-        } catch (S3Exception $e) {
-            $retorno['error'] = true;
-            $retorno['msj'] = $e->getMessage();
-        } 
+                $retorno['msj'] = $e->getMessage();
+            } 
+        }
         return Response::json($retorno);
     }
 
