@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests;
 use PDF;
-use \Mail;
 use App\Reserva;
 use App\Propiedad;
 use App\Cliente;
