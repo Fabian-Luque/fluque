@@ -558,9 +558,7 @@ cellspacing="0" cellpadding="0">
                       "margin: 0; line-height: 14px; font-size: 12px;">
                         <span style=
                         "color: #333333; font-size: 12px; line-height: 14px;">
-                          Numero de reserva {{
-                          $array['arr']['reserva']->numero_reserva
-                          }}&nbsp;</span>
+              </span>
                         </p>
                       </div>
                     </div>
