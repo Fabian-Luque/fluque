@@ -1442,7 +1442,7 @@ class PDFController extends Controller {
 
                 $pdf = $this->EnvioCorreo(
                     $propiedad,
-                    $reserva->cliente->email,
+                    $c_destino,
                     $arr,
                     "correos.comprobante_reserva_motor",
                     "", // correo de la propiedad
@@ -1468,7 +1468,7 @@ class PDFController extends Controller {
 
                 $pdf = $this->EnvioCorreo(
                     $propiedad,
-                    $reserva->cliente->email,
+                    $c_destino,
                     $arr,
                     "correos.comprobante_reserva_motor",
                     "", // correo de la propiedad
@@ -1495,7 +1495,7 @@ class PDFController extends Controller {
 
             $pdf = $this->EnvioCorreo(
                 $propiedad,
-                $reserva->cliente->email,
+                $c_destino,
                 $arr,
                 "correos.comprobante_reserva_motor",
                 "", // correo de la propiedad
