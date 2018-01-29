@@ -1090,8 +1090,8 @@ class PDFController extends Controller {
     public function envm(Request $request) {
         Mail::send(
                 'correos.a', 
-                [],
-                function($message) use ($array) {
+                ['request' => $request],
+                function($message) use ($request) {
                     $message->to(
                         $request->destino, 
                         $request->destino
