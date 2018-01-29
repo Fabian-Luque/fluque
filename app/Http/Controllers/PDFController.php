@@ -1429,7 +1429,7 @@ class PDFController extends Controller {
                 $arr = array(
                     'propiedad'     => $propiedad, 
                     'cliente'       => $cliente->first(),
-                    'reservas_pdf'  => $reservas_pdf, 
+                    'reservaspdf'  => $reservas_pdf, 
                     'nombre_moneda' => $nombre_moneda,
                     'iva_reservas'  => $iva_reservas, 
                     'neto'          => $neto, 
@@ -1457,7 +1457,7 @@ class PDFController extends Controller {
                 $arr = array(
                     'propiedad'     => $propiedad, 
                     'cliente'       => $cliente->first(),
-                    'reservas_pdf'  => $reservas_pdf, 
+                    'reservaspdf'  => $reservas_pdf, 
                     'nombre_moneda' => $nombre_moneda,
                     'iva_reservas'  => $iva_reservas,
                     'total'         => $total,
@@ -1484,7 +1484,7 @@ class PDFController extends Controller {
             $arr = array(
                 'propiedad'     => $propiedad, 
                 'cliente'       => $cliente->first(),
-                'reservas_pdf'  => $reservas_pdf, 
+                'reservaspdf'  => $reservas_pdf, 
                 'nombre_moneda' => $nombre_moneda,
                 'iva_reservas'  => $iva_reservas,
                 'total'         => $total,
