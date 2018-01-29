@@ -94,6 +94,8 @@ class SendMail extends Job implements ShouldQueue {
                 ];
             }
 
+            echo "send!!!";
+
             $mailer->send(
                 $this->array['vista_coreo'], 
                 $data_correo,
