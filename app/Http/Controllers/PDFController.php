@@ -1434,20 +1434,21 @@ class PDFController extends Controller {
                     'iva_reservas'  => $iva_reservas, 
                     'neto'          => $neto, 
                     'iva'           => $iva, 
-                    'total'         => $total, 
-                    'por_pagar'     => $por_pagar,
+                    'total'         => $total,
+                    'comp'          => 1,
+                    'porpagar'      => $por_pagar,
                     'de'            => $propiedad[0]->nombre
                 );
 
                 $pdf = $this->EnvioCorreo(
-                    $propiedad->first(),
-                    $c_destino,
+                    $propiedad,
+                    $reserva->cliente->email,
                     $arr,
-                    "correos.envio_pdf",
-                    "pdf.comprobante_reserva_resumen",
-                    "comprobante_reserva.pdf",
+                    "correos.comprobante_reserva_motor",
+                    "", // correo de la propiedad
+                    "",
                     $request->opcion,
-                    $correo_prop,
+                    $correo_prop
                     ""
                 );
             } else {
@@ -1465,14 +1466,14 @@ class PDFController extends Controller {
                 );
 
                 $pdf = $this->EnvioCorreo(
-                    $propiedad->first(),
-                    $c_destino,
+                    $propiedad,
+                    $reserva->cliente->email,
                     $arr,
-                    "correos.envio_pdf",
-                    "pdf.comprobante_reserva_resumen",
-                    "comprobante_reserva.pdf",
+                    "correos.comprobante_reserva_motor",
+                    "", // correo de la propiedad
+                    "",
                     $request->opcion,
-                    $correo_prop,
+                    $correo_prop
                     ""
                 );
             }
@@ -1491,14 +1492,14 @@ class PDFController extends Controller {
             );
 
             $pdf = $this->EnvioCorreo(
-                $propiedad->first(),
-                $c_destino,
+                $propiedad,
+                $reserva->cliente->email,
                 $arr,
-                "correos.envio_pdf",
-                "pdf.comprobante_reserva_resumen",
-                "comprobante_reserva.pdf",
+                "correos.comprobante_reserva_motor",
+                "", // correo de la propiedad
+                "",
                 $request->opcion,
-                $correo_prop,
+                $correo_prop
                 ""
             );
         }   

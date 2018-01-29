@@ -88,6 +88,16 @@ class SendMail extends Job implements ShouldQueue {
                     'total'        => $total,
                     'nombre_moneda'=> $nombre_moneda
                 ];
+            } elseif (!empty($array['arr']['comp'])) {
+                $data_correo = [
+                    'reservaspdf'  => $array['arr']['reservaspdf'],
+                    'array'        => $array,
+                    'iva'          => $array['arr']['iva'],
+                    'subtotal'     => $array['arr']['neto'],
+                    'porpagar'     => $array['arr']['porpagar'],
+                    'total'        => $array['arr']['total'],
+                    'nombre_moneda'=> $array['arr']['nombre_moneda']
+                ];
             } else {
                 $data_correo = [
                     'array' => $array
