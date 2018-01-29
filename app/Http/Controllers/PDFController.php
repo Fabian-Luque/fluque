@@ -1448,7 +1448,7 @@ class PDFController extends Controller {
                     "", // correo de la propiedad
                     "",
                     $request->opcion,
-                    $correo_prop
+                    $correo_prop,
                     ""
                 );
             } else {
@@ -1461,6 +1461,7 @@ class PDFController extends Controller {
                     'nombre_moneda' => $nombre_moneda,
                     'iva_reservas'  => $iva_reservas,
                     'total'         => $total,
+                    'comp'          => 1,
                     'por_pagar'     => $por_pagar,
                     'de'            => $propiedad[0]->nombre
                 );
@@ -1473,7 +1474,7 @@ class PDFController extends Controller {
                     "", // correo de la propiedad
                     "",
                     $request->opcion,
-                    $correo_prop
+                    $correo_prop,
                     ""
                 );
             }
@@ -1487,6 +1488,7 @@ class PDFController extends Controller {
                 'nombre_moneda' => $nombre_moneda,
                 'iva_reservas'  => $iva_reservas,
                 'total'         => $total,
+                'comp'          => 1,
                 'por_pagar'     => $por_pagar,
                 'de'            => $propiedad[0]->nombre
             );
@@ -1499,7 +1501,7 @@ class PDFController extends Controller {
                 "", // correo de la propiedad
                 "",
                 $request->opcion,
-                $correo_prop
+                $correo_prop,
                 ""
             );
         }   
