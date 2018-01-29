@@ -90,7 +90,7 @@ class SendMail extends Job implements ShouldQueue {
                 ];
             } elseif ($array['arr']['comp'] == 1) {
                 $data_correo = [
-                    'reservaspdf'  => $array['arr']['reservas_pdf'],
+                    'reservaspdf'  => $array['arr']['reservaspdf'],
                     'array'        => $array,
                     'iva'          => $array['arr']['iva'],
                     'subtotal'     => $array['arr']['neto'],
