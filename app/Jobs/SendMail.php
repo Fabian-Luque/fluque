@@ -94,6 +94,8 @@ class SendMail extends Job implements ShouldQueue {
                 ];
             }
 
+            echo "send!!!";
+
             $mailer->send(
                 $this->array['vista_coreo'], 
                 $data_correo,
@@ -101,7 +103,7 @@ class SendMail extends Job implements ShouldQueue {
                     $message->to(
                         $array['cliente_email'], 
                         $array['cliente_email']
-                    )->subject('Mensaje de '.$array['propiedad']->nombre);
+                    )->subject('Mensaje de '.$array['arr']['de']);
         
                     if (strcmp($array['propiedad_email'], '') != 0) {
                         $message->cc($array['propiedad_email']);

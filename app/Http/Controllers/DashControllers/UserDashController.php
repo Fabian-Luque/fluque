@@ -69,6 +69,24 @@ class UserDashController extends Controller {
                     );
                     $ubicacion->save();
 
+                    $arr = array(
+                        'user' => $request->email,
+                        'pass' => $request->password,
+                        'de'   => 'Gofeels' 
+                    );
+
+                    $this->EnvioCorreo(
+                        $propiedad,
+                        $request->email,
+                        $arr,
+                        "correos.bienvenida",
+                        "",
+                        "",
+                        1,
+                        "",
+                        ""
+                    );
+                
                     $stripe = Stripe::make(config('app.STRIPE_SECRET'));
 
                     if ($propiedad->numero_habitaciones > 27) {

@@ -18,13 +18,125 @@ use App\ColorMotor;
 use App\ClasificacionColor;
 use App\MotorPropiedad;
 use Response;
-use Validator;
+use Illuminate\Support\Facades\Validator;
 use \Carbon\Carbon;
 use App\ZonaHoraria;
 use JWTAuth;
+use Storage;
+use Aws\S3\Exception\S3Exception;
+use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
+use Html;
 
-class MotorRaController extends Controller
-{
+class MotorRaController extends Controller {
+    public function DeleteImage(Request $request) {
+        try {
+            if ( $request->has('nombre') && $request->has('nombre_prop')) {
+                $imageName = Storage::disk('s3')->delete(
+                    $request->nombre_prop."/".$request->nombre
+                );
+
+                $retorno['error'] = false;
+                $retorno['msj'] = 'Delete exitoso';
+                $retorno['img'] = 'https://s3-sa-east-1.amazonaws.com/gofeels-props-images/'.$request->nombre_prop."/".$request->nombre;
+            } else {
+                $retorno['error'] = true;
+                $retorno['msj'] = "Datos requeridos";
+            }
+        } catch (S3Exception $e) {
+            $retorno['error'] = true;
+            $retorno['msj'] = $e->getMessage();
+        } 
+        return Response::json($retorno);
+    }
+    
+    public function UploadImage(Request $request) {
+        $validator = Validator::make(
+            $request->all(), 
+            array(
+                'file' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'nombre_prop' => 'required',
+                'nombre' => 'required'
+            )
+        );
+        if ($validator->fails()) {
+            $retorno['errors'] = true;
+            $retorno["msj"] = $validator->errors();
+        } else {
+            try {
+                $imageName = time().'.'.$request->file->getClientOriginalExtension();
+                $image = $request->file('file');
+                $t = Storage::disk('s3')->put(
+                    $request->nombre_prop."/".$request->nombre,//$imageName, 
+                    file_get_contents($image), 
+                    'public'
+                );
+                $imageName = Storage::disk('s3')->url($imageName);
+
+                $retorno['error'] = false;
+                $retorno['msj'] = 'Upload exitoso';
+                $retorno['img'] = 'https://s3-sa-east-1.amazonaws.com/gofeels-props-images/'.$request->nombre_prop."/".$request->nombre;
+            } catch (S3Exception $e) {
+                $retorno['error'] = true;
+                $retorno['msj'] = $e->getMessage();
+            } 
+        }
+        return Response::json($retorno);
+    }
+
+    public function GetAllImagesByDir(Request $request) {
+        if ($request->has('nombre_prop') && $request->has('nombre')) {
+            try {
+                $retorno['error'] = false;
+                $retorno['msj'] = "Listado de imagenes";
+                $retorno['img'] = "https://s3-sa-east-1.amazonaws.com/gofeels-props-images/".$request->nombre_prop."/".$request->nombre;
+            } catch (S3Exception $e) {
+                $retorno['error'] = true;
+                $retorno['msj'] = $e->getMessage();
+            }
+        } elseif ($request->has('nombre_prop')) {
+            try {
+                $retorno['error'] = false;
+                $retorno['msj'] = "Listado de imagenes";
+                $retorno['url'] = "https://s3-sa-east-1.amazonaws.com/gofeels-props-images/";
+                $retorno['lista'] = Storage::disk('s3')->allFiles(
+                    $request->nombre_prop
+                );
+            } catch (S3Exception $e) {
+                $retorno['error'] = true;
+                $retorno['msj'] = $e->getMessage();
+            } 
+        } else {
+            $retorno['error'] = true;
+            $retorno['msj'] = "Datos requeridos";
+        }
+        return Response::json($retorno);
+    }
+
+    public function GetImage(Request $request) {
+        try {
+            if ( $request->has('name') &&  $request->has('nombre_prop')) {
+                $image = Storage::disk('s3')->get(
+                    $request->nombre_prop."/".$request->name
+                );
+                $response = new Response($image, 200, [
+                    'Content-Type' => $attachment->type,
+                ]);
+                $retorno['error'] = true;
+                $retorno['msj'] = $response;
+            } else {
+                $retorno['error'] = true;
+                $retorno['msj'] = "Datos requeridos";
+            }
+        } catch (S3Exception $e) {
+            $retorno['error'] = true;
+            $retorno['msj'] = "Error: ".$e->getMessage();
+        } catch (FileNotFoundException $e) {
+            $retorno['error'] = true;
+            $retorno['msj'] = "Error: ".$e->getMessage();
+        }
+        return Response::json($retorno);
+    }
+
     public function getDisponibilidad(Request $request)
     {
         if ($request->has('fecha_inicio') && $request->has('fecha_fin')) {
@@ -722,7 +834,8 @@ class MotorRaController extends Controller
                 );
 
                 $arr = array(
-                    'propiedad'     => $propiedad
+                    'propiedad'     => $propiedad,
+                    'de'            => $propiedad->nombre
                 );
 
                 $this->EnvioCorreo(
@@ -836,7 +949,8 @@ class MotorRaController extends Controller
             $arr = array(
                 'propiedad'     => $propiedad,
                 'cliente'       => $reserva->cliente,
-                'reserva'       => $reserva
+                'reserva'       => $reserva,
+                'de'            => $propiedad->nombre
             ); 
 
             $this->EnvioCorreo(

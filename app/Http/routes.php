@@ -31,6 +31,13 @@ Route::post('ejmm', 'CorreoController@SendFileByEmail');
 
 
 Route::get(
+  '/upload', 
+  function () {
+    return view('correos.testimg');
+  }
+);
+
+Route::get(
   '/gmap', 
   function () {
     return view('administrador.gmap');
@@ -334,9 +341,22 @@ Route::post('invoice/stripe/obtener','StripeController@InvoiceStripeObtener');
 Route::post('myallocator/configurar', 'MyallocatorController@Configuracion');
 
 
+
+Route::post('upload/images', 'MotorRaController@UploadImage');
+Route::post('get/images', 'MotorRaController@GetImage');
+Route::post('get/images/byfolder', 'MotorRaController@GetAllImagesByDir');
+Route::post('delete/images', 'MotorRaController@DeleteImage');
+
+
+
+
+
+
 Route::post('mensaje/enviar', 'ChatController@SendMessage');
 Route::post('mensaje/obtener', 'ChatController@GetAllMessages');
 Route::post('conversacion/obtener', 'ChatController@GetConversacion');
+
+Route::post('mensaje/noleido', 'ChatController@ConvNoLeidas');
 
 Route::post('mensaje/obtener/ultimos', 'ChatController@GetMessagesByReceptor');
 Route::post('mensaje/estado', 'ChatController@EstadoMensaje');
@@ -348,6 +368,4 @@ Route::post('pdf/comprobante/reserva/resumen2', 'PDFController@comprobanteReserv
 
 Route::post('asignar/prueba', 'MotorRaController@prueba');
 
-
-
-
+Route::post('correo', 'PDFController@envm');

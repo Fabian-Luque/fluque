@@ -13,6 +13,32 @@ use Illuminate\Support\Facades\Event;
 use \Carbon\Carbon;
 
 class ChatController extends Controller {
+
+    public function ConvNoLeidas(Request $request){
+        $validator = Validator::make(
+            $request->all(), 
+            array(
+                'receptor_id' => 'required'
+            )
+        );
+
+        if ($validator->fails()) {
+            $retorno['errors'] = true;
+            $retorno["msj"] = $validator->errors();
+        } else {
+            $conv_no_leidas = Mensajeria::where(
+                'receptor_id',
+                $request->receptor_id
+            )->where(
+                'estado',
+                0
+            )->get();
+
+            $retorno['errors'] = false;
+            $retorno["msj"] = $conv_no_leidas->count();
+        }
+        return Response::json($retorno);
+    }
     
     public function SendMessage(Request $request) {
         $validator = Validator::make(
@@ -34,8 +60,19 @@ class ChatController extends Controller {
             $mensaje->mensaje     = $request->mensaje;
             $mensaje->save();
 
+            $conv_no_leidas = Mensajeria::where(
+                'receptor_id',
+                $request->receptor_id
+            )->where(
+                'estado',
+                0
+            )->get();
+
             Event::fire(
-                new ChatEvent($mensaje->receptor_id)
+                new ChatEvent(
+                    $mensaje->receptor_id,
+                    $conv_no_leidas->count()
+                )
             );
 
             $retorno['errors'] = false;

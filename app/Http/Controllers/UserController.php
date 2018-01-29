@@ -28,15 +28,6 @@ class UserController extends Controller {
             $users        = User::where('id', $id)->with('propiedad.tipoPropiedad','propiedad.pais','propiedad.region','propiedad.zonaHoraria' ,'propiedad.tipoMonedas', 'propiedad.tipoCobro')->with('rol.permisos')->get();
             $propiedad_id = $users[0]->propiedad[0]['id'];
 
-            // return $clientes = Cliente::where(function ($query) use ($propiedad_id) {
-            //         $query->whereHas('reservas.tipoHabitacion', function($query) use($propiedad_id){
-            //             $query->where('propiedad_id', $propiedad_id);
-            //         });
-            //         $query->whereHas('reservas', function($query){
-            //             $query->where('habitacion_id', null);
-            //         });
-            //     })
-            // ->get();
             $clientes = [];
 
             $reservas = Reserva::whereHas('tipoHabitacion', function ($query) use ($propiedad_id) {
@@ -63,6 +54,16 @@ class UserController extends Controller {
                     $propiedad->reservas_motor    = count($clientes);
                 }
             }
+
+            $conv_no_leidas = Mensajeria::where(
+                'receptor_id',
+                $propiedad_id
+            )->where(
+                'estado',
+                0
+            )->get();
+
+            $users[0]->msj_no = $conv_no_leidas->count();
 
             return $users;
             
