@@ -1089,29 +1089,18 @@ class PDFController extends Controller {
 
     public function envm(Request $request) {
         Mail::send(
-                $this->array['vista_coreo'], 
-                $data_correo,
+                'correos.a', 
+                [],
                 function($message) use ($array) {
                     $message->to(
-                        $array['cliente_email'], 
-                        $array['cliente_email']
-                    )->subject('Mensaje de '.$array['arr']['de']);
-        
-                    if ($array['propiedad_email'] != false) {//strcmp($array['propiedad_email'], '') != 0) {
-                        $message->cc($array['propiedad_email']);
-                    }
+                        $request->destino, 
+                        $request->destino
+                    )->subject('Mensaje de ');
 
-                    if (strlen($array['vista_pdf']) != 0) {
-                        $pdf = PDF::loadView(
-                            $array['vista_pdf'], 
-                            $array['arr']
-                        );
-
-                        $message->attachData(
-                            $pdf->stream(), 
-                            $array['nombre_pdf']
-                        );
-                    }
+                    $message->attachData(
+                        $request->pdf, 
+                        'pdf.pdf'
+                    );
                 }
             );
     }
