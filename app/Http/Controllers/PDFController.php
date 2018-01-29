@@ -716,7 +716,7 @@ class PDFController extends Controller {
                 $correo_prop = $propiedad[0]->email;
             } 
         } else {
-            $correo_prop = false;
+            $correo_prop = '';
         } 
 
         if ($request->has('correo_x')) {
@@ -919,7 +919,7 @@ class PDFController extends Controller {
                 $correo_prop = $propiedad[0]->email;
             } 
         } else {
-            $correo_prop = false;
+            $correo_prop = '';
         }
 
         $propiedad_iva = 0;
@@ -1097,8 +1097,10 @@ class PDFController extends Controller {
                         $request->destino
                     )->subject('Mensaje de ');
 
+                    $pdf = PDF::loadView('correos.a', []);
+
                     $message->attachData(
-                        $request->pdf, 
+                        $pdf->stream(), 
                         'pdf.pdf'
                     );
                 }
@@ -1127,7 +1129,7 @@ class PDFController extends Controller {
                 $correo_prop = $propiedad[0]->email;
             } 
         } else {
-            $correo_prop = false;
+            $correo_prop = '';
         }  
 
         if ($request->has('correo_x')) {
@@ -1327,7 +1329,7 @@ class PDFController extends Controller {
                 $correo_prop = $propiedad[0]->email;
             }  
         } else {
-            $correo_prop = false;
+            $correo_prop = '';
         } 
 
         $propiedad_iva = 0;
