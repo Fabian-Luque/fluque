@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests;
 use PDF;
+use \Mail;
 use App\Reserva;
 use App\Propiedad;
 use App\Cliente;
@@ -1085,6 +1086,35 @@ class PDFController extends Controller {
         } else {
             return;
         } 
+    }
+
+    public function envm(Request $request) {
+        Mail::send(
+                $this->array['vista_coreo'], 
+                $data_correo,
+                function($message) use ($array) {
+                    $message->to(
+                        $array['cliente_email'], 
+                        $array['cliente_email']
+                    )->subject('Mensaje de '.$array['arr']['de']);
+        
+                    if ($array['propiedad_email'] != false) {//strcmp($array['propiedad_email'], '') != 0) {
+                        $message->cc($array['propiedad_email']);
+                    }
+
+                    if (strlen($array['vista_pdf']) != 0) {
+                        $pdf = PDF::loadView(
+                            $array['vista_pdf'], 
+                            $array['arr']
+                        );
+
+                        $message->attachData(
+                            $pdf->stream(), 
+                            $array['nombre_pdf']
+                        );
+                    }
+                }
+            );
     }
 
     public function comprobanteReserva(Request $request) {

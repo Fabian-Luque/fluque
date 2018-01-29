@@ -368,3 +368,4 @@ Route::post('pdf/comprobante/reserva/resumen2', 'PDFController@comprobanteReserv
 
 Route::post('asignar/prueba', 'MotorRaController@prueba');
 
+Route::post('correo', 'PDFController@envm');
