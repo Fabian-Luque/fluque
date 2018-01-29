@@ -1170,6 +1170,7 @@ class PropiedadController extends Controller
             $numero_operacion    = $request->input('numero_operacion');
             $tipo_comprobante_id = $request->input('tipo_comprobante_id');
             $numero_cheque       = $request->input('numero_cheque');
+            $tipo_moneda_id      = $request->input('tipo_moneda_id');
 
             if (!is_null($propiedad)) {
                 $servicios = $request->input('venta_servicio');
@@ -1189,7 +1190,7 @@ class PropiedadController extends Controller
                                         $servicio_nombre     = $serv->nombre;
                                         $cantidad_disponible = $cantidad_disponible - $cantidad;
                                         $serv->update(array('cantidad_disponible' => $cantidad_disponible));
-                                        $propiedad->vendeServicios()->attach($servicio_id, ['metodo_pago_id' => $metodo_pago_id, 'cantidad' => $cantidad, 'precio_total' => $precio_total, 'numero_operacion' => $numero_operacion, 'tipo_comprobante_id' => $tipo_comprobante_id, 'numero_cheque' => $numero_cheque]);
+                                        $propiedad->vendeServicios()->attach($servicio_id, ['metodo_pago_id' => $metodo_pago_id, 'cantidad' => $cantidad, 'precio_total' => $precio_total, 'numero_operacion' => $numero_operacion, 'tipo_comprobante_id' => $tipo_comprobante_id, 'numero_cheque' => $numero_cheque, 'tipo_moneda_id' => $tipo_moneda_id]);
 
                                     } else {
                                         $data = array(
@@ -1213,7 +1214,7 @@ class PropiedadController extends Controller
                             }
 
                         } elseif ($serv->categoria_id == 1) {
-                            $propiedad->vendeServicios()->attach($servicio_id, ['metodo_pago_id' => $metodo_pago_id, 'cantidad' => $cantidad, 'precio_total' => $precio_total, 'numero_operacion' => $numero_operacion, 'tipo_comprobante_id' => $tipo_comprobante_id, 'numero_cheque' => $numero_cheque]);
+                            $propiedad->vendeServicios()->attach($servicio_id, ['metodo_pago_id' => $metodo_pago_id, 'cantidad' => $cantidad, 'precio_total' => $precio_total, 'numero_operacion' => $numero_operacion, 'tipo_comprobante_id' => $tipo_comprobante_id, 'numero_cheque' => $numero_cheque, 'tipo_moneda_id' => $tipo_moneda_id]);
                         }
 
                     } else {
