@@ -711,6 +711,14 @@ class PDFController extends Controller {
         )->with('pais', 'region')
         ->get();
 
+        if ($request->has('flag_envio')) {  
+            if ($request->flag_envio == true) {
+                $correo_prop = $propiedad[0]->email;
+            } else {
+                $correo_prop = false;
+            }  
+        } 
+
         if ($request->has('correo_x')) {
             $c_destino = $request->correo_x;
         } else {
@@ -906,11 +914,13 @@ class PDFController extends Controller {
             $c_destino = $cliente[0]->email;
         }
 
-        if ($request->has('flag_envio')) {   
-            $correo_prop = $propiedad->email;
-        } else {
-            $correo_prop = false;
-        }
+        if ($request->has('flag_envio')) {  
+            if ($request->flag_envio == true) {
+                $correo_prop = $propiedad[0]->email;
+            } else {
+                $correo_prop = false;
+            }  
+        } 
 
         $propiedad_iva = 0;
         foreach ($propiedad as $prop) {   

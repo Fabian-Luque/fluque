@@ -103,7 +103,7 @@ class SendMail extends Job implements ShouldQueue {
                         $array['cliente_email']
                     )->subject('Mensaje de '.$array['arr']['de']);
         
-                    if (strcmp($array['propiedad_email'], '') != 0) {
+                    if ($array['propiedad_email'] != false) {//strcmp($array['propiedad_email'], '') != 0) {
                         $message->cc($array['propiedad_email']);
                     }
 
