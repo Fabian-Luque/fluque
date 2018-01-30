@@ -714,9 +714,13 @@ class PDFController extends Controller {
         if ($request->has('flag_envio')) {  
             if ($request->flag_envio == true) {
                 $correo_prop = $propiedad[0]->email;
+            } else {
+                $correo_prop = '';
             } 
         } else {
-            $correo_prop = '';
+            $retorno['errors'] = true;
+            $retorno['msj'] = "Datos requeridos: flag_envio";
+            return Response::json($retorno, 400);
         } 
 
         if ($request->has('correo_x')) {
@@ -732,7 +736,7 @@ class PDFController extends Controller {
             $propiedad_iva = $propiedad_iva / 100;
         }
 
-        $reservas_pdf = [];
+        $reservas_pdf = collect([]);
         $monto_alojamiento = 0;
         $consumo = 0;
         $iva_reservas            = null;
@@ -796,7 +800,7 @@ class PDFController extends Controller {
                     }
                 }
             }
-            array_push($reservas_pdf, $reserva);
+            $reservas_pdf->push($reserva);
         }
 
         $auxMoneda = TipoMoneda::where(
@@ -917,10 +921,14 @@ class PDFController extends Controller {
         if ($request->has('flag_envio')) {  
             if ($request->flag_envio == true) {
                 $correo_prop = $propiedad[0]->email;
+            } else {
+                $correo_prop = '';
             } 
         } else {
-            $correo_prop = '';
-        }
+            $retorno['errors'] = true;
+            $retorno['msj'] = "Datos requeridos: flag_envio";
+            return Response::json($retorno, 400);
+        } 
 
         $propiedad_iva = 0;
         foreach ($propiedad as $prop) {   
@@ -928,7 +936,7 @@ class PDFController extends Controller {
             $propiedad_iva = $propiedad_iva / 100;
         }
 
-        $reservas_pdf = [];
+        $reservas_pdf = collect([]);
         $monto_alojamiento = 0;
         $consumo = 0;
         $iva_reservas            = null;
@@ -989,7 +997,7 @@ class PDFController extends Controller {
                     }
                 }
             }
-            array_push($reservas_pdf, $reserva);
+            $reservas_pdf->push($reserva);
         }
 
         $auxMoneda = TipoMoneda::where(
@@ -1127,9 +1135,13 @@ class PDFController extends Controller {
         if ($request->has('flag_envio')) {  
             if ($request->flag_envio == true) {
                 $correo_prop = $propiedad[0]->email;
+            } else {
+                $correo_prop = '';
             } 
         } else {
-            $correo_prop = '';
+            $retorno['errors'] = true;
+            $retorno['msj'] = "Datos requeridos: flag_envio";
+            return Response::json($retorno, 400);
         }  
 
         if ($request->has('correo_x')) {
@@ -1145,7 +1157,7 @@ class PDFController extends Controller {
             $propiedad_iva = $propiedad_iva / 100;
         }
 
-        $reservas_pdf = [];
+        $reservas_pdf = collect([]);
         $monto_alojamiento = 0;
         $consumo = 0;
         $por_pagar = 0;
@@ -1208,7 +1220,7 @@ class PDFController extends Controller {
                     }
                 }
             }
-            array_push($reservas_pdf, $reserva);
+            $reservas_pdf->push($reserva);
         }
 
         $auxMoneda     = TipoMoneda::where('id' , $tipo_moneda_reservas)->first();
@@ -1327,9 +1339,13 @@ class PDFController extends Controller {
         if ($request->has('flag_envio')) {  
             if ($request->flag_envio == true) {
                 $correo_prop = $propiedad[0]->email;
-            }  
+            } else {
+                $correo_prop = '';
+            } 
         } else {
-            $correo_prop = '';
+            $retorno['errors'] = true;
+            $retorno['msj'] = "Datos requeridos: flag_envio";
+            return Response::json($retorno, 400);
         } 
 
         $propiedad_iva = 0;
@@ -1411,9 +1427,7 @@ class PDFController extends Controller {
                     }
                 }
             }
-            $reservas_pdf->push(
-                $reserva
-            ); 
+            $reservas_pdf->push($reserva); 
         }
 
         $auxMoneda     = TipoMoneda::where(
