@@ -800,7 +800,7 @@ class PDFController extends Controller {
                     }
                 }
             }
-            $reservas_pdf->push($reserva);
+            $reservas_pdf->push($reserva[0]);
         }
 
         $auxMoneda = TipoMoneda::where(
@@ -997,7 +997,7 @@ class PDFController extends Controller {
                     }
                 }
             }
-            $reservas_pdf->push($reserva);
+            $reservas_pdf->push($reserva[0]);
         }
 
         $auxMoneda = TipoMoneda::where(
@@ -1220,7 +1220,7 @@ class PDFController extends Controller {
                     }
                 }
             }
-            $reservas_pdf->push($reserva);
+            $reservas_pdf->push($reserva[0]);
         }
 
         $auxMoneda     = TipoMoneda::where('id' , $tipo_moneda_reservas)->first();
@@ -1427,7 +1427,7 @@ class PDFController extends Controller {
                     }
                 }
             }
-            $reservas_pdf->push($reserva); 
+            $reservas_pdf->push($reserva[0]); 
         }
 
         $auxMoneda     = TipoMoneda::where(
