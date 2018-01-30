@@ -26,6 +26,7 @@ return [
 
     'STRIPE_SECRET' => env('STRIPE_SECRET', null),
     'STRIPE_KEY' => env('STRIPE_KEY', null),
+    'ADMIN_MAIL' => env('ADMIN_MAIL', null),
 
 
     /*
