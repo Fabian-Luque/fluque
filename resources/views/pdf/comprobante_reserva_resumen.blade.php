@@ -27,7 +27,7 @@
         <div class="cliente">
                 <table class="tabla-cliente">
 
-                @foreach($cliente as $cte)
+                
 
                     @if($cte->tipo_cliente_id == 1)
                       @if($cte->pais_id == null)
@@ -173,8 +173,6 @@
                       @endif
                     @endif
 
-
-                    @endforeach
                 </table>
         </div>
         <!--  Fin cliente  -->
@@ -184,9 +182,9 @@
           </div>
 
           <table class="tabla-detalles">
-          @foreach($reservas_pdf as $reservas)
+          @foreach($reservas_pdf as $reserva)
 
-            @foreach($reservas as $reserva)
+            
 
             <tr>
               <td class="data-tabla-detalles borde-derecha">
@@ -195,7 +193,7 @@
               </td>
               <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{ number_format($reserva->monto_alojamiento) }}</p></td>
             </tr>
-            @endforeach
+            
           @endforeach
 
 
@@ -257,8 +255,8 @@
                 <th class="data-tabla-detalles borde-derecha"><p>Monto</p></th>
               </tr>
 
-          @foreach($reservas_pdf as $reservas)
-              @foreach($reservas as $reserva)
+          @foreach($reservas_pdf as $reserva)
+          
                @foreach($reserva->pagos as $pago)
               <tr>
                 <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $reserva->numero_reserva }}</p></td>
@@ -284,7 +282,6 @@
                 <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->tipoMoneda->nombre }} ${{$pago->monto_equivalente }}</p></td>
               </tr>
                @endforeach
-              @endforeach
           @endforeach
 
 
@@ -311,7 +308,7 @@
       </div>
 
       <div class="seccion">
-        <p class="firma">Firma Autorizada RecepciÃ³n</p>
+        <p class="firma">Firma Autorizada Recepcion</p>
       </div>
     </div>
 
