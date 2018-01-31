@@ -27,8 +27,6 @@
         <div class="cliente">
                 <table class="tabla-cliente">
 
-                
-
                     @if($cliente->tipo_cliente_id == 1)
                       @if($cliente->pais_id == null)
 
