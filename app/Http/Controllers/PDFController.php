@@ -1464,7 +1464,7 @@ class PDFController extends Controller {
                     $c_destino,
                     $arr,
                     "correos.comprobante_reserva_motor",
-                    "", // correo de la propiedad
+                    "pdf.comprobante_reserva_resumen",
                     "",
                     $request->opcion,
                     $correo_prop,
@@ -1490,7 +1490,7 @@ class PDFController extends Controller {
                     $c_destino,
                     $arr,
                     "correos.comprobante_reserva_motor",
-                    "", // correo de la propiedad
+                    "pdf.comprobante_reserva_resumen",
                     "",
                     $request->opcion,
                     $correo_prop,
@@ -1517,7 +1517,7 @@ class PDFController extends Controller {
                 $c_destino,
                 $arr,
                 "correos.comprobante_reserva_motor",
-                "", // correo de la propiedad
+                "pdf.comprobante_reserva_resumen",
                 "",
                 $request->opcion,
                 $correo_prop,
