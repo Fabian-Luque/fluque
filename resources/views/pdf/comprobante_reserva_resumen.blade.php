@@ -194,14 +194,11 @@
             
           @endforeach
 
-
               @if($nombre_moneda == "CLP")
                 @if($iva_reservas == 1)
-
-
                 <tr>
                   <th class="data-tabla-detalles borde-derecha"><p class="titulo align-right">Subtotal</p></th>
-                  <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $nombre_moneda }} ${{ number_format($neto) }}</p></td>
+                  <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $nombre_moneda }} ${{ number_format($subtotal) }}</p></td>
                 </tr>
                 <tr>
                   <th class="data-tabla-detalles borde-derecha"><p class="titulo align-right">IVA</p></th>
@@ -213,7 +210,7 @@
                 </tr>
                 <tr>
                   <th class="data-tabla-detalles borde-derecha"><p class="titulo align-right">Por pagar</p></th>
-                  <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $nombre_moneda }} ${{ number_format($por_pagar) }}</p></td>
+                  <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $nombre_moneda }} ${{ number_format($porpagar) }}</p></td>
                 </tr> 
 
                 @else
