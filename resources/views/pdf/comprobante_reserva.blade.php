@@ -179,7 +179,7 @@
           </div>
 
           <table class="tabla-detalles">
-          @foreach($reservaspdf as $reserva)
+          @foreach($reservas_pdf as $reserva)
             <tr>
               <td class="data-tabla-detalles borde-derecha">
                 <p class="titulo">Reserva Nº {{ $reserva->numero_reserva }} - Tipo de habitación: {{ $reserva->habitacion->tipoHabitacion->nombre }} - {{ $reserva->ocupacion }} Huéspedes -
@@ -245,7 +245,7 @@
                 <th class="data-tabla-detalles borde-derecha"><p>Monto</p></th>
               </tr>
 
-          @foreach($reservaspdf as $reserva)
+          @foreach($reservas_pdf as $reserva)
                @foreach($reserva->pagos as $pago)
               <tr>
                 <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $reserva->numero_reserva }}</p></td>
