@@ -99,11 +99,11 @@ class SendMail extends Job implements ShouldQueue {
                 ];
             } elseif ($array['arr']['comp'] == 1) {
                 $data_correo = [
-                    'reservaspdf'  => $array['arr']['reservaspdf'],
+                    'reservaspdf'  => $array['arr']['reservas_pdf'],
                     'array'        => $array,
                     'iva'          => $array['arr']['iva'],
                     'subtotal'     => $array['arr']['neto'],
-                    'porpagar'     => $array['arr']['porpagar'],
+                    'porpagar'     => $array['arr']['por_pagar'],
                     'total'        => $array['arr']['total'],
                     'nombre_moneda'=> $array['arr']['nombre_moneda']
                 ];
@@ -127,7 +127,7 @@ class SendMail extends Job implements ShouldQueue {
                     if (strcmp($array['propiedad_email'], '') != 0) {
                         $message->cc($array['propiedad_email']);
                     }
-
+/*
                     if (strlen($array['vista_pdf']) != 0) {
                         $pdf = PDF::loadView(
                             $array['vista_pdf'], 
@@ -139,6 +139,7 @@ class SendMail extends Job implements ShouldQueue {
                             $array['nombre_pdf']
                         );
                     }
+*/
                 }
             );
         } catch(\Exception $e){
