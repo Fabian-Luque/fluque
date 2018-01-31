@@ -1259,7 +1259,7 @@ class PDFController extends Controller {
                     "comprobante_reserva.pdf",
                     $request->opcion,
                     $correo_prop,
-                    ""
+                    "reservas-varias"
                 );
             } else {
                 $total = $monto_alojamiento;
@@ -1284,7 +1284,7 @@ class PDFController extends Controller {
                     "comprobante_reserva.pdf",
                     $request->opcion,
                     $correo_prop,
-                    ""
+                    "reservas-varias"
                 );
             
             }
@@ -1313,7 +1313,7 @@ class PDFController extends Controller {
                 "comprobante_reserva.pdf",
                 $request->opcion,
                 $correo_prop,
-                ""
+                "reservas-varias"
             );
         }
         if (empty($pdf) != 1) {
@@ -1451,7 +1451,7 @@ class PDFController extends Controller {
                 $arr = array(
                     'propiedad'     => $propiedad, 
                     'cliente'       => $cliente->first(),
-                    'reservaspdf'   => $reservas_pdf, 
+                    'reservas_pdf'   => $reservas_pdf, 
                     'nombre_moneda' => $nombre_moneda,
                     'iva_reservas'  => $iva_reservas, 
                     'neto'          => round($neto), 
@@ -1471,7 +1471,7 @@ class PDFController extends Controller {
                     "",
                     $request->opcion,
                     $correo_prop,
-                    ""
+                    "reservas-varias"
                 );
             } else {
                 $total = $monto_alojamiento;
@@ -1479,7 +1479,7 @@ class PDFController extends Controller {
                 $arr = array(
                     'propiedad'     => $propiedad, 
                     'cliente'       => $cliente->first(),
-                    'reservaspdf'   => $reservas_pdf, 
+                    'reservas_pdf'   => $reservas_pdf, 
                     'nombre_moneda' => $nombre_moneda,
                     'iva_reservas'  => $iva_reservas,
                     'total'         => $total,
@@ -1497,7 +1497,7 @@ class PDFController extends Controller {
                     "",
                     $request->opcion,
                     $correo_prop,
-                    ""
+                    "reservas-varias"
                 );
             }
         } elseif($tipo_moneda_reservas == 2) {
@@ -1506,7 +1506,7 @@ class PDFController extends Controller {
             $arr = array(
                 'propiedad'     => $propiedad, 
                 'cliente'       => $cliente->first(),
-                'reservaspdf'  => $reservas_pdf, 
+                'reservas_pdf'  => $reservas_pdf, 
                 'nombre_moneda' => $nombre_moneda,
                 'iva_reservas'  => $iva_reservas,
                 'total'         => $total,
@@ -1524,7 +1524,7 @@ class PDFController extends Controller {
                 "",
                 $request->opcion,
                 $correo_prop,
-                ""
+                "reservas-varias"
             );
         }   
 
