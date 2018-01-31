@@ -22,7 +22,7 @@ class ApiAuthController extends Controller {
             $user_id = $user->id;
             $propiedad_id = $user->propiedad[0]['id'];
 
-            if (strcmp($request->email, 'soporte@gofeels.com') != 0) {
+            if (strcmp($request->email, config('app.ADMIN_MAIL')) != 0) {
                 switch ($user->propiedad[0]->estado_cuenta_id) {
         		    case '3': //
                         $data['errors'] = trans('request.failure.status');

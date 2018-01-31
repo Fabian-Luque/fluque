@@ -49,21 +49,30 @@ class SendMail extends Job implements ShouldQueue {
             if (strcmp($this->array['opp'], "reservas-varias") == 0) {
                 $propiedad_id = $array['propiedad']->id;
 
-                $reservas = Reserva::whereHas(
-                    'tipoHabitacion',
-                    function($query) use ($propiedad_id) {
-                        $query->where(
-                            'propiedad_id', 
-                            $propiedad_id
-                        );
-                    }
-                )->orderby('id','DESC')
-                ->where(
-                    'n_reserva_motor', 
-                    $array['arr']['reserva']->n_reserva_motor
-                )->whereIn('estado_reserva_id', [1,2,3,4,5])
-                ->get();
-
+                if (!empty($array['arr']['reserva'])) { // si no esta vacio, son reservas del motor
+                    $reservas = Reserva::whereHas(
+                        'tipoHabitacion',
+                        function($query) use ($propiedad_id) {
+                            $query->where(
+                                'propiedad_id', 
+                                $propiedad_id
+                            );
+                        }
+                    )->orderby('id','DESC')
+                    ->where(
+                        'n_reserva_motor', 
+                        $array['arr']['reserva']->n_reserva_motor
+                    )->whereIn('estado_reserva_id', [1,2,3,4,5])
+                    ->get();
+                } else {
+                    $reservas = Reserva::whereIn(
+                        'id',
+                        $array['arr']['reservas_pdf']->pluck(
+                            'id'
+                        )->all()
+                    )->get();
+                }
+                
                 $subtotal = 0;
                 $porpagar = 0;
                 $total    = 0;
