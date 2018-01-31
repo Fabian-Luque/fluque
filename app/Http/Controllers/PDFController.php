@@ -1309,7 +1309,7 @@ class PDFController extends Controller {
                 $c_destino,
                 $arr,
                 "correos.envio_pdf",
-                "pdf.comprobante_reserva_resumen",
+                "pdf.comprobante_reserva",
                 "comprobante_reserva.pdf",
                 $request->opcion,
                 $correo_prop,
