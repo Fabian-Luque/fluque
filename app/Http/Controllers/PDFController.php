@@ -1223,7 +1223,10 @@ class PDFController extends Controller {
             $reservas_pdf->push($reserva[0]);
         }
 
-        $auxMoneda     = TipoMoneda::where('id' , $tipo_moneda_reservas)->first();
+        $auxMoneda = TipoMoneda::where(
+            'id', 
+            $tipo_moneda_reservas
+        )->first();
         $nombre_moneda = $auxMoneda->nombre;
 
         if ($tipo_moneda_reservas == 1) {
@@ -1235,7 +1238,7 @@ class PDFController extends Controller {
 
                 $arr = array(
                     'propiedad'     => $propiedad, 
-                    'cliente'       => $cliente,
+                    'cliente'       => $cliente->first(),
                     'reservas_pdf'  => $reservas_pdf, 
                     'nombre_moneda' => $nombre_moneda,
                     'iva_reservas'  => $iva_reservas, 
@@ -1262,7 +1265,7 @@ class PDFController extends Controller {
                 $total = $monto_alojamiento;
                 $arr = array(
                     'propiedad'     => $propiedad, 
-                    'cliente'       => $cliente,
+                    'cliente'       => $cliente->first(),
                     'reservas_pdf'  => $reservas_pdf, 
                     'nombre_moneda' => $nombre_moneda,
                     'iva_reservas'  => $iva_reservas,
@@ -1291,7 +1294,7 @@ class PDFController extends Controller {
 
             $arr = array(
                 'propiedad'     => $propiedad, 
-                'cliente'       => $cliente,
+                'cliente'       => $cliente->first(),
                 'reservas_pdf'  => $reservas_pdf, 
                 'nombre_moneda' => $nombre_moneda,
                 'iva_reservas'  => $iva_reservas,
