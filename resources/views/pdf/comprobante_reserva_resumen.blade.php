@@ -180,7 +180,7 @@
           </div>
 
           <table class="tabla-detalles">
-          @foreach($reservas_pdf as $reserva)
+          @foreach($reservaspdf as $reserva)
 
             
 
@@ -253,7 +253,7 @@
                 <th class="data-tabla-detalles borde-derecha"><p>Monto</p></th>
               </tr>
 
-          @foreach($reservas_pdf as $reserva)
+          @foreach($reservaspdf as $reserva)
           
                @foreach($reserva->pagos as $pago)
               <tr>
