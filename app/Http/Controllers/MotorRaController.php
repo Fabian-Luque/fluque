@@ -28,33 +28,58 @@ use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 use Html;
 
 class MotorRaController extends Controller {
-     public function pru(Request $request) { // amazon s3
+     public function UpdateNameDirectory(Request $request) { // amazon s3
         try {
-            if ($request->has('nombre_prop') && $request->has('nombre') && $request->has('new_nombre')) {
+            if ($request->has('nombre_prop') && $request->has('new_nombre')) {
                 if ($this->SearchDirectory($request->nombre_prop)['existe'] == true) {
+                    $imgs_s3 = collect([]);
                     try {
-                        $img = Storage::disk('s3')->put(
-                            $request->nombre_prop."/".$request->new_nombre,
-                            Storage::disk('s3')->get(
-                                $request->nombre_prop."/".$request->nombre
-                            ),
-                            'public'
+                        $files = Storage::disk('s3')->allFiles(
+                            $request->nombre_prop
                         );
 
-                        if ($img == true) {
-                            Storage::disk('s3')->delete(
-                                $request->nombre_prop."/".$request->nombre
-                            );
+                        for ($i = 0; $i < count($files); $i++) { 
+                            $date = Carbon::createFromTimestamp(
+                                explode(
+                                    "/", 
+                                    explode(
+                                        "_", 
+                                        $files[$i]
+                                    )[0]
+                                )[1]
+                            )->toDateTimeString();
 
-                            $retorno['error'] = false;
-                            $retorno['msj'] = "Actualizacion exitosa";
-                        } else {
-                            $retorno['error'] = true;
-                            $retorno['msj'] = "Error al actualizar";
+                            $imgs_s3->push([
+                                'data' => Storage::disk('s3')->get(
+                                    $files[$i]
+                                ),
+                                'name' => explode(
+                                    "/", 
+                                    explode(
+                                        "_", 
+                                        $files[$i]
+                                    )[0]
+                                )[1].".jpg", 
+                                'created_at' => $date
+                            ]);
                         }
+
+                        Storage::disk('s3')->deleteDirectory(
+                            $request->nombre_prop
+                        );
+
+                        foreach ($imgs_s3 as $img) {
+                            Storage::disk('s3')->put(
+                                $request->new_nombre."/".$img['name'],//$imageName, 
+                                $img['data'], 
+                                'public'
+                            );
+                        }
+                        $retorno['error'] = false;
+                        $retorno['msj'] = "Nombre del directorio actualizado a: ".$request->new_nombre;
                     } catch (\Exception $e) {
                         $retorno['error'] = true;
-                        $retorno['msj'] = "Archivo no encontrado: ".$e->getMessage();
+                        $retorno['msj'] = "Archivo no encontrado: ".$e->getMessage()." Linea: ".$e->getLine();
                     }
                 } else {
                     $retorno['error'] = true;
