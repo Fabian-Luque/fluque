@@ -28,6 +28,54 @@ use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 use Html;
 
 class MotorRaController extends Controller {
+     public function pru(Request $request) { // amazon s3
+        try {
+            if ( $request->has('nombre_prop')) {
+                if ($this->SearchDirectory($request->nombre_prop)['existe'] == true) {
+                    $files = Storage::disk('s3')->allFiles(
+                        $request->nombre_prop
+                    );
+
+                    $imagenes = collect([]);
+
+                    for ($i = 0; $i < count($files); $i++) { 
+                        $date = Carbon::createFromTimestamp(
+                            explode(
+                                "/", 
+                                explode(
+                                    "_", 
+                                    $files[$i]
+                                )[0]
+                            )[1]
+                        )->toDateTimeString();
+                        
+                        $imagenes->push([
+                            'nombre' => "https://s3-sa-east-1.amazonaws.com/gofeels-props-images/".$files[$i], 
+                            'created_at' => $date
+                        ]);
+                    }
+
+                    $imagenes->sortBy('created_at');
+                    //dd(Carbon::now('CLST')->toDateTimeString());
+                    //dd(Carbon::createFromTimestamp(1517499393)->toDateTimeString());
+                    $retorno['error'] = false;
+                    $retorno['msj'] = $imagenes;
+
+                } else {
+                    $retorno['error'] = true;
+                    $retorno['msj'] = 'El directorio no existe en amazon';
+                }
+            } else {
+                $retorno['error'] = true;
+                $retorno['msj'] = "Datos requeridos";
+            }
+        } catch (S3Exception $e) {
+            $retorno['error'] = true;
+            $retorno['msj'] = $e->getMessage();
+        } 
+        return Response::json($retorno);
+    }
+
     public function DeleteImage(Request $request) {
         try {
             if ( $request->has('nombre') && $request->has('nombre_prop')) {
@@ -111,25 +159,67 @@ class MotorRaController extends Controller {
     public function GetAllImagesByDir(Request $request) {
         if ($request->has('nombre_prop') && $request->has('nombre')) {
             try {
+                $imagenes = collect([]);
+
+                $date = Carbon::createFromTimestamp(
+                    explode(
+                        "_", 
+                        $request->nombre
+                    )[0]
+                )->toDateTimeString();
+                
+                $imagenes->push([
+                    'nombre' => "https://s3-sa-east-1.amazonaws.com/gofeels-props-images/".$request->nombre_prop."".$request->nombre, 
+                    'created_at' => $date
+                ]);
+
                 $retorno['error'] = false;
                 $retorno['msj'] = "Listado de imagenes";
-                $retorno['img'] = "https://s3-sa-east-1.amazonaws.com/gofeels-props-images/".$request->nombre_prop."/".$request->nombre;
+                $retorno['img'] = $imagenes;
             } catch (S3Exception $e) {
                 $retorno['error'] = true;
                 $retorno['msj'] = $e->getMessage();
             }
         } elseif ($request->has('nombre_prop')) {
             try {
-                $retorno['error'] = false;
-                $retorno['msj'] = "Listado de imagenes";
-                $retorno['url'] = "https://s3-sa-east-1.amazonaws.com/gofeels-props-images/";
-                $retorno['lista'] = Storage::disk('s3')->allFiles(
-                    $request->nombre_prop
-                );
+                if ($this->SearchDirectory($request->nombre_prop)['existe'] == true) {
+                    $files = Storage::disk('s3')->allFiles(
+                        $request->nombre_prop
+                    );
+
+                    $imagenes = collect([]);
+
+                    for ($i = 0; $i < count($files); $i++) { 
+                        $date = Carbon::createFromTimestamp(
+                            explode(
+                                "/", 
+                                explode(
+                                    "_", 
+                                    $files[$i]
+                                )[0]
+                            )[1]
+                        )->toDateTimeString();
+                        
+                        $imagenes->push([
+                            'nombre' => "https://s3-sa-east-1.amazonaws.com/gofeels-props-images/".$files[$i], 
+                            'created_at' => $date
+                        ]);
+                    }
+
+                    $imagenes->sortBy('created_at');
+                    //dd(Carbon::now('CLST')->toDateTimeString());
+                    //dd(Carbon::createFromTimestamp(1517499393)->toDateTimeString());
+                    $retorno['error'] = false;
+                    $retorno['msj'] = "Lista de imagenes";
+                    $retorno['img'] = $imagenes;
+                } else {
+                    $retorno['error'] = true;
+                    $retorno['msj'] = 'El directorio no existe en amazon';
+                }
             } catch (S3Exception $e) {
                 $retorno['error'] = true;
                 $retorno['msj'] = $e->getMessage();
-            } 
+            }  
         } else {
             $retorno['error'] = true;
             $retorno['msj'] = "Datos requeridos";
