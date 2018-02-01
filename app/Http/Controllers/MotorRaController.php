@@ -238,13 +238,14 @@ class MotorRaController extends Controller {
                 )->toDateTimeString();
                 
                 $imagenes->push([
-                    'nombre' => "https://s3-sa-east-1.amazonaws.com/gofeels-props-images/".$request->nombre_prop."".$request->nombre, 
+                    'nombre' => $request->nombre, 
+                    'url' => "https://s3-sa-east-1.amazonaws.com/gofeels-props-images/".$request->nombre_prop."/",
                     'created_at' => $date
                 ]);
 
                 $retorno['error'] = false;
                 $retorno['msj'] = "Listado de imagenes";
-                $retorno['img'] = $imagenes;
+                $retorno['lista'] = $imagenes;
             } catch (S3Exception $e) {
                 $retorno['error'] = true;
                 $retorno['msj'] = $e->getMessage();
@@ -270,7 +271,11 @@ class MotorRaController extends Controller {
                         )->toDateTimeString();
                         
                         $imagenes->push([
-                            'nombre' => "https://s3-sa-east-1.amazonaws.com/gofeels-props-images/".$files[$i], 
+                            'nombre' => explode(
+                                "/", 
+                                $files[$i]
+                            )[1], 
+                            'url' => "https://s3-sa-east-1.amazonaws.com/gofeels-props-images/".$request->nombre_prop."/",
                             'created_at' => $date
                         ]);
                     }
