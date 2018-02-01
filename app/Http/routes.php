@@ -347,6 +347,9 @@ Route::post('get/images', 'MotorRaController@GetImage');
 Route::post('get/images/byfolder', 'MotorRaController@GetAllImagesByDir');
 Route::post('delete/images', 'MotorRaController@DeleteImage');
 Route::post('delete/directory', 'MotorRaController@DeleteDirectory');
+Route::post('update/image', 'MotorRaController@UpdateImage');
+
+
 Route::post('pru', 'MotorRaController@pru');
 
 

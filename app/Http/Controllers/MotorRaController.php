@@ -30,37 +30,81 @@ use Html;
 class MotorRaController extends Controller {
      public function pru(Request $request) { // amazon s3
         try {
-            if ( $request->has('nombre_prop')) {
+            if ($request->has('nombre_prop') && $request->has('nombre') && $request->has('new_nombre')) {
                 if ($this->SearchDirectory($request->nombre_prop)['existe'] == true) {
-                    $files = Storage::disk('s3')->allFiles(
+                    try {
+                        $img = Storage::disk('s3')->put(
+                            $request->nombre_prop."/".$request->new_nombre,
+                            Storage::disk('s3')->get(
+                                $request->nombre_prop."/".$request->nombre
+                            ),
+                            'public'
+                        );
+
+                        if ($img == true) {
+                            Storage::disk('s3')->delete(
+                                $request->nombre_prop."/".$request->nombre
+                            );
+
+                            $retorno['error'] = false;
+                            $retorno['msj'] = "Actualizacion exitosa";
+                        } else {
+                            $retorno['error'] = true;
+                            $retorno['msj'] = "Error al actualizar";
+                        }
+                    } catch (\Exception $e) {
+                        $retorno['error'] = true;
+                        $retorno['msj'] = "Archivo no encontrado: ".$e->getMessage();
+                    }
+                } else {
+                    $retorno['error'] = true;
+                    $retorno['msj'] = 'El directorio no existe en amazon';
+                }
+            } elseif ($request->has('nombre_prop')) {
+                $files = Storage::disk('s3')->allFiles(
                         $request->nombre_prop
                     );
+                $retorno['error'] = true;
+                    $retorno['msj'] = 'El directorio no existe en amazon';
+            } else {
+                $retorno['error'] = true;
+                $retorno['msj'] = "Datos requeridos";
+            }
+        } catch (S3Exception $e) {
+            $retorno['error'] = true;
+            $retorno['msj'] = $e->getMessage();
+        } 
+        return Response::json($retorno);
+    }
 
-                    $imagenes = collect([]);
+    public function UpdateImage(Request $request) {
+        try {
+            if ($request->has('nombre_prop') && $request->has('nombre') && $request->has('new_nombre')) {
+                if ($this->SearchDirectory($request->nombre_prop)['existe'] == true) {
+                    try {
+                        $img = Storage::disk('s3')->put(
+                            $request->nombre_prop."/".$request->new_nombre,
+                            Storage::disk('s3')->get(
+                                $request->nombre_prop."/".$request->nombre
+                            ),
+                            'public'
+                        );
 
-                    for ($i = 0; $i < count($files); $i++) { 
-                        $date = Carbon::createFromTimestamp(
-                            explode(
-                                "/", 
-                                explode(
-                                    "_", 
-                                    $files[$i]
-                                )[0]
-                            )[1]
-                        )->toDateTimeString();
-                        
-                        $imagenes->push([
-                            'nombre' => "https://s3-sa-east-1.amazonaws.com/gofeels-props-images/".$files[$i], 
-                            'created_at' => $date
-                        ]);
+                        if ($img == true) {
+                            Storage::disk('s3')->delete(
+                                $request->nombre_prop."/".$request->nombre
+                            );
+
+                            $retorno['error'] = false;
+                            $retorno['msj'] = "Actualizacion exitosa";
+                        } else {
+                            $retorno['error'] = true;
+                            $retorno['msj'] = "Error al actualizar";
+                        }
+                    } catch (\Exception $e) {
+                        $retorno['error'] = true;
+                        $retorno['msj'] = "Archivo no encontrado: ".$e->getMessage();
                     }
-
-                    $imagenes->sortBy('created_at');
-                    //dd(Carbon::now('CLST')->toDateTimeString());
-                    //dd(Carbon::createFromTimestamp(1517499393)->toDateTimeString());
-                    $retorno['error'] = false;
-                    $retorno['msj'] = $imagenes;
-
                 } else {
                     $retorno['error'] = true;
                     $retorno['msj'] = 'El directorio no existe en amazon';
