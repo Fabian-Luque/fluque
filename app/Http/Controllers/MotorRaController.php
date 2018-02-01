@@ -48,6 +48,31 @@ class MotorRaController extends Controller {
         } 
         return Response::json($retorno);
     }
+
+    public function DeleteDirectory(Request $request) { // amazon s3
+        try {
+            if ( $request->has('directorio')) {
+                if ($this->SearchDirectory($request->directorio)['existe'] == true) {
+                    $imageName = Storage::disk('s3')->deleteDirectory(
+                        $request->directorio
+                    );
+
+                    $retorno['error'] = false;
+                    $retorno['msj'] = 'Delete exitoso';
+                } else {
+                    $retorno['error'] = true;
+                    $retorno['msj'] = 'El directorio no existe en amazon';
+                }
+            } else {
+                $retorno['error'] = true;
+                $retorno['msj'] = "Datos requeridos";
+            }
+        } catch (S3Exception $e) {
+            $retorno['error'] = true;
+            $retorno['msj'] = $e->getMessage();
+        } 
+        return Response::json($retorno);
+    }
     
     public function UploadImage(Request $request) {
         $validator = Validator::make(

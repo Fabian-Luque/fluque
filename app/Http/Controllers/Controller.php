@@ -15,31 +15,38 @@ use PDF;
 use App\Jobs\SendMail;
 use Illuminate\Support\Facades\Validator;
 use Response;
-use Intercom;
-use Intercom\IntercomMessages;
-use Intercom\IntercomClient;
 
 class Controller extends BaseController {
     use AuthorizesRequests, AuthorizesResources, DispatchesJobs, ValidatesRequests;
 
-    public function UploadImage(Request $request) {
-        $validator = Validator::make(
-        	$request->all(), 
-        	array(
-            	'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-           	)
-        );
+    public function SearchDirectory($directorio) { // amazon s3
+        $flag = false;
+        try {
+            if (!empty($directorio)) {
+                $directorios = Storage::disk('s3')->allDirectories("");
 
-        $imageName = time().'.'.$request->image->getClientOriginalExtension();
-        $image = $request->file('image');
-        $t = Storage::disk('s3')->put(
-        	$imageName, 
-        	file_get_contents($image), 
-        	'public'
-        );
-        $imageName = Storage::disk('s3')->url($imageName);
+                for ($i = 0; $i < count($directorios); $i++) { 
+                    if (strcmp($directorios[$i], $directorio) == 0) {
+                        $flag = true;
+                    }
 
-    	return Response::json("Upload exitoso");
+                    if ($flag == true) {
+                        break;
+                    }
+                }
+                
+                $retorno['error'] = false;
+                $retorno['msj'] = 'Delete exitoso';
+            } else {
+                $retorno['error'] = true;
+                $retorno['msj'] = "Datos requeridos";
+            }
+        } catch (S3Exception $e) {
+            $retorno['error'] = true;
+            $retorno['msj'] = $e->getMessage();
+        } 
+        $retorno['existe'] = $flag;
+        return $retorno;
     }
 
     public function EnvioCorreo(Propiedad $propiedad, $cliente_email, $arr, $vista_coreo, $vista_pdf, $nombre_pdf, $opcion, $propiedad_email, $opp) {
