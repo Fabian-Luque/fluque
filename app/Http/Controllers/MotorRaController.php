@@ -257,24 +257,23 @@ class MotorRaController extends Controller {
                         $request->nombre_prop
                     );
 
+                    $im = explode(
+                        "/", 
+                        $files[0]
+                    );
+
                     $imagenes = collect([]);
 
                     for ($i = 0; $i < count($files); $i++) { 
                         $date = Carbon::createFromTimestamp(
                             explode(
-                                "/", 
-                                explode(
-                                    "_", 
-                                    $files[$i]
-                                )[0]
-                            )[1]
+                                "_", 
+                                $im[count($im) - 1]
+                            )[0]
                         )->toDateTimeString();
                         
                         $imagenes->push([
-                            'nombre' => explode(
-                                "/", 
-                                $files[$i]
-                            )[1], 
+                            'nombre' => $im[count($im) - 1], 
                             'url' => "https://s3-sa-east-1.amazonaws.com/gofeels-props-images/".$request->nombre_prop."/",
                             'created_at' => $date
                         ]);
