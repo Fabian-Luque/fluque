@@ -1296,7 +1296,7 @@ class PropiedadController extends Controller
             $total = 0;
             foreach ($consumos as $consumo) {
                 if ($moneda->id == $consumo->tipo_moneda_id) {
-                    $total = $consumo->precio_total;
+                    $total += $consumo->precio_total;
                 }
             }
             $m['id']     = $moneda->id;
