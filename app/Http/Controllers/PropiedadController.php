@@ -30,6 +30,7 @@ use App\CuentaBancaria;
 use App\TipoCuenta;
 use App\PropiedadTipoDeposito;
 use App\TipoDeposito;
+use App\PropiedadServicio;
 use Illuminate\Support\Facades\Config;
 use Input;
 use Illuminate\Http\Request;
@@ -1170,6 +1171,7 @@ class PropiedadController extends Controller
             $numero_operacion    = $request->input('numero_operacion');
             $tipo_comprobante_id = $request->input('tipo_comprobante_id');
             $numero_cheque       = $request->input('numero_cheque');
+            $tipo_moneda_id      = $request->input('tipo_moneda_id');
 
             if (!is_null($propiedad)) {
                 $servicios = $request->input('venta_servicio');
@@ -1189,7 +1191,7 @@ class PropiedadController extends Controller
                                         $servicio_nombre     = $serv->nombre;
                                         $cantidad_disponible = $cantidad_disponible - $cantidad;
                                         $serv->update(array('cantidad_disponible' => $cantidad_disponible));
-                                        $propiedad->vendeServicios()->attach($servicio_id, ['metodo_pago_id' => $metodo_pago_id, 'cantidad' => $cantidad, 'precio_total' => $precio_total, 'numero_operacion' => $numero_operacion, 'tipo_comprobante_id' => $tipo_comprobante_id, 'numero_cheque' => $numero_cheque]);
+                                        $propiedad->vendeServicios()->attach($servicio_id, ['metodo_pago_id' => $metodo_pago_id, 'cantidad' => $cantidad, 'precio_total' => $precio_total, 'numero_operacion' => $numero_operacion, 'tipo_comprobante_id' => $tipo_comprobante_id, 'numero_cheque' => $numero_cheque, 'tipo_moneda_id' => $tipo_moneda_id]);
 
                                     } else {
                                         $data = array(
@@ -1213,7 +1215,7 @@ class PropiedadController extends Controller
                             }
 
                         } elseif ($serv->categoria_id == 1) {
-                            $propiedad->vendeServicios()->attach($servicio_id, ['metodo_pago_id' => $metodo_pago_id, 'cantidad' => $cantidad, 'precio_total' => $precio_total, 'numero_operacion' => $numero_operacion, 'tipo_comprobante_id' => $tipo_comprobante_id, 'numero_cheque' => $numero_cheque]);
+                            $propiedad->vendeServicios()->attach($servicio_id, ['metodo_pago_id' => $metodo_pago_id, 'cantidad' => $cantidad, 'precio_total' => $precio_total, 'numero_operacion' => $numero_operacion, 'tipo_comprobante_id' => $tipo_comprobante_id, 'numero_cheque' => $numero_cheque, 'tipo_moneda_id' => $tipo_moneda_id]);
                         }
 
                     } else {
@@ -1243,6 +1245,76 @@ class PropiedadController extends Controller
         }
 
     }
+
+    public function getConsumosParticulares(Request $request)
+    {
+        if ($request->has('propiedad_id')) {
+            $propiedad_id = $request->input('propiedad_id');
+            $propiedad    = Propiedad::where('id', $propiedad_id)->with('tipoMonedas')->first();
+            if (is_null($propiedad)) {
+                $retorno = array(
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia propiedad_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        if ($request->has('fecha_inicio')) {
+            $getInicio       = new Carbon($request->input('fecha_inicio'));
+            $inicio          = $getInicio->startOfDay();
+            $zona_horaria    = ZonaHoraria::where('id', $propiedad->zona_horaria_id)->first();
+            $pais            = $zona_horaria->nombre;
+            $fecha_inicio    = Carbon::createFromFormat('Y-m-d H:i:s', $inicio, $pais)->tz('UTC');
+        }
+
+        if ($request->has('fecha_fin')) {
+            $fin             = new Carbon($request->input('fecha_fin'));
+            $fechaFin        = $fin->addDay();
+            $fin_fecha       = $fechaFin->startOfDay();
+            $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $fechaFin, $pais)->tz('UTC');
+        } else {
+            $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $inicio, $pais)->tz('UTC')->addDay();
+        }
+
+        $consumos = PropiedadServicio::where('propiedad_id', $propiedad_id)
+            ->where('created_at','>=' , $fecha_inicio)
+            ->where('created_at', '<' , $fecha_fin)
+            ->with('servicio')
+            ->with('TipoComprobante')
+            ->with('tipoMoneda')
+            ->get();
+
+
+        $monedas = [];
+        $data    = [];
+        foreach ($propiedad->tipoMonedas as $moneda) {
+            $total = 0;
+            foreach ($consumos as $consumo) {
+                if ($moneda->id == $consumo->tipo_moneda_id) {
+                    $total = $consumo->precio_total;
+                }
+            }
+            $m['id']     = $moneda->id;
+            $m['nombre'] = $moneda->nombre;
+            $m['cantidad_decimales'] = $moneda->cantidad_decimales;
+            $m['total'] = $total;
+            array_push($monedas, $m);
+        }
+        $data['monedas']  = $monedas;
+        $data['consumos'] = $consumos;
+
+        return $data;
+
+
+    }
+
+
+
 
     public function index(Request $request)
     {
