@@ -123,7 +123,8 @@ class ServicioController extends Controller
 
             $propiedad = Propiedad::whereHas('servicios', function($query) use($id){
                 $query->where('id', $id);
-            })->first();
+            })
+            ->first();
 
             $servicio = Servicio::findOrFail($id);
             $servicio->update($request->all());
@@ -138,6 +139,10 @@ class ServicioController extends Controller
                 $precio          = PrecioServicio::where('id', $id)->first();
                 $precio->update(array('precio_servicio' => $precio_servicio, 'tipo_moneda_id' => $tipo_moneda));
 
+            }
+
+            if ($request->categoria_id == 1) {
+                $servicio->update(array('cantidad_disponible' => 0));
             }
 
             if(count($servicio->precios) == count($propiedad->tipoMonedas)){
