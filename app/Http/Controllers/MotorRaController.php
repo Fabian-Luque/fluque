@@ -257,14 +257,13 @@ class MotorRaController extends Controller {
                         $request->nombre_prop
                     );
 
-                    $im = explode(
-                        "/", 
-                        $files[0]
-                    );
-
                     $imagenes = collect([]);
 
-                    for ($i = 0; $i < count($files); $i++) { 
+                    for ($i = 0; $i < count($files); $i++) {
+                        $im = explode(
+                            "/", 
+                            $files[$i]
+                        ); 
                         $date = Carbon::createFromTimestamp(
                             explode(
                                 "_", 
