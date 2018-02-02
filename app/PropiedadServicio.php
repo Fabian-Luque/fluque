@@ -11,6 +11,22 @@ class PropiedadServicio extends Model
 {
   	protected $table = 'metodo_pago_propiedad_servicio';
 
+    public function servicio() {
+        return $this->belongsTo('App\Servicio', 'servicio_id'); 
+    }
+
+    public function tipoComprobante() {
+        return $this->belongsTo('App\TipoComprobante', 'tipo_comprobante_id'); 
+    }
+
+    public function tipoMoneda() {
+        return $this->belongsTo('App\TipoMoneda', 'tipo_moneda_id'); 
+    }
+
+    public function metodoPago() {
+        return $this->belongsTo('App\MetodoPago', 'metodo_pago_id'); 
+    }
+
 	public function getCreatedAtAttribute($value)
     {
         $user            = JWTAuth::parseToken()->toUser();
