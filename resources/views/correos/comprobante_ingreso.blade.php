@@ -699,9 +699,9 @@ a[x-apple-data-detectors=true] {
 <td style="width: 79px; text-align: left; height: 7px;">{{ $reserva->ocupacion }}</td>
 <td style="width: 55px; text-align: left; height: 7px;"> {{ $reserva->noches }}</td>
 <td style="width: 59px; text-align: left; height: 7px;">{{$reserva->checkin->format('d-m-Y')}}</td>
-<td style="width: 68px; text-align: left; height: 7px;"> {{$reserva->checkout->format('d-m-Y')}}</td>
+<td style="width: 68px; text-align: left; height: 7px;"> {{ $reserva->checkout->format('d-m-Y') }}</td>
 </tr>
-@endif
+@endforeach
 </tbody>
 </table>
 </div></div>
