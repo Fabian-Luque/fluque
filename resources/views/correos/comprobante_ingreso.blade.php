@@ -694,8 +694,8 @@ a[x-apple-data-detectors=true] {
 @foreach($reservaspdf as $reserva)
 <tr style="height: 7px;">
 <td style="width: 20px; text-align: left; height: 7px;">{{ $reserva->numero_reserva }}</td>
-<td style="width: 76px; text-align: left; height: 7px;"><strong> </strong>Habitacion</td>
-<td style="width: 34px; text-align: left; height: 7px;">{{ $reserva->habitacion->nombre }}</td>
+<td style="width: 76px; text-align: left; height: 7px;">{{ $reserva->habitacion->nombre }}</td>
+<td style="width: 34px; text-align: left; height: 7px;">{{ $reserva->tipoHabitacion->nombre }}</td>
 <td style="width: 79px; text-align: left; height: 7px;">{{ $reserva->ocupacion }}</td>
 <td style="width: 55px; text-align: left; height: 7px;"> {{ $reserva->noches }}</td>
 <td style="width: 59px; text-align: left; height: 7px;">{{$reserva->checkin->format('d-m-Y')}}</td>
