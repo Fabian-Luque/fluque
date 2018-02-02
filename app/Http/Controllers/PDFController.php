@@ -1829,7 +1829,7 @@ class PDFController extends Controller {
                     $propiedad->first(),
                     $c_destino,
                     $arr,
-                    "correos.envio_pdf",
+                    "correos.comprobante_ingreso",
                     'pdf.checkin',
                     "comprobante_ingreso.pdf",
                     $request->opcion,
@@ -1838,19 +1838,54 @@ class PDFController extends Controller {
                 );
             } else {
                 $total = $monto_alojamiento;
-                $pdf = PDF::loadView(
-                    'pdf.checkin', [
-                        'propiedad' => $propiedad, 
-                        'cliente' => $cliente,
-                        'reservas_pdf' => [$reservas_pdf], 
-                        'nombre_moneda' => $nombre_moneda,
-                        'iva_reservas' => $iva_reservas,
-                        'total' => $total
-                    ]
+                $arr = array(
+                    'propiedad'     => $propiedad, 
+                    'cliente'       => $cliente->first(),
+                    'reservas_pdf'  => $reservas_pdf, 
+                    'nombre_moneda' => $nombre_moneda,
+                    'iva_reservas'  => $iva_reservas,
+                    'total'         => $total,
+                    'comp'          => 1,
+                    'de'            => $propiedad[0]->nombre
+                );
+
+                $pdf = $this->EnvioCorreo(
+                    $propiedad->first(),
+                    $c_destino,
+                    $arr,
+                    "correos.comprobante_ingreso",
+                    'pdf.checkin',
+                    "comprobante_ingreso.pdf",
+                    $request->opcion,
+                    $correo_prop,
+                    ""
                 );
             }
         } elseif($tipo_moneda_reservas == 2){
             $total = $monto_alojamiento;
+
+            $arr = array(
+                'propiedad'     => $propiedad, 
+                'cliente'       => $cliente->first(),
+                'reservas_pdf'  => $reservas_pdf, 
+                'nombre_moneda' => $nombre_moneda,
+                'iva_reservas'  => $iva_reservas,
+                'total'         => $total,
+                'comp'          => 1,
+                'de'            => $propiedad[0]->nombre
+            );
+
+            $pdf = $this->EnvioCorreo(
+                $propiedad->first(),
+                $c_destino,
+                $arr,
+                "correos.comprobante_ingreso",
+                'pdf.checkin',
+                "comprobante_ingreso.pdf",
+                $request->opcion,
+                $correo_prop,
+                ""
+            );
 
             $pdf = PDF::loadView(
                 'pdf.checkin', [
@@ -1864,7 +1899,11 @@ class PDFController extends Controller {
             );
         }
         
-        return $pdf->download('archivo.pdf');
+        if (empty($pdf) != 1) {
+           return $pdf->download('comprobante_ingreso.pdf');
+        } else {
+            return;
+        } 
     }
 
     public function huesped(Request $request)
