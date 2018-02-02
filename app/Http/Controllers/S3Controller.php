@@ -131,14 +131,16 @@ class S3Controller extends Controller {
 
 	public function DeleteImage(Request $request) {
 		try {
-			if ( $request->has('nombre') && $request->has('nombre_prop')) {
-				$imageName = Storage::disk('s3')->delete(
-					$request->nombre_prop."/".$request->nombre
-				);
+			if ($request->has('imagenes')) {
+
+				for ($i = 0; $i < count($request->imagenes); $i++) { 
+					Storage::disk('s3')->delete(
+						$request->imagenes[$i]
+					);
+				}
 
 				$retorno['error'] = false;
 				$retorno['msj'] = 'Delete exitoso';
-				$retorno['img'] = 'https://s3-sa-east-1.amazonaws.com/gofeels-props-images/'.$request->nombre_prop."/".$request->nombre;
 			} else {
 				$retorno['error'] = true;
 				$retorno['msj'] = "Datos requeridos";
