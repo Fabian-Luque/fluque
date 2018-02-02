@@ -239,12 +239,12 @@ class MotorRaController extends Controller {
                 
                 $imagenes->push([
                     'nombre' => $request->nombre, 
-                    'url' => "https://s3-sa-east-1.amazonaws.com/gofeels-props-images/".$request->nombre_prop."/",
                     'created_at' => $date
                 ]);
 
                 $retorno['error'] = false;
                 $retorno['msj'] = "Listado de imagenes";
+                $retorno['url'] = "https://s3-sa-east-1.amazonaws.com/gofeels-props-images/".$request->nombre_prop."/";
                 $retorno['lista'] = $imagenes;
             } catch (S3Exception $e) {
                 $retorno['error'] = true;
