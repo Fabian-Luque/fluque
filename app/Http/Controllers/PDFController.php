@@ -1705,36 +1705,71 @@ class PDFController extends Controller {
 
     }
 
-    public function checkin(Request $request)
-    {
+    public function checkin(Request $request) {
         $reservas = $request['reservas'];
         $propiedad_id = $request->input('propiedad_id');
         $cliente_id = $request->input('cliente_id');
 
-        $propiedad = Propiedad::where('id', $propiedad_id)->with('pais', 'region')->get();
-        $cliente = Cliente::where('id', $cliente_id)->with('pais', 'region')->get();
+        $propiedad = Propiedad::where(
+            'id', 
+            $propiedad_id
+        )->with(
+            'pais', 'region'
+        )->get();
+        $cliente = Cliente::where(
+            'id', 
+            $cliente_id
+        )->with(
+            'pais', 'region'
+        )->get();
 
         foreach ($propiedad as $prop) {
-          
-          $propiedad_iva = $prop->iva;
-          $propiedad_iva = $propiedad_iva / 100;
-
+            $propiedad_iva = $prop->iva;
+            $propiedad_iva = $propiedad_iva / 100;
         }
 
-        $reservas_pdf = [];
-        $monto_alojamiento = 0;
+        if ($request->has('flag_envio')) {  
+            if ($request->flag_envio == true) {
+                $correo_prop = $propiedad[0]->email;
+            } else {
+                $correo_prop = '';
+            } 
+        } else {
+            $retorno['errors'] = true;
+            $retorno['msj'] = "Datos requeridos: flag_envio";
+            return Response::json($retorno, 400);
+        }  
 
+        if ($request->has('correo_x')) {
+            $c_destino = $request->correo_x;
+        } else {
+            $c_destino = $cliente[0]->email;
+        }
+
+        $reservas_pdf = collect([]);
+        $monto_alojamiento = 0;
         $iva_reservas            = null;
         $tipo_moneda_reservas    = null;
-        foreach($reservas as $id){
-            $reserva = Reserva::where('id', $id)->where('cliente_id', $cliente_id)->with('cliente.pais', 'cliente.region')->with('tipoMoneda')->with('habitacion.tipoHabitacion')->first();
+
+        foreach($reservas as $id) {
+            $reserva = Reserva::where(
+                'id', $id
+            )->where(
+                'cliente_id', $cliente_id
+            )->with(
+                'cliente.pais', 
+                'cliente.region'
+            )->with('tipoMoneda')
+            ->with(
+                'habitacion.tipoHabitacion'
+            )->first();
 
             if (is_null($reserva)) {
-              $retorno = array(
+                $retorno = array(
                     'errors' => true,
                     'msj'    => " Las reservas no pertenecen al mismo cliente"
                 );
-              return Response::json($retorno, 400);
+                return Response::json($retorno, 400);
             }
 
             if (is_null($iva_reservas)) {
@@ -1761,43 +1796,75 @@ class PDFController extends Controller {
                 }
             }
 
-        $monto_alojamiento += $reserva->monto_alojamiento;
-
-        array_push($reservas_pdf, $reserva);
-
+            $monto_alojamiento += $reserva->monto_alojamiento;
+            $reservas_pdf->push($reserva);
         }
 
-        $auxMoneda     = TipoMoneda::where('id' , $tipo_moneda_reservas)->first();
+        $auxMoneda     = TipoMoneda::where(
+            'id', 
+            $tipo_moneda_reservas
+        )->first();
         $nombre_moneda = $auxMoneda->nombre;
 
-
         if ($tipo_moneda_reservas == 1) {
-
             if ($iva_reservas == 1) {
                 $total         = $monto_alojamiento;
                 $neto          = ($total / ($propiedad_iva + 1 ));
                 $iva           = ($neto * $propiedad_iva);
 
-                $pdf = PDF::loadView('pdf.checkin', ['propiedad' => $propiedad , 'cliente'=> $cliente ,'reservas_pdf'=> [$reservas_pdf], 'nombre_moneda' => $nombre_moneda,'iva_reservas' => $iva_reservas, 'neto' => $neto , 'iva' => $iva, 'total' => $total]);
-            
+                $arr = array(
+                    'propiedad'     => $propiedad, 
+                    'cliente'       => $cliente->first(),
+                    'reservas_pdf'  => $reservas_pdf, 
+                    'nombre_moneda' => $nombre_moneda,
+                    'iva_reservas'  => $iva_reservas,
+                    'total'         => $total,
+                    'iva'           => $iva,
+                    'neto'          => round($neto), 
+                    'comp'          => 1,
+                    'de'            => $propiedad[0]->nombre
+                );
+
+                $pdf = $this->EnvioCorreo(
+                    $propiedad->first(),
+                    $c_destino,
+                    $arr,
+                    "correos.envio_pdf",
+                    'pdf.checkin',
+                    "comprobante_ingreso.pdf",
+                    $request->opcion,
+                    $correo_prop,
+                    ""
+                );
             } else {
-
                 $total = $monto_alojamiento;
-                $pdf   = PDF::loadView('pdf.checkin', ['propiedad' => $propiedad, 'cliente'=> $cliente ,'reservas_pdf'=> [$reservas_pdf], 'nombre_moneda' => $nombre_moneda,'iva_reservas' => $iva_reservas,'total' => $total]);
-            
+                $pdf = PDF::loadView(
+                    'pdf.checkin', [
+                        'propiedad' => $propiedad, 
+                        'cliente' => $cliente,
+                        'reservas_pdf' => [$reservas_pdf], 
+                        'nombre_moneda' => $nombre_moneda,
+                        'iva_reservas' => $iva_reservas,
+                        'total' => $total
+                    ]
+                );
             }
-
-        }elseif($tipo_moneda_reservas == 2){
-
+        } elseif($tipo_moneda_reservas == 2){
             $total = $monto_alojamiento;
 
-            $pdf = PDF::loadView('pdf.checkin', ['propiedad' => $propiedad , 'cliente'=> $cliente ,'reservas_pdf'=> [$reservas_pdf], 'nombre_moneda' => $nombre_moneda,'iva_reservas' => $iva_reservas,'total' => $total]);
-
+            $pdf = PDF::loadView(
+                'pdf.checkin', [
+                    'propiedad' => $propiedad, 
+                    'cliente' => $cliente,
+                    'reservas_pdf' => [$reservas_pdf], 
+                    'nombre_moneda' => $nombre_moneda,
+                    'iva_reservas' => $iva_reservas,
+                    'total' => $total
+                ]
+            );
         }
         
-
         return $pdf->download('archivo.pdf');
-
     }
 
     public function huesped(Request $request)
