@@ -1250,7 +1250,7 @@ class PropiedadController extends Controller
     {
         if ($request->has('propiedad_id')) {
             $propiedad_id = $request->input('propiedad_id');
-            $propiedad    = Propiedad::where('id', $propiedad_id)->first();
+            $propiedad    = Propiedad::where('id', $propiedad_id)->with('tipoMonedas')->first();
             if (is_null($propiedad)) {
                 $retorno = array(
                     'msj'    => "Propiedad no encontrada",
@@ -1289,7 +1289,26 @@ class PropiedadController extends Controller
             ->with('tipoMoneda')
             ->get();
 
-        return $consumos;
+
+        $monedas = [];
+        $data    = [];
+        foreach ($propiedad->tipoMonedas as $moneda) {
+            $total = 0;
+            foreach ($consumos as $consumo) {
+                if ($moneda->id == $consumo->tipo_moneda_id) {
+                    $total = $consumo->precio_total;
+                }
+            }
+            $m['id']     = $moneda->id;
+            $m['nombre'] = $moneda->nombre;
+            $m['cantidad_decimales'] = $moneda->cantidad_decimales;
+            $m['total'] = $total;
+            array_push($monedas, $m);
+        }
+        $data['monedas']  = $monedas;
+        $data['consumos'] = $consumos;
+
+        return $data;
 
 
     }
