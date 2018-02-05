@@ -238,6 +238,7 @@ class MotorRaController extends Controller {
             $data['cuentas_bancaria']   = $propiedad->cuentasBancaria;
             $data['politicas']          = $propiedad->politicas;
             $data['tipo_deposito']      = $propiedad->tipoDepositoPropiedad;
+            $data['aaaa']      =$nombre_prop;
 
             $nombre_prop = str_replace(" ","-", $propiedad->nombre);
 
@@ -245,12 +246,10 @@ class MotorRaController extends Controller {
                 $nom_tipo_hab = str_replace(" ","-", $hab_dis->nombre);
 
                 try {
-                    if ($this->SearchDirectory($nombre_prop)['existe'] == true) {
+                    if ($this->SearchDirectory($nombre_prop."/tipos-habitaciones/".$nom_tipo_hab)['existe'] == true) {
                         $files = Storage::disk('s3')->allFiles(
                             $nombre_prop."/tipos-habitaciones/".$nom_tipo_hab
                         );
-
-
 
                         $imagenes = collect([]);
 
