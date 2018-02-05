@@ -250,6 +250,8 @@ class MotorRaController extends Controller {
                             $nombre_prop."/tipos-habitaciones/".$nom_tipo_hab
                         );
 
+                        return $nombre_prop."/tipos-habitaciones/".$nom_tipo_hab;
+
                         $imagenes = collect([]);
 
                         for ($i = 0; $i < count($files); $i++) {
