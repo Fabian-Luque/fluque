@@ -403,7 +403,7 @@
                                                                               <![endif]-->
                                                                               <div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 60px; padding-left: 10px; padding-top: 0px; padding-bottom: 0px;">
                                                                                  <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;">
-                                                                                    <p style="margin: 0;font-size: 12px;line-height: 14px"><span style="font-size: 14px; line-height: 16px;"><span style="font-size: 12px; line-height: 14px; color: rgb(0, 0, 0);"> 
+                                                                                    <p style="margin: 0;font-size: 12px;line-height: 14px"><span style="font-size: 12px; line-height: 16px;"><span style="font-size: 12px; line-height: 14px; color: rgb(0, 0, 0);"> 
                                                                                       @if(!empty($array['arr']['cliente']->nombre))
                                                                                        {{ $array['arr']['cliente']->nombre }}
                                                                                        @endif
@@ -489,7 +489,7 @@
                                                                               <![endif]-->
                                                                               <div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 60px; padding-left: 10px; padding-top: 0px; padding-bottom: 0px;">
                                                                                  <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;">
-                                                                                    <p style="margin: 0;font-size: 12px;line-height: 14px"><span style="font-size: 14px; line-height: 16px;"><span style="font-size: 12px; line-height: 14px; color: rgb(0, 0, 0);">
+                                                                                    <p style="margin: 0;font-size: 12px;line-height: 14px"><span style="font-size: 12px; line-height: 16px;"><span style="font-size: 12px; line-height: 14px; color: rgb(0, 0, 0);">
                                                                                       @if(!empty($array['arr']['cliente']->apellido))
                                                                                        {{$array['arr']['cliente']->apellido}}
                                                                                        @endif
@@ -576,7 +576,7 @@
                                                                               <![endif]-->
                                                                               <div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 60px; padding-left: 10px; padding-top: 0px; padding-bottom: 0px;">
                                                                                  <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;">
-                                                                                    <p style="margin: 0;font-size: 12px;line-height: 14px"><span style="font-size: 14px; line-height: 16px;"><span style="font-size: 12px; line-height: 14px; color: rgb(0, 0, 0);">
+                                                                                    <p style="margin: 0;font-size: 12px;line-height: 14px"><span style="font-size: 12px; line-height: 16px;"><span style="font-size: 12px; line-height: 14px; color: rgb(0, 0, 0);">
                                                                                        @if(!empty($array['arr']['cliente']->rut))
                                                                                        {{ $array['arr']['cliente']->rut }}
                                                                                        @endif
@@ -663,7 +663,7 @@
                                                                               <![endif]-->
                                                                               <div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 60px; padding-left: 10px; padding-top: 0px; padding-bottom: 0px;">
                                                                                  <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;">
-                                                                                    <p style="margin: 0;font-size: 12px;line-height: 14px"><span style="font-size: 14px; line-height: 16px;"><span style="font-size: 12px; line-height: 14px; color: rgb(0, 0, 0);">@if(!empty($array['arr']['cliente']->direccion))
+                                                                                    <p style="margin: 0;font-size: 12px;line-height: 14px"><span style="font-size: 12px; line-height: 16px;"><span style="font-size: 12px; line-height: 14px; color: rgb(0, 0, 0);">@if(!empty($array['arr']['cliente']->direccion))
                                                                                        {{ $array['arr']['cliente']->direccion }}
                                                                                        @endif </span>&#160;</span>
                                                                                     </p>
@@ -802,7 +802,7 @@
                                                                               <![endif]-->
                                                                               <div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 0px; padding-left: 60px; padding-top: 0px; padding-bottom: 0px;">
                                                                                  <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;">
-                                                                                    <p style="margin: 0;font-size: 12px;line-height: 14px"><span style="font-size: 14px; line-height: 16px; color: rgb(0, 0, 0);"><strong>Pais</strong></span></p>
+                                                                                    <p style="margin: 0;font-size: 12px;line-height: 14px"><span style="font-size: 12px; line-height: 16px; color: rgb(0, 0, 0);"><strong>Pais</strong></span></p>
                                                                                  </div>
                                                                               </div>
                                                                               <!--[if mso]>
@@ -833,7 +833,7 @@
                                                                               <![endif]-->
                                                                               <div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 60px; padding-left: 10px; padding-top: 0px; padding-bottom: 0px;">
                                                                                  <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;">
-                                                                                    <p style="margin: 0;font-size: 12px;line-height: 14px"><span style="font-size: 14px; line-height: 16px;"><span style="font-size: 12px; line-height: 14px; color: rgb(0, 0, 0);">@if(!empty($array['arr']['cliente']->pais))
+                                                                                    <p style="margin: 0;font-size: 12px;line-height: 14px"><span style="font-size: 12px; line-height: 16px;"><span style="font-size: 12px; line-height: 14px; color: rgb(0, 0, 0);">@if(!empty($array['arr']['cliente']->pais))
                                                                                        {{ $array['arr']['cliente']->pais->nombre }}
                                                                                        @endif </span>&#160;</span>
                                                                                     </p>
@@ -918,7 +918,7 @@
                                                                               <![endif]-->
                                                                               <div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 60px; padding-left: 10px; padding-top: 0px; padding-bottom: 0px;">
                                                                                  <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;">
-                                                                                    <p style="margin: 0;font-size: 12px;line-height: 14px"><span style="font-size: 14px; line-height: 16px;"><span style="color: rgb(0, 0, 0); font-size: 12px; line-height: 14px;">@if(!empty($array['arr']['cliente']->telefono))
+                                                                                    <p style="margin: 0;font-size: 12px;line-height: 14px"><span style="font-size: 12px; line-height: 16px;"><span style="color: rgb(0, 0, 0); font-size: 12px; line-height: 14px;">@if(!empty($array['arr']['cliente']->telefono))
                                                                                        {{ $array['arr']['cliente']->telefono }}
                                                                                        @endif </span>&#160;</span>
                                                                                     </p>
@@ -1003,7 +1003,7 @@
                                                                               <![endif]-->
                                                                               <div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 60px; padding-left: 10px; padding-top: 0px; padding-bottom: 0px;">
                                                                                  <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;">
-                                                                                    <p style="margin: 0;font-size: 12px;line-height: 14px"><span style="font-size: 14px; line-height: 16px;"><span style="font-size: 12px; line-height: 14px; color: rgb(0, 0, 0);">@if(!empty($array['arr']['cliente']->email))
+                                                                                    <p style="margin: 0;font-size: 12px;line-height: 14px"><span style="font-size: 12px; line-height: 16px;"><span style="font-size: 12px; line-height: 14px; color: rgb(0, 0, 0);">@if(!empty($array['arr']['cliente']->email))
                                                                                        {{ $array['arr']['cliente']->email }}
                                                                                        @endif </span>&#160;</span>
                                                                                     </p>
@@ -1083,7 +1083,7 @@
                                                                      </table>
                                                                      <![endif]-->
                                                                   </div>
-                                                                  <div class="" style="font-size: 16px;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; text-align: center;">
+                                                                  <div class="" style="font-size: 12px;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; text-align: center;">
                                                                      <div style="padding-left: 60px; padding-right: 60px; ">
                                                                         <table style="height: 51px; float: center; width: 100%; font-size: 12px;">
                                                                            <tbody>
