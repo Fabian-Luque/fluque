@@ -267,7 +267,7 @@ class MotorRaController extends Controller {
                             )->toDateTimeString();
                             
                             $imagenes->push([
-                                'nombre' => $im[count($im) - 1], 
+                                'nombre' => "https://s3-sa-east-1.amazonaws.com/gofeels-props-images/".$nombre_prop."/tipos-habitaciones/".$nom_tipo_hab."/".$im[count($im) - 1], 
                                 'created_at' => $date
                             ]);
                         }
@@ -275,8 +275,6 @@ class MotorRaController extends Controller {
                         $imagenes->sortBy('created_at');
 
                         $ima['error'] = false;
-                        $ima['xd'] = $nombre_prop."/tipos-habitaciones/".$nom_tipo_hab;
-                        $ima['url_base'] = "https://s3-sa-east-1.amazonaws.com/gofeels-props-images/".$nombre_prop."/tipos-habitaciones/".$nom_tipo_hab."/";
                         $ima['imgs'] = $imagenes;
                     } else {
                         $ima['error'] = true;
