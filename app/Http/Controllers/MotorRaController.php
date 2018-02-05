@@ -250,7 +250,7 @@ class MotorRaController extends Controller {
                             $nombre_prop."/tipos-habitaciones/".$nom_tipo_hab
                         );
 
-                        return $nombre_prop."/tipos-habitaciones/".$nom_tipo_hab;
+                        dd($nombre_prop."/tipos-habitaciones/".$nom_tipo_hab);
 
                         $imagenes = collect([]);
 
