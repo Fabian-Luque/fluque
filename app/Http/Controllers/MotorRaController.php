@@ -247,7 +247,7 @@ class MotorRaController extends Controller {
                 try {
                     if ($this->SearchDirectory($nombre_prop)['existe'] == true) {
                         $files = Storage::disk('s3')->allFiles(
-                            $nombre_prop."/".$nom_tipo_hab
+                            $nombre_prop."/tipos-habitaciones/".$nom_tipo_hab
                         );
 
                         $imagenes = collect([]);
@@ -273,7 +273,7 @@ class MotorRaController extends Controller {
                         $imagenes->sortBy('created_at');
 
                         $im['error'] = false;
-                        $im['url_base'] = "https://s3-sa-east-1.amazonaws.com/gofeels-props-images/".$nombre_prop."/".$nom_tipo_hab."/";
+                        $im['url_base'] = "https://s3-sa-east-1.amazonaws.com/gofeels-props-images/".$nombre_prop."/tipos-habitaciones/".$nom_tipo_hab."/";
                         $im['imgs'] = $imagenes;
                     } else {
                         $im['error'] = true;
