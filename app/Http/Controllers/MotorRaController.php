@@ -238,6 +238,54 @@ class MotorRaController extends Controller {
             $data['cuentas_bancaria']   = $propiedad->cuentasBancaria;
             $data['politicas']          = $propiedad->politicas;
             $data['tipo_deposito']      = $propiedad->tipoDepositoPropiedad;
+
+            $nombre_prop = str_replace(" ","-", $propiedad->nombre);
+
+            foreach ($hab_disponibles as $hab_dis) {
+                $nom_tipo_hab = str_replace(" ","-", $propiedad->nombre);
+
+                try {
+                    if ($this->SearchDirectory($nombre_prop)['existe'] == true) {
+                        $files = Storage::disk('s3')->allFiles(
+                            $nombre_prop."/".$nom_tipo_hab
+                        );
+
+                        $imagenes = collect([]);
+
+                        for ($i = 0; $i < count($files); $i++) {
+                            $im = explode(
+                                "/", 
+                                $files[$i]
+                            ); 
+                            $date = Carbon::createFromTimestamp(
+                                explode(
+                                    "_", 
+                                    $im[count($im) - 1]
+                                )[0]
+                            )->toDateTimeString();
+                            
+                            $imagenes->push([
+                                'nombre' => $im[count($im) - 1], 
+                                'created_at' => $date
+                            ]);
+                        }
+
+                        $imagenes->sortBy('created_at');
+
+                        $hab_dis->imagenes['error'] = false;
+                        $hab_dis->imagenes['url_base'] = "https://s3-sa-east-1.amazonaws.com/gofeels-props-images/";
+                        $hab_dis->imagenes['dir'] = $nombre_prop."/".$nom_tipo_hab."/";
+                        $hab_dis->imagenes['imgs'] = $imagenes;
+                    } else {
+                        $hab_dis->imagenes['error'] = true;
+                        $hab_dis->imagenes['imgs'] = 'El directorio no existe en amazon';
+                    }
+                } catch (S3Exception $e) {
+                    $hab_dis->imagenes['error'] = true;
+                    $hab_dis->imagenes['imgs'] = "Error: ".$e->getMessage();
+                }  
+            }
+
             $data['tipos_habitaciones'] = $hab_disponibles;
             return $data;
 
