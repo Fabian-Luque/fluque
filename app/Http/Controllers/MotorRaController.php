@@ -250,7 +250,7 @@ class MotorRaController extends Controller {
                             $nombre_prop."/tipos-habitaciones/".$nom_tipo_hab
                         );
 
-                        dd($nombre_prop."/tipos-habitaciones/".$nom_tipo_hab);
+
 
                         $imagenes = collect([]);
 
@@ -274,18 +274,19 @@ class MotorRaController extends Controller {
 
                         $imagenes->sortBy('created_at');
 
-                        $im['error'] = false;
-                        $im['url_base'] = "https://s3-sa-east-1.amazonaws.com/gofeels-props-images/".$nombre_prop."/tipos-habitaciones/".$nom_tipo_hab."/";
-                        $im['imgs'] = $imagenes;
+                        $ima['error'] = false;
+                        $ima['xd'] = $nombre_prop."/tipos-habitaciones/".$nom_tipo_hab;
+                        $ima['url_base'] = "https://s3-sa-east-1.amazonaws.com/gofeels-props-images/".$nombre_prop."/tipos-habitaciones/".$nom_tipo_hab."/";
+                        $ima['imgs'] = $imagenes;
                     } else {
-                        $im['error'] = true;
-                        $im['imgs'] = 'El directorio no existe en amazon';
+                        $ima['error'] = true;
+                        $ima['imgs'] = 'El directorio no existe en amazon';
                     }
                 } catch (S3Exception $e) {
-                    $im['error'] = true;
-                    $im['imgs'] = "Error: ".$e->getMessage();
+                    $ima['error'] = true;
+                    $ima['imgs'] = "Error: ".$e->getMessage();
                 }  
-                $hab_dis->imagenes = $im;
+                $hab_dis->imagenes = $ima;
             }
 
             $data['tipos_habitaciones'] = $hab_disponibles;
