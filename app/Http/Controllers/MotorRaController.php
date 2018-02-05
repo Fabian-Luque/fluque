@@ -239,9 +239,7 @@ class MotorRaController extends Controller {
             $data['politicas']          = $propiedad->politicas;
             $data['tipo_deposito']      = $propiedad->tipoDepositoPropiedad;
 
-
             $nombre_prop = str_replace(" ","-", $propiedad->nombre);
-            $data['aaaa']      =$nombre_prop;
 
             foreach ($hab_disponibles as $hab_dis) {
                 $nom_tipo_hab = str_replace(" ","-", $hab_dis->nombre);
