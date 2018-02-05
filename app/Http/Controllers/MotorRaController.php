@@ -242,7 +242,7 @@ class MotorRaController extends Controller {
             $nombre_prop = str_replace(" ","-", $propiedad->nombre);
 
             foreach ($hab_disponibles as $hab_dis) {
-                $nom_tipo_hab = str_replace(" ","-", $propiedad->nombre);
+                $nom_tipo_hab = str_replace(" ","-", $hab_dis->nombre);
 
                 try {
                     if ($this->SearchDirectory($nombre_prop)['existe'] == true) {
@@ -273,8 +273,7 @@ class MotorRaController extends Controller {
                         $imagenes->sortBy('created_at');
 
                         $im['error'] = false;
-                        $im['url_base'] = "https://s3-sa-east-1.amazonaws.com/gofeels-props-images/";
-                        $im['dir'] = $nombre_prop."/".$nom_tipo_hab."/";
+                        $im['url_base'] = "https://s3-sa-east-1.amazonaws.com/gofeels-props-images/".$nombre_prop."/".$nom_tipo_hab."/";
                         $im['imgs'] = $imagenes;
                     } else {
                         $im['error'] = true;
