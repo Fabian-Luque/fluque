@@ -76,8 +76,8 @@ class RegistroController extends Controller {
         return Response::json($retorno); 
 	}
 
-	public function comprobar($correo) {
-		# code...
+	public function comprobar($token) {
+		dd($token);
 	}
 
     public function signin(Request $request) {

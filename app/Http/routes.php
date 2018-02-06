@@ -169,6 +169,8 @@ Route::group(['as' => 'api.jarvis.'], function() {
 	
 	Route::post('/signup', 'RegistroController@signup');
 	Route::post('/login', 'RegistroController@signin');
+	Route::post('/comprobar/{$token}', 'RegistroController@comprobar');
+	
 
 	Route::group(['middleware' => ['jwt.auth']], function () {
 		Route::post('cambio/password', 'ApiAuthController@ResetPassUser');
