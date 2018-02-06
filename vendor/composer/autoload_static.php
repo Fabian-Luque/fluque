@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit2f173d73b6005e1196c003815873ac64
+class ComposerStaticInitbcb33382402e24f96f2e06601081b7fc
 {
     public static $files = array (
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
@@ -550,6 +550,7 @@ class ComposerStaticInit2f173d73b6005e1196c003815873ac64
         'AddPropiedadIdToTipoHabitacionTable' => __DIR__ . '/../..' . '/database/migrations/2017_06_17_210940_add_propiedad_id_to_tipo_habitacion_table.php',
         'AddTipoCobroIdToPropiedadesTable' => __DIR__ . '/../..' . '/database/migrations/2017_07_20_225744_add_tipo_cobro_id_to_propiedades_table.php',
         'AddTipoHabitacionToReservasTable' => __DIR__ . '/../..' . '/database/migrations/2017_10_20_134552_add_tipo_habitacion_to_reservas_table.php',
+        'AddTipoMonedaIdToMetodoPagoPropiedadServicioTable' => __DIR__ . '/../..' . '/database/migrations/2018_01_29_152248_add_tipo_moneda_id_to_metodo_pago_propiedad_servicio_table.php',
         'AddTipoMonedaIdToPagosTable' => __DIR__ . '/../..' . '/database/migrations/2017_12_23_035532_add_tipo_moneda_id_to_pagos_table.php',
         'AddTipoMonedaIdToReservasTable' => __DIR__ . '/../..' . '/database/migrations/2017_12_22_244637_add_tipo_moneda_id_to_reservas_table.php',
         'AddVentaPropiedadToTipoHabitacionTable' => __DIR__ . '/../..' . '/database/migrations/2018_01_05_150505_add_venta_propiedad_to_tipo_habitacion_table.php',
@@ -604,9 +605,11 @@ class ComposerStaticInit2f173d73b6005e1196c003815873ac64
         'App\\Http\\Controllers\\MyallocatorController' => __DIR__ . '/../..' . '/app/Http/Controllers/MyallocatorController.php',
         'App\\Http\\Controllers\\PDFController' => __DIR__ . '/../..' . '/app/Http/Controllers/PDFController.php',
         'App\\Http\\Controllers\\PropiedadController' => __DIR__ . '/../..' . '/app/Http/Controllers/PropiedadController.php',
+        'App\\Http\\Controllers\\RegistroController' => __DIR__ . '/../..' . '/app/Http/Controllers/RegistroController.php',
         'App\\Http\\Controllers\\ReservaController' => __DIR__ . '/../..' . '/app/Http/Controllers/ReservaController.php',
         'App\\Http\\Controllers\\ReservaMapaController' => __DIR__ . '/../..' . '/app/Http/Controllers/ReservaMapaController.php',
         'App\\Http\\Controllers\\RolController' => __DIR__ . '/../..' . '/app/Http/Controllers/RolController.php',
+        'App\\Http\\Controllers\\S3Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/S3Controller.php',
         'App\\Http\\Controllers\\ServicioController' => __DIR__ . '/../..' . '/app/Http/Controllers/ServicioController.php',
         'App\\Http\\Controllers\\StripeController' => __DIR__ . '/../..' . '/app/Http/Controllers/StripeController.php',
         'App\\Http\\Controllers\\TemporadaController' => __DIR__ . '/../..' . '/app/Http/Controllers/TemporadaController.php',
@@ -647,6 +650,7 @@ class ComposerStaticInit2f173d73b6005e1196c003815873ac64
         'App\\PrecioTemporada' => __DIR__ . '/../..' . '/app/PrecioTemporada.php',
         'App\\Propiedad' => __DIR__ . '/../..' . '/app/Propiedad.php',
         'App\\PropiedadMoneda' => __DIR__ . '/../..' . '/app/PropiedadMoneda.php',
+        'App\\PropiedadServicio' => __DIR__ . '/../..' . '/app/PropiedadServicio.php',
         'App\\PropiedadTipoDeposito' => __DIR__ . '/../..' . '/app/PropiedadTipoDeposito.php',
         'App\\PropiedadUser' => __DIR__ . '/../..' . '/app/PropiedadUser.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
@@ -5425,10 +5429,10 @@ class ComposerStaticInit2f173d73b6005e1196c003815873ac64
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit2f173d73b6005e1196c003815873ac64::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit2f173d73b6005e1196c003815873ac64::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit2f173d73b6005e1196c003815873ac64::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit2f173d73b6005e1196c003815873ac64::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitbcb33382402e24f96f2e06601081b7fc::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitbcb33382402e24f96f2e06601081b7fc::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInitbcb33382402e24f96f2e06601081b7fc::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInitbcb33382402e24f96f2e06601081b7fc::$classMap;
 
         }, null, ClassLoader::class);
     }
