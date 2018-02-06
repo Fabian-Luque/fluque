@@ -50,7 +50,8 @@ class RegistroController extends Controller {
                     'user'  => $user->email,
                     'pass'  => $request->password,
                     'token' => JWTAuth::attempt($credentials),
-                    'de'    => 'Gofeels' 
+                    'de'    => 'Gofeels',
+                    'comp'  => 0
                 );
 
 	        	$this->EnvioCorreo(
