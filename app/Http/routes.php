@@ -166,8 +166,8 @@ Route::get('reset/password/{token}', 'ApiAuthController@ResetPassword');
 Route::group(['as' => 'api.jarvis.'], function() {
 	Route::post('registro', 'UserController@store');
 	Route::post('/signin', 'ApiAuthController@signin');
-
 	
+	Route::post('/signup', 'RegistroController@signup');
 	Route::post('/login', 'RegistroController@signin');
 
 	Route::group(['middleware' => ['jwt.auth']], function () {
