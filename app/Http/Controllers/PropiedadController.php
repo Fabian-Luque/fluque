@@ -639,11 +639,11 @@ class PropiedadController extends Controller
 
     }
 
-    public function reportes(Request $request)
+    public function reporteGeneral(Request $request)
     {
         if ($request->has('propiedad_id')) {
             $propiedad_id = $request->input('propiedad_id');
-            $propiedad    = Propiedad::where('id', $propiedad_id)->first();
+            $propiedad    = Propiedad::where('id', $propiedad_id)->with('tiposHabitacion')->with('habitaciones')->first();
             if (is_null($propiedad)) {
                 $retorno = array(
                     'msj'    => "Propiedad no encontrada",
@@ -697,7 +697,10 @@ class PropiedadController extends Controller
                 $query->where('checkin', '<=', $auxInicio);
                 $query->where('checkout', '>',  $auxInicio);
         });                
-        })->with('huespedes.pais')->get();
+        })
+        ->whereIn('estado_reserva_id', [3,4,5])
+        ->with('habitacion')
+        ->with('huespedes.pais')->get();
 
         /* INGRESOS TOTALES DEL DIA  */
         $ingresos_totales_dia = [];
@@ -766,6 +769,40 @@ class PropiedadController extends Controller
             }       
         }
 
+        // pernoctacion por tipo habitacion
+        $pernoctacion_tipo_habitacion = [];
+        foreach ($propiedad->tiposHabitacion as $tipo) {
+            $llegadas     = 0;
+            $pernoctacion = 0;
+            foreach ($reservas as $reserva) {
+                if ($tipo->id == $reserva->habitacion->tipoHabitacion->id) {
+                    $llegadas += $reserva->ocupacion;
+                    $pernoctacion += ($reserva->ocupacion * $reserva->noches);
+                }
+            }
+            $per['tipo_habitacion']   = $tipo;
+            $per['llegadas']          = $llegadas;
+            $per['pernoctacion']      = $pernoctacion;
+            array_push($pernoctacion_tipo_habitacion, $per);
+        }
+
+        //pernoctacion por habitacion
+        $pernoctacion_habitacion = [];
+        foreach ($propiedad->habitaciones as $habitacion) {
+            $llegadas     = 0;
+            $pernoctacion = 0;
+            foreach ($reservas as $reserva) {
+                if ($habitacion->id == $reserva->habitacion->id) {
+                    $llegadas += $reserva->ocupacion;
+                    $pernoctacion += ($reserva->ocupacion * $reserva->noches);
+                }
+            }
+            $pern['habitacion']        = $habitacion;
+            $pern['llegadas']          = $llegadas;
+            $pern['pernoctacion']      = $pernoctacion;
+            array_push($pernoctacion_habitacion, $pern);
+        }
+
        $residentes_extranjero = [];
        foreach ($paises as $pais) {
             $huespedes = 0;
@@ -781,7 +818,6 @@ class PropiedadController extends Controller
             $extranjeros = [ 'nombre' => $pais->nombre, 'llegadas' => $huespedes, 'pernoctacion' => $noches];
             array_push($residentes_extranjero, $extranjeros);
         }
-
 
         /* REGIONES*/
         $regiones = Region::where('pais_id', $propiedad->pais_id)->get();
@@ -824,20 +860,21 @@ class PropiedadController extends Controller
         $grafico = [['nombre' => 'Ocupado','valor' => $suma],['nombre' => 'Disponible', 'valor' => ($total_noches - $suma)]];
 
         $data = [ 
-                'ingresos_totales'          => $ingresos_totales_dia,
-                'reservas_realizadas'       => count($reservas_creadas),
-                'reservas_anuladas'         => count($reservas_anuladas),
-                'reservas_no_show'          => count($reservas_no_show),
-                'ingresos_por_habitacion'   => $ingresos_habitacion,
-                'ingresos_por_servicios'    => $ingresos_consumos,
-                'residentes'                => [['nombre' => 'Locales' , 'regiones' => $residentes_pais_propiedad], ['nombre' => 'Extranjeros' , 'paises' => $residentes_extranjero]],
-                'grafico'                   => $grafico
+                'ingresos_totales'             => $ingresos_totales_dia,
+                'reservas_realizadas'          => count($reservas_creadas),
+                'reservas_anuladas'            => count($reservas_anuladas),
+                'reservas_no_show'             => count($reservas_no_show),
+                'ingresos_por_habitacion'      => $ingresos_habitacion,
+                'ingresos_por_servicios'       => $ingresos_consumos,
+                'pernoctacion_tipo_habitacion' => $pernoctacion_tipo_habitacion,
+                'pernoctacion_habitacion'      => $pernoctacion_habitacion,
+                'residentes'                   => [['nombre' => 'Locales' , 'regiones' => $residentes_pais_propiedad], ['nombre' => 'Extranjeros' , 'paises' => $residentes_extranjero]],
+                'grafico'                      => $grafico
             ]; 
 
         return $data;
 
-    } //fin metodo reportesMensual
-
+    }
 
     /**
      * Reporte de pagos de propiedad
