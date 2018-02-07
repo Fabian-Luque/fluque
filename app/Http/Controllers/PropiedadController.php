@@ -1392,31 +1392,41 @@ class PropiedadController extends Controller
             }
         }
 
-        $nums    = [];
         $monedas = [];
         foreach ($propiedad->tipoMonedas as $moneda) {
             $total = 0;
-            foreach ($num_op as $num) {
-                $cons = [];
-                foreach ($consumos as $consumo) {
-                    if ($num == $consumo->numero_operacion) {
-                        array_push($cons, $consumo);
-                    }
-
-                    if ($moneda->id == $consumo->tipo_moneda_id) {
-                        $total += $consumo->precio_total;
-                    }
+            foreach ($consumos as $consumo) {
+                if ($moneda->id == $consumo->tipo_moneda_id) {
+                    $total += $consumo->precio_total;
                 }
-                $csm['numero_operacion'] = $num;
-                $csm['consumos']         = $cons;
-                array_push($nums, $csm);
-
-                $m['id']     = $moneda->id;
-                $m['nombre'] = $moneda->nombre;
-                $m['cantidad_decimales'] = $moneda->cantidad_decimales;
-                $m['total'] = $total;
-                array_push($monedas, $m);
             }
+            $m['id']     = $moneda->id;
+            $m['nombre'] = $moneda->nombre;
+            $m['cantidad_decimales'] = $moneda->cantidad_decimales;
+            $m['total'] = $total;
+            array_push($monedas, $m);
+        }
+
+        $nums = [];
+        foreach ($num_op as $num) {
+            $cons = [];
+            $total_precio = 0;
+            foreach ($consumos as $consumo) {
+                if ($num == $consumo->numero_operacion) {
+                    $total_precio += $consumo->precio_total;
+                    array_push($cons, $consumo);
+                    $tipo_moneda_id     = $consumo->tipoMoneda->id;
+                    $cantidad_decimales = $consumo->tipoMoneda->cantidad_decimales;
+                    $nombre             = $consumo->tipoMoneda->nombre;
+                }
+            }
+            $csm['numero_operacion']    = $num;
+            $csm['total']               = $total_precio;
+            $csm['tipo_moneda_id']      = $tipo_moneda_id;
+            $csm['cantidad_decimales']  = $cantidad_decimales;
+            $csm['nombre']              = $nombre;
+            $csm['consumos']            = $cons;
+            array_push($nums, $csm);
         }
         $data['monedas']  = $monedas;
         $data['consumos'] = $nums;
