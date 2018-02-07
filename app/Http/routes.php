@@ -344,13 +344,13 @@ Route::post('myallocator/configurar', 'MyallocatorController@Configuracion');
 
 
 
-Route::post('upload/images', 'MotorRaController@UploadImage');
-Route::post('get/images', 'MotorRaController@GetImage');
-Route::post('get/images/byfolder', 'MotorRaController@GetAllImagesByDir');
-Route::post('delete/images', 'MotorRaController@DeleteImage');
-Route::post('delete/directory', 'MotorRaController@DeleteDirectory');
-Route::post('update/image', 'MotorRaController@UpdateImage');
-Route::post('update/directory', 'MotorRaController@UpdateNameDirectory');
+Route::post('upload/images', 'S3Controller@UploadImage');
+Route::post('get/images', 'S3Controller@GetImage');
+Route::post('get/images/byfolder', 'S3Controller@GetAllImagesByDir');
+Route::post('delete/images', 'S3Controller@DeleteImage');
+Route::post('delete/directory', 'S3Controller@DeleteDirectory');
+Route::post('update/image', 'S3Controller@UpdateImage');
+Route::post('update/directory', 'S3Controller@UpdateNameDirectory');
 
 
 

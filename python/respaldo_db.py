@@ -55,7 +55,7 @@ conn = boto.connect_s3(
 	'rpmYstAB2AZm3d5NIgFE3HuqC+K6pm4VN5XCGwby'
 )
 bucket = conn.get_bucket(
-	'gofeels-props-images', 
+	'gofeels-respaldos-db', 
 	validate=True
 )
 
@@ -92,4 +92,4 @@ for i in range(chunk_count):
 
 mp.complete_upload()
 print "\nTERMINADO! " + "Peso: " + str(float(float(source_size) / 1000000.0)) + "MB Fecha:" + time.strftime('%m/%d/%Y-%H:%M:%S') + "\n"
-print "\nArchivo en amazon: https://s3-sa-east-1.amazonaws.com/gofeels-props-images/" + DB_NAME +".sql\n"
+print "\nArchivo en amazon: https://s3-sa-east-1.amazonaws.com/gofeels-respaldos-db/" + DB_NAME +".sql\n"
