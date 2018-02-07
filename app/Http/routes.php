@@ -160,7 +160,7 @@ Route::put('cliente/motor/{id}', 'ClienteController@update');
 Route::get('obtener/colores', 'MotorRaController@getColoresPropiedad');
 
 
-Route::get('comprobar/{correo}/{token}', 'RegistroController@comprobar');
+Route::get('comprobar/{correo}/{retorno}/{token}', 'RegistroController@comprobar');
 Route::get('reset/password/{token}', 'ApiAuthController@ResetPassword');
 
 Route::group(['as' => 'api.jarvis.'], function() {
