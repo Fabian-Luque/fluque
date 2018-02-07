@@ -237,7 +237,6 @@ a[x-apple-data-detectors=true] {
 <div style="border: 0px solid transparent; padding: 5px 0px 5px 0px;"><!--<![endif]--> <!-- [if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 60px; padding-left: 60px; padding-top: 15px; padding-bottom: 10px;"><![endif]-->
 <div style="color: #555555; line-height: 120%; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; padding: 15px 60px 10px 60px;">
 <div style="font-size: 12px; line-height: 14px; color: #555555; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; text-align: left;">
-<p style="margin: 0; font-size: 14px; line-height: 17px;"><span style="color: #4a90e2; font-size: 18px; line-height: 21px;"><strong><span style="line-height: 21px; font-size: 18px;">&iexcl;Bienvenido a GoFeels!</span></strong></span></p>
 </div>
 </div>
 <!-- [if mso]></td></tr></table><![endif]--> <!-- [if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 60px; padding-left: 60px; padding-top: 10px; padding-bottom: 10px;"><![endif]-->
@@ -252,7 +251,7 @@ a[x-apple-data-detectors=true] {
 <!-- [if mso]></td></tr></table><![endif]-->
 <div class="button-container center" style="padding: 10px;" align="center"><!-- [if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-spacing: 0; border-collapse: collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;"><tr><td style="padding-right: 10px; padding-left: 10px; padding-top:10px; padding-bottom:10px;" align="center"><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="https://app.holajarvis.com/#!/login" style="height:31pt; v-text-anchor:middle; width:156pt;" arcsize="10%" strokecolor="#2196f3" fillcolor="#2196f3"><w:anchorlock/><v:textbox inset="0,0,0,0"><center style="color:#ffffff; font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size:16px;"><![endif]--> 
   <a style="display: block; text-decoration: none; -webkit-text-size-adjust: none; text-align: center; color: #ffffff; background-color: #2196f3; border-radius: 4px; -webkit-border-radius: 4px; -moz-border-radius: 4px; max-width: 209px; width: auto; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; mso-border-alt: none; border: 0px solid transparent; padding: 5px 60px 5px 60px;" 
-  href="{{ ''.$array['arr']['url'].'/comprobar/'.$array['arr']['user'].'/'.$array['arr']['token'] }}" target="_blank" rel="noopener"> <span style="font-size: 16px; line-height: 32px;">Ir a Gofeels</span> </a> <!-- [if mso]></center></v:textbox></v:roundrect></td></tr></table><![endif]--></div>
+  href="{{ ''.$array['arr']['url'].'/comprobar/'.$array['arr']['user'].'/'.$array['arr']['url_retorno'].'/'.$array['arr']['token'] }}" target="_blank" rel="noopener"> <span style="font-size: 16px; line-height: 32px;">Ir a Gofeels</span> </a> <!-- [if mso]></center></v:textbox></v:roundrect></td></tr></table><![endif]--></div>
 <!-- [if (!mso)&(!IE)]><!--></div>
 <!--<![endif]--></div>
 </div>

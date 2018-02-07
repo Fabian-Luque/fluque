@@ -22,8 +22,9 @@ class RegistroController extends Controller {
 		$validator = Validator::make(
         	$request->all(), 
         	array(
-            	'email'    => 'required',
-            	'password' => 'required',
+            	'email'       => 'required',
+            	'password'    => 'required',
+            	'url_retorno' => 'required'
            	)
         );
 
@@ -57,12 +58,13 @@ class RegistroController extends Controller {
                 $user->propiedad()->attach($propiedad->id);
 
 	        	$arr = array(
-                    'user'  => $user->email,
-                    'pass'  => $request->password,
-                    'token' => JWTAuth::attempt($credentials),
-                    'de'    => 'Gofeels',
-                    'url'   => url(''),
-                    'comp'  => 0
+                    'user'  	  => $user->email,
+                    'pass'  	  => $request->password,
+                    'token' 	  => JWTAuth::attempt($credentials),
+                    'de'    	  => 'Gofeels',
+                    'url'   	  => url(''),
+                    'url_retorno' => $request->url_retorno,
+                    'comp'  	  => 0
                 );
 
 	        	$this->EnvioCorreo(
@@ -87,7 +89,7 @@ class RegistroController extends Controller {
         return Response::json($retorno); 
 	}
 
-	public function comprobar($email, $token=null) {
+	public function comprobar($email, $retorno, $token=null) {
 		if ($token != null) {
 			$user = User::where(
 	        	'email', 
@@ -98,9 +100,9 @@ class RegistroController extends Controller {
 	        	$user->paso = 2;
 	        	$user->save();
 	        	
-	        	return Redirect::to('https://app.holajarvis.com/#!/login');
+	        	return Redirect::to($retorno);
 	        } else {
-	        	return Redirect::to('https://app.holajarvis.com/#!/login');
+	        	return Redirect::to($retorno);
 	        } 
         } 
 		return Response::json($retorno); 
