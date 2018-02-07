@@ -100,8 +100,7 @@ class RegistroController extends Controller {
 	        	
 	        	return Redirect::to('https://app.holajarvis.com/#!/login');
 	        } else {
-	        	$retorno['errors'] = true;
-	        	$retorno['msg']    = "Solicitud incorrecta";
+	        	return Redirect::to('https://app.holajarvis.com/#!/login');
 	        } 
         } 
 		return Response::json($retorno); 
