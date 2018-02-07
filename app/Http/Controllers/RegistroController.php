@@ -61,6 +61,7 @@ class RegistroController extends Controller {
                     'pass'  => $request->password,
                     'token' => JWTAuth::attempt($credentials),
                     'de'    => 'Gofeels',
+                    'url'   => url(''),
                     'comp'  => 0
                 );
 
