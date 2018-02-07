@@ -45,7 +45,16 @@ class RegistroController extends Controller {
 	        	$user->password = $request->password;
 	        	$user->save();
 
-	        	$propiedad = new Propiedad();
+	        	$propiedad 			  			= new Propiedad();
+                $propiedad->nombre 	  			= "";
+                $propiedad->direccion 			= "";
+                $propiedad->ciudad 	  			= "";
+                $propiedad->numero_habitaciones = 0;
+                $propiedad->tipo_propiedad_id 	= 1;
+                $propiedad->estado_cuenta_id 	= 3;
+                $propiedad->save();
+
+                $user->propiedad()->attach($propiedad->id);
 
 	        	$arr = array(
                     'user'  => $user->email,
@@ -128,7 +137,12 @@ class RegistroController extends Controller {
 	                $retorno['msg']    = 'Usuario o contraseña incorrecta';
 	                $status            = trans('request.failure.code.forbidden');
 	            } else {
-	                $retorno = compact('token', 'user_id', 'propiedad_id', 'paso');
+	                $retorno = compact(
+	                	'token', 
+	                	'user_id', 
+	                	'propiedad_id', 
+	                	'paso'
+	                );
 	                $status  = trans('request.success.code');
 	            }
 	        } else {
