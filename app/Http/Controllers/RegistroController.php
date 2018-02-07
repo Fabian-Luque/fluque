@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use App\Http\Requests;
@@ -76,16 +77,32 @@ class RegistroController extends Controller {
         return Response::json($retorno); 
 	}
 
-	public function comprobar($token) {
-		dd($token);
+	public function comprobar($email, $token=null) {
+		if ($token != null) {
+			$user = User::where(
+	        	'email', 
+	        	$email
+	        )->first();
+
+	        if(!is_null($user) && $user->paso == 1) {
+	        	$user->paso = 2;
+	        	$user->save();
+	        	
+	        	return Redirect::to('https://app.holajarvis.com/#!/login');
+	        } else {
+	        	$retorno['errors'] = true;
+	        	$retorno['msg']    = "Solicitud incorrecta";
+	        } 
+        } 
+		return Response::json($retorno); 
 	}
 
     public function signin(Request $request) {
     	$validator = Validator::make(
         	$request->all(), 
         	array(
-            	'email'    => 'required',
-            	'password' => 'required',
+            	'email'       => 'required',
+            	'password' 	  => 'required'
            	)
         );
 
@@ -104,13 +121,14 @@ class RegistroController extends Controller {
 	        if(!is_null($user)) {
 	            $user_id 	  = $user->id;
 	            $propiedad_id = $user->propiedad[0]['id'];
+	            $paso 		  = $user->paso;
 
 	            if (!$token = JWTAuth::attempt($credentials)) {
 	                $retorno['errors'] = trans('request.failure.status');
 	                $retorno['msg']    = 'Usuario o contraseña incorrecta';
 	                $status            = trans('request.failure.code.forbidden');
 	            } else {
-	                $retorno = compact('token', 'user_id', 'propiedad_id');
+	                $retorno = compact('token', 'user_id', 'propiedad_id', 'paso');
 	                $status  = trans('request.success.code');
 	            }
 	        } else {
