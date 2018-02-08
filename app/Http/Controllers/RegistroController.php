@@ -283,9 +283,10 @@ class RegistroController extends Controller {
 		$retorno = app('App\Http\Controllers\StripeController')->PlanStripeCrear(
 			$request
 		);
+
+		//if ($retorno->getData()->errors == false) {
+		//}
 		
 		return $retorno;
-		
-
 	}
 }
