@@ -11,6 +11,15 @@ class PropiedadServicio extends Model
 {
   	protected $table = 'metodo_pago_propiedad_servicio';
 
+    protected $fillable = [ 
+        'cantidad',
+        'precio_total', 
+        'numero_operacion',
+        'numero_cheque',
+        'metodo_pago_id',
+        'tipo_comprobante_id'
+    ];
+
     public function servicio() {
         return $this->belongsTo('App\Servicio', 'servicio_id'); 
     }

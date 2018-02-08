@@ -1441,6 +1441,47 @@ class PropiedadController extends Controller
         return $data;
     }
 
+    public function editarConsumoParticulares(Request $request)
+    {
+        if ($request->has('servicio_id')) {
+            $servicio_id = $request->input('servicio_id');
+            $servicio    = PropiedadServicio::where('id', $servicio_id)->first();
+            if (is_null($servicio)) {
+                $retorno = array(
+                    'msj'    => "Servicio no encontrado",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia servicio_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        if ($request->has('cantidad') && $request->has('precio_total') && $request->has('numero_operacion') && $request->has('metodo_pago_id') && $request->has('tipo_comprobante_id') && $request->has('numero_cheque')) {
+            $cantidad = $request->cantidad;
+            $precio_total = $request->precio_total;
+            $numero_operacion = $request->numero_operacion;
+            $metodo_pago_id = $request->metodo_pago_id;
+            $tipo_comprobante_id = $request->tipo_comprobante_id;
+            $numero_cheque = $request->numero_cheque;
+        } else {
+            $retorno = array(
+                'msj'    => "La solicitud esta incompleta",
+                'errors' => true,);
+            return Response::json($retorno, 400);
+        }
+
+        $servicio->update(array('cantidad' => $cantidad, 'precio_total' => $precio_total, 'numero_operacion' => $numero_operacion, 'metodo_pago_id' => $metodo_pago_id, 'tipo_comprobante_id' => $tipo_comprobante_id, 'numero_cheque' => $numero_cheque));
+
+        $data = array(
+            'errors' => false,
+            'msj'    => 'Servicio actualizado satisfactoriamente',);
+        return Response::json($data, 400);
+
+    }
+
 
 
 
