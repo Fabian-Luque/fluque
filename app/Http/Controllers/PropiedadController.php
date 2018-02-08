@@ -1409,6 +1409,7 @@ class PropiedadController extends Controller
         }
 
         $nums = [];
+        $cantidad = count($consumos);
         foreach ($num_op as $num) {
             $cons = [];
             $total_precio = 0;
@@ -1416,11 +1417,12 @@ class PropiedadController extends Controller
                 if ($num == $consumo->numero_operacion) {
                     $total_precio += $consumo->precio_total;
                     array_push($cons, $consumo);
-                    $tipo_moneda_id     = $consumo->tipoMoneda->id;
-                    $cantidad_decimales = $consumo->tipoMoneda->cantidad_decimales;
-                    $nombre             = $consumo->tipoMoneda->nombre;
-                    $tipo_comprobante = $consumo->tipoComprobante->nombre;
-                    $metodo_pago      = $consumo->metodoPago->nombre;
+                        $tipo_moneda_id     = $cons[0]->tipoMoneda->id;
+                        $cantidad_decimales = $cons[0]->tipoMoneda->cantidad_decimales;
+                        $nombre             = $cons[0]->tipoMoneda->nombre;
+                        $tipo_comprobante   = $cons[0]->tipoComprobante->nombre;
+                        $metodo_pago        = $cons[0]->metodoPago->nombre;
+                    
                 }
             }
             $csm['numero_operacion']    = $num;
