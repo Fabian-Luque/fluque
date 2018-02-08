@@ -278,4 +278,14 @@ class RegistroController extends Controller {
 			}
 		}
 	}
+
+	public function stripe(Request $request) { // paso 7
+		$retorno = app('App\Http\Controllers\StripeController')->PlanStripeCrear(
+			$request
+		);
+		
+		return $retorno;
+		
+
+	}
 }
