@@ -1377,6 +1377,7 @@ class PropiedadController extends Controller
         ->where('created_at', '<' , $fecha_fin)
         ->with('servicio')
         ->with('TipoComprobante')
+        ->with('metodoPago')
         ->with('tipoMoneda')
         ->get();
 
@@ -1418,6 +1419,8 @@ class PropiedadController extends Controller
                     $tipo_moneda_id     = $consumo->tipoMoneda->id;
                     $cantidad_decimales = $consumo->tipoMoneda->cantidad_decimales;
                     $nombre             = $consumo->tipoMoneda->nombre;
+                    $tipo_comprobante = $consumo->tipoComprobante->nombre;
+                    $metodo_pago      = $consumo->metodoPago->nombre;
                 }
             }
             $csm['numero_operacion']    = $num;
@@ -1425,6 +1428,8 @@ class PropiedadController extends Controller
             $csm['tipo_moneda_id']      = $tipo_moneda_id;
             $csm['cantidad_decimales']  = $cantidad_decimales;
             $csm['nombre']              = $nombre;
+            $csm['tipo_comprobante']    = $tipo_comprobante;
+            $csm['metodo_pago']         = $metodo_pago;
             $csm['consumos']            = $cons;
             array_push($nums, $csm);
         }
