@@ -160,15 +160,16 @@ Route::put('cliente/motor/{id}', 'ClienteController@update');
 Route::get('obtener/colores', 'MotorRaController@getColoresPropiedad');
 
 
-Route::get('comprobar/{correo}/{retorno}/{token}', 'RegistroController@comprobar');
+Route::get('comprobar/{correo}/{retorno}/{token}', 'RegistroController@comprobar'); // paso 2
 Route::get('reset/password/{token}', 'ApiAuthController@ResetPassword');
 
 Route::group(['as' => 'api.jarvis.'], function() {
 	Route::post('registro', 'UserController@store');
 	Route::post('/signin', 'ApiAuthController@signin');
 	
-	Route::post('/signup', 'RegistroController@signup');
-	Route::post('/login', 'RegistroController@signin');
+	Route::post('/signup', 'RegistroController@signup'); // paso 1
+	Route::post('/login', 'RegistroController@signin'); // paso 3
+	Route::post('/configurar', 'RegistroController@configurar'); // paso 4
 
 	
 
