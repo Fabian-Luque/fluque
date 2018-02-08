@@ -291,6 +291,7 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::post('obtener/reservas/cliente', 'MotorRaController@getReservasCliente');
 		Route::post('obtener/consumos/particulares', 'PropiedadController@getConsumosParticulares');
 		Route::post('editar/consumos/particulares', 'PropiedadController@editarConsumoParticulares');
+		Route::post('eliminar/consumos/particulares', 'PropiedadController@eliminarConsumosParticulares');
 
 
 		// rutas mapa geolozalizacion 

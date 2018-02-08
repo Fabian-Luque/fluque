@@ -1441,6 +1441,14 @@ class PropiedadController extends Controller
         return $data;
     }
 
+    /**
+     * editar consumos de particulares
+     *
+     * @author ALLEN
+     *
+     * @param  Request          $request ()
+     * @return Response::json
+     */
     public function editarConsumoParticulares(Request $request)
     {
         if ($request->has('servicio_id')) {
@@ -1482,8 +1490,37 @@ class PropiedadController extends Controller
 
     }
 
+    /**
+     * Eliminar consumos de particulares
+     *
+     * @author ALLEN
+     *
+     * @param  Request          $request ()
+     * @return Response::json
+     */
 
+    public function eliminarConsumosParticulares(Request $request)
+    {
+        if ($request->has('servicios')) {
+            $servicios = $request->servicios;
 
+            foreach ($servicios as $servicio) {
+                $servicio  = PropiedadServicio::findOrFail($servicio);
+                $servicio->delete();
+            }
+
+            $retorno = array(
+                'errors' => false,
+                'msg'    => 'Servicios eliminado satisfactoriamente',);
+            return Response::json($retorno, 202);
+
+        } else {
+            $retorno = array(
+                'msj'    => "La solicitud esta incompleta",
+                'errors' => true,);
+            return Response::json($retorno, 400);
+        }
+    }
 
     public function index(Request $request)
     {
