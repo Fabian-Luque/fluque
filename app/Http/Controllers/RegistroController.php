@@ -19,66 +19,8 @@ use Webpatser\Uuid\Uuid;
 
 class RegistroController extends Controller {
 
-	public function calendario(Request $request) {
-		$validator = Validator::make(
-			$request->all(), 
-			array(
-				'propiedad_id' => 'required',
-				'fechas'       => 'required'
-			)
-		);
-
-		if ($validator->fails()) {
-			$retorno['errors'] = true;
-			$retorno["msj"]    = $validator->errors();
-		} else {
-			$propiedad_id = $request->propiedad_id;
-			$propiedad    = Propiedad::where(
-				'id', 
-				$propiedad_id
-			)->first();
-
-			if (!is_null($propiedad)) {
-				foreach ($request->fechas as $fecha) {
-					$fecha_calendario = Calendario::whereHas(
-						'temporada', 
-						function ($query) use ($propiedad_id) {
-							$query->where(
-								'propiedad_id', 
-								$propiedad_id
-							);
-						}
-					)->where(
-						'fecha', 
-						$fecha['fecha']
-					)->first();
-
-					if (is_null($fecha_calendario)) {
-						$calendario               = new calendario();
-						$calendario->fecha        = $fecha['fecha'];
-						$calendario->temporada_id = $fecha['temporada_id'];
-						$calendario->save();
-					} else {
-						$fecha_calendario->update(array(
-							'temporada_id' => $fecha['temporada_id']
-						));
-					}
-				}
-
-				$user = $propiedad->user->first()
-				$user->update(["paso" => 5]);
-
-				$retorno['errors'] = false;
-				$retorno['msg'] = 'Guardado';
-			} else {
-				$retorno['errors'] = false;
-				$retorno['msg'] = 'No se encuentra propiedad';
-			}
-		} 
-		return Response::json($retorno); 
-	}
-
 	public function signup(Request $request) { // paso 1
+		return 
 		$validator = Validator::make(
 			$request->all(), 
 			array(
@@ -195,7 +137,7 @@ class RegistroController extends Controller {
 				
 				if (!$token = JWTAuth::attempt($credentials)) {
 					$retorno['errors'] = trans('request.failure.status');
-					$retorno['msg']    = 'Usuario o contraseña incorrecta';
+					$retorno['msg']    = 'Usuario o contraseÃ±a incorrecta';
 					$status            = trans('request.failure.code.forbidden');
 				} else {
 					$user->update(["paso" => 3]);
@@ -276,20 +218,64 @@ class RegistroController extends Controller {
 			);
 			$ubicacion->save();
 
-			$user = $propiedad->user->first()
+			$user = $propiedad->user->first();
 			$user->update(["paso" => 4]);
 
 			$retorno['errors'] = false;
-			$retorno["msj"]    = "Datos propiedad configurados"
+			$retorno["msj"]    = "Datos propiedad configurados";
 		}
 		return Response::json($retorno); 
 	}
 
-	public function FunctionName($value='') { // paso 5
-					/*
-pais, region, iva, nombre_responsable, % deposito, tipo de cobro,
-zona horaria, temporadas, tipo de moneda, tipo de cobro, tipo confirmacion de reserva,
-tipos, habitaciones precios
-			*/
+	public function calendario(Request $request) { // paso 5
+		$retorno = app('App\Http\Controllers\TemporadaController')->calendario(
+			$request
+		);
+
+		if ($retorno->getData()->errors == false) {
+			$propiedad_id = $request->propiedad_id;
+			$propiedad    = Propiedad::where(
+				'id', 
+				$propiedad_id
+			)->first();
+
+			$user = $propiedad->user->first();
+			$user->update(["paso" => 5]);
+		} 
+		return $retorno; 
+	}
+
+	public function habitaciones(Request $request) { // paso 6
+		$retorno = app('App\Http\Controllers\TipoHabitacionController')->index(
+			$request
+		);
+
+		try {
+			$retorno->getData();
+			return $retorno;
+		} catch (\BadMethodCallException $e) {
+			if (count($retorno) > 0) {
+				$retorno = app('App\Http\Controllers\HabitacionController')->store(
+					$request
+				);
+
+				if ($retorno->getData()->errors == false) {
+					$propiedad_id = $request->propiedad_id;
+					$propiedad    = Propiedad::where(
+						'id', 
+						$propiedad_id
+					)->first();
+
+					$user = $propiedad->user->first();
+					$user->update(["paso" => 6]);
+				} 
+				return $retorno;
+			} else {
+				$retorno['errors'] = true;
+				$retorno['msg']	   = "Debe antes registrar al menos un tipo de habitacion";
+
+				return Response::json($retorno); 
+			}
+		}
 	}
 }
