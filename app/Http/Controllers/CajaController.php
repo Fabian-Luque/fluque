@@ -432,11 +432,11 @@ class CajaController extends Controller
                 $csm['consumos']            = $cons;
                 array_push($nums, $csm);
             }
-            $data['caja_abierta']         = $caja_abierta;
-            $data['monedas']              = $monedas;
-            $data['metodos_pago']         = $ingresos_metodo_pago;
-            $data['tota_monto_servicios'] = $mon;
-            $data['servicios']            = $nums;
+            $data['caja_abierta']          = $caja_abierta;
+            $data['monedas']               = $monedas;
+            $data['metodos_pago']          = $ingresos_metodo_pago;
+            $data['total_monto_servicios'] = $mon;
+            $data['servicios']             = $nums;
 
             return $data;
 

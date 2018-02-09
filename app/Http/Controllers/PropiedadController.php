@@ -320,6 +320,7 @@ class PropiedadController extends Controller
             $cantidad_serv['nombre']   = $servicio->nombre;
             $cantidad_serv['cantidad_vendido_huespedes']    = $cantidad_vendido_huespedes;
             $cantidad_serv['cantidad_vendido_particulares'] = $cantidad_vendido_particulares;
+            $cantidad_serv['total'] = $cantidad_vendido_huespedes + $cantidad_vendido_particulares;
             array_push($cantidad_servicios, $cantidad_serv);
         }
 
@@ -402,6 +403,12 @@ class PropiedadController extends Controller
                             $query->where('propiedad_id', $propiedad_id);
                     })->with('tipoComprobante', 'metodoPago', 'tipoMoneda')->with('reserva')->get();
 
+                    $consumos = PropiedadServicio::where('propiedad_id', $propiedad_id)
+                    ->where('created_at','>=' , $fecha_inicio)
+                    ->where('created_at', '<' , $fecha_fin)
+                    ->with('servicio')
+                    ->get();
+
                     $i = 1;
                     foreach ($moneda_propiedad as $moneda) {
                         $suma_pagos = 0;
@@ -412,6 +419,13 @@ class PropiedadController extends Controller
                                 }
                             }
                         }
+
+                        foreach ($consumos  as $consumo) {
+                            if ($moneda->id == $consumo->tipo_moneda_id) {
+                                $suma_pagos += $consumo->precio_total;
+                            }
+                        }
+
                         $ingreso['moneda-'.$i]      = $moneda->nombre;
                         $ingreso['monto-'.$i]       = $suma_pagos;
                         $ingreso['mes']             = $mes_año;
@@ -1458,12 +1472,13 @@ class PropiedadController extends Controller
                 if ($num == $consumo->numero_operacion) {
                     $total_precio += $consumo->precio_total;
                     array_push($cons, $consumo);
-                        $tipo_moneda_id     = $cons[0]->tipoMoneda->id;
-                        $cantidad_decimales = $cons[0]->tipoMoneda->cantidad_decimales;
-                        $nombre             = $cons[0]->tipoMoneda->nombre;
-                        $tipo_comprobante   = $cons[0]->tipoComprobante->nombre;
-                        $metodo_pago        = $cons[0]->metodoPago->nombre;
-                    
+                        $tipo_moneda_id      = $cons[0]->tipoMoneda->id;
+                        $cantidad_decimales  = $cons[0]->tipoMoneda->cantidad_decimales;
+                        $nombre              = $cons[0]->tipoMoneda->nombre;
+                        $tipo_comprobante    = $cons[0]->tipoComprobante->nombre;
+                        $tipo_comprobante_id = $cons[0]->tipoComprobante->id;
+                        $metodo_pago         = $cons[0]->metodoPago->nombre;
+                        $metodo_pago_id      = $cons[0]->metodoPago->id;
                 }
             }
             $csm['numero_operacion']    = $num;
@@ -1472,7 +1487,9 @@ class PropiedadController extends Controller
             $csm['cantidad_decimales']  = $cantidad_decimales;
             $csm['nombre']              = $nombre;
             $csm['tipo_comprobante']    = $tipo_comprobante;
+            $csm['tipo_comprobante_id'] = $tipo_comprobante_id;
             $csm['metodo_pago']         = $metodo_pago;
+            $csm['metodo_pago_id']      = $metodo_pago_id;
             $csm['consumos']            = $cons;
             array_push($nums, $csm);
         }
