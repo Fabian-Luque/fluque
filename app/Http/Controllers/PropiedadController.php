@@ -95,6 +95,12 @@ class PropiedadController extends Controller
                 $query->where('created_at','>=' , $fecha_inicio)->where('created_at', '<' , $fecha_fin);
         })->with(['habitacion.tipoHabitacion', 'tipoFuente', 'huespedes.servicios'])->get();
 
+        $consumos = PropiedadServicio::where('propiedad_id', $propiedad_id)
+        ->where('created_at','>=' , $fecha_inicio)
+        ->where('created_at', '<' , $fecha_fin)
+        ->with('servicio')
+        ->get();
+
         $propiedad_monedas    = $propiedad->tipoMonedas;
         $total_habitacion     = [];
         $total_consumos       = [];
@@ -105,6 +111,13 @@ class PropiedadController extends Controller
             $suma_pagos              = 0;
             $ingresos_por_habitacion = 0;
             $ingresos_por_consumos   = 0;
+
+            foreach ($consumos as $consumo) {
+                if ($moneda->id == $consumo->tipo_moneda_id) {
+                    $ingresos_por_consumos += $consumo->precio_total;
+                    $suma_pagos += $consumo->precio_total;
+                }
+            }
             foreach ($pagos_tipo_moneda as $pago) {
                 if ($pago->estado == 1) {
                     $suma_pagos += $pago->monto_equivalente;
@@ -151,6 +164,13 @@ class PropiedadController extends Controller
                             if ($metodo->nombre == $pago->MetodoPago->nombre) {
                                 $suma_ingreso += $pago->monto_equivalente;
                             }
+                        }
+                    }
+                }
+                foreach ($consumos  as $consumo) {
+                    if ($moneda->id == $consumo->tipo_moneda_id) {
+                        if ($metodo->id == $consumo->metodo_pago_id) {
+                            $suma_ingreso += $consumo->precio_total;
                         }
                     }
                 }
@@ -269,7 +289,8 @@ class PropiedadController extends Controller
         $cantidad_servicios = [];
         $servicios_vendidos = [];
         foreach ($servicios as $servicio) {
-        $cantidad_vendido   = 0;
+        $cantidad_vendido_huespedes   = 0;
+        $cantidad_vendido_particulares = 0;
             foreach ($pagos as $pago) {
                 if ($pago->estado == 1) {
                     foreach ($pago->reserva->huespedes as $huesped) {
@@ -278,7 +299,7 @@ class PropiedadController extends Controller
                                 $id = $serv->pivot->id;
                                 if (!in_array($id, $servicios_vendidos)) {
                                     if ($serv->pivot->estado == "Pagado") {
-                                        $cantidad_vendido += $serv->pivot->cantidad;
+                                        $cantidad_vendido_huespedes += $serv->pivot->cantidad;
                                         array_push($servicios_vendidos, $id);
                                     }
                                 }
@@ -288,9 +309,17 @@ class PropiedadController extends Controller
                 }
             }
 
+            foreach ($consumos  as $consumo) {
+                if ($servicio->id == $consumo->servicio_id) {
+                    $cantidad_vendido_particulares += $consumo->cantidad;
+                }
+            }
+
+
             $cantidad_serv['id']       = $servicio->id;
             $cantidad_serv['nombre']   = $servicio->nombre;
-            $cantidad_serv['cantidad'] = $cantidad_vendido;
+            $cantidad_serv['cantidad_vendido_huespedes']    = $cantidad_vendido_huespedes;
+            $cantidad_serv['cantidad_vendido_particulares'] = $cantidad_vendido_particulares;
             array_push($cantidad_servicios, $cantidad_serv);
         }
 
@@ -499,92 +528,92 @@ class PropiedadController extends Controller
     }
 
 
-    public function reporteConsumoParticularesAnual(Request $request)
-    {
-        if ($request->has('propiedad_id')) {
-            $propiedad_id = $request->input('propiedad_id');
-            $propiedad    = Propiedad::where('id', $propiedad_id)->first();
-            if (is_null($propiedad)) {
-                $retorno = array(
-                    'msj'    => "Propiedad no encontrada",
-                    'errors' => true);
-                return Response::json($retorno, 404);
-            }
-        } else {
-            $retorno = array(
-                'msj'    => "No se envia propiedad_id",
-                'errors' => true);
-            return Response::json($retorno, 400);
-        }
+    // public function reporteConsumoParticularesAnual(Request $request)
+    // {
+    //     if ($request->has('propiedad_id')) {
+    //         $propiedad_id = $request->input('propiedad_id');
+    //         $propiedad    = Propiedad::where('id', $propiedad_id)->first();
+    //         if (is_null($propiedad)) {
+    //             $retorno = array(
+    //                 'msj'    => "Propiedad no encontrada",
+    //                 'errors' => true);
+    //             return Response::json($retorno, 404);
+    //         }
+    //     } else {
+    //         $retorno = array(
+    //             'msj'    => "No se envia propiedad_id",
+    //             'errors' => true);
+    //         return Response::json($retorno, 400);
+    //     }
 
-        if ($request->has('ano_actual')) {
-            $ano_actual = $request->input('ano_actual');
-        } else {
-            $retorno = array(
-               'msj'    => "No se envia año actual",
-               'errors' => true);
-            return Response::json($retorno, 400);
-        }
+    //     if ($request->has('ano_actual')) {
+    //         $ano_actual = $request->input('ano_actual');
+    //     } else {
+    //         $retorno = array(
+    //            'msj'    => "No se envia año actual",
+    //            'errors' => true);
+    //         return Response::json($retorno, 400);
+    //     }
 
-        $moneda_propiedad = $propiedad->tipoMonedas;
-        $cantidad_monedas = count($moneda_propiedad);
-        $años             = Config::get('reportes.años');
-        $meses            = Config::get('reportes.meses');
-        $aux_consumos     = [];
+    //     $moneda_propiedad = $propiedad->tipoMonedas;
+    //     $cantidad_monedas = count($moneda_propiedad);
+    //     $años             = Config::get('reportes.años');
+    //     $meses            = Config::get('reportes.meses');
+    //     $aux_consumos     = [];
 
-        foreach ($meses as $mes) {
-            $mes_año = $mes;    
-            foreach ($años as $año) {
-                foreach ($año[$ano_actual] as $m) {
-                    $fecha_inicio = $m[$mes_año]['inicio'];
-                    $fecha_fin    = $m[$mes_año]['fin'];
+    //     foreach ($meses as $mes) {
+    //         $mes_año = $mes;    
+    //         foreach ($años as $año) {
+    //             foreach ($año[$ano_actual] as $m) {
+    //                 $fecha_inicio = $m[$mes_año]['inicio'];
+    //                 $fecha_fin    = $m[$mes_año]['fin'];
 
-                    if ($fecha_inicio) {
-                        $getInicio       = new Carbon($fecha_inicio);
-                        $inicio          = $getInicio->startOfDay();
-                        $zona_horaria    = ZonaHoraria::where('id', $propiedad->zona_horaria_id)->first();
-                        $pais            = $zona_horaria->nombre;
-                        $fecha_inicio    = Carbon::createFromFormat('Y-m-d H:i:s', $inicio, $pais)->tz('UTC');
-                    }
+    //                 if ($fecha_inicio) {
+    //                     $getInicio       = new Carbon($fecha_inicio);
+    //                     $inicio          = $getInicio->startOfDay();
+    //                     $zona_horaria    = ZonaHoraria::where('id', $propiedad->zona_horaria_id)->first();
+    //                     $pais            = $zona_horaria->nombre;
+    //                     $fecha_inicio    = Carbon::createFromFormat('Y-m-d H:i:s', $inicio, $pais)->tz('UTC');
+    //                 }
 
-                    if ($fecha_fin) {
-                        $fin             = new Carbon($fecha_fin);
-                        $fechaFin        = $fin->addDay();
-                        $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $fechaFin, $pais)->tz('UTC');
-                    }
+    //                 if ($fecha_fin) {
+    //                     $fin             = new Carbon($fecha_fin);
+    //                     $fechaFin        = $fin->addDay();
+    //                     $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $fechaFin, $pais)->tz('UTC');
+    //                 }
 
-                    $consumos = PropiedadServicio::where('propiedad_id', $propiedad_id)
-                    ->where('created_at','>=' , $fecha_inicio)
-                    ->where('created_at', '<' , $fecha_fin)
-                    ->with('servicio')
-                    ->with('TipoComprobante')
-                    ->with('tipoMoneda')
-                    ->get();
+    //                 $consumos = PropiedadServicio::where('propiedad_id', $propiedad_id)
+    //                 ->where('created_at','>=' , $fecha_inicio)
+    //                 ->where('created_at', '<' , $fecha_fin)
+    //                 ->with('servicio')
+    //                 ->with('TipoComprobante')
+    //                 ->with('tipoMoneda')
+    //                 ->get();
 
-                    $i = 1;
-                    foreach ($moneda_propiedad as $moneda) {
-                        $total = 0;
-                        foreach ($consumos as $consumo) { 
-                            if ($moneda->id == $egreso->tipo_moneda_id) {
-                                $total += $egreso->monto;
-                            }
-                        }
-                        $csm['moneda-'.$i]      = $moneda->nombre;
-                        $csm['monto-'.$i]       = $total;
-                        $csm['mes']             = $mes_año;
-                        $csm['fecha_inicio']    = $m[$mes_año]['inicio'];
-                        $csm['fecha_fin']       = $m[$mes_año]['fin'];
-                        $i++;
-                    }
-                    $consumos = $csm;
-                }
-            }
-            array_push($ingresos_mes, $consumos);
-        }
+    //                 $i = 1;
+    //                 foreach ($moneda_propiedad as $moneda) {
+    //                     $total = 0;
+    //                     foreach ($consumos as $consumo) { 
+    //                         if ($moneda->id == $egreso->tipo_moneda_id) {
+    //                             $total += $egreso->monto;
+    //                         }
+    //                     }
+    //                     $csm['moneda-'.$i]      = $moneda->nombre;
+    //                     $csm['monto-'.$i]       = $total;
+    //                     $csm['mes']             = $mes_año;
+    //                     $csm['fecha_inicio']    = $m[$mes_año]['inicio'];
+    //                     $csm['fecha_fin']       = $m[$mes_año]['fin'];
+    //                     $i++;
+    //                 }
+    //                 $consumos = $csm;
+    //             }
+    //         }
+    //         array_push($ingresos_mes, $consumos);
+    //     }
 
-        $grafico =[ 'grafico_1' => $ingresos_mes];
-        return $grafico;
-    }
+    //     $grafico =[ 'grafico_1' => $ingresos_mes];
+    //     return $grafico;
+    // }
 
 
 
