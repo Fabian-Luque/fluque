@@ -36,6 +36,10 @@ class PropiedadServicio extends Model
         return $this->belongsTo('App\MetodoPago', 'metodo_pago_id'); 
     }
 
+    public function caja() {
+        return $this->belongsTo('App\Caja', 'caja_id'); 
+    }
+
 	public function getCreatedAtAttribute($value)
     {
         $user            = JWTAuth::parseToken()->toUser();

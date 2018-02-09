@@ -31,6 +31,7 @@ use App\TipoCuenta;
 use App\PropiedadTipoDeposito;
 use App\TipoDeposito;
 use App\PropiedadServicio;
+use App\Caja;
 use Illuminate\Support\Facades\Config;
 use Input;
 use Illuminate\Http\Request;
@@ -1264,69 +1265,80 @@ class PropiedadController extends Controller
             $numero_cheque       = $request->input('numero_cheque');
             $tipo_moneda_id      = $request->input('tipo_moneda_id');
 
-            if (!is_null($propiedad)) {
-                $servicios = $request->input('venta_servicio');
-                foreach ($servicios as $servicio) {
-                    $servicio_id         = $servicio['servicio_id'];
-                    $cantidad            = $servicio['cantidad'];
-                    $precio_total        = $servicio['precio_total'];
-                    $serv                = Servicio::where('id', $servicio_id)->where('propiedad_id', $request->input('propiedad_id'))->first();
-                    $cantidad_disponible = $serv->cantidad_disponible;
+            $caja_abierta  = Caja::where('propiedad_id', $propiedad->id)->where('estado_caja_id', 1)->first();
 
-                    if (!is_null($serv)) {
-                        if ($serv->categoria_id == 2) {
-                            if ($cantidad >= 1) {
-                                if ($serv->cantidad_disponible > 0) {
-                                    if ($cantidad <= $serv->cantidad_disponible) {
-                                        $servicio_id         = $serv->id;
-                                        $servicio_nombre     = $serv->nombre;
-                                        $cantidad_disponible = $cantidad_disponible - $cantidad;
-                                        $serv->update(array('cantidad_disponible' => $cantidad_disponible));
-                                        $propiedad->vendeServicios()->attach($servicio_id, ['metodo_pago_id' => $metodo_pago_id, 'cantidad' => $cantidad, 'precio_total' => $precio_total, 'numero_operacion' => $numero_operacion, 'tipo_comprobante_id' => $tipo_comprobante_id, 'numero_cheque' => $numero_cheque, 'tipo_moneda_id' => $tipo_moneda_id]);
+            if (!is_null($caja_abierta)) {
+                if (!is_null($propiedad)) {
+                    $servicios = $request->input('venta_servicio');
+                    foreach ($servicios as $servicio) {
+                        $servicio_id         = $servicio['servicio_id'];
+                        $cantidad            = $servicio['cantidad'];
+                        $precio_total        = $servicio['precio_total'];
+                        $serv                = Servicio::where('id', $servicio_id)->where('propiedad_id', $request->input('propiedad_id'))->first();
+                        $cantidad_disponible = $serv->cantidad_disponible;
+
+                        if (!is_null($serv)) {
+                            if ($serv->categoria_id == 2) {
+                                if ($cantidad >= 1) {
+                                    if ($serv->cantidad_disponible > 0) {
+                                        if ($cantidad <= $serv->cantidad_disponible) {
+                                            $servicio_id         = $serv->id;
+                                            $servicio_nombre     = $serv->nombre;
+                                            $cantidad_disponible = $cantidad_disponible - $cantidad;
+                                            $serv->update(array('cantidad_disponible' => $cantidad_disponible));
+                                            $propiedad->vendeServicios()->attach($servicio_id, ['metodo_pago_id' => $metodo_pago_id, 'cantidad' => $cantidad, 'precio_total' => $precio_total, 'numero_operacion' => $numero_operacion, 'tipo_comprobante_id' => $tipo_comprobante_id, 'numero_cheque' => $numero_cheque, 'tipo_moneda_id' => $tipo_moneda_id, 'caja_id' => $caja_abierta->id]);
+
+                                        } else {
+                                            $data = array(
+                                                'msj'    => " La cantidad ingresada es mayor al stock del producto",
+                                                'errors' => true,);
+                                            return Response::json($data, 400);
+                                        }
 
                                     } else {
                                         $data = array(
-                                            'msj'    => " La cantidad ingresada es mayor al stock del producto",
+                                            'msj'    => " El servicio no tiene stock",
                                             'errors' => true,);
                                         return Response::json($data, 400);
                                     }
 
                                 } else {
                                     $data = array(
-                                        'msj'    => " El servicio no tiene stock",
+                                        'msj'    => " La cantidad ingresada no corresponde",
                                         'errors' => true,);
                                     return Response::json($data, 400);
                                 }
 
-                            } else {
-                                $data = array(
-                                    'msj'    => " La cantidad ingresada no corresponde",
-                                    'errors' => true,);
-                                return Response::json($data, 400);
+                            } elseif ($serv->categoria_id == 1) {
+                                $propiedad->vendeServicios()->attach($servicio_id, ['metodo_pago_id' => $metodo_pago_id, 'cantidad' => $cantidad, 'precio_total' => $precio_total, 'numero_operacion' => $numero_operacion, 'tipo_comprobante_id' => $tipo_comprobante_id, 'numero_cheque' => $numero_cheque, 'tipo_moneda_id' => $tipo_moneda_id, 'caja_id' => $caja_abierta->id]);
                             }
 
-                        } elseif ($serv->categoria_id == 1) {
-                            $propiedad->vendeServicios()->attach($servicio_id, ['metodo_pago_id' => $metodo_pago_id, 'cantidad' => $cantidad, 'precio_total' => $precio_total, 'numero_operacion' => $numero_operacion, 'tipo_comprobante_id' => $tipo_comprobante_id, 'numero_cheque' => $numero_cheque, 'tipo_moneda_id' => $tipo_moneda_id]);
+                        } else {
+                            $retorno = array(
+                                'msj'    => "El servicio no pertenece a la propiedad",
+                                'errors' => true,);
+                            return Response::json($retorno, 400);
                         }
-
-                    } else {
-                        $retorno = array(
-                            'msj'    => "El servicio no pertenece a la propiedad",
-                            'errors' => true,);
-                        return Response::json($retorno, 400);
                     }
-                }
-                $retorno = array(
-                    'msj'   => "Servicios ingresados correctamente",
-                    'erros' => false,);
-                return Response::json($retorno, 201);
+                    $retorno = array(
+                        'msj'   => "Servicios ingresados correctamente",
+                        'erros' => false,);
+                    return Response::json($retorno, 201);
 
+                } else {
+                    $data = array(
+                        'msj'    => "Propiedad no encontrada",
+                        'errors' => true,);
+                    return Response::json($data, 404);
+                }
+                # code...
             } else {
-                $data = array(
-                    'msj'    => "Propiedad no encontrada",
-                    'errors' => true,);
-                return Response::json($data, 404);
+                $retorno = array(
+                    'msj'    => "No hay caja abierta",
+                    'errors' => true);
+                return Response::json($retorno, 400);
             }
+
 
         } else {
             $retorno = array(
