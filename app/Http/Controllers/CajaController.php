@@ -67,6 +67,13 @@ class CajaController extends Controller
                         }
                     }
                 }
+                foreach ($caja->servicios as $servicio) {
+                    if ($tipo_moneda->id == $servicio->tipo_moneda_id) {
+                        if ($servicio->metodo_pago_id == 1) {
+                            $ingreso += $servicio->precio_total;
+                        }
+                    }
+                }
                 foreach ($caja->egresosCaja as $egreso_caja) {
                     if ($tipo_moneda->id == $egreso_caja->tipo_moneda_id) {
                         $egreso += $egreso_caja->monto;
@@ -95,6 +102,13 @@ class CajaController extends Controller
                         if ($moneda->id == $pago->tipo_moneda_id) {
                             if ($metodo->nombre == $pago->MetodoPago->nombre) {
                                 $suma_ingreso += $pago->monto_equivalente;
+                            }
+                        }
+                    }
+                    foreach ($caja->servicios  as $servicio) {
+                        if ($moneda->id == $servicio->tipo_moneda_id) {
+                            if ($metodo->id == $servicio->metodo_pago_id) {
+                                $suma_ingreso += $servicio->precio_total;
                             }
                         }
                     }
@@ -234,7 +248,7 @@ class CajaController extends Controller
             return Response::json($retorno, 400);
         }
 
-        $caja_abierta  = Caja::where('propiedad_id', $propiedad_id)->where('estado_caja_id', 1)->with('montos.tipoMonto', 'montos.tipoMoneda')->with('user')->with('estadoCaja')->with('pagos.tipoComprobante','pagos.metodoPago', 'pagos.tipoMoneda', 'pagos.reserva')->with('egresosCaja.tipoMoneda', 'egresosCaja.egreso')->first();
+        $caja_abierta  = Caja::where('propiedad_id', $propiedad_id)->where('estado_caja_id', 1)->with('montos.tipoMonto', 'montos.tipoMoneda')->with('user')->with('estadoCaja')->with('pagos.tipoComprobante','pagos.metodoPago', 'pagos.tipoMoneda', 'pagos.reserva')->with('egresosCaja.tipoMoneda', 'egresosCaja.egreso', 'servicios')->first();
 
         if (!is_null($caja_abierta)) {
             $monedas = [];
@@ -248,6 +262,13 @@ class CajaController extends Controller
                         }
                     }
                 }
+                foreach ($caja_abierta->servicios as $servicio) {
+                    if ($tipo_moneda->id == $servicio->tipo_moneda_id) {
+                        if ($servicio->metodo_pago_id == 1) {
+                            $ingreso += $servicio->precio_total;
+                        }
+                    }
+                }
                 foreach ($caja_abierta->egresosCaja as $egreso_caja) {
                     if ($tipo_moneda->id == $egreso_caja->tipo_moneda_id) {
                         $egreso += $egreso_caja->monto;
@@ -258,6 +279,7 @@ class CajaController extends Controller
                         $ingreso += $monto->monto;
                     }
                 }
+
                 $moneda['nombre']               = $tipo_moneda->nombre;
                 $moneda['cantidad_decimales']   = $tipo_moneda->cantidad_decimales;
                 $moneda['ingreso']              = $ingreso;
@@ -276,6 +298,13 @@ class CajaController extends Controller
                         if ($moneda->id == $pago->tipo_moneda_id) {
                             if ($metodo->nombre == $pago->MetodoPago->nombre) {
                                 $suma_ingreso += $pago->monto_equivalente;
+                            }
+                        }
+                    }
+                    foreach ($caja_abierta->servicios  as $servicio) {
+                        if ($moneda->id == $servicio->tipo_moneda_id) {
+                            if ($metodo->id == $servicio->metodo_pago_id) {
+                                $suma_ingreso += $servicio->precio_total;
                             }
                         }
                     }
@@ -346,6 +375,14 @@ class CajaController extends Controller
                         }
                     }
                 }
+                foreach ($caja_abierta->servicios as $servicio) {
+                    if ($tipo_moneda->id == $servicio->tipo_moneda_id) {
+                        if ($servicio->metodo_pago_id == 1) {
+                            $ingreso += $servicio->precio_total;
+                        }
+                    }
+                }
+
                 foreach ($caja_abierta->egresosCaja as $egreso_caja) {
                     if ($tipo_moneda->id == $egreso_caja->tipo_moneda_id) {
                         $egreso += $egreso_caja->monto;
