@@ -23,7 +23,7 @@ class CajaController extends Controller
     {
         if ($request->has('caja_id')) {
             $caja_id = $request->input('caja_id');
-            $caja    = Caja::where('id', $caja_id)->first();
+            $caja    = Caja::where('id', $caja_id)->with('montos.tipoMonto', 'montos.tipoMoneda')->with('user')->with('estadoCaja')->with('pagos.tipoComprobante','pagos.metodoPago', 'pagos.tipoMoneda', 'pagos.reserva')->with('egresosCaja.tipoMoneda', 'egresosCaja.egreso')->with('servicios')->first();
             if (is_null($caja)) {
                 $retorno = array(
                     'msj'    => "Caja no encontrada",
@@ -53,7 +53,7 @@ class CajaController extends Controller
             return Response::json($retorno, 400);
         }
 
-        $caja  = Caja::where('id', $caja_id)->with('montos.tipoMonto', 'montos.tipoMoneda')->with('user')->with('estadoCaja')->with('pagos.tipoComprobante','pagos.metodoPago', 'pagos.tipoMoneda', 'pagos.reserva')->with('egresosCaja.tipoMoneda', 'egresosCaja.egreso')->first();
+        // $caja  = Caja::where('id', $caja_id)->with('montos.tipoMonto', 'montos.tipoMoneda')->with('user')->with('estadoCaja')->with('pagos.tipoComprobante','pagos.metodoPago', 'pagos.tipoMoneda', 'pagos.reserva')->with('egresosCaja.tipoMoneda', 'egresosCaja.egreso')->first();
 
         if (!is_null($caja)) {
             $monedas = [];
@@ -124,10 +124,67 @@ class CajaController extends Controller
                 array_push($ingresos_metodo_pago, $ingresos_pago);
             }
 
-            $data['caja']         = $caja;
-            $data['monedas']      = $monedas;
-            $data['metodos_pago'] = $ingresos_metodo_pago;
+            $consumos = $caja->servicios;
+            $num_op = [];
+            $num_operacion = $consumos->lists('numero_operacion');
 
+            foreach ($num_operacion as $num) {
+                if (count($num_op) == 0) {
+                array_push($num_op, $num);
+                } else {
+                    if (!in_array($num, $num_op)) {
+                        array_push($num_op, $num);
+                    }
+                }
+            }
+
+            $mon = [];
+            foreach ($propiedad->tipoMonedas as $moneda) {
+                $total = 0;
+                foreach ($consumos as $consumo) {
+                    if ($moneda->id == $consumo->tipo_moneda_id) {
+                        $total += $consumo->precio_total;
+                    }
+                }
+                $m['id']     = $moneda->id;
+                $m['nombre'] = $moneda->nombre;
+                $m['cantidad_decimales'] = $moneda->cantidad_decimales;
+                $m['total'] = $total;
+                array_push($mon, $m);
+            }
+
+            $nums = [];
+            $cantidad = count($consumos);
+            foreach ($num_op as $num) {
+                $cons = [];
+                $total_precio = 0;
+                foreach ($consumos as $consumo) {
+                    if ($num == $consumo->numero_operacion) {
+                        $total_precio += $consumo->precio_total;
+                        array_push($cons, $consumo);
+                            $tipo_moneda_id     = $cons[0]->tipoMoneda->id;
+                            $cantidad_decimales = $cons[0]->tipoMoneda->cantidad_decimales;
+                            $nombre             = $cons[0]->tipoMoneda->nombre;
+                            $tipo_comprobante   = $cons[0]->tipoComprobante->nombre;
+                            $metodo_pago        = $cons[0]->metodoPago->nombre;
+                    }
+                }
+                $csm['numero_operacion']    = $num;
+                $csm['total']               = $total_precio;
+                $csm['tipo_moneda_id']      = $tipo_moneda_id;
+                $csm['cantidad_decimales']  = $cantidad_decimales;
+                $csm['nombre']              = $nombre;
+                $csm['tipo_comprobante']    = $tipo_comprobante;
+                $csm['metodo_pago']         = $metodo_pago;
+                $csm['consumos']            = $cons;
+                array_push($nums, $csm);
+            }
+            $data['caja']                 = $caja;
+            $data['monedas']              = $monedas;
+            $data['metodos_pago']         = $ingresos_metodo_pago;
+            $data['tota_monto_servicios'] = $mon;
+            $data['servicios']            = $nums;
+  
             return $data;
 
         }
@@ -248,7 +305,7 @@ class CajaController extends Controller
             return Response::json($retorno, 400);
         }
 
-        $caja_abierta  = Caja::where('propiedad_id', $propiedad_id)->where('estado_caja_id', 1)->with('montos.tipoMonto', 'montos.tipoMoneda')->with('user')->with('estadoCaja')->with('pagos.tipoComprobante','pagos.metodoPago', 'pagos.tipoMoneda', 'pagos.reserva')->with('egresosCaja.tipoMoneda', 'egresosCaja.egreso', 'servicios')->first();
+        $caja_abierta  = Caja::where('propiedad_id', $propiedad_id)->where('estado_caja_id', 1)->with('montos.tipoMonto', 'montos.tipoMoneda')->with('user')->with('estadoCaja')->with('pagos.tipoComprobante','pagos.metodoPago', 'pagos.tipoMoneda', 'pagos.reserva')->with('egresosCaja.tipoMoneda', 'egresosCaja.egreso')->with('servicios')->first();
 
         if (!is_null($caja_abierta)) {
             $monedas = [];
@@ -320,9 +377,66 @@ class CajaController extends Controller
                 array_push($ingresos_metodo_pago, $ingresos_pago);
             }
 
-            $data['caja_abierta'] = $caja_abierta;
-            $data['monedas']      = $monedas;
-            $data['metodos_pago'] = $ingresos_metodo_pago;
+            $consumos = $caja_abierta->servicios;
+            $num_op = [];
+            $num_operacion = $consumos->lists('numero_operacion');
+
+            foreach ($num_operacion as $num) {
+                if (count($num_op) == 0) {
+                array_push($num_op, $num);
+                } else {
+                    if (!in_array($num, $num_op)) {
+                        array_push($num_op, $num);
+                    }
+                }
+            }
+
+            $mon = [];
+            foreach ($propiedad->tipoMonedas as $moneda) {
+                $total = 0;
+                foreach ($consumos as $consumo) {
+                    if ($moneda->id == $consumo->tipo_moneda_id) {
+                        $total += $consumo->precio_total;
+                    }
+                }
+                $m['id']     = $moneda->id;
+                $m['nombre'] = $moneda->nombre;
+                $m['cantidad_decimales'] = $moneda->cantidad_decimales;
+                $m['total'] = $total;
+                array_push($mon, $m);
+            }
+
+            $nums = [];
+            $cantidad = count($consumos);
+            foreach ($num_op as $num) {
+                $cons = [];
+                $total_precio = 0;
+                foreach ($consumos as $consumo) {
+                    if ($num == $consumo->numero_operacion) {
+                        $total_precio += $consumo->precio_total;
+                        array_push($cons, $consumo);
+                            $tipo_moneda_id     = $cons[0]->tipoMoneda->id;
+                            $cantidad_decimales = $cons[0]->tipoMoneda->cantidad_decimales;
+                            $nombre             = $cons[0]->tipoMoneda->nombre;
+                            $tipo_comprobante   = $cons[0]->tipoComprobante->nombre;
+                            $metodo_pago        = $cons[0]->metodoPago->nombre;
+                    }
+                }
+                $csm['numero_operacion']    = $num;
+                $csm['total']               = $total_precio;
+                $csm['tipo_moneda_id']      = $tipo_moneda_id;
+                $csm['cantidad_decimales']  = $cantidad_decimales;
+                $csm['nombre']              = $nombre;
+                $csm['tipo_comprobante']    = $tipo_comprobante;
+                $csm['metodo_pago']         = $metodo_pago;
+                $csm['consumos']            = $cons;
+                array_push($nums, $csm);
+            }
+            $data['caja_abierta']         = $caja_abierta;
+            $data['monedas']              = $monedas;
+            $data['metodos_pago']         = $ingresos_metodo_pago;
+            $data['tota_monto_servicios'] = $mon;
+            $data['servicios']            = $nums;
 
             return $data;
 
