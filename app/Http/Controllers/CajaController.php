@@ -167,6 +167,8 @@ class CajaController extends Controller
                             $nombre             = $cons[0]->tipoMoneda->nombre;
                             $tipo_comprobante   = $cons[0]->tipoComprobante->nombre;
                             $metodo_pago        = $cons[0]->metodoPago->nombre;
+                            $tipo_comprobante_id = $cons[0]->tipoComprobante->id;
+                            $metodo_pago_id      = $cons[0]->metodoPago->id;
                     }
                 }
                 $csm['numero_operacion']    = $num;
@@ -305,7 +307,7 @@ class CajaController extends Controller
             return Response::json($retorno, 400);
         }
 
-        $caja_abierta  = Caja::where('propiedad_id', $propiedad_id)->where('estado_caja_id', 1)->with('montos.tipoMonto', 'montos.tipoMoneda')->with('user')->with('estadoCaja')->with('pagos.tipoComprobante','pagos.metodoPago', 'pagos.tipoMoneda', 'pagos.reserva')->with('egresosCaja.tipoMoneda', 'egresosCaja.egreso')->with('servicios')->first();
+        $caja_abierta  = Caja::where('propiedad_id', $propiedad_id)->where('estado_caja_id', 1)->with('montos.tipoMonto', 'montos.tipoMoneda')->with('user')->with('estadoCaja')->with('pagos.tipoComprobante','pagos.metodoPago', 'pagos.tipoMoneda', 'pagos.reserva')->with('egresosCaja.tipoMoneda', 'egresosCaja.egreso')->with('servicios.servicio', 'servicios.tipoComprobante', 'servicios.metodoPago', 'servicios.tipoMoneda')->first();
 
         if (!is_null($caja_abierta)) {
             $monedas = [];
@@ -420,6 +422,8 @@ class CajaController extends Controller
                             $nombre             = $cons[0]->tipoMoneda->nombre;
                             $tipo_comprobante   = $cons[0]->tipoComprobante->nombre;
                             $metodo_pago        = $cons[0]->metodoPago->nombre;
+                            $tipo_comprobante_id = $cons[0]->tipoComprobante->id;
+                            $metodo_pago_id      = $cons[0]->metodoPago->id;
                     }
                 }
                 $csm['numero_operacion']    = $num;
@@ -428,15 +432,17 @@ class CajaController extends Controller
                 $csm['cantidad_decimales']  = $cantidad_decimales;
                 $csm['nombre']              = $nombre;
                 $csm['tipo_comprobante']    = $tipo_comprobante;
+                $csm['tipo_comprobante_id'] = $tipo_comprobante_id;
                 $csm['metodo_pago']         = $metodo_pago;
+                $csm['metodo_pago_id']      = $metodo_pago_id;
                 $csm['consumos']            = $cons;
                 array_push($nums, $csm);
             }
             $data['caja_abierta']          = $caja_abierta;
             $data['monedas']               = $monedas;
             $data['metodos_pago']          = $ingresos_metodo_pago;
-            $data['total_monto_servicios'] = $mon;
-            $data['servicios']             = $nums;
+            $data['monedas_servicios']     = $mon;
+            $data['consumos']              = $nums;
 
             return $data;
 
