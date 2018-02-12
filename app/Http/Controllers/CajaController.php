@@ -122,7 +122,7 @@ class CajaController extends Controller
                 array_push($ingresos_metodo_pago, $ingresos_pago);
             }
 
-            $consumos = $caja_abierta->servicios;
+            $consumos = $caja->servicios;
             $num_op = [];
             $num_operacion = $consumos->lists('numero_operacion');
 
@@ -181,7 +181,7 @@ class CajaController extends Controller
                 $csm['consumos']            = $cons;
                 array_push($nums, $csm);
             }
-            $data['caja_abierta']          = $caja_abierta;
+            $data['caja']                  = $caja;
             $data['monedas']               = $monedas;
             $data['metodos_pago']          = $ingresos_metodo_pago;
             $data['monedas_servicios']     = $mon;
