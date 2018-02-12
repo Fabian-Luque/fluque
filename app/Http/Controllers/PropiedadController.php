@@ -1538,7 +1538,7 @@ class PropiedadController extends Controller
         $data = array(
             'errors' => false,
             'msj'    => 'Servicios actualizado satisfactoriamente',);
-        return Response::json($data, 400);
+        return Response::json($data, 201);
 
     }
 
