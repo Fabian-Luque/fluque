@@ -771,9 +771,10 @@ class MotorRaController extends Controller {
                 Event::fire(
                     new ReservasMotorEvent($propiedad_id)
                 );
-
+ 
                 $arr = array(
                     'propiedad'     => $propiedad,
+                    'comp'          => 0,
                     'de'            => $propiedad->nombre
                 );
 
