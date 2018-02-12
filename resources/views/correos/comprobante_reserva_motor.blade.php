@@ -214,14 +214,14 @@ a[x-apple-data-detectors=true] {
   </style>
   <!--[if IE]><div class="ie-browser"><![endif]-->
   <!--[if mso]><div class="mso-container"><![endif]-->
-  <table class="nl-container" style="border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;min-width: 320px;Margin: 0 auto;background-color: #161821;width: 100%" cellpadding="0" cellspacing="0">
+  <table class="nl-container" style="border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;min-width: 320px;margin: 0 auto;background-color: #161821;width: 100%" cellpadding="0" cellspacing="0">
   <tbody>
   <tr style="vertical-align: top">
     <td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top">
     <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td align="center" style="background-color: #161821;"><![endif]-->
 
     <div style="background-color:transparent;">
-      <div style="Margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid ">
+      <div style="margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid ">
         <div style="border-collapse: collapse;display: table;width: 100%;background-color:#ffffff;">
           <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background-color:transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width: 625px;"><tr class="layout-full-width" style="background-color:#ffffff;"><![endif]-->
 
@@ -289,29 +289,43 @@ a[x-apple-data-detectors=true] {
 <tbody>
 <tr style="height: 18px;">
 <td style="width: 78px; text-align: left; height: 18px;"><strong>Nombre</strong></td>
-<td style="width: 138px; text-align: left; height: 18px;">@if(!empty($array['arr']['cliente']->nombre)) {{$array['arr']['cliente']->nombre
-                                }} @endif </td>
+<td style="width: 138px; text-align: left; height: 18px;">
+  @if(!empty($array['arr']['cliente']->nombre)) 
+    {{ $array['arr']['cliente']->nombre }} 
+  @endif 
+</td>
 </tr>
 <tr style="height: 7px;">
 <td style="width: 78px; text-align: left; height: 7px;"><strong>Apellido</strong></td>
-<td style="width: 138px; text-align: left; height: 7px;">@if(!empty($array['arr']['cliente']->apellido)) {{$array['arr']['cliente']->apellido
-                                }} @endif </td>
+<td style="width: 138px; text-align: left; height: 7px;"> 
+  @if(!empty($array['arr']['cliente']->apellido)) 
+    {{ $array['arr']['cliente']->apellido }} 
+  @endif 
+</td>
 </tr>
 <tr style="height: 7px;">
 <td style="width: 78px; text-align: left; height: 7px;"><strong>Rut</strong></td>
-<td style="width: 138px; text-align: left; height: 7px;">@if(!empty($array['arr']['cliente']->rut)) {{$array['arr']['cliente']->rut
-                                }} @endif</td>
+<td style="width: 138px; text-align: left; height: 7px;">
+  @if(!empty($array['arr']['cliente']->rut)) 
+    {{ $array['arr']['cliente']->rut }} 
+  @endif
+</td>
 </tr>
-
 <tr style="height: 7px;">
 <td style="width: 78px; text-align: left; height: 7px;"><strong>Telefono</strong></td>
-<td style="width: 138px; text-align: left; height: 7px;">  @if(!empty($array['arr']['cliente']->telefono)) {{ $array['arr']['cliente']->telefono
-                                }} @endif </td>
+<td style="width: 138px; text-align: left; height: 7px;">  
+  @if(!empty($array['arr']['cliente']->telefono)) 
+    {{ $array['arr']['cliente']->telefono }} 
+  @endif 
+</td>
 </tr>
 <tr style="height: 7px;">
 <td style="width: 78px; text-align: left; height: 7px;"><strong>Email</strong></td>
-<td style="width: 138px; text-align: left; height: 7px;">  @if(!empty($array['arr']['cliente']->email)) {{ $array['arr']['cliente']->email
-                                }} @endif </td>
+<td style="width: 138px; text-align: left; height: 7px;">  
+  @if(!empty($array['arr']['cliente']->email)) 
+    {{ $array['arr']['cliente']->email }} 
+  @endif 
+</td>
 </tr>
 </tbody>
 </table>
@@ -325,7 +339,7 @@ a[x-apple-data-detectors=true] {
         </div>
       </div>
     </div>    <div style="background-color:transparent;">
-      <div style="Margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid ">
+      <div style="margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid ">
         <div style="border-collapse: collapse;display: table;width: 100%;background-color:#ffffff;">
           <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background-color:transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width: 625px;"><tr class="layout-full-width" style="background-color:#ffffff;"><![endif]-->
 
@@ -375,28 +389,45 @@ a[x-apple-data-detectors=true] {
 <td style="width: 14%; text-align: left; height: 18px;"><strong> Checkout</strong></td>
 <td style="width: 8%; text-align: left; height: 18px;"><strong> Total</strong></td>
 </tr>
+@if(!empty($reservaspdf))
 @foreach($reservaspdf as $reserva)
 <tr style="height: 7px;">
-<td style="width: 6.65289%; text-align: left; height: 7px;">@if(!empty($reserva->numero_reserva))
+<td style="width: 6.65289%; text-align: left; height: 7px;">
+  @if(!empty($reserva->numero_reserva))
       {{ $reserva->numero_reserva }}
     @endif</td>
-<td style="width: 12.3471%; text-align: left; height: 7px;">@if(!empty($reserva->habitacion->nombre))
+<td style="width: 12.3471%; text-align: left; height: 7px;">
+  @if(!empty($reserva->habitacion->nombre))
       {{ $reserva->habitacion->nombre }}
     @endif</td>
-<td style="width: 7%; text-align: left; height: 7px;">@if(!empty($reserva->tipoHabitacion->nombre))
+<td style="width: 7%; text-align: left; height: 7px;">
+  @if(!empty($reserva->tipoHabitacion))
       {{ $reserva->tipoHabitacion->nombre }}
     @endif</td>
-<td style="width: 16%; text-align: left; height: 7px;">{{ $reserva->ocupacion }}</td>
-<td style="width: 11%; text-align: left; height: 7px;">@if(!empty($reserva->noches))
+<td style="width: 16%; text-align: left; height: 7px;">
+@if(!empty($reserva->ocupacion))
+      {{ $reserva->ocupacion }}
+@endif
+</td>
+<td style="width: 11%; text-align: left; height: 7px;">
+  @if(!empty($reserva->noches))
       {{ $reserva->noches }}
-    @endif</td>
-<td style="width: 12%; text-align: left; height: 7px;">{{
-                            $reserva->checkin->format('d-m-Y')
-                            }}</td>
-<td style="width: 14%; text-align: left; height: 7px;">{{
-                            $reserva->checkout->format('d-m-Y')
-                            }}</td>
-<td style="width: 8%; text-align: left; height: 7px;"> total</td>
+    @endif </td>
+<td style="width: 12%; text-align: left; height: 7px;">
+ @if(!empty($reserva->checkin))
+    {{ $reserva->checkin->format('d-m-Y') }}
+  @endif
+</td>
+<td style="width: 14%; text-align: left; height: 7px;">
+   @if(!empty($reserva->checkout))
+    {{ $reserva->checkout->format('d-m-Y') }}
+  @endif
+</td>
+<td style="width: 8%; text-align: left; height: 7px;">
+  @if(!empty($reserva->monto_total))
+    {{ $reserva->monto_total }}
+  @endif
+</td>
 </tr>
 endforeach
 </tbody>
@@ -419,8 +450,7 @@ endforeach
             </td>
         </tr>
     </tbody>
-</table>
-          <?php dd($array); ?>        
+</table>   
                   
 <div class="" style="font-size: 16px;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; text-align: center; padding-right: 60px;"><div style="float: right">
 <table style="height: 51px; float: right; width: 228px; font-size: 12px;">
@@ -449,7 +479,7 @@ endforeach
         </div>
       </div>
     </div>    <div style="background-color:transparent;">
-      <div style="Margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid ">
+      <div style="margin: 0 auto;min-width: 320px;max-width: 625px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;" class="block-grid ">
         <div style="border-collapse: collapse;display: table;width: 100%;background-color:#ffffff;">
           <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background-color:transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width: 625px;"><tr class="layout-full-width" style="background-color:#ffffff;"><![endif]-->
 
