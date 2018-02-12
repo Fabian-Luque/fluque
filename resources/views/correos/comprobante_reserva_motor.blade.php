@@ -495,21 +495,20 @@ endforeach
 
 @if(!empty($array['propiedad']->politicas))
 <ul>
-                          @foreach($array['propiedad']->politicas as $politica)
-                          
-                          <li>
-                            {{ $politica->descripcion }}
-                          </li>
-                            @endforeach
-                            </ul>
-                          @endif
+    @foreach($array['propiedad']->politicas as $politica)
+    
+    <li>
+      {{ $politica->descripcion }}
+    </li>
+      @endforeach
+      </ul>
+ @endif
 
     </span><br></p><br></div> 
   </div>
   <!--[if mso]></td></tr></table><![endif]-->
 </div>
-                  
-                  
+                        
                     
 <table border="0" cellpadding="0" cellspacing="0" width="100%" class="divider " style="border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;min-width: 100%;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%">
     <tbody>
