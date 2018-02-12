@@ -273,9 +273,9 @@ cellspacing="0" cellpadding="0">
                         "font-size: 16px; line-height: 19px;"><strong>
                           <span style=
                           "color: #000000; line-height: 19px; font-size: 16px;">
-                          Comprobante de reserva {{
+                          Comprobante de reserva @if(!empty($array['propiedad']->nombre)) {{
                           $array['propiedad']->nombre
-                          }}</span></strong></span>
+                          }} @endif </span></strong></span>
                         </p>
                       </div>
                     </div>
@@ -291,8 +291,9 @@ cellspacing="0" cellpadding="0">
                         "margin: 0; font-size: 14px; line-height: 17px; text-align: justify;">
                         <span style=
                         "color: #000000; font-size: 14px; line-height: 16px;">
-                          Gracias por elegir a {{
-                          $array['propiedad']->nombre }}. Hemos
+                          Gracias por elegir a @if(!empty($array['propiedad']->nombre)) {{
+                          $array['propiedad']->nombre
+                          }} @endif . Hemos
                           confirmado sus solicitudes de
                           reservas.</span>
                         </p>
@@ -305,12 +306,14 @@ cellspacing="0" cellpadding="0">
                         <span style=
                         "color: #000000; font-size: 14px; line-height: 16px;">
                           Si necesita hacer cambios, o precisa de
-                          ayuda, por favor llame al {{
-                          $array['propiedad']->telefono }}, o
+                          ayuda, por favor llame al @if(!empty($array['propiedad']->telefono)) {{
+                          $array['propiedad']->telefono
+                          }} @endif , o
                           envíenos un email, a <span style=
                           "color: #2196f3; font-size: 14px; line-height: 16px;">
-                          {{ $array['propiedad']->email
-                          }}</span>, muchas gracias por su
+                          @if(!empty($array['propiedad']->email)) {{ $array['propiedad']->email
+                          }} @endif
+                          </span>, muchas gracias por su
                           confianza.</span>
                         </p>
                       </div>
@@ -389,8 +392,8 @@ cellspacing="0" cellpadding="0">
                         "font-size: 14px; line-height: 16px;"><strong>
                           <span style=
                           "color: #2196f3; line-height: 16px; font-size: 14px;">
-                          {{ $array['propiedad']->nombre
-                          }}</span></strong></span>
+                          @if(!empty($array['propiedad']->nombre)) {{ $array['propiedad']->nombre
+                          }} @endif </span></strong></span>
                         </p>
                       </div>
                     </div>
@@ -423,29 +426,33 @@ cellspacing="0" cellpadding="0">
                       "margin: 0; font-size: 12px; line-height: 18px;">
                         <span style=
                         "color: #333333; font-size: 12px; line-height: 18px;">
-                          {{ $array['propiedad']->direccion
-                          }}</span>
+                        @if(!empty($array['propiedad']->direccion)) {{ $array['propiedad']->direccion
+                          }} @endif
+                          </span>
                         </p>
                         <p style=
                         "margin: 0; font-size: 12px; line-height: 18px;">
                         <span style=
                         "color: #333333; font-size: 12px; line-height: 18px;">
-                          {{ $array['propiedad']->ciudad
-                          }}</span>
+                        @if(!empty($array['propiedad']->ciudad)) {{ $array['propiedad']->ciudad
+                          }} @endif
+                          </span>
                         </p>
                         <p style=
                         "margin: 0; font-size: 12px; line-height: 18px;">
                         <span style=
                         "color: #333333; font-size: 12px; line-height: 18px;">
-                          {{ $array['propiedad']->telefono
-                          }}</span>
+                        @if(!empty($array['propiedad']->telefono)) {{ $array['propiedad']->telefono
+                          }} @endif
+                          </span>
                         </p>
                         <p style=
                         "margin: 0; font-size: 12px; line-height: 18px;">
                         <span style=
                         "color: #333333; font-size: 12px; line-height: 18px;">
-                          {{ $array['propiedad']->email
-                          }}</span>
+                        @if(!empty($array['propiedad']->email)) {{ $array['propiedad']->email
+                          }} @endif
+                          </span>
                         </p>
                         <p style=
                         "margin: 0; font-size: 12px; line-height: 18px;">
@@ -460,8 +467,9 @@ cellspacing="0" cellpadding="0">
                               </td>
                               <td style=
                               "width: 222px; height: 18px;">
-                                &nbsp;{{$array['arr']['cliente']->nombre
-                                }}
+                                &nbsp;
+                                @if(!empty($array['arr']['cliente']->nombre)) {{$array['arr']['cliente']->nombre
+                                }} @endif
                               </td>
                             </tr>
                             <tr style="height: 18px;">
@@ -471,8 +479,9 @@ cellspacing="0" cellpadding="0">
                               </td>
                               <td style=
                               "width: 222px; height: 18px;">
-                                &nbsp;{{$array['arr']['cliente']->email
-                                }}
+                                &nbsp;
+                                @if(!empty($array['arr']['cliente']->email)) {{$array['arr']['cliente']->email
+                                }} @endif
                               </td>
                             </tr>
                             <tr style="height: 20px;">
@@ -483,8 +492,8 @@ cellspacing="0" cellpadding="0">
                               </td>
                               <td style=
                               "width: 222px; height: 20px;">
-                                {{$array['arr']['cliente']->rut
-                                }}
+                              @if(!empty($array['arr']['cliente']->rut)) {{$array['arr']['cliente']->rut
+                                }} @endif
                               </td>
                             </tr>
                           </tbody>
@@ -819,49 +828,49 @@ cellspacing="0" cellpadding="0">
                         "margin: 0; font-size: 12px; line-height: 18px;">
                         <span style=
                         "color: #000000; font-size: 12px; line-height: 18px;">
-                          Titular: {{
+                          Titular: @if(!empty($array['propiedad']->cuentasBancaria[0]->titular)) {{
                           $array['propiedad']->cuentasBancaria[0]->titular
-                          }}</span>
+                          }} @endif </span>
                         </p>
                         <p style=
                         "margin: 0; font-size: 12px; line-height: 18px;">
                         <span style=
                         "color: #000000; font-size: 12px; line-height: 18px;">
-                          Rut: {{
+                          Rut: @if(!empty($array['propiedad']->cuentasBancaria[0]->rut)) {{
                           $array['propiedad']->cuentasBancaria[0]->rut
-                          }}</span>
+                          }} @endif </span>
                         </p>
                         <p style=
                         "margin: 0; font-size: 12px; line-height: 18px;">
                         <span style=
                         "color: #000000; font-size: 12px; line-height: 18px;">
-                          Email: {{
+                          Email: @if(!empty($array['propiedad']->cuentasBancaria[0]->email)) {{
                           $array['propiedad']->cuentasBancaria[0]->email
-                          }}</span>
+                          }} @endif </span>
                         </p>
                         <p style=
                         "margin: 0; font-size: 12px; line-height: 18px;">
                         <span style=
                         "color: #000000; font-size: 12px; line-height: 18px;">
-                          Banco: {{
+                          Banco: @if(!empty($array['propiedad']->cuentasBancaria[0]->nombre_banco)) {{
                           $array['propiedad']->cuentasBancaria[0]->nombre_banco
-                          }}</span>
+                          }} @endif </span>
                         </p>
                         <p style=
                         "margin: 0; font-size: 12px; line-height: 18px;">
                         <span style=
                         "color: #000000; font-size: 12px; line-height: 18px;">
-                          Numero cuenta: {{
+                          Numero cuenta: @if(!empty($array['propiedad']->cuentasBancaria[0]->numero_cuenta)) {{
                           $array['propiedad']->cuentasBancaria[0]->numero_cuenta
-                          }}</span>
+                          }} @endif </span>
                         </p>
                         <p style=
                         "margin: 0; font-size: 12px; line-height: 18px;">
                         <span style=
                         "color: #000000; font-size: 12px; line-height: 18px;">
-                          Tipo cuenta: {{
-                          $array['propiedad']->cuentasBancaria[0]->tipoCuenta->nombre
-                          }}</span>
+                          Tipo cuenta: @if(!empty($array['propiedad']->cuentasBancaria[0]->nombre)) {{
+                          $array['propiedad']->cuentasBancaria[0]->nombre
+                          }} @endif </span>
                         </p>
                       </div>
                     </div>
@@ -975,14 +984,14 @@ cellspacing="0" cellpadding="0">
                     <div style=
                     "padding-left: 20px; padding-right: 20px;">
                         <ul>
-                          <li style="list-style: none">
-                          @foreach($array['propiedad']->politicas
-                          as $politica)
+                          @if(!empty($array['propiedad']->politicas))
+                          @foreach($array['propiedad']->politicas as $politica)
+                          
+                          <li>
+                            {{ $politica->descripcion }}
                           </li>
-                          <li>{{ $politica->descripcion }}
-                          </li>
-                          <li style="list-style: none">@endforeach
-                          </li>
+                            @endforeach
+                          @endif
                         </ul>
                       </div>
                     </div><!-- [if (!mso)&(!IE)]><!-->
@@ -1070,8 +1079,9 @@ cellspacing="0" cellpadding="0">
                         <p style="margin: 0; font-size: 14px; line-height: 17px; text-align: center;">
                         <strong><span style=
                         "font-size: 10px; line-height: 12px; color: #000000;">
+                          @if(!empty($array['propiedad']->nombre))
                           {{ $array['propiedad']->nombre
-                          }}</span></strong>
+                          }} @endif </span></strong>
                         </p>
                       </div>
                     </div>
