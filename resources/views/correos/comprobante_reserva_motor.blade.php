@@ -385,8 +385,9 @@ a[x-apple-data-detectors=true] {
 <td style="width: 14%; text-align: left; height: 18px;"><strong> Checkout</strong></td>
 <td style="width: 8%; text-align: left; height: 18px;"><strong> Total</strong></td>
 </tr>
-<tr style="height: 7px;">
 @foreach($reservaspdf as $reserva)
+<tr style="height: 7px;">
+
 <td style="width: 6.65289%; text-align: left; height: 7px;">
   @if(!empty($reserva->numero_reserva))
       {{ $reserva->numero_reserva }}
@@ -427,8 +428,9 @@ a[x-apple-data-detectors=true] {
       {{ $reserva->monto_total }}
   @endif
 </td>
-@endforeach
+
 </tr>
+@endforeach
 </tbody>
 </table>
 </div></div>
