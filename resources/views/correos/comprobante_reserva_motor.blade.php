@@ -492,24 +492,20 @@ endforeach
   <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 60px; padding-left: 60px; padding-top: 10px; padding-bottom: 10px;"><![endif]-->
   <div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 60px; padding-left: 60px; padding-top: 10px; padding-bottom: 10px;">  
     <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 12px;line-height: 14px;text-align: justify"><span style="color: rgb(0, 0, 0); font-size: 12px; line-height: 14px;">
-
 @if(!empty($array['propiedad']->politicas))
 <ul>
-    @foreach($array['propiedad']->politicas as $politica)
-    
+  @foreach($array['propiedad']->politicas as $politica)
     <li>
       {{ $politica->descripcion }}
     </li>
-      @endforeach
-      </ul>
- @endif
-
+  @endforeach
+</ul>
+@endif
     </span><br></p><br></div> 
   </div>
   <!--[if mso]></td></tr></table><![endif]-->
 </div>
-                        
-                    
+                             
 <table border="0" cellpadding="0" cellspacing="0" width="100%" class="divider " style="border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;min-width: 100%;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%">
     <tbody>
         <tr style="vertical-align: top">
@@ -526,17 +522,24 @@ endforeach
             </td>
         </tr>
     </tbody>
-</table>
-                  
-                  
-                    <div class="">
-  <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 0px; padding-left: 0px; padding-top: 0px; padding-bottom: 0px;"><![endif]-->
+</table>               
+<div class="">
   <div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 0px; padding-left: 0px; padding-top: 0px; padding-bottom: 0px;">  
-    <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 12px;line-height: 14px;text-align: center"><span style="font-size: 10px; line-height: 12px; color: rgb(0, 0, 0);">Mensaje de <strong><span style="font-size: 10px; line-height: 12px;">@if(!empty($array['propiedad']->nombre)) {{ $array['propiedad']->nombre }} @endif </span></strong>,</span></p><p style="margin: 0;font-size: 12px;line-height: 14px;text-align: center"><span style="font-size: 10px; line-height: 12px; color: rgb(0, 0, 0);">@if(!empty($array['propiedad']->direccion)) {{ $array['propiedad']->direccion }} @endif , @if(!empty($array['propiedad']->ciudad)) {{ $array['propiedad']->ciudad }} @endif</span></p></div>  
+    <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 12px;line-height: 14px;text-align: center"><span style="font-size: 10px; line-height: 12px; color: rgb(0, 0, 0);">Mensaje de <strong><span style="font-size: 10px; line-height: 12px;">
+      @if(!empty($array['propiedad']->nombre)) 
+        {{ $array['propiedad']->nombre }} 
+      @endif 
+    </span></strong>,</span></p><p style="margin: 0;font-size: 12px;line-height: 14px;text-align: center"><span style="font-size: 10px; line-height: 12px; color: rgb(0, 0, 0);">
+      @if(!empty($array['propiedad']->direccion)) 
+        {{ $array['propiedad']->direccion }} 
+      @endif , 
+      @if(!empty($array['propiedad']->ciudad)) 
+        {{ $array['propiedad']->ciudad }} 
+      @endif
+    </span></p></div>  
   </div>
   <!--[if mso]></td></tr></table><![endif]-->
 </div>
-                  
               <!--[if (!mso)&(!IE)]><!--></div><!--<![endif]-->
               </div>
             </div>
