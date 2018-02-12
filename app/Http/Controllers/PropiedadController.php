@@ -1374,7 +1374,6 @@ class PropiedadController extends Controller
                         'errors' => true,);
                     return Response::json($data, 404);
                 }
-                # code...
             } else {
                 $retorno = array(
                     'msj'    => "No hay caja abierta",
@@ -1479,6 +1478,7 @@ class PropiedadController extends Controller
                         $tipo_comprobante_id = $cons[0]->tipoComprobante->id;
                         $metodo_pago         = $cons[0]->metodoPago->nombre;
                         $metodo_pago_id      = $cons[0]->metodoPago->id;
+                        $numero_cheque       = $cons[0]->numero_cheque;
                 }
             }
             $csm['numero_operacion']    = $num;
@@ -1490,6 +1490,7 @@ class PropiedadController extends Controller
             $csm['tipo_comprobante_id'] = $tipo_comprobante_id;
             $csm['metodo_pago']         = $metodo_pago;
             $csm['metodo_pago_id']      = $metodo_pago_id;
+            $csm['numero_cheque']       = $numero_cheque;
             $csm['consumos']            = $cons;
             array_push($nums, $csm);
         }
@@ -1642,36 +1643,26 @@ class PropiedadController extends Controller
         if ($validator->fails()) {
 
             $data = [
-
                 'errors' => true,
-                'msg'    => $validator->messages(),
-
-            ];
-
+                'msg'    => $validator->messages(),];
             return Response::json($data, 400);
 
         } else {
-
-            $propiedad = Propiedad::findOrFail($id);
-
+            $propiedad              = Propiedad::findOrFail($id);
             $moneda_propiedad       = $propiedad->tipoMonedas;
             $tipos_habitacion       = $propiedad->tiposHabitacion;
             $temporadas_propiedad   = $propiedad->temporadas;
 
             if (count($tipos_habitacion) != 0 && count($temporadas_propiedad) != 0) {
                 if ($request->has('tipo_cobro_id')) {
-
                     foreach ($tipos_habitacion as $tipo) {
                         foreach ($tipo['precios'] as $precio) {
                             $id                      = $precio->id;
                             $precio_tipo_habitacion  = PrecioTemporada::findOrFail($id);
                             $precio_tipo_habitacion->delete();
                         }
-                        
                     }
-                    
                     if ($request->input('tipo_cobro_id') != 3) {
-
                         foreach ($tipos_habitacion as $tipo) {
                             foreach ($temporadas_propiedad as $temporada) {
                                 foreach ($moneda_propiedad as $moneda) {
@@ -1687,15 +1678,12 @@ class PropiedadController extends Controller
                             }
                         }
                     }else{
-
                         foreach ($tipos_habitacion as $tipo) {
                             $capacidad = $tipo->capacidad;
                             foreach ($temporadas_propiedad as $temporada) {
                                 foreach ($moneda_propiedad as $moneda) {
-
                                     for ($i=1; $i <= $capacidad  ; $i++) {
                                         $precio_temporada                     = new PrecioTemporada();
-
                                         $precio_temporada->cantidad_huespedes = $i;
                                         $precio_temporada->precio             = 0;
                                         $precio_temporada->tipo_habitacion_id = $tipo->id;
@@ -1710,21 +1698,13 @@ class PropiedadController extends Controller
                 }
             }
 
-
             $propiedad->update($request->all());
             $propiedad->touch();
 
-
-
             $data = [
-
                 'errors' => false,
-                'msg'    => 'Propiedad actualizada satisfactoriamente',
-
-            ];
-
+                'msg'    => 'Propiedad actualizada satisfactoriamente',];
             return Response::json($data, 201);
-
         }
 
     }

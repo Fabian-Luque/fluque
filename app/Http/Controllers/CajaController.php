@@ -53,8 +53,6 @@ class CajaController extends Controller
             return Response::json($retorno, 400);
         }
 
-        // $caja  = Caja::where('id', $caja_id)->with('montos.tipoMonto', 'montos.tipoMoneda')->with('user')->with('estadoCaja')->with('pagos.tipoComprobante','pagos.metodoPago', 'pagos.tipoMoneda', 'pagos.reserva')->with('egresosCaja.tipoMoneda', 'egresosCaja.egreso')->first();
-
         if (!is_null($caja)) {
             $monedas = [];
             foreach ($propiedad->tipoMonedas as $tipo_moneda) {
