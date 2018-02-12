@@ -184,16 +184,14 @@
           </div>
 
           <table class="tabla-detalles">
-          @foreach($reservas_pdf as $reservas)
-
-            @foreach($reservas as $reserva)
+          @foreach($reservas_pdf as $reserva)
 
             <tr>
               <td class="data-tabla-detalles borde-derecha"><p class="titulo">Reserva Nº @if(!empty($reserva->numero_reserva)) {{ $reserva->numero_reserva }} @endif - Habitacion  @if(!empty($reserva->habitacion->nombre)) {{ $reserva->habitacion->nombre }} @endif - @if(!empty($reserva->habitacion->tipoHabitacion->nombre)) {{ $reserva->habitacion->tipoHabitacion->nombre }} @endif - @if(!empty($reserva->ocupacion)) {{ $reserva->ocupacion }} @endif  Huéspedes - @if(!empty($reserva->noches)) {{ $reserva->noches }} @endif Noches - Checkin @if(!empty($reserva->checkin)) {{ $reserva->checkin->format('d-m-Y') }} @endif - Checkout @if(!empty($reserva->checkout)) {{ $reserva->checkout->format('d-m-Y') }} @endif </p></td>
               <td class="data-tabla-detalles-right align-right"><p class="nombre">@if(!empty($reserva->tipoMoneda->nombre)) {{ $reserva->tipoMoneda->nombre }} @endif @if(!empty($reserva->monto_alojamiento)) ${{  number_format($reserva->monto_alojamiento)  }} @endif </p></td>
             </tr>
             @endforeach
-          @endforeach
+         
 
 
               @if($nombre_moneda == "CLP")
@@ -250,8 +248,7 @@
                 <th class="data-tabla-detalles borde-derecha"><p>Monto</p></th>
               </tr>
 
-          @foreach($reservas_pdf as $reservas)
-              @foreach($reservas as $reserva)
+          @foreach($reservas_pdf as $reserva)
               @if(!empty($reserva->pagos))
                @foreach($reserva->pagos as $pago)
               <tr>
@@ -295,7 +292,7 @@
                @endforeach
                @endif
               @endforeach
-          @endforeach
+        
 
 
             </table>
