@@ -1509,23 +1509,7 @@ class PropiedadController extends Controller
      */
     public function editarConsumoParticulares(Request $request)
     {
-        // if ($request->has('servicio_id')) {
-        //     $servicio_id = $request->input('servicio_id');
-        //     return $servicio    = PropiedadServicio::where('id', $servicio_id)->first();
-        //     if (is_null($servicio)) {
-        //         $retorno = array(
-        //             'msj'    => "Servicio no encontrado",
-        //             'errors' => true);
-        //         return Response::json($retorno, 404);
-        //     }
-        // } else {
-        //     $retorno = array(
-        //         'msj'    => "No se envia servicio_id",
-        //         'errors' => true);
-        //     return Response::json($retorno, 400);
-        // }
-
-        if ($request->has('servicios') && $request->has('numero_operacion') && $request->has('metodo_pago_id') && $request->has('tipo_comprobante_id') && $request->has('numero_cheque')) {
+        if ($request->has('servicios') && $request->has('numero_operacion') && $request->has('metodo_pago_id') && $request->has('tipo_comprobante_id')) {
             $servicios = $request->servicios;
             $numero_operacion = $request->numero_operacion;
             $metodo_pago_id = $request->metodo_pago_id;
@@ -1538,7 +1522,6 @@ class PropiedadController extends Controller
             return Response::json($retorno, 400);
         }
 
-
         foreach ($servicios as $servicio) {
             $ser    = PropiedadServicio::where('id', $servicio['id'])->first();
             $cantidad = $servicio['cantidad'];
@@ -1549,7 +1532,6 @@ class PropiedadController extends Controller
             } else {
                 $ser->update(array('cantidad' => $cantidad, 'precio_total' => $precio_total, 'numero_operacion' => $numero_operacion, 'metodo_pago_id' => $metodo_pago_id, 'tipo_comprobante_id' => $tipo_comprobante_id, 'numero_cheque' => $numero_cheque));
             }
-
         }
 
         $data = array(
