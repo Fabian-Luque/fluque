@@ -2066,6 +2066,40 @@ class PDFController extends Controller {
                 }       
             }
 
+            // pernoctacion por tipo habitacion
+            $pernoctacion_tipo_habitacion = [];
+            foreach ($propiedad->tiposHabitacion as $tipo) {
+                $llegadas     = 0;
+                $pernoctacion = 0;
+                foreach ($reservas as $reserva) {
+                    if ($tipo->id == $reserva->habitacion->tipoHabitacion->id) {
+                        $llegadas += $reserva->ocupacion;
+                        $pernoctacion += ($reserva->ocupacion * $reserva->noches);
+                    }
+                }
+                $per['tipo_habitacion']   = $tipo;
+                $per['llegadas']          = $llegadas;
+                $per['pernoctacion']      = $pernoctacion;
+                array_push($pernoctacion_tipo_habitacion, $per);
+            }
+
+            //pernoctacion por habitacion
+            $pernoctacion_habitacion = [];
+            foreach ($propiedad->habitaciones as $habitacion) {
+                $llegadas     = 0;
+                $pernoctacion = 0;
+                foreach ($reservas as $reserva) {
+                    if ($habitacion->id == $reserva->habitacion->id) {
+                        $llegadas += $reserva->ocupacion;
+                        $pernoctacion += ($reserva->ocupacion * $reserva->noches);
+                    }
+                }
+                $pern['habitacion']        = $habitacion;
+                $pern['llegadas']          = $llegadas;
+                $pern['pernoctacion']      = $pernoctacion;
+                array_push($pernoctacion_habitacion, $pern);
+            }
+
            $residentes_extranjero = [];
                 foreach ($paises as $pais) {
                     $huespedes = 0;
@@ -2125,7 +2159,9 @@ class PDFController extends Controller {
             $fin_fecha    = $auxFecha_fin->subDay()->format('d-m-Y');
             $fechas       = ['inicio' => $inicio_fecha, 'fin' => $fin_fecha];
 
-            $pdf = PDF::loadView('pdf.reporte_diario', ['propiedad' => [$propiedad], 'fechas' => $fechas ,'reservas_realizadas'=> count($reservas_creadas),'reservas_anuladas' => count($reservas_anuladas), 'reservas_no_show' => count($reservas_no_show), 'ingresos_habitacion' => $ingresos_habitacion, 'ingresos_consumo' => $ingresos_consumos, 'ingresos_totales' => $ingresos_totales_dia, 'residentes_locales' => $residentes_pais_propiedad, 'residentes_extranjero' => $residentes_extranjero, 'ocupado' => $suma , 'disponible' => ($total_noches - $suma)]);
+            // return ['propiedad' => [$propiedad], 'fechas' => $fechas ,'reservas_realizadas'=> count($reservas_creadas),'reservas_anuladas' => count($reservas_anuladas), 'reservas_no_show' => count($reservas_no_show), 'ingresos_habitacion' => $ingresos_habitacion, 'ingresos_consumo' => $ingresos_consumos, 'ingresos_totales' => $ingresos_totales_dia, 'residentes_locales' => $residentes_pais_propiedad, 'residentes_extranjero' => $residentes_extranjero,'pernoctacion_tipo_habitacion' => $pernoctacion_tipo_habitacion, 'pernoctacion_habitacion' => $pernoctacion_habitacion, 'ocupado' => $suma , 'disponible' => ($total_noches - $suma)];
+
+            $pdf = PDF::loadView('pdf.reporte_diario', ['propiedad' => [$propiedad], 'fechas' => $fechas ,'reservas_realizadas'=> count($reservas_creadas),'reservas_anuladas' => count($reservas_anuladas), 'reservas_no_show' => count($reservas_no_show), 'ingresos_habitacion' => $ingresos_habitacion, 'ingresos_consumo' => $ingresos_consumos, 'ingresos_totales' => $ingresos_totales_dia, 'residentes_locales' => $residentes_pais_propiedad, 'residentes_extranjero' => $residentes_extranjero,'pernoctacion_tipo_habitacion' => $pernoctacion_tipo_habitacion, 'pernoctacion_habitacion' => $pernoctacion_habitacion, 'ocupado' => $suma , 'disponible' => ($total_noches - $suma)]);
 
             return $pdf->download('archivo.pdf');
 
