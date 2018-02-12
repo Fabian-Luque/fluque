@@ -278,7 +278,9 @@ a[x-apple-data-detectors=true] {
 <div style="border-collapse: collapse; display: table; width: 100%; background-color: #ffffff;"><!-- [if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background-color:#161821;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width: 625px;"><tr class="layout-full-width" style="background-color:#ffffff;"><![endif]--> <!-- [if (mso)|(IE)]><td align="center" width="625" style=" width:625px; padding-right: 0px; padding-left: 0px; padding-top:5px; padding-bottom:5px; border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent;" valign="top"><![endif]-->
 <div class="col num12" style="min-width: 320px; max-width: 625px; display: table-cell; vertical-align: top;">
 <div style="background-color: transparent; width: 100% !important;"><!-- [if (!mso)&(!IE)]><!-->
-<div style="border: 0px solid transparent; padding: 5px 0px 5px 0px;"><!--<![endif]--> <!-- [if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 10px; padding-left: 10px; padding-top: 0px; padding-bottom: 5px;"><![endif]--> @if(!empty($array['propiedad']->direccion)) <!--?php  
+<div style="border: 0px solid transparent; padding: 5px 0px 5px 0px;"><!--<![endif]--> <!-- [if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 10px; padding-left: 10px; padding-top: 0px; padding-bottom: 5px;"><![endif]--> 
+@if(!empty($array['propiedad']->direccion))
+<?php  
   /* Función que elimina los acantos y letras ñ*/
 function quitar_acentos($cadena){
     $originales = 'ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûýýþÿ';
@@ -289,7 +291,9 @@ function quitar_acentos($cadena){
 }
  
   $direccion = quitar_acentos($array['propiedad']->direccion);
-?--> @endif
+?>
+       
+@endif
 <div style="color: #555555; line-height: 120%; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; padding: 0px 10px 5px 10px;">
 <div style="font-size: 12px; line-height: 14px; color: #555555; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; text-align: left;">
 <p style="margin: 0; font-size: 12px; line-height: 14px; text-align: center;"><span style="font-size: 10px; line-height: 12px; color: #000000;">&nbsp;Mensaje enviado por&nbsp;<span style="color: #0068a5; font-size: 10px; line-height: 12px;"><strong>{{ $array['propiedad']->nombre }}</strong></span> </span></p>
