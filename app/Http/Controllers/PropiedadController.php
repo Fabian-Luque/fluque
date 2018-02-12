@@ -1429,7 +1429,7 @@ class PropiedadController extends Controller
         $consumos = PropiedadServicio::where('propiedad_id', $propiedad_id)
         ->where('created_at','>=' , $fecha_inicio)
         ->where('created_at', '<' , $fecha_fin)
-        ->with('servicio')
+        ->with('servicio.precios')
         ->with('TipoComprobante')
         ->with('metodoPago')
         ->with('tipoMoneda')
