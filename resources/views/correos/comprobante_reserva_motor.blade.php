@@ -276,19 +276,20 @@ a[x-apple-data-detectors=true] {
   </div>
   <!--[if mso]></td></tr></table><![endif]-->
 </div>
-                  
-                  
-                    <div class="" style="font-size: 16px;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; text-align: center;"><div style="padding-left: 60px; padding-right: 60px;">
+                              
+<div class="" style="font-size: 16px;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; text-align: center;">
+  <div style="padding-left: 60px; padding-right: 60px;">
 <table style="height: 51px; float: left; width: 228px; font-size: 12px;">
 <tbody>
-<tr style="height: 18px;">
-<td style="width: 78px; text-align: left; height: 18px;"><strong>Nombre</strong></td>
-<td style="width: 138px; text-align: left; height: 18px;">
+<tr style="height: 7px;">
+<td style="width: 78px; text-align: left; height: 7px;"><strong>Apellido</strong></td>
+<td style="width: 138px; text-align: left; height: 7px;">
   @if(!empty($array['arr']['cliente']->nombre)) 
     {{ $array['arr']['cliente']->nombre }} 
   @endif 
 </td>
 </tr>
+
 <tr style="height: 7px;">
 <td style="width: 78px; text-align: left; height: 7px;"><strong>Apellido</strong></td>
 <td style="width: 138px; text-align: left; height: 7px;">
@@ -323,8 +324,8 @@ a[x-apple-data-detectors=true] {
 </tr>
 </tbody>
 </table>
-</div></div>
-
+</div>
+</div>
                   
               <!--[if (!mso)&(!IE)]><!--></div><!--<![endif]-->
               </div>
