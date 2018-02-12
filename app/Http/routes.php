@@ -228,6 +228,7 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::post('eliminar/moneda/propiedad', 'PropiedadController@eliminarMoneda');
 		Route::put('editar/moneda/{id}', 'PropiedadController@editarMoneda');
 		Route::get('reporte', 'PropiedadController@reportesDiario');
+		Route::get('pernoctacion/tipo/habitacion', 'PropiedadController@pernoctacionTipoHabitacion');
 		Route::get('paises', 'PropiedadController@getPaises');
 		Route::get('regiones', 'PropiedadController@getRegiones');
 		Route::post('calendario/temporada', 'TemporadaController@calendario');
@@ -237,7 +238,7 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::post('eliminar/calendario', 'TemporadaController@eliminarCalendario');
 		Route::get('temporada/precios', 'TemporadaController@getPreciosTemporadas');
 		Route::post('editar/temporadas', 'TemporadaController@editarTemporadas');
-		Route::get('reportes', 'PropiedadController@reportes');
+		Route::get('reportes', 'PropiedadController@reporteGeneral');
 		Route::post('reportes/pago', 'PropiedadController@pagos');
 		Route::get('zonas/horarias', 'PropiedadController@getZonasHorarias');
 		Route::put('pago/{id}', 'ReservaController@editarPago');
