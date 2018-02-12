@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Validator;
 use Cartalyst\Stripe\Stripe;
 use Cartalyst\Stripe\Exception\MissingParameterException;
 use \Illuminate\Database\QueryException;
+use Webpatser\Uuid\Uuid;
 
 class UserDashController extends Controller {
 
@@ -29,7 +30,7 @@ class UserDashController extends Controller {
         if ($request->has('name') && $request->has('email') && $request->has('password') && $request->has('phone') && $request->has('nombre') && $request->has('direccion') && $request->has('tipo_propiedad_id') && $request->has('tipo_cuenta') && $request->has('ciudad') && $request->has('numero_habitaciones') && $request->has('latitud') && $request->has('longitud') && $request->has('periodo')) {
             $us = User::where('email',$request->email)->first();
             if (!isset($us->email)) {
-                $codigo = str_random(50);
+                $codigo = (string) Uuid::generate(4);
                 $prop   = Propiedad::where('codigo', $codigo)->first();
 
                 if (is_null($prop)) {
