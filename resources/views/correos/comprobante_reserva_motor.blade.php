@@ -376,63 +376,7 @@ a[x-apple-data-detectors=true] {
   </div>
   <!--[if mso]></td></tr></table><![endif]-->
 </div>                  
-                    <div class="" style="font-size: 16px;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; text-align: center;"><div style="padding-left: 60px; padding-right: 60px;">
-<table style="height: 51px; float: center; width: 100%; font-size: 12px;">
-<tbody>
-<tr style="height: 18px;">
-<td style="width: 6.65289%; text-align: left; height: 18px;"> <strong>N°</strong></td>
-<td style="width: 12.3471%; text-align: left; height: 18px;"> <strong>Habitacion</strong></td>
-<td style="width: 7%; text-align: left; height: 18px;"><strong> Tipo</strong></td>
-<td style="width: 16%; text-align: left; height: 18px;"><strong> Huespedes</strong></td>
-<td style="width: 11%; text-align: left; height: 18px;"><strong> Noches</strong></td>
-<td style="width: 12%; text-align: left; height: 18px;"><strong> Checkin</strong></td>
-<td style="width: 14%; text-align: left; height: 18px;"><strong> Checkout</strong></td>
-<td style="width: 8%; text-align: left; height: 18px;"><strong> Total</strong></td>
-</tr>
-@if(!empty($reservaspdf))
-@foreach($reservaspdf as $reserva)
-<tr style="height: 7px;">
-<td style="width: 6.65289%; text-align: left; height: 7px;">
-  @if(!empty($reserva->numero_reserva))
-      {{ $reserva->numero_reserva }}
-    @endif</td>
-<td style="width: 12.3471%; text-align: left; height: 7px;">
-  @if(!empty($reserva->habitacion->nombre))
-      {{ $reserva->habitacion->nombre }}
-    @endif</td>
-<td style="width: 7%; text-align: left; height: 7px;">
-  @if(!empty($reserva->tipoHabitacion))
-      {{ $reserva->tipoHabitacion->nombre }}
-    @endif</td>
-<td style="width: 16%; text-align: left; height: 7px;">
-@if(!empty($reserva->ocupacion))
-      {{ $reserva->ocupacion }}
-@endif
-</td>
-<td style="width: 11%; text-align: left; height: 7px;">
-  @if(!empty($reserva->noches))
-      {{ $reserva->noches }}
-    @endif </td>
-<td style="width: 12%; text-align: left; height: 7px;">
- @if(!empty($reserva->checkin))
-    {{ $reserva->checkin->format('d-m-Y') }}
-  @endif
-</td>
-<td style="width: 14%; text-align: left; height: 7px;">
-   @if(!empty($reserva->checkout))
-    {{ $reserva->checkout->format('d-m-Y') }}
-  @endif
-</td>
-<td style="width: 8%; text-align: left; height: 7px;">
-  @if(!empty($reserva->monto_total))
-    {{ $reserva->monto_total }}
-  @endif
-</td>
-</tr>
-endforeach
-</tbody>
-</table>
-</div></div>
+
       
 <table border="0" cellpadding="0" cellspacing="0" width="100%" class="divider " style="border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;min-width: 100%;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%">
     <tbody>
