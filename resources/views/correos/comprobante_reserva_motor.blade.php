@@ -1,16 +1,10 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office"><head>
-    <!--[if gte mso 9]><xml>
-     <o:OfficeDocumentSettings>
-      <o:AllowPNG/>
-      <o:PixelsPerInch>96</o:PixelsPerInch>
-     </o:OfficeDocumentSettings>
-    </xml><![endif]-->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width">
-    <!--[if !mso]><!--><meta http-equiv="X-UA-Compatible" content="IE=edge"><!--<![endif]-->
+    <!--[if !mso]><!-->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"><!--<![endif]-->
     <title></title>
-    
-    
     <style type="text/css" id="media-query">
       body {
   margin: 0;
@@ -249,7 +243,7 @@ a[x-apple-data-detectors=true] {
                           $array['propiedad']->telefono
                           }} @endif</strong>, o envíenos un email a&#160;<strong>@if(!empty($array['propiedad']->email)) {{
                           $array['propiedad']->email
-                          }} @endif</strong>.</span></p></div> 
+                          }} @endif </strong>.</span></p></div> 
   </div>
   <!--[if mso]></td></tr></table><![endif]-->
 </div>
@@ -297,7 +291,7 @@ a[x-apple-data-detectors=true] {
 </tr>
 <tr style="height: 7px;">
 <td style="width: 78px; text-align: left; height: 7px;"><strong>Apellido</strong></td>
-<td style="width: 138px; text-align: left; height: 7px;"> 
+<td style="width: 138px; text-align: left; height: 7px;">
   @if(!empty($array['arr']['cliente']->apellido)) 
     {{ $array['arr']['cliente']->apellido }} 
   @endif 
@@ -308,12 +302,12 @@ a[x-apple-data-detectors=true] {
 <td style="width: 138px; text-align: left; height: 7px;">
   @if(!empty($array['arr']['cliente']->rut)) 
     {{ $array['arr']['cliente']->rut }} 
-  @endif
+  @endif 
 </td>
 </tr>
 <tr style="height: 7px;">
 <td style="width: 78px; text-align: left; height: 7px;"><strong>Telefono</strong></td>
-<td style="width: 138px; text-align: left; height: 7px;">  
+<td style="width: 138px; text-align: left; height: 7px;">
   @if(!empty($array['arr']['cliente']->telefono)) 
     {{ $array['arr']['cliente']->telefono }} 
   @endif 
@@ -321,7 +315,7 @@ a[x-apple-data-detectors=true] {
 </tr>
 <tr style="height: 7px;">
 <td style="width: 78px; text-align: left; height: 7px;"><strong>Email</strong></td>
-<td style="width: 138px; text-align: left; height: 7px;">  
+<td style="width: 138px; text-align: left; height: 7px;">
   @if(!empty($array['arr']['cliente']->email)) 
     {{ $array['arr']['cliente']->email }} 
   @endif 
@@ -375,9 +369,70 @@ a[x-apple-data-detectors=true] {
     <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 12px;line-height: 14px;text-align: justify"><span style="font-size: 14px; line-height: 16px;"><strong><span style="line-height: 16px; color: rgb(0, 104, 165); font-size: 14px;">Detalle reservas</span></strong></span></p></div>  
   </div>
   <!--[if mso]></td></tr></table><![endif]-->
-</div>                  
-
-      
+</div>
+                  
+                  
+                    <div class="" style="font-size: 16px;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; text-align: center;"><div style="padding-left: 60px; padding-right: 60px;">
+<table style="height: 51px; float: center; width: 100%; font-size: 12px;">
+<tbody>
+<tr style="height: 18px;">
+<td style="width: 6.65289%; text-align: left; height: 18px;"> <strong>N°</strong></td>
+<td style="width: 12.3471%; text-align: left; height: 18px;"> <strong>Habitacion</strong></td>
+<td style="width: 7%; text-align: left; height: 18px;"><strong> Tipo</strong></td>
+<td style="width: 16%; text-align: left; height: 18px;"><strong> Huespedes</strong></td>
+<td style="width: 11%; text-align: left; height: 18px;"><strong> Noches</strong></td>
+<td style="width: 12%; text-align: left; height: 18px;"><strong> Checkin</strong></td>
+<td style="width: 14%; text-align: left; height: 18px;"><strong> Checkout</strong></td>
+<td style="width: 8%; text-align: left; height: 18px;"><strong> Total</strong></td>
+</tr>
+<tr style="height: 7px;">
+@foreach($reservaspdf as $reserva)
+<td style="width: 6.65289%; text-align: left; height: 7px;">
+  @if(!empty($reserva->numero_reserva))
+      {{ $reserva->numero_reserva }}
+    @endif
+</td>
+<td style="width: 12.3471%; text-align: left; height: 7px;"> 
+@if(!empty($reserva->habitacion->nombre))
+      {{ $reserva->habitacion->nombre }}
+    @endif
+</td>
+<td style="width: 7%; text-align: left; height: 7px;">
+  @if(!empty($reserva->tipoHabitacion->nombre))
+      {{ $reserva->tipoHabitacion->nombre }}
+    @endif
+</td>
+<td style="width: 16%; text-align: left; height: 7px;">
+  @if(!empty($reserva->ocupacion))
+      {{ $reserva->ocupacion }}
+    @endif
+</td>
+<td style="width: 11%; text-align: left; height: 7px;">
+  @if(!empty($reserva->noches))
+      {{ $reserva->noches }}
+    @endif
+</td>
+<td style="width: 12%; text-align: left; height: 7px;">
+  @if(!empty($reserva->checkin))
+      {{$reserva->checkin->format('d-m-Y')}}
+  @endif
+</td>
+<td style="width: 14%; text-align: left; height: 7px;">
+  @if(!empty($reserva->checkout))
+      {{ $reserva->checkout->format('d-m-Y') }}
+  @endif
+</td>
+<td style="width: 8%; text-align: left; height: 7px;">
+  @if(!empty($reserva->monto_total))
+      {{ $reserva->monto_total }}
+  @endif
+</td>
+@endforeach
+</tr>
+</tbody>
+</table>
+</div></div>
+                    
 <table border="0" cellpadding="0" cellspacing="0" width="100%" class="divider " style="border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;min-width: 100%;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%">
     <tbody>
         <tr style="vertical-align: top">
@@ -394,9 +449,10 @@ a[x-apple-data-detectors=true] {
             </td>
         </tr>
     </tbody>
-</table>   
+</table>
                   
-<div class="" style="font-size: 16px;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; text-align: center; padding-right: 60px;"><div style="float: right">
+                  
+                    <div class="" style="font-size: 16px;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; text-align: center;"><div style="float: right; padding-right: 60px;">
 <table style="height: 51px; float: right; width: 228px; font-size: 12px;">
 <tbody>
 <tr style="height: 18px;">
@@ -409,7 +465,7 @@ a[x-apple-data-detectors=true] {
 </tr>
 <tr style="height: 7px;">
 <td style="width: 78px; text-align: left; height: 7px;">  <strong>Por pagar</strong></td>
-<td style="width: 138px; text-align: left; height: 7px;"><strong>{{ $nombre_moneda }} ${{ $porpagar }}</strong></td>
+<td style="width: 138px; text-align: left; height: 7px;">{{ $nombre_moneda }} ${{ $porpagar }}</td>
 </tr>
 </tbody>
 </table>
@@ -464,7 +520,62 @@ a[x-apple-data-detectors=true] {
                   
                     <div class="">
   <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 60px; padding-left: 60px; padding-top: 10px; padding-bottom: 10px;"><![endif]-->
+  <div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 60px; padding-left: 60px; padding-top: 10px; padding-bottom: 10px;">  
+    <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 12px;line-height: 14px;text-align: justify"><span style="color: rgb(0, 0, 0); font-size: 12px; line-height: 14px;">
 
+
+                          @if(!empty($array['propiedad']->politicas))
+                          <ul>
+                          @foreach($array['propiedad']->politicas as $politica)
+                          
+                          <li>
+                            {{ $politica->descripcion }}
+                          </li>
+                            @endforeach
+                            </ul>
+                          @endif
+                        
+
+    &#160;</span><br></p><br></div> 
+  </div>
+  <!--[if mso]></td></tr></table><![endif]-->
+</div>
+                  
+                  
+                    
+<table border="0" cellpadding="0" cellspacing="0" width="100%" class="divider " style="border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;min-width: 100%;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%">
+    <tbody>
+        <tr style="vertical-align: top">
+            <td class="divider_inner" style="word-break: break-word;border-collapse: collapse !important;vertical-align: top;padding-right: 60px;padding-left: 60px;padding-top: 0px;padding-bottom: 10px;min-width: 100%;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%">
+                <table class="divider_content" height="0px" align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;border-top: 2px solid #ffe15f;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%">
+                    <tbody>
+                        <tr style="vertical-align: top">
+                            <td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top;font-size: 0px;line-height: 0px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%">
+                                <span>&#160;</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    </tbody>
+</table>
+                  
+                  
+                    <div class="">
+  <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 0px; padding-left: 0px; padding-top: 0px; padding-bottom: 0px;"><![endif]-->
+  <div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 0px; padding-left: 0px; padding-top: 0px; padding-bottom: 0px;">  
+    <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 12px;line-height: 14px;text-align: center"><span style="font-size: 10px; line-height: 12px; color: rgb(0, 0, 0);">Mensaje de <strong><span style="font-size: 10px; line-height: 12px;">@if(!empty($array['propiedad']->nombre))
+                          {{ $array['propiedad']->nombre
+                          }} @endif </span></strong>,</span></p><p style="margin: 0;font-size: 12px;line-height: 14px;text-align: center"><span style="font-size: 10px; line-height: 12px; color: rgb(0, 0, 0);">@if(!empty($array['propiedad']->direccion))
+                          {{ $array['propiedad']->direccion
+                          }} @endif , @if(!empty($array['propiedad']->ciudad))
+                          {{ $array['propiedad']->ciudad
+                          }} @endif </span></p></div>  
+  </div>
+  <!--[if mso]></td></tr></table><![endif]-->
+</div>
+                  
               <!--[if (!mso)&(!IE)]><!--></div><!--<![endif]-->
               </div>
             </div>
@@ -479,5 +590,11 @@ a[x-apple-data-detectors=true] {
   <!--[if (mso)|(IE)]></div><![endif]-->
 
 
-</body>
-</html>
+</body></html>
+
+
+
+
+
+
+

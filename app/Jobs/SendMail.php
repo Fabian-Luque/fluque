@@ -16,7 +16,6 @@ class SendMail extends Job implements ShouldQueue {
     use InteractsWithQueue, SerializesModels;
 
     protected $array;
-
     /**
      * Create a new job instance.
      *
