@@ -398,7 +398,54 @@ a[x-apple-data-detectors=true] {
 <td style="width: 14%; text-align: left; height: 18px;"><strong> Checkout</strong></td>
 <td style="width: 8%; text-align: left; height: 18px;"><strong> Total</strong></td>
 </tr>
+@if(!empty($reservas_pdf)) 
+@foreach($reservas_pdf as $reserva)
+<tr style="height: 7px;">
 
+<td style="width: 6.65289%; text-align: left; height: 7px;">
+  @if(!empty($reserva->numero_reserva))
+      {{ $reserva->numero_reserva }}
+    @endif
+</td>
+<td style="width: 12.3471%; text-align: left; height: 7px;"> 
+@if(!empty($reserva->habitacion->nombre))
+      {{ $reserva->habitacion->nombre }}
+    @endif
+</td>
+<td style="width: 7%; text-align: left; height: 7px;">
+  @if(!empty($reserva->tipoHabitacion->nombre))
+      {{ $reserva->tipoHabitacion->nombre }}
+    @endif
+</td>
+<td style="width: 16%; text-align: left; height: 7px;">
+  @if(!empty($reserva->ocupacion))
+      {{ $reserva->ocupacion }}
+    @endif
+</td>
+<td style="width: 11%; text-align: left; height: 7px;">
+  @if(!empty($reserva->noches))
+      {{ $reserva->noches }}
+    @endif
+</td>
+<td style="width: 12%; text-align: left; height: 7px;">
+  @if(!empty($reserva->checkin))
+      {{$reserva->checkin->format('d-m-Y')}}
+  @endif
+</td>
+<td style="width: 14%; text-align: left; height: 7px;">
+  @if(!empty($reserva->checkout))
+      {{ $reserva->checkout->format('d-m-Y') }}
+  @endif
+</td>
+<td style="width: 8%; text-align: left; height: 7px;">
+  @if(!empty($reserva->monto_total))
+      {{ $reserva->monto_total }}
+  @endif
+</td>
+
+</tr>
+@endforeach
+@endif
 </tbody>
 </table>
 </div></div>
