@@ -212,6 +212,10 @@ a[x-apple-data-detectors=true] {
       }
     }
   </style>
+
+<?php  
+  $reservas_pdf = $array['arr']['reservas_pdf'];
+?>
   <!--[if IE]><div class="ie-browser"><![endif]-->
   <!--[if mso]><div class="mso-container"><![endif]-->
   <table class="nl-container" style="border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;min-width: 320px;margin: 0 auto;background-color: #161821;width: 100%" cellpadding="0" cellspacing="0">
@@ -498,7 +502,7 @@ a[x-apple-data-detectors=true] {
 	<!--[if mso]></td></tr></table><![endif]-->
 </div>
                   
-                    <div class="" style="font-size: 16px;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; text-align: center;"><div style="padding-left: 60px; padding-right: 60px;">
+<div class="" style="font-size: 16px;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; text-align: center;"><div style="padding-left: 60px; padding-right: 60px;">
 <table style="height: 51px; float: center; width: 100%; font-size: 12px;">
 <tbody>
 <tr style="height: 18px;">
