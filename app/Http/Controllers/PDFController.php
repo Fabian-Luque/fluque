@@ -757,7 +757,6 @@ class PDFController extends Controller {
                 'pagos.tipoComprobante'
             )->with([
                 'huespedes.servicios' => function ($q) use($id) {
-
                     $q->wherePivot('reserva_id', $id);
                 }
             ])->get();
@@ -944,9 +943,8 @@ class PDFController extends Controller {
         $consumo = 0;
         $iva_reservas            = null;
         $tipo_moneda_reservas    = null;
-        
-        foreach($reservas as $id) {
-            $reserva = Reserva::where('id', $id)
+
+        $reserv = Reserva::whereIn('id', $reservas)
                 ->where('cliente_id', $cliente_id)
                 ->with('cliente.pais', 'cliente.region')
                 ->with('tipoMoneda')
@@ -961,45 +959,47 @@ class PDFController extends Controller {
                     }
                 ]
             )->get();
+        
+        foreach($reserv as $reserva) {
+           
 
             if (count($reserva) == 0) {
                 $retorno['errors'] = true;
                 $retorno['msj'] = "Las reservas no pertenecen al mismo cliente";
-              return Response::json($retorno, 400);
+                return Response::json($retorno, 400);
             }
 
-            foreach ($reserva as $ra) {
-                if (is_null($iva_reservas)) {
-                    $iva_reservas = $ra->iva;
-                } else {
-                    if ($iva_reservas != $ra->iva) {
-                        $retorno['errors'] = true;
-                        $retorno['msj'] = "Error: Reservas con distinto impuesto";
-                        return Response::json($retorno, 400);
-                    }
-                }
 
-                if (is_null($tipo_moneda_reservas)) {
-                    $tipo_moneda_reservas = $ra->tipo_moneda_id;
-                } else {
-                    if ($tipo_moneda_reservas != $ra->tipo_moneda_id) {
-                        $retorno['errors'] = true;
-                        $retorno['msj'] = " Error: Las reservas deben estar cursada con el mismo tipo de moneda ";
-                        return Response::json($retorno, 400);
-                    }
+            if (is_null($iva_reservas)) {
+                $iva_reservas = $reserva->iva;
+            } else {
+                if ($iva_reservas != $reserva->iva) {
+                    $retorno['errors'] = true;
+                    $retorno['msj'] = "Error: Reservas con distinto impuesto";
+                    return Response::json($retorno, 400);
                 }
             }
 
-            foreach ($reserva as $ra) {
-                $monto_alojamiento += $ra->monto_alojamiento;
-                foreach($ra->huespedes as $huesped){
-                    $huesped->monto_consumo = 0;
-                    foreach($huesped->servicios as $servicio){
-                        $huesped->monto_consumo += $servicio->pivot->precio_total;
-                        $consumo += $servicio->pivot->precio_total;
-                    }
+            if (is_null($tipo_moneda_reservas)) {
+                $tipo_moneda_reservas = $reserva->tipo_moneda_id;
+            } else {
+                if ($tipo_moneda_reservas != $reserva->tipo_moneda_id) {
+                    $retorno['errors'] = true;
+                    $retorno['msj'] = " Error: Las reservas deben estar cursada con el mismo tipo de moneda ";
+                    return Response::json($retorno, 400);
                 }
             }
+            
+
+            $monto_alojamiento += $reserva->monto_alojamiento;
+            foreach($reserva->huespedes as $huesped){
+                $huesped->monto_consumo = 0;
+                foreach($huesped->servicios as $servicio){
+                    $huesped->monto_consumo += $servicio->pivot->precio_total;
+                    $consumo += $servicio->pivot->precio_total;
+                }
+            }
+            
             $reservas_pdf->push($reserva[0]);
         }
 
@@ -1008,6 +1008,8 @@ class PDFController extends Controller {
             $tipo_moneda_reservas
         )->first();
         $nombre_moneda = $auxMoneda->nombre;
+
+        $reservas_pdf = $reserv;
 
         if ($tipo_moneda_reservas == 1) {
 
