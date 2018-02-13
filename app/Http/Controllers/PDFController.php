@@ -800,7 +800,7 @@ class PDFController extends Controller {
                     }
                 }
             }
-            $reservas_pdf->push($reserva[0]);
+            $reservas_pdf->push($reserva->first());
         }
 
         $auxMoneda = TipoMoneda::where(
