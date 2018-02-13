@@ -954,6 +954,8 @@ class PDFController extends Controller {
                     'pagos.metodoPago', 
                     'pagos.tipoComprobante'
                 )->get();
+
+                return Response::json($reserv);
         
         foreach($reserv as $reserva) {
            
@@ -1006,7 +1008,7 @@ class PDFController extends Controller {
 
         $reservas_pdf = $reserv;
 
-return Response::json($reservas_pdf);
+
 
         if ($tipo_moneda_reservas == 1) {
 
