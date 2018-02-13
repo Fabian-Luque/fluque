@@ -198,8 +198,7 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::post('habitaciones/excel','ExcelController@importHabitaciones');
 		Route::post('servicios/excel','ExcelController@importServicios');
 		Route::delete('consumo/{id}', 'HuespedController@eliminarConsumo');
-		Route::post('pdf/estado/cuenta', 'PDFController@estadoCuenta');
-		Route::post('pdf/estado/cuenta/resumen', 'PDFController@estadoCuentaResumen');
+		
 		Route::post('pdf/reporte', 'PDFController@reporte');
 		Route::post('pdf/reporte/financiero', 'PDFController@reporteFinanciero');
 		Route::post('pdf/entradas', 'PDFController@entradas');
@@ -381,3 +380,9 @@ Route::post('pdf/comprobante/reserva/resumen2', 'PDFController@comprobanteReserv
 Route::post('asignar/prueba', 'MotorRaController@prueba');
 
 Route::post('correo', 'PDFController@envm');
+
+
+
+
+Route::post('pdf/estado/cuenta/resumen', 'PDFController@estadoCuentaResumen');
+		Route::post('pdf/estado/cuenta', 'PDFController@estadoCuenta');
