@@ -247,46 +247,53 @@
       <div class="detalle-consumo">
         <h2 class="titulo">Detalle de consumos</h2>
      
-        <h3 class="margen">Cliente principal de la reserva: <span>{{ $cliente->nombre }} {{ $cliente->apellido }}</span></h3>
+        <h3 class="margen">Cliente principal de la reserva: 
+          <span>{{ $cliente->nombre }} {{ $cliente->apellido }}</span>
+        </h3>
+        
         <div class="">
         @if(!empty($reservas_pdf))
-        @foreach($reservas_pdf as $reserva)
-          @if(!empty($reserva->huespedes))
-            @foreach($reserva->huespedes as $huesped)
-          <p class="negrita">{{ $huesped->nombre }} {{ $huesped->apellido }}</p>
-          <p class="negrita">Reserva Nº {{ $reserva->numero_reserva }} - Habitacion {{ $reserva->habitacion->nombre }} - {{ $reserva->habitacion->tipoHabitacion->nombre }}</p>
-
-          <table class="tabla-comsumos margen">
-            @foreach($huesped->servicios as $servicio)
-            <tr>
-              <td class="data-tabla-detalles borde-derecha">
-                <p class="">{{ $servicio->pivot->created_at->format('d-m-Y') }}   -  {{ $servicio->pivot->cantidad }} {{ $servicio->nombre }}
+          @foreach($reservas_pdf as $reserva)
+            @if(!empty($reserva->huespedes))
+              @foreach($reserva->huespedes as $huesped)
+                <p class="negrita">{{ $huesped->nombre }} {{ $huesped->apellido }}</p>
+                <p class="negrita">
+                  Reserva Nº {{ $reserva->numero_reserva }} - Habitacion {{ $reserva->habitacion->nombre }} - {{ $reserva->habitacion->tipoHabitacion->nombre }}
                 </p>
-              </td>
-                  @if($reserva->tipo_moneda_id == 1)
-                    <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{  number_format($servicio->pivot->precio_total) }}</p></td>
-                  @else 
-                    <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{  $servicio->pivot->precio_total }}</p></td>
-                  @endif
-            </tr>
-              
-            <tr>
-              <th class="data-tabla-detalles borde-derecha"><p class="titulo align-right">Total</p></th>
 
+                  <table class="tabla-comsumos margen">
+                  @foreach($huesped->servicios as $servicio)
+                    <tr>
+                      <td class="data-tabla-detalles borde-derecha">
+                        <p class="">{{ $servicio->pivot->created_at->format('d-m-Y') }}   -  {{ $servicio->pivot->cantidad }} {{ $servicio->nombre }}
+                        </p>
+                      </td>
                       @if($reserva->tipo_moneda_id == 1)
-                        <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{  number_format($huesped->monto_consumo)}}</p></td>
-
-                        @else 
-
-                        <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{  $huesped->monto_consumo}}</p></td>
-
+                        <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{  number_format($servicio->pivot->precio_total) }}</p></td>
+                      @else 
+                        <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{  $servicio->pivot->precio_total }}</p></td>
                       @endif
-            </tr>
-          </table>
-            @endforeach
+                    </tr>
+                    <tr>
+                    <th class="data-tabla-detalles borde-derecha">
+                      <p class="titulo align-right">Total</p>
+                    </th>
+                    @if($reserva->tipo_moneda_id == 1)
+                      <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{  number_format($huesped->monto_consumo)}}</p></td>
+                    @else 
+                        <td class="data-tabla-detalles-right align-right">
+                          <p class="nombre"> 
+                            {{ $reserva->tipoMoneda->nombre }} ${{  $huesped->monto_consumo}}
+                          </p>
+                        </td>
+                    @endif
+                  </tr>
+                  @endforeach
+                </table>
+              @endforeach
             @endif
           @endforeach
-          @endif
+        @endif
         </div>
       </div>
     </div>

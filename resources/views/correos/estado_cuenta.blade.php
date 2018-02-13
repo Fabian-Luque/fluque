@@ -504,11 +504,11 @@ a[x-apple-data-detectors=true] {
 <tr style="height: 18px;">
 <td style="width: 9%; text-align: left; height: 18px;"> <strong>N°</strong></td>
 <td style="width: 13%; text-align: left; height: 18px;"> <strong>T pago</strong></td>
-<td style="width: 12%; text-align: left; height: 18px;"><strong> Fecha</strong></td>
-<td style="width: 13%; text-align: left; height: 18px;"><strong> M pago</strong></td>
-<td style="width: 12.0661%; text-align: left; height: 18px;"><strong>recibo</strong></td>
-<td style="width: 15.9339%; text-align: left; height: 18px;"><strong> Operacion</strong></td>
-<td style="width: 8%; text-align: left; height: 18px;"><strong> Monto</strong></td>
+<td style="width: 12%; text-align: left; height: 18px;"><strong>Fecha</strong></td>
+<td style="width: 13%; text-align: left; height: 18px;"><strong>M pago</strong></td>
+<td style="width: 12.0661%; text-align: left; height: 18px;"><strong>Recibo</strong></td>
+<td style="width: 15.9339%; text-align: left; height: 18px;"><strong>Operacion</strong></td>
+<td style="width: 8%; text-align: left; height: 18px;"><strong>Monto</strong></td>
 </tr>
 @if(!empty($reservas_pdf))
   @foreach($reservas_pdf as $reserva)
