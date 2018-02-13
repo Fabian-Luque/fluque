@@ -838,7 +838,7 @@ class PDFController extends Controller {
                     "estado_cuenta_resumen.pdf",
                     $request->opcion,
                     $correo_prop,
-                    ""
+                    "estado-cuenta"
                 );
             
             } else {
@@ -863,7 +863,7 @@ class PDFController extends Controller {
                     "estado_cuenta_resumen.pdf",
                     $request->opcion,
                     $correo_prop,
-                    ""
+                    "estado-cuenta"
                 );
             }
         } elseif($tipo_moneda_reservas == 2) {
@@ -888,7 +888,7 @@ class PDFController extends Controller {
                 "estado_cuenta_resumen.pdf",
                 $request->opcion,
                 $correo_prop,
-                ""
+                "estado-cuenta"
             );
         }
         
@@ -1038,7 +1038,7 @@ class PDFController extends Controller {
                     "estado_cuenta_resumen.pdf",
                     $request->opcion,
                     $correo_prop,
-                    ""
+                    "estado-cuenta"
                 );
             
             } else {
@@ -1064,7 +1064,7 @@ class PDFController extends Controller {
                     "estado_cuenta_resumen.pdf",
                     $request->opcion,
                     $correo_prop,
-                    ""
+                    "estado-cuenta"
                 );
             }
         } elseif($tipo_moneda_reservas == 2) {
@@ -1090,7 +1090,7 @@ class PDFController extends Controller {
                 "estado_cuenta_resumen.pdf",
                 $request->opcion,
                 $correo_prop,
-                ""
+                "estado-cuenta"
             );
         }
 
