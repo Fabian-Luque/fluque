@@ -27,30 +27,30 @@
         <div class="cliente">
                 <table class="tabla-cliente">
 
-                @foreach($cliente as $cte)
+                
 
-                    @if($cte->tipo_cliente_id == 1)
-                      @if($cte->pais_id == null)
+                    @if($cliente->tipo_cliente_id == 1)
+                      @if($cliente->pais_id == null)
 
                     <tr>
                         <th class="head-tabla-cliente"><p class="align-left">Nombre</p></th>
-                        <td class="data-tabla-cliente"><p class="nombre">{{ $cte->nombre }}</p></td>
+                        <td class="data-tabla-cliente"><p class="nombre">{{ $cliente->nombre }}</p></td>
                     </tr>
                     <tr>
                         <th class="head-tabla-cliente"><p class="align-left">Apellido</p></th>
-                        <td class="data-tabla-cliente"><p class="nombre">{{ $cte->apellido }}</p></td>
+                        <td class="data-tabla-cliente"><p class="nombre">{{ $cliente->apellido }}</p></td>
                     </tr>
                     <tr>
                         <th class="head-tabla-cliente"><p class="align-left">Rut</p></th>
-                        <td class="data-tabla-cliente"><p class="nombre">{{ $cte->rut }}</p></td>
+                        <td class="data-tabla-cliente"><p class="nombre">{{ $cliente->rut }}</p></td>
                     </tr>
                     <tr>
                         <th class="head-tabla-cliente"><p class="align-left">Dirección</p></th>
-                        <td class="data-tabla-cliente"><p class="nombre">{{ $cte->direccion }}</p></td>
+                        <td class="data-tabla-cliente"><p class="nombre">{{ $cliente->direccion }}</p></td>
                     </tr>
                     <tr>
                         <th class="head-tabla-cliente"><p class="align-left">Ciudad</p></th>
-                        <td class="data-tabla-cliente"><p class="nombre">{{ $cte->ciudad }}</p></td>
+                        <td class="data-tabla-cliente"><p class="nombre">{{ $cliente->ciudad }}</p></td>
                     </tr>
                     <tr>
                         <th class="head-tabla-cliente"><p class="align-left">País</p></th>
@@ -58,70 +58,70 @@
                     </tr>
                     <tr>
                         <th class="head-tabla-cliente"><p class="align-left">Teléfono</p></th>
-                        <td class="data-tabla-cliente"><p class="nombre">{{ $cte->telefono }}</p></td>
+                        <td class="data-tabla-cliente"><p class="nombre">{{ $cliente->telefono }}</p></td>
                     </tr>
                     <tr>
                         <th class="head-tabla-cliente"><p class="align-left">Email</p></th>
-                        <td class="data-tabla-cliente"><p class="nombre">{{ $cte->email }}</p></td>
+                        <td class="data-tabla-cliente"><p class="nombre">{{ $cliente->email }}</p></td>
                     </tr>
                       @else
                       <tr>
                         <th class="head-tabla-cliente"><p class="align-left">Nombre</p></th>
-                        <td class="data-tabla-cliente"><p class="nombre">{{ $cte->nombre }}</p></td>
+                        <td class="data-tabla-cliente"><p class="nombre">{{ $cliente->nombre }}</p></td>
                     </tr>
                     <tr>
                         <th class="head-tabla-cliente"><p class="align-left">Apellido</p></th>
-                        <td class="data-tabla-cliente"><p class="nombre">{{ $cte->apellido }}</p></td>
+                        <td class="data-tabla-cliente"><p class="nombre">{{ $cliente->apellido }}</p></td>
                     </tr>
                     <tr>
                         <th class="head-tabla-cliente"><p class="align-left">Rut</p></th>
-                        <td class="data-tabla-cliente"><p class="nombre">{{ $cte->rut }}</p></td>
+                        <td class="data-tabla-cliente"><p class="nombre">{{ $cliente->rut }}</p></td>
                     </tr>
                     <tr>
                         <th class="head-tabla-cliente"><p class="align-left">Dirección</p></th>
-                        <td class="data-tabla-cliente"><p class="nombre">{{ $cte->direccion }}</p></td>
+                        <td class="data-tabla-cliente"><p class="nombre">{{ $cliente->direccion }}</p></td>
                     </tr>
                     <tr>
                         <th class="head-tabla-cliente"><p class="align-left">Ciudad</p></th>
-                        <td class="data-tabla-cliente"><p class="nombre">{{ $cte->ciudad }}</p></td>
+                        <td class="data-tabla-cliente"><p class="nombre">{{ $cliente->ciudad }}</p></td>
                     </tr>
                     <tr>
                         <th class="head-tabla-cliente"><p class="align-left">País</p></th>
-                        <td class="data-tabla-cliente"><p class="nombre">{{ $cte->pais->nombre }}</p><</td>
+                        <td class="data-tabla-cliente"><p class="nombre">{{ $cliente->pais->nombre }}</p><</td>
                     </tr>
                     <tr>
                         <th class="head-tabla-cliente"><p class="align-left">Teléfono</p></th>
-                        <td class="data-tabla-cliente"><p class="nombre">{{ $cte->telefono }}</p></td>
+                        <td class="data-tabla-cliente"><p class="nombre">{{ $cliente->telefono }}</p></td>
                     </tr>
                     <tr>
                         <th class="head-tabla-cliente"><p class="align-left">Email</p></th>
-                        <td class="data-tabla-cliente"><p class="nombre">{{ $cte->email }}</p></td>
+                        <td class="data-tabla-cliente"><p class="nombre">{{ $cliente->email }}</p></td>
                     </tr>
                      @endif
 
                     @else
-                      @if($cte->pais_id == null)
+                      @if($cliente->pais_id == null)
 
                     <tr>
                         <th class="head-tabla-cliente"><p class="align-left">Razon social</p></th>
-                        <td class="data-tabla-cliente"><p class="nombre">{{ $cte->nombre }}</p></td>
+                        <td class="data-tabla-cliente"><p class="nombre">{{ $cliente->nombre }}</p></td>
                     </tr>
                     <tr>
                         <th class="head-tabla-cliente"><p class="align-left">Rut</p></th>
-                        <td class="data-tabla-cliente"><p class="nombre">{{ $cte->rut }}</p></td>
+                        <td class="data-tabla-cliente"><p class="nombre">{{ $cliente->rut }}</p></td>
                     </tr>
                     <tr>
                         <th class="head-tabla-cliente"><p class="align-left">Giro</p></th>
-                        <td class="data-tabla-cliente"><p class="nombre">{{ $cte->giro }}</p></td>
+                        <td class="data-tabla-cliente"><p class="nombre">{{ $cliente->giro }}</p></td>
                     </tr>
 
                     <tr>
                         <th class="head-tabla-cliente"><p class="align-left">Dirección</p></th>
-                        <td class="data-tabla-cliente"><p class="nombre">{{ $cte->direccion }}</p></td>
+                        <td class="data-tabla-cliente"><p class="nombre">{{ $cliente->direccion }}</p></td>
                     </tr>
                     <tr>
                         <th class="head-tabla-cliente"><p class="align-left">Ciudad</p></th>
-                        <td class="data-tabla-cliente"><p class="nombre">{{ $cte->ciudad }}</p></td>
+                        <td class="data-tabla-cliente"><p class="nombre">{{ $cliente->ciudad }}</p></td>
                     </tr>
                     <tr>
                         <th class="head-tabla-cliente"><p class="align-left">País</p></th>
@@ -129,52 +129,50 @@
                     </tr>
                     <tr>
                         <th class="head-tabla-cliente"><p class="align-left">Teléfono</p></th>
-                        <td class="data-tabla-cliente"><p class="nombre">{{ $cte->telefono }}</p></td>
+                        <td class="data-tabla-cliente"><p class="nombre">{{ $cliente->telefono }}</p></td>
                     </tr>
                     <tr>
                         <th class="head-tabla-cliente"><p class="align-left">Email</p></th>
-                        <td class="data-tabla-cliente"><p class="nombre">{{ $cte->email }}</p></td>
+                        <td class="data-tabla-cliente"><p class="nombre">{{ $cliente->email }}</p></td>
                     </tr>
                       @else
                       <tr>
                         <th class="head-tabla-cliente"><p class="align-left">Razon social</p></th>
-                        <td class="data-tabla-cliente"><p class="nombre">{{ $cte->nombre }}</p></td>
+                        <td class="data-tabla-cliente"><p class="nombre">{{ $cliente->nombre }}</p></td>
                     </tr>
                     <tr>
                         <th class="head-tabla-cliente"><p class="align-left">Rut</p></th>
-                        <td class="data-tabla-cliente"><p class="nombre">{{ $cte->rut }}</p></td>
+                        <td class="data-tabla-cliente"><p class="nombre">{{ $cliente->rut }}</p></td>
                     </tr>
                     <tr>
                         <th class="head-tabla-cliente"><p class="align-left">Giro</p></th>
-                        <td class="data-tabla-cliente"><p class="nombre">{{ $cte->giro }}</p></td>
+                        <td class="data-tabla-cliente"><p class="nombre">{{ $cliente->giro }}</p></td>
                     </tr>
 
                     <tr>
                         <th class="head-tabla-cliente"><p class="align-left">Dirección</p></th>
-                        <td class="data-tabla-cliente"><p class="nombre">{{ $cte->direccion }}</p></td>
+                        <td class="data-tabla-cliente"><p class="nombre">{{ $cliente->direccion }}</p></td>
                     </tr>
                     <tr>
                         <th class="head-tabla-cliente"><p class="align-left">Ciudad</p></th>
-                        <td class="data-tabla-cliente"><p class="nombre">{{ $cte->ciudad }}</p></td>
+                        <td class="data-tabla-cliente"><p class="nombre">{{ $cliente->ciudad }}</p></td>
                     </tr>
                     <tr>
                         <th class="head-tabla-cliente"><p class="align-left">País</p></th>
-                        <td class="data-tabla-cliente"><p class="nombre">{{ $cte->pais->nombre }}</p><</td>
+                        <td class="data-tabla-cliente"><p class="nombre">{{ $cliente->pais->nombre }}</p><</td>
                     </tr>
                     <tr>
                         <th class="head-tabla-cliente"><p class="align-left">Teléfono</p></th>
-                        <td class="data-tabla-cliente"><p class="nombre">{{ $cte->telefono }}</p></td>
+                        <td class="data-tabla-cliente"><p class="nombre">{{ $cliente->telefono }}</p></td>
                     </tr>
                     <tr>
                         <th class="head-tabla-cliente"><p class="align-left">Email</p></th>
-                        <td class="data-tabla-cliente"><p class="nombre">{{ $cte->email }}</p></td>
+                        <td class="data-tabla-cliente"><p class="nombre">{{ $cliente->email }}</p></td>
                     </tr>
 
                       @endif
                     @endif
 
-
-                    @endforeach
                 </table>
         </div>
         <!--  Fin cliente  -->
@@ -184,16 +182,16 @@
           </div>
 
           <table class="tabla-detalles">
-          @foreach($reservas_pdf as $reservas)
+          
 
-            @foreach($reservas as $reserva)
+            @foreach($reservas_pdf as $reserva)
 
             <tr>
               <td class="data-tabla-detalles borde-derecha"><p class="titulo">Reserva Nº {{ $reserva->numero_reserva }} - Habitacion {{ $reserva->habitacion->nombre }} - {{ $reserva->habitacion->tipoHabitacion->nombre }} - {{ $reserva->ocupacion }} Huéspedes - {{ $reserva->noches }} Noches - Checkin {{ $reserva->checkin->format('d-m-Y') }} - Checkout {{ $reserva->checkout->format('d-m-Y') }}</p></td>
               <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{  number_format($reserva->monto_alojamiento)  }}</p></td>
             </tr>
             @endforeach
-          @endforeach
+       
 
 
               @if($nombre_moneda == "CLP")
@@ -265,14 +263,13 @@
 
       <div class="detalle-consumo">
         <h2 class="titulo">Detalle de consumos</h2>
-        @foreach($cliente as $cte)
-        <h3 class="margen">Cliente principal de la reserva: <span>{{ $cte->nombre }} {{ $cte->apellido }}</span></h3>
-        @endforeach
+     
+        <h3 class="margen">Cliente principal de la reserva: <span>{{ $cliente->nombre }} {{ $cliente->apellido }}</span></h3>
+ 
 
         <div class="">
 
-        @foreach($reservas_pdf as $reservas)
-          @foreach($reservas as $reserva)
+        @foreach($reservas_pdf as $reserva)
             @foreach($reserva->huespedes as $huesped)
           <p class="negrita">{{ $huesped->nombre }} {{ $huesped->apellido }}</p>
           <p class="negrita">Reserva Nº {{ $reserva->numero_reserva }} - Habitacion {{ $reserva->habitacion->nombre }} - {{ $reserva->habitacion->tipoHabitacion->nombre }}</p>
@@ -302,17 +299,9 @@
 
 
             </tr>
-              @endforeach
+              
             <tr>
               <th class="data-tabla-detalles borde-derecha"><p class="titulo align-right">Total</p></th>
-
-
-
-
-
-
-
-
 
                       @if($reserva->tipo_moneda_id == 1)
                         <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{  number_format($huesped->monto_consumo)}}</p></td>
@@ -321,36 +310,17 @@
 
                         <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{  $huesped->monto_consumo}}</p></td>
 
-
                       @endif
-
-
-
-
-
-
-
-
-
             </tr>
           </table>
             @endforeach
           @endforeach
-        @endforeach
         </div>
-
-
-
       </div>
-
-
     </div>
-
     <div class="page-break"></div>
-
     <div class="contenedor">
       <div class="estado-cuenta" style="margin-top: 20px;">
-
                 <div class="titulo" style="text-align:left;">
                   <h3 class="">Detalle de pagos</h3>
                 </div>
@@ -367,8 +337,7 @@
                       <th class="data-tabla-detalles borde-derecha"><p>Monto</p></th>
                     </tr>
 
-                @foreach($reservas_pdf as $reservas)
-                    @foreach($reservas as $reserva)
+                @foreach($reservas_pdf as $reserva)
                      @foreach($reserva->pagos as $pago)
                     <tr>
                       <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $reserva->numero_reserva }}</p></td>
@@ -392,38 +361,16 @@
                       <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->numero_operacion }}</p></td>
                       @endif
 
-
                       @if($pago->tipo_moneda_id == 1)
-
-
                         <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->tipoMoneda->nombre }} ${{ number_format($pago->monto_equivalente) }}</p></td>
 
-
-
                         @else 
-
-
                         <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->tipoMoneda->nombre }} ${{ $pago->monto_equivalente }}</p></td>
-
-
-
                       @endif
-
-
-
-
-
-                  
-
-
                     </tr>
                      @endforeach
                     @endforeach
-                @endforeach
-
-
                   </table>
                 </div>
-
   </body>
 </html>
