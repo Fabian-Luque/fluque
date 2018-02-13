@@ -183,59 +183,45 @@
 
           <table class="tabla-detalles">
           
-
+            @if(!empty($reservas_pdf))
             @foreach($reservas_pdf as $reserva)
-
             <tr>
               <td class="data-tabla-detalles borde-derecha"><p class="titulo">Reserva Nº {{ $reserva->numero_reserva }} - Habitacion {{ $reserva->habitacion->nombre }} - {{ $reserva->habitacion->tipoHabitacion->nombre }} - {{ $reserva->ocupacion }} Huéspedes - {{ $reserva->noches }} Noches - Checkin {{ $reserva->checkin->format('d-m-Y') }} - Checkout {{ $reserva->checkout->format('d-m-Y') }}</p></td>
               <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{  number_format($reserva->monto_alojamiento)  }}</p></td>
             </tr>
             @endforeach
+            @endif
        
-
-
               @if($nombre_moneda == "CLP")
-                @if($iva_reservas == 1)
-
-
-                <tr>
-                  <th class="data-tabla-detalles borde-derecha"><p class="titulo align-right">Subtotal</p></th>
-                  <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $nombre_moneda }} ${{ number_format($neto) }}</p></td>
-                </tr>
-                <tr>
-                  <th class="data-tabla-detalles borde-derecha"><p class="titulo align-right">IVA</p></th>
-                  <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $nombre_moneda }} ${{  number_format($iva) }}</p></td>
-                </tr>
-                <tr>
-                  <th class="data-tabla-detalles borde-derecha"><p class="titulo align-right">Total</p></th>
-                  <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $nombre_moneda }} ${{   number_format($total)}}</p></td>
-                </tr>
-
-                @else
-                <tr>
-                  <th class="data-tabla-detalles borde-derecha"><p class="titulo align-right">Total</p></th>
-                  <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $nombre_moneda }} ${{ number_format($total)}}</p></td>
-                </tr>
-
+                  @if($iva_reservas == 1)
+                    <tr>
+                      <th class="data-tabla-detalles borde-derecha"><p class="titulo align-right">Subtotal</p></th>
+                      <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $nombre_moneda }} ${{ number_format($neto) }}</p></td>
+                    </tr>
+                    <tr>
+                      <th class="data-tabla-detalles borde-derecha"><p class="titulo align-right">IVA</p></th>
+                      <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $nombre_moneda }} ${{  number_format($iva) }}</p></td>
+                    </tr>
+                    <tr>
+                      <th class="data-tabla-detalles borde-derecha"><p class="titulo align-right">Total</p></th>
+                      <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $nombre_moneda }} ${{   number_format($total)}}</p></td>
+                    </tr>
+                  @else
+                    <tr>
+                      <th class="data-tabla-detalles borde-derecha"><p class="titulo align-right">Total</p></th>
+                      <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $nombre_moneda }} ${{ number_format($total)}}</p></td>
+                    </tr>
                 @endif
 
               @else
-
-            <tr>
-              <th class="data-tabla-detalles borde-derecha"><p class="titulo align-right">Total</p></th>
-              <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $nombre_moneda }} ${{ $total  }}</p></td>
-            </tr>
-
-
+                <tr>
+                  <th class="data-tabla-detalles borde-derecha"><p class="titulo align-right">Total</p></th>
+                  <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $nombre_moneda }} ${{ $total  }}</p></td>
+                </tr>
               @endif
-
           </table>
         </div>
         <!--  Fin detalles  -->
-
-
-
-
       </div>
       <!--  Fin estado-cuenta  -->
     </div>
@@ -254,9 +240,6 @@
         <p class="firma">Firma Autorizada Recepción</p>
       </div>
     </div>
-
-
-
     <div class="page-break"></div>
 
     <div class="contenedor">
@@ -265,39 +248,26 @@
         <h2 class="titulo">Detalle de consumos</h2>
      
         <h3 class="margen">Cliente principal de la reserva: <span>{{ $cliente->nombre }} {{ $cliente->apellido }}</span></h3>
- 
-
         <div class="">
-
+        @if(!empty($reservas_pdf))
         @foreach($reservas_pdf as $reserva)
+          @if(!empty($reserva->huespedes))
             @foreach($reserva->huespedes as $huesped)
           <p class="negrita">{{ $huesped->nombre }} {{ $huesped->apellido }}</p>
           <p class="negrita">Reserva Nº {{ $reserva->numero_reserva }} - Habitacion {{ $reserva->habitacion->nombre }} - {{ $reserva->habitacion->tipoHabitacion->nombre }}</p>
 
           <table class="tabla-comsumos margen">
-              @foreach($huesped->servicios as $servicio)
+            @foreach($huesped->servicios as $servicio)
             <tr>
-              <td class="data-tabla-detalles borde-derecha"><p class="">{{ $servicio->pivot->created_at->format('d-m-Y') }}   -  {{ $servicio->pivot->cantidad }} {{ $servicio->nombre }}</p></td>
-
-
-
-
-                        @if($reserva->tipo_moneda_id == 1)
-
-
-
-                       <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{  number_format($servicio->pivot->precio_total) }}</p></td>
-
-
-                        @else 
-
-  
-                        <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{  $servicio->pivot->precio_total }}</p></td>
-
-
-                      @endif
-
-
+              <td class="data-tabla-detalles borde-derecha">
+                <p class="">{{ $servicio->pivot->created_at->format('d-m-Y') }}   -  {{ $servicio->pivot->cantidad }} {{ $servicio->nombre }}
+                </p>
+              </td>
+                  @if($reserva->tipo_moneda_id == 1)
+                    <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{  number_format($servicio->pivot->precio_total) }}</p></td>
+                  @else 
+                    <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{  $servicio->pivot->precio_total }}</p></td>
+                  @endif
             </tr>
               
             <tr>
@@ -314,7 +284,9 @@
             </tr>
           </table>
             @endforeach
+            @endif
           @endforeach
+          @endif
         </div>
       </div>
     </div>
@@ -338,43 +310,43 @@
                     </tr>
 
                 @if(!empty($reservas_pdf))
-                @foreach($reservas_pdf as $reserva)
+                  @foreach($reservas_pdf as $reserva)
                     @if(!empty($reserva->pagos))
                      @foreach($reserva->pagos as $pago)
-                    <tr>
-                      <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $reserva->numero_reserva }}</p></td>
-                      <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->tipo }}</p></td>
-                      <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->created_at }}</p></td>
-                      @if($pago->numero_cheque == null)
-                      <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->metodoPago->nombre }}</p></td>
-                      @else
-                      <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->metodoPago->nombre }} {{$pago->numero_cheque }}</p></td>
-                      @endif
+                      <tr>
+                        <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $reserva->numero_reserva }}</p></td>
+                        <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->tipo }}</p></td>
+                        <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->created_at }}</p></td>
+                        @if($pago->numero_cheque == null)
+                        <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->metodoPago->nombre }}</p></td>
+                        @else
+                        <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->metodoPago->nombre }} {{$pago->numero_cheque }}</p></td>
+                        @endif
 
-                      @if($pago->tipoComprobante == null)
-                      <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p></p></td>
-                      @else
-                      <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->tipoComprobante->nombre }}</p></td>
-                      @endif
+                        @if($pago->tipoComprobante == null)
+                        <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p></p></td>
+                        @else
+                        <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->tipoComprobante->nombre }}</p></td>
+                        @endif
 
-                      @if($pago->numero_operacion == null)
-                      <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p></p></td>
-                      @else
-                      <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->numero_operacion }}</p></td>
-                      @endif
+                        @if($pago->numero_operacion == null)
+                        <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p></p></td>
+                        @else
+                        <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->numero_operacion }}</p></td>
+                        @endif
 
-                      @if($pago->tipo_moneda_id == 1)
-                        <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->tipoMoneda->nombre }} ${{ number_format($pago->monto_equivalente) }}</p></td>
+                        @if($pago->tipo_moneda_id == 1)
+                          <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->tipoMoneda->nombre }} ${{ number_format($pago->monto_equivalente) }}</p></td>
 
-                        @else 
-                        <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->tipoMoneda->nombre }} ${{ $pago->monto_equivalente }}</p></td>
-                      @endif
-                    </tr>
-                     @endforeach
+                          @else 
+                          <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->tipoMoneda->nombre }} ${{ $pago->monto_equivalente }}</p></td>
+                        @endif
+                      </tr>
+                      @endforeach
                      @endif
                     @endforeach
                   @endif
-                  </table>
-                </div>
+                </table>
+              </div>
   </body>
 </html>
