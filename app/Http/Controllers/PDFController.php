@@ -825,6 +825,7 @@ class PDFController extends Controller {
                     'neto'          => round($neto), 
                     'iva'           => round($iva), 
                     'total'         => $total,
+                    'comp'          => 1,
                     'de'            => $propiedad[0]->nombre
                 );
 
@@ -849,6 +850,7 @@ class PDFController extends Controller {
                     'nombre_moneda' => $nombre_moneda,
                     'iva_reservas'  => $iva_reservas,
                     'total'         => $total,
+                    'comp'          => 1,
                     'de'            => $propiedad[0]->nombre
                 );
 
@@ -873,6 +875,7 @@ class PDFController extends Controller {
                 'nombre_moneda' => $nombre_moneda,
                 'iva_reservas'  => $iva_reservas,
                 'total'         => $total,
+                'comp'          => 1,
                 'de'            => $propiedad[0]->nombre
             );
 
@@ -1022,6 +1025,7 @@ class PDFController extends Controller {
                     'neto'          => round($neto), 
                     'iva'           => $iva, 
                     'total'         => $total,
+                    'comp'          => 1,
                     'de'            => $propiedad[0]->nombre
                 );
 
@@ -1047,6 +1051,7 @@ class PDFController extends Controller {
                     'nombre_moneda' => $nombre_moneda,
                     'iva_reservas'  => $iva_reservas,
                     'total'         => $total,
+                    'comp'          => 1,
                     'de'            => $propiedad[0]->nombre
                 );
 
@@ -1072,6 +1077,7 @@ class PDFController extends Controller {
                 'nombre_moneda' => $nombre_moneda,
                 'iva_reservas'  => $iva_reservas,
                 'total'         => $total,
+                'comp'          => 1,
                 'de'            => $propiedad[0]->nombre
             );
 
