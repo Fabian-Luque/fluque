@@ -1,13 +1,10 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
-
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width">
-    <!--[if !mso]><!--><meta http-equiv="X-UA-Compatible" content="IE=edge"><!--<![endif]-->
+    <!--[if !mso]><!-->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"><!--<![endif]-->
     <title></title>
-    
-    
     <style type="text/css" id="media-query">
       body {
   margin: 0;
@@ -177,28 +174,28 @@ a[x-apple-data-detectors=true] {
       img.fullwidth {
         max-width: 100%!important;
       }
-			img.fullwidthOnMobile {
+      img.fullwidthOnMobile {
         max-width: 100%!important;
       }
       .no-stack .col {
-				min-width: 0!important;
-				display: table-cell!important;
-			}
-			.no-stack.two-up .col {
-				width: 50%!important;
-			}
-			.no-stack.mixed-two-up .col.num4 {
-				width: 33%!important;
-			}
-			.no-stack.mixed-two-up .col.num8 {
-				width: 66%!important;
-			}
-			.no-stack.three-up .col.num4 {
-				width: 33%!important;
-			}
-			.no-stack.four-up .col.num3 {
-				width: 25%!important;
-			}
+        min-width: 0!important;
+        display: table-cell!important;
+      }
+      .no-stack.two-up .col {
+        width: 50%!important;
+      }
+      .no-stack.mixed-two-up .col.num4 {
+        width: 33%!important;
+      }
+      .no-stack.mixed-two-up .col.num8 {
+        width: 66%!important;
+      }
+      .no-stack.three-up .col.num4 {
+        width: 33%!important;
+      }
+      .no-stack.four-up .col.num3 {
+        width: 25%!important;
+      }
       .mobile_hide {
         min-height: 0px!important;
         max-height: 0px!important;
@@ -209,13 +206,12 @@ a[x-apple-data-detectors=true] {
       }
     }
   </style>
-
   <!--[if IE]><div class="ie-browser"><![endif]-->
   <!--[if mso]><div class="mso-container"><![endif]-->
   <table class="nl-container" style="border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;min-width: 320px;margin: 0 auto;background-color: #161821;width: 100%" cellpadding="0" cellspacing="0">
-	<tbody>
-	<tr style="vertical-align: top">
-		<td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top">
+  <tbody>
+  <tr style="vertical-align: top">
+    <td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top">
     <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td align="center" style="background-color: #161821;"><![endif]-->
 
     <div style="background-color:transparent;">
@@ -230,11 +226,26 @@ a[x-apple-data-detectors=true] {
 
                   
                     <div class="">
-	<!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 60px; padding-left: 60px; padding-top: 10px; padding-bottom: 10px;"><![endif]-->
-	<div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 60px; padding-left: 60px; padding-top: 10px; padding-bottom: 10px;">	
-		<div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 12px;line-height: 14px;text-align: center"><span style="font-size: 16px; line-height: 19px;"><strong><span style="line-height: 19px; color: rgb(0, 104, 165); font-size: 16px;">Estado de cuenta</span></strong></span></p></div>	
-	</div>
-	<!--[if mso]></td></tr></table><![endif]-->
+  <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 60px; padding-left: 60px; padding-top: 10px; padding-bottom: 10px;"><![endif]-->
+  <div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 60px; padding-left: 60px; padding-top: 10px; padding-bottom: 10px;">  
+    <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 12px;line-height: 14px;text-align: center"><span style="font-size: 16px; line-height: 19px;"><strong><span style="line-height: 19px; color: rgb(0, 104, 165); font-size: 16px;">Comprobante de reserva</span></strong></span></p></div> 
+  </div>
+  <!--[if mso]></td></tr></table><![endif]-->
+</div>
+                  
+                  
+                    <div class="">
+  <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 60px; padding-left: 60px; padding-top: 10px; padding-bottom: 10px;"><![endif]-->
+  <div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 60px; padding-left: 60px; padding-top: 10px; padding-bottom: 10px;">  
+    <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 12px;line-height: 14px"><span style="color: rgb(0, 0, 0); font-size: 12px; line-height: 14px;">Gracias por elegir a&#160;<strong>@if(!empty($array['propiedad']->nombre)) {{
+                          $array['propiedad']->nombre
+                          }} @endif </strong>. Hemos confirmado sus solicitudes de reservas.</span></p><p style="margin: 0;font-size: 12px;line-height: 14px"><span style="color: rgb(0, 0, 0); font-size: 12px; line-height: 14px;">&#160;</span></p><p style="margin: 0;font-size: 12px;line-height: 14px"><span style="color: rgb(0, 0, 0); font-size: 12px; line-height: 14px;">Si necesita hacer cambios, o precisa de ayuda, por favor llame a <strong>@if(!empty($array['propiedad']->telefono)) {{
+                          $array['propiedad']->telefono
+                          }} @endif</strong>, o envíenos un email a&#160;<strong>@if(!empty($array['propiedad']->email)) {{
+                          $array['propiedad']->email
+                          }} @endif </strong>.</span></p></div> 
+  </div>
+  <!--[if mso]></td></tr></table><![endif]-->
 </div>
                   
                   
@@ -259,31 +270,32 @@ a[x-apple-data-detectors=true] {
                   
                   
                     <div class="">
-	<!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 60px; padding-left: 60px; padding-top: 10px; padding-bottom: 10px;"><![endif]-->
-	<div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 60px; padding-left: 60px; padding-top: 10px; padding-bottom: 10px;">	
-		<div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 12px;line-height: 14px;text-align: justify"><span style="font-size: 14px; line-height: 16px;"><strong><span style="line-height: 16px; color: rgb(0, 104, 165); font-size: 14px;">Datos cliente</span></strong></span></p></div>	
-	</div>
-	<!--[if mso]></td></tr></table><![endif]-->
+  <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 60px; padding-left: 60px; padding-top: 10px; padding-bottom: 10px;"><![endif]-->
+  <div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 60px; padding-left: 60px; padding-top: 10px; padding-bottom: 10px;">  
+    <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 12px;line-height: 14px;text-align: justify"><span style="font-size: 14px; line-height: 16px;"><strong><span style="line-height: 16px; color: rgb(0, 104, 165); font-size: 14px;">Datos cliente</span></strong></span></p></div> 
+  </div>
+  <!--[if mso]></td></tr></table><![endif]-->
 </div>
-                  
-                  
-                    <div class="" style="font-size: 16px;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; text-align: center;"><div style="padding-left: 60px; padding-right: 60px;">
+                              
+<div class="" style="font-size: 16px;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; text-align: center;">
+  <div style="padding-left: 60px; padding-right: 60px;">
 <table style="height: 51px; float: left; width: 228px; font-size: 12px;">
 <tbody>
-<tr style="height: 18px;">
-<td style="width: 78px; text-align: left; height: 18px;"><strong>Nombre</strong></td>
-<td style="width: 138px; text-align: left; height: 18px;">
+<tr style="height: 7px;">
+<td style="width: 78px; text-align: left; height: 7px;"><strong>Apellido</strong></td>
+<td style="width: 138px; text-align: left; height: 7px;">
   @if(!empty($array['arr']['cliente']->nombre)) 
     {{ $array['arr']['cliente']->nombre }} 
-  @endif
+  @endif 
 </td>
 </tr>
+
 <tr style="height: 7px;">
 <td style="width: 78px; text-align: left; height: 7px;"><strong>Apellido</strong></td>
 <td style="width: 138px; text-align: left; height: 7px;">
   @if(!empty($array['arr']['cliente']->apellido)) 
     {{ $array['arr']['cliente']->apellido }} 
-  @endif
+  @endif 
 </td>
 </tr>
 <tr style="height: 7px;">
@@ -291,31 +303,7 @@ a[x-apple-data-detectors=true] {
 <td style="width: 138px; text-align: left; height: 7px;">
   @if(!empty($array['arr']['cliente']->rut)) 
     {{ $array['arr']['cliente']->rut }} 
-  @endif
-</td>
-</tr>
-<tr style="height: 7px;">
-<td style="width: 78px; text-align: left; height: 7px;"><strong>Direccion</strong></td>
-<td style="width: 138px; text-align: left; height: 7px;">
-  @if(!empty($array['arr']['cliente']->direccion)) 
-    {{ $array['arr']['cliente']->direccion }} 
-  @endif
-</td>
-</tr>
-<tr style="height: 7px;">
-<td style="width: 78px; text-align: left; height: 7px;"><strong>Pais</strong></td>
-<td style="width: 138px; text-align: left; height: 7px;">
-  @if(!empty($array['arr']['cliente']->pais->nombre)) 
-    {{ $array['arr']['cliente']->pais->nombre }} 
-  @endif
-</td>
-</tr>
-<tr style="height: 7px;">
-<td style="width: 78px; text-align: left; height: 7px;"><strong>Ciudad</strong></td>
-<td style="width: 138px; text-align: left; height: 7px;">
-  @if(!empty($array['arr']['cliente']->ciudad)) 
-    {{ $array['arr']['cliente']->ciudad }} 
-  @endif
+  @endif 
 </td>
 </tr>
 <tr style="height: 7px;">
@@ -323,7 +311,7 @@ a[x-apple-data-detectors=true] {
 <td style="width: 138px; text-align: left; height: 7px;">
   @if(!empty($array['arr']['cliente']->telefono)) 
     {{ $array['arr']['cliente']->telefono }} 
-  @endif
+  @endif 
 </td>
 </tr>
 <tr style="height: 7px;">
@@ -331,13 +319,13 @@ a[x-apple-data-detectors=true] {
 <td style="width: 138px; text-align: left; height: 7px;">
   @if(!empty($array['arr']['cliente']->email)) 
     {{ $array['arr']['cliente']->email }} 
-  @endif
+  @endif 
 </td>
 </tr>
 </tbody>
 </table>
-</div></div>
-
+</div>
+</div>
                   
               <!--[if (!mso)&(!IE)]><!--></div><!--<![endif]-->
               </div>
@@ -377,11 +365,11 @@ a[x-apple-data-detectors=true] {
                   
                   
                     <div class="">
-	<!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 60px; padding-left: 60px; padding-top: 10px; padding-bottom: 10px;"><![endif]-->
-	<div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 60px; padding-left: 60px; padding-top: 10px; padding-bottom: 10px;">	
-		<div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 12px;line-height: 14px;text-align: justify"><span style="font-size: 14px; line-height: 16px;"><strong><span style="line-height: 16px; color: rgb(0, 104, 165); font-size: 14px;">Detalle reservas</span></strong></span></p></div>	
-	</div>
-	<!--[if mso]></td></tr></table><![endif]-->
+  <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 60px; padding-left: 60px; padding-top: 10px; padding-bottom: 10px;"><![endif]-->
+  <div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 60px; padding-left: 60px; padding-top: 10px; padding-bottom: 10px;">  
+    <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 12px;line-height: 14px;text-align: justify"><span style="font-size: 14px; line-height: 16px;"><strong><span style="line-height: 16px; color: rgb(0, 104, 165); font-size: 14px;">Detalle reservas</span></strong></span></p></div>  
+  </div>
+  <!--[if mso]></td></tr></table><![endif]-->
 </div>
                   
                   
@@ -398,7 +386,6 @@ a[x-apple-data-detectors=true] {
 <td style="width: 14%; text-align: left; height: 18px;"><strong> Checkout</strong></td>
 <td style="width: 8%; text-align: left; height: 18px;"><strong> Total</strong></td>
 </tr>
-@if(!empty($reservaspdf)) 
 @foreach($reservaspdf as $reserva)
 <tr style="height: 7px;">
 
@@ -445,10 +432,30 @@ a[x-apple-data-detectors=true] {
 
 </tr>
 @endforeach
-@endif
 </tbody>
 </table>
 </div></div>
+                    
+<table border="0" cellpadding="0" cellspacing="0" width="100%" class="divider " style="border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;min-width: 100%;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%">
+    <tbody>
+        <tr style="vertical-align: top">
+            <td class="divider_inner" style="word-break: break-word;border-collapse: collapse !important;vertical-align: top;padding-right: 60px;padding-left: 60px;padding-top: 10px;padding-bottom: 10px;min-width: 100%;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%">
+                <table class="divider_content" height="0px" align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;border-top: 2px solid #ffe15f;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%">
+                    <tbody>
+                        <tr style="vertical-align: top">
+                            <td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top;font-size: 0px;line-height: 0px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%">
+                                <span>&#160;</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    </tbody>
+</table>
+                  
+                  
+
 
                   
               <!--[if (!mso)&(!IE)]><!--></div><!--<![endif]-->
@@ -467,36 +474,18 @@ a[x-apple-data-detectors=true] {
               <div style="background-color: transparent; width: 100% !important;">
               <!--[if (!mso)&(!IE)]><!--><div style="border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent; padding-top:10px; padding-bottom:5px; padding-right: 0px; padding-left: 0px;"><!--<![endif]-->
 
-                  
-                    
-<table border="0" cellpadding="0" cellspacing="0" width="100%" class="divider " style="border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;min-width: 100%;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%">
-    <tbody>
-        <tr style="vertical-align: top">
-            <td class="divider_inner" style="word-break: break-word;border-collapse: collapse !important;vertical-align: top;padding-right: 60px;padding-left: 60px;padding-top: 0px;padding-bottom: 10px;min-width: 100%;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%">
-                <table class="divider_content" height="0px" align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;border-top: 2px solid #ffe15f;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%">
-                    <tbody>
-                        <tr style="vertical-align: top">
-                            <td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top;font-size: 0px;line-height: 0px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%">
-                                <span>&#160;</span>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </td>
-        </tr>
-    </tbody>
-</table>
-                  
+                   
                   
                     <div class="">
-	<!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 60px; padding-left: 60px; padding-top: 10px; padding-bottom: 10px;"><![endif]-->
-	<div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 60px; padding-left: 60px; padding-top: 10px; padding-bottom: 10px;">	
-		<div style="line-height:14px;font-size:12px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;line-height: 14px;text-align: justify;font-size: 12px"><span style="color: rgb(0, 104, 165); font-size: 12px; line-height: 14px;" color="#0068a5"><span style="font-size: 14px; line-height: 16px;"><strong>Detalle de pagos</strong></span></span><br></p></div>	
-	</div>
-	<!--[if mso]></td></tr></table><![endif]-->
+  <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 60px; padding-left: 60px; padding-top: 10px; padding-bottom: 10px;"><![endif]-->
+  <div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 60px; padding-left: 60px; padding-top: 10px; padding-bottom: 10px;">  
+    <div style="line-height:14px;font-size:12px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;line-height: 14px;text-align: justify;font-size: 12px"><font color="#0068a5"><span style="font-size: 14px; line-height: 16px;"><b>Detalle de pagos</b></span></font><br></p></div>  
+  </div>
+  <!--[if mso]></td></tr></table><![endif]-->
 </div>
                   
-<div class="" style="font-size: 16px;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; text-align: center;"><div style="padding-left: 60px; padding-right: 60px;">
+                  
+ <div class="" style="font-size: 16px;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; text-align: center;"><div style="padding-left: 60px; padding-right: 60px;">
 <table style="height: 51px; float: center; width: 100%; font-size: 12px;">
 <tbody>
 <tr style="height: 18px;">
@@ -551,15 +540,14 @@ a[x-apple-data-detectors=true] {
 @endif
 </tbody>
 </table>
-</div></div>
-
-                  
+</div>
+</div>                   
                   
                     
 <table border="0" cellpadding="0" cellspacing="0" width="100%" class="divider " style="border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;min-width: 100%;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%">
     <tbody>
         <tr style="vertical-align: top">
-            <td class="divider_inner" style="word-break: break-word;border-collapse: collapse !important;vertical-align: top;padding-right: 60px;padding-left: 60px;padding-top: 5px;padding-bottom: 10px;min-width: 100%;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%">
+            <td class="divider_inner" style="word-break: break-word;border-collapse: collapse !important;vertical-align: top;padding-right: 60px;padding-left: 60px;padding-top: 0px;padding-bottom: 10px;min-width: 100%;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%">
                 <table class="divider_content" height="0px" align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;border-top: 2px solid #ffe15f;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%">
                     <tbody>
                         <tr style="vertical-align: top">
@@ -576,23 +564,17 @@ a[x-apple-data-detectors=true] {
                   
                   
                     <div class="">
-	<!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 0px; padding-left: 0px; padding-top: 0px; padding-bottom: 0px;"><![endif]-->
-	<div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 0px; padding-left: 0px; padding-top: 0px; padding-bottom: 0px;">	
-		<div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 12px;line-height: 14px;text-align: center"><span style="font-size: 10px; line-height: 12px; color: rgb(0, 0, 0);">Mensaje de <strong><span style="font-size: 10px; line-height: 12px;">
-      @if(!empty($array['propiedad']->nombre)) 
-        {{ $array['propiedad']->nombre }} 
-      @endif 
-    </span></strong>,</span></p><p style="margin: 0;font-size: 12px;line-height: 14px;text-align: center"><span style="font-size: 10px; line-height: 12px; color: rgb(0, 0, 0);">
-      @if(!empty($array['propiedad']->direccion)) 
-        {{ $array['propiedad']->direccion }} 
-      @endif
-    , 
-      @if(!empty($array['propiedad']->ciudad)) 
-        {{ $array['propiedad']->ciudad }} 
-      @endif
-  </span></p></div>	
-	</div>
-	<!--[if mso]></td></tr></table><![endif]-->
+  <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 0px; padding-left: 0px; padding-top: 0px; padding-bottom: 0px;"><![endif]-->
+  <div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 0px; padding-left: 0px; padding-top: 0px; padding-bottom: 0px;">  
+    <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 12px;line-height: 14px;text-align: center"><span style="font-size: 10px; line-height: 12px; color: rgb(0, 0, 0);">Mensaje de <strong><span style="font-size: 10px; line-height: 12px;">@if(!empty($array['propiedad']->nombre))
+                          {{ $array['propiedad']->nombre
+                          }} @endif </span></strong>,</span></p><p style="margin: 0;font-size: 12px;line-height: 14px;text-align: center"><span style="font-size: 10px; line-height: 12px; color: rgb(0, 0, 0);">@if(!empty($array['propiedad']->direccion))
+                          {{ $array['propiedad']->direccion
+                          }} @endif , @if(!empty($array['propiedad']->ciudad))
+                          {{ $array['propiedad']->ciudad
+                          }} @endif </span></p></div>  
+  </div>
+  <!--[if mso]></td></tr></table><![endif]-->
 </div>
                   
               <!--[if (!mso)&(!IE)]><!--></div><!--<![endif]-->
@@ -602,7 +584,7 @@ a[x-apple-data-detectors=true] {
         </div>
       </div>
     </div>   <!--[if (mso)|(IE)]></td></tr></table><![endif]-->
-		</td>
+    </td>
   </tr>
   </tbody>
   </table>
@@ -610,3 +592,10 @@ a[x-apple-data-detectors=true] {
 
 
 </body></html>
+
+
+
+
+
+
+
