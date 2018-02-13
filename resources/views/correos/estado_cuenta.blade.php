@@ -497,54 +497,6 @@ a[x-apple-data-detectors=true] {
 	</div>
 	<!--[if mso]></td></tr></table><![endif]-->
 </div>
-
-
-
-
-
-
-@if(!empty($reservas_pdf))
-                  @foreach($reservas_pdf as $reserva)
-                    @if(!empty($reserva->pagos))
-                     @foreach($reserva->pagos as $pago)
-                      <tr>
-                        <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $reserva->numero_reserva }}</p></td>
-                        <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->tipo }}</p></td>
-                        <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->created_at }}</p></td>
-                        @if($pago->numero_cheque == null)
-                        <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->metodoPago->nombre }}</p></td>
-                        @else
-                        <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->metodoPago->nombre }} {{$pago->numero_cheque }}</p></td>
-                        @endif
-
-                        @if($pago->tipoComprobante == null)
-                        <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p></p></td>
-                        @else
-                        <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->tipoComprobante->nombre }}</p></td>
-                        @endif
-
-                        @if($pago->numero_operacion == null)
-                        <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p></p></td>
-                        @else
-                        <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->numero_operacion }}</p></td>
-                        @endif
-
-                        @if($pago->tipo_moneda_id == 1)
-                          <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->tipoMoneda->nombre }} ${{ number_format($pago->monto_equivalente) }}</p></td>
-
-                          @else 
-                          <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->tipoMoneda->nombre }} ${{ $pago->monto_equivalente }}</p></td>
-                        @endif
-                      </tr>
-                      @endforeach
-                     @endif
-                    @endforeach
-                  @endif
-
-
-
-
-                  
                   
                     <div class="" style="font-size: 16px;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; text-align: center;"><div style="padding-left: 60px; padding-right: 60px;">
 <table style="height: 51px; float: center; width: 100%; font-size: 12px;">
@@ -554,7 +506,7 @@ a[x-apple-data-detectors=true] {
 <td style="width: 13%; text-align: left; height: 18px;"> <strong>T pago</strong></td>
 <td style="width: 12%; text-align: left; height: 18px;"><strong> Fecha</strong></td>
 <td style="width: 13%; text-align: left; height: 18px;"><strong> M pago</strong></td>
-<td style="width: 12.0661%; text-align: left; height: 18px;"><strong> Comprobante</strong></td>
+<td style="width: 12.0661%; text-align: left; height: 18px;"><strong>recibo</strong></td>
 <td style="width: 15.9339%; text-align: left; height: 18px;"><strong> Operacion</strong></td>
 <td style="width: 8%; text-align: left; height: 18px;"><strong> Monto</strong></td>
 </tr>
