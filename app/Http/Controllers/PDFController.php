@@ -899,26 +899,21 @@ class PDFController extends Controller {
     }
 
     public function estadoCuentaResumen(Request $request) {
-        $reservas = $request['reservas'];
-        $propiedad_id = $request->input('propiedad_id');
-        $cliente_id = $request->input('cliente_id');
-
-        $propiedad = Propiedad::where(
+            $reservas     = $request['reservas'];
+        $propiedad_id = $request->propiedad_id;
+        $cliente_id   = $request->cliente_id;
+        $propiedad    = Propiedad::where(
             'id', 
             $propiedad_id
         )->with('pais', 'region')
+        ->with('politicas')
         ->get();
+        
         $cliente = Cliente::where(
             'id', 
             $cliente_id
         )->with('pais', 'region')
         ->get();
-
-        if ($request->has('correo_x')) {
-            $c_destino = $request->correo_x;
-        } else {
-            $c_destino = $cliente[0]->email;
-        }
 
         if ($request->has('flag_envio')) {  
             if ($request->flag_envio == true) {
@@ -930,10 +925,17 @@ class PDFController extends Controller {
             $retorno['errors'] = true;
             $retorno['msj'] = "Datos requeridos: flag_envio";
             return Response::json($retorno, 400);
-        } 
+        }  
+
+        if ($request->has('correo_x')) {
+            $c_destino = $request->correo_x;
+        } else {
+            $c_destino = $cliente[0]->email;
+        }
 
         $propiedad_iva = 0;
-        foreach ($propiedad as $prop) {   
+        
+        foreach ($propiedad as $prop) {    
             $propiedad_iva = $prop->iva;
             $propiedad_iva = $propiedad_iva / 100;
         }
@@ -941,24 +943,26 @@ class PDFController extends Controller {
         $reservas_pdf = collect([]);
         $monto_alojamiento = 0;
         $consumo = 0;
+        $por_pagar = 0;
         $iva_reservas            = null;
         $tipo_moneda_reservas    = null;
-
-        $reserv = Reserva::whereIn('id', $reservas)
-                ->where('cliente_id', $cliente_id)
-                ->with('cliente.pais', 'cliente.region')
-                ->with('tipoMoneda')
-                ->with('habitacion.tipoHabitacion')
-                ->with(
-                    'pagos.tipoMoneda', 
-                    'pagos.metodoPago', 
-                    'pagos.tipoComprobante'
-                )->get();
-
-                return Response::json($reserv);
         
-        foreach($reserv as $reserva) {
-           
+        foreach($reservas as $id) {
+
+            $reserva = Reserva::where('id', $id)
+             ->where('cliente_id', $cliente_id)
+             ->with('cliente.pais', 'cliente.region')
+             ->with('tipoMoneda')
+             ->with('habitacion.tipoHabitacion')
+             ->with(
+                'pagos.tipoMoneda', 
+                'pagos.metodoPago', 
+                'pagos.tipoComprobante'
+             )->with([
+                'huespedes.servicios' => function ($q) use($id) {
+                    $q->wherePivot('reserva_id', $id);
+                }]
+            )->get();
 
             if (count($reserva) == 0) {
                 $retorno['errors'] = true;
@@ -966,37 +970,39 @@ class PDFController extends Controller {
                 return Response::json($retorno, 400);
             }
 
+            foreach ($reserva as $ra) {
+                if (is_null($iva_reservas)) {
+                    $iva_reservas = $ra->iva;
+                } else {
+                    if ($iva_reservas != $ra->iva) {
+                        $retorno['errors'] = true;
+                        $retorno['msj'] = "Error: Reservas con distinto impuesto ";
+                        return Response::json($retorno, 400);
+                    }
+                }
 
-            if (is_null($iva_reservas)) {
-                $iva_reservas = $reserva->iva;
-            } else {
-                if ($iva_reservas != $reserva->iva) {
-                    $retorno['errors'] = true;
-                    $retorno['msj'] = "Error: Reservas con distinto impuesto";
-                    return Response::json($retorno, 400);
+                if (is_null($tipo_moneda_reservas)) {
+                    $tipo_moneda_reservas = $ra->tipo_moneda_id;
+                } else {
+                    if ($tipo_moneda_reservas != $ra->tipo_moneda_id) {
+                        $retorno['errors'] = true;
+                        $retorno['msj'] = " Error: Las reservas deben estar cursada con el mismo tipo de moneda ";
+                        return Response::json($retorno, 400);
+                    }
                 }
             }
 
-            if (is_null($tipo_moneda_reservas)) {
-                $tipo_moneda_reservas = $reserva->tipo_moneda_id;
-            } else {
-                if ($tipo_moneda_reservas != $reserva->tipo_moneda_id) {
-                    $retorno['errors'] = true;
-                    $retorno['msj'] = " Error: Las reservas deben estar cursada con el mismo tipo de moneda ";
-                    return Response::json($retorno, 400);
+            foreach ($reserva as $ra) {
+                $por_pagar += $ra->monto_por_pagar;
+                $monto_alojamiento += $ra->monto_alojamiento;
+                foreach($ra->huespedes as $huesped){
+                    $huesped->monto_consumo = 0;
+                    foreach($huesped->servicios as $servicio){
+                        $huesped->monto_consumo += $servicio->pivot->precio_total;
+                        $consumo += $servicio->pivot->precio_total;
+                    }
                 }
             }
-            
-
-            $monto_alojamiento += $reserva->monto_alojamiento;
-            foreach($reserva->huespedes as $huesped){
-                $huesped->monto_consumo = 0;
-                foreach($huesped->servicios as $servicio){
-                    $huesped->monto_consumo += $servicio->pivot->precio_total;
-                    $consumo += $servicio->pivot->precio_total;
-                }
-            }
-            
             $reservas_pdf->push($reserva[0]);
         }
 
@@ -1005,10 +1011,6 @@ class PDFController extends Controller {
             $tipo_moneda_reservas
         )->first();
         $nombre_moneda = $auxMoneda->nombre;
-
-        $reservas_pdf = $reserv;
-
-
 
         if ($tipo_moneda_reservas == 1) {
 
@@ -1025,8 +1027,9 @@ class PDFController extends Controller {
                     'iva_reservas'  => $iva_reservas, 
                     'neto'          => round($neto), 
                     'iva'           => $iva, 
-                    'total'         => $total,
-                    'comp'          => 0,
+                    'comp'          => 1,
+                    'total'         => $total, 
+                    'por_pagar'     => round($por_pagar),
                     'de'            => $propiedad[0]->nombre
                 );
 
@@ -1034,17 +1037,15 @@ class PDFController extends Controller {
                     $propiedad->first(),
                     $c_destino,
                     $arr,
-                    "correos.estado_cuenta",
-                    'pdf.estado_cuenta_resumen',
-                    "estado_cuenta_resumen.pdf",
+                    "correos.comprobante_reserva_motor",
+                    'pdf.comprobante_reserva',
+                    "comprobante_reserva.pdf",
                     $request->opcion,
                     $correo_prop,
-                    "estado-cuenta"
+                    "reservas-varias"
                 );
-            
             } else {
                 $total = $monto_alojamiento;
-
                 $arr = array(
                     'propiedad'     => $propiedad, 
                     'cliente'       => $cliente->first(),
@@ -1052,7 +1053,8 @@ class PDFController extends Controller {
                     'nombre_moneda' => $nombre_moneda,
                     'iva_reservas'  => $iva_reservas,
                     'total'         => $total,
-                    'comp'          => 0,
+                    'comp'          => 1,
+                    'por_pagar'     => round($por_pagar),
                     'de'            => $propiedad[0]->nombre
                 );
 
@@ -1060,14 +1062,16 @@ class PDFController extends Controller {
                     $propiedad->first(),
                     $c_destino,
                     $arr,
-                    "correos.estado_cuenta",
-                    'pdf.estado_cuenta_resumen',
-                    "estado_cuenta_resumen.pdf",
+                    "correos.comprobante_reserva_motor",
+                    'pdf.comprobante_reserva',
+                    "comprobante_reserva.pdf",
                     $request->opcion,
                     $correo_prop,
-                    "estado-cuenta"
+                    "reservas-varias"
                 );
+            
             }
+
         } elseif($tipo_moneda_reservas == 2) {
             $total = $monto_alojamiento;
 
@@ -1078,7 +1082,8 @@ class PDFController extends Controller {
                 'nombre_moneda' => $nombre_moneda,
                 'iva_reservas'  => $iva_reservas,
                 'total'         => $total,
-                'comp'          => 0,
+                'comp'          => 1,
+                'por_pagar'     => round($por_pagar),
                 'de'            => $propiedad[0]->nombre
             );
 
@@ -1086,20 +1091,19 @@ class PDFController extends Controller {
                 $propiedad->first(),
                 $c_destino,
                 $arr,
-                "correos.estado_cuenta",
-                'pdf.estado_cuenta_resumen',
-                "estado_cuenta_resumen.pdf",
+                "correos.comprobante_reserva_motor",
+                "pdf.comprobante_reserva",
+                "comprobante_reserva.pdf",
                 $request->opcion,
                 $correo_prop,
-                "estado-cuenta"
+                "reservas-varias"
             );
         }
-
         if (empty($pdf) != 1) {
-            return $pdf->download('estado_cuenta_resumen.pdf');
+            return $pdf->download('comprobante_reserva.pdf');
         } else {
             return;
-        } 
+        }  
     }
 
     public function envm(Request $request) {
