@@ -112,8 +112,7 @@ class SendMail extends Job implements ShouldQueue {
             } else {
                 if (strcmp($this->array['opp'], "estado-cuenta") == 0) {
                     $data_correo = [
-                        'array' => $array,
-                        'reservas_pdf' => $array['arr']['reservas_pdf']
+                        'array' => $array
                     ];
                 } else {
                     $data_correo = [
