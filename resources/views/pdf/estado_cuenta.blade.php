@@ -337,7 +337,9 @@
                       <th class="data-tabla-detalles borde-derecha"><p>Monto</p></th>
                     </tr>
 
+                @if(!empty($reservas_pdf))
                 @foreach($reservas_pdf as $reserva)
+                    @if(!empty($reserva->pagos))
                      @foreach($reserva->pagos as $pago)
                     <tr>
                       <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $reserva->numero_reserva }}</p></td>
@@ -369,7 +371,9 @@
                       @endif
                     </tr>
                      @endforeach
+                     @endif
                     @endforeach
+                  @endif
                   </table>
                 </div>
   </body>

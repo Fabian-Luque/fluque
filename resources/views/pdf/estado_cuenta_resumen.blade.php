@@ -11,6 +11,7 @@
       <div class="encabezado">
         <div class="propiedad-info">
 
+      @if(!empty($propiedad))   
         @foreach($propiedad as $prop)
           <h2>{{$prop->nombre}}</h2>
           <h3>{{$prop->email}}</h3>
@@ -18,17 +19,17 @@
           <h3>{{$prop->ciudad}}</h3>
           <h3>{{$prop->pais->nombre}}</h3>
         @endforeach
+      @endif
         </div>
       </div>
 
       <div class="estado-cuenta">
         <h2 class="titulo">Estado de cuenta</h2>
-
         <div class="cliente">
                 <table class="tabla-cliente">
+                  @if(!empty($cliente))
                     @if($cliente->tipo_cliente_id == 1)
                       @if($cliente->pais_id == null)
-
                     <tr>
                         <th class="head-tabla-cliente"><p class="align-left">Nombre</p></th>
                         <td class="data-tabla-cliente"><p class="nombre">{{ $cliente->nombre }}</p></td>
@@ -166,9 +167,9 @@
                         <th class="head-tabla-cliente"><p class="align-left">Email</p></th>
                         <td class="data-tabla-cliente"><p class="nombre">{{ $cliente->email }}</p></td>
                     </tr>
-
                       @endif
                     @endif
+                @endif
                 </table>
         </div>
         <!--  Fin cliente  -->
