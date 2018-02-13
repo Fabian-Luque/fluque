@@ -1006,7 +1006,7 @@ class PDFController extends Controller {
 
         $reservas_pdf = $reserv;
 
-
+return Response::json($reservas_pdf);
 
         if ($tipo_moneda_reservas == 1) {
 
