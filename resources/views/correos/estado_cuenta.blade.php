@@ -398,8 +398,8 @@ a[x-apple-data-detectors=true] {
 <td style="width: 14%; text-align: left; height: 18px;"><strong> Checkout</strong></td>
 <td style="width: 8%; text-align: left; height: 18px;"><strong> Total</strong></td>
 </tr>
-@if(!empty($reservas_pdf)) 
-@foreach($reservas_pdf as $reserva)
+@if(!empty($reservaspdf)) 
+@foreach($reservaspdf as $reserva)
 <tr style="height: 7px;">
 
 <td style="width: 6.65289%; text-align: left; height: 7px;">
@@ -508,8 +508,8 @@ a[x-apple-data-detectors=true] {
 <td style="width: 15.9339%; text-align: left; height: 18px;"><strong>Operacion</strong></td>
 <td style="width: 8%; text-align: left; height: 18px;"><strong>Monto</strong></td>
 </tr>
-@if(!empty($reservas_pdf))
-  @foreach($reservas_pdf as $reserva)
+@if(!empty($reservaspdf))
+  @foreach($reservaspdf as $reserva)
     @if(!empty($reserva->pagos))
       @foreach($reserva->pagos as $pago)
         <tr style="height: 18px;">
