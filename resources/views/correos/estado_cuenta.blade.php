@@ -213,9 +213,6 @@ a[x-apple-data-detectors=true] {
     }
   </style>
 
-<?php  
-  $reservas_pdf = $array['arr']['reservas_pdf'];
-?>
   <!--[if IE]><div class="ie-browser"><![endif]-->
   <!--[if mso]><div class="mso-container"><![endif]-->
   <table class="nl-container" style="border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;min-width: 320px;margin: 0 auto;background-color: #161821;width: 100%" cellpadding="0" cellspacing="0">
@@ -404,8 +401,8 @@ a[x-apple-data-detectors=true] {
 <td style="width: 14%; text-align: left; height: 18px;"><strong> Checkout</strong></td>
 <td style="width: 8%; text-align: left; height: 18px;"><strong> Total</strong></td>
 </tr>
-@if(!empty($reservas_pdf))
-@foreach($reservas_pdf as $reserva)
+@if(!empty($array['arr']['reservas_pdf']))
+@foreach($array['arr']['reservas_pdf'] as $reserva)
 <tr style="height: 7px;">
 
 <td style="width: 6.65289%; text-align: left; height: 7px;">
@@ -514,8 +511,8 @@ a[x-apple-data-detectors=true] {
 <td style="width: 15.9339%; text-align: left; height: 18px;"><strong>Operacion</strong></td>
 <td style="width: 8%; text-align: left; height: 18px;"><strong>Monto</strong></td>
 </tr>
-@if(!empty($reservas_pdf))
-  @foreach($reservas_pdf as $reserva)
+@if(!empty($array['arr']['reservas_pdf']))
+  @foreach($array['arr']['reservas_pdf'] as $reserva)
     @if(!empty($reserva->pagos))
       @foreach($reserva->pagos as $pago)
         <tr style="height: 18px;">
