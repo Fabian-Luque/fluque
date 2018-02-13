@@ -1028,6 +1028,8 @@ class PDFController extends Controller {
                     'neto'          => round($neto), 
                     'iva'           => $iva, 
                     'comp'          => 1,
+                    'ids'           => $request['reservas'],
+                    'cliente_id'    => $cliente_id,
                     'total'         => $total, 
                     'por_pagar'     => round($por_pagar),
                     'de'            => $propiedad[0]->nombre
@@ -1038,11 +1040,11 @@ class PDFController extends Controller {
                     $c_destino,
                     $arr,
                     "correos.estado_cuenta",
-                    "pdf.correos.estado_cuenta",
-                    "correos.estado_cuenta.pdf",
+                    "pdf.estado_cuenta",
+                    "estado_cuenta.pdf",
                     $request->opcion,
                     $correo_prop,
-                    "reservas-varias"
+                    "reservas-estado-c"
                 );
             } else {
                 $total = $monto_alojamiento;
@@ -1053,6 +1055,8 @@ class PDFController extends Controller {
                     'nombre_moneda' => $nombre_moneda,
                     'iva_reservas'  => $iva_reservas,
                     'total'         => $total,
+                    'ids'           => $request['reservas'],
+                    'cliente_id'    => $cliente_id,
                     'comp'          => 1,
                     'por_pagar'     => round($por_pagar),
                     'de'            => $propiedad[0]->nombre
@@ -1063,11 +1067,11 @@ class PDFController extends Controller {
                     $c_destino,
                     $arr,
                     "correos.estado_cuenta",
-                    "pdf.correos.estado_cuenta",
-                    "correos.estado_cuenta.pdf",
+                    "pdf.estado_cuenta",
+                    "estado_cuenta.pdf",
                     $request->opcion,
                     $correo_prop,
-                    "reservas-varias"
+                    "reservas-estado-c"
                 );
             
             }
@@ -1083,6 +1087,8 @@ class PDFController extends Controller {
                 'iva_reservas'  => $iva_reservas,
                 'total'         => $total,
                 'comp'          => 1,
+                'ids'           => $request['reservas'],
+                'cliente_id'    => $cliente_id,
                 'por_pagar'     => round($por_pagar),
                 'de'            => $propiedad[0]->nombre
             );
@@ -1092,11 +1098,11 @@ class PDFController extends Controller {
                 $c_destino,
                 $arr,
                 "correos.estado_cuenta",
-                "pdf.correos.estado_cuenta",
-                "correos.estado_cuenta.pdf",
+                "pdf.estado_cuenta",
+                "estado_cuenta.pdf",
                 $request->opcion,
                 $correo_prop,
-                "reservas-varias"
+                "reservas-estado-c"
             );
         }
         if (empty($pdf) != 1) {

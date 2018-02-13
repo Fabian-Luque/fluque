@@ -96,6 +96,25 @@ class SendMail extends Job implements ShouldQueue {
                     'total'        => $total,
                     'nombre_moneda'=> $nombre_moneda
                 ];
+            } elseif (strcmp($this->array['opp'], "reservas-estado-c") == 0) {
+                $reserva = Reserva::whereIn(
+                    'id', 
+                    $array['arr']['reservas_pdf']
+                )->where('cliente_id', $array['arr']['cliente_id'])
+                 ->with('cliente.pais', 'cliente.region')
+                 ->with('tipoMoneda')
+                 ->with('habitacion.tipoHabitacion')
+                 ->with(
+                    'pagos.tipoMoneda', 
+                    'pagos.metodoPago', 
+                    'pagos.tipoComprobante'
+                 )->get();
+
+                $data_correo = [
+                    'array'        => $array,
+                    'reservaspdf' => $reserva
+                ];
+
             } elseif ($array['arr']['comp'] == 1) {
                 $data_correo = [
                     'reservaspdf'  => $array['arr']['reservas_pdf'],
