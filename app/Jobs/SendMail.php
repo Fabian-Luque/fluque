@@ -110,11 +110,12 @@ class SendMail extends Job implements ShouldQueue {
                     'pagos.tipoComprobante'
                  )->get();
 
+                $reserva = $reserva->toArray();
+dd($reserva);
                 $data_correo = [
-                    'array'        => $array,
+                    'array'       => $array,
                     'reservaspdf' => $reserva
                 ];
-
             } elseif ($array['arr']['comp'] == 1) {
                 $data_correo = [
                     'reservaspdf'  => $array['arr']['reservas_pdf'],
