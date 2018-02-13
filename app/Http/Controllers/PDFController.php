@@ -953,12 +953,7 @@ class PDFController extends Controller {
                     'pagos.tipoMoneda', 
                     'pagos.metodoPago', 
                     'pagos.tipoComprobante'
-                )->with([
-                    'huespedes.servicios' => function ($q) use($id) {
-                        $q->wherePivot('reserva_id', $id);
-                    }
-                ]
-            )->get();
+                )->get();
         
         foreach($reserv as $reserva) {
            
@@ -1010,6 +1005,8 @@ class PDFController extends Controller {
         $nombre_moneda = $auxMoneda->nombre;
 
         $reservas_pdf = $reserv;
+
+
 
         if ($tipo_moneda_reservas == 1) {
 
