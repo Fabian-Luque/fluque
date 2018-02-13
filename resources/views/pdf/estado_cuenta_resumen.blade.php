@@ -242,51 +242,87 @@
                 <th class="data-tabla-detalles borde-derecha"><p>Nº de operación</p></th>
                 <th class="data-tabla-detalles borde-derecha"><p>Monto</p></th>
               </tr>
+              @if(!empty($reservas_pdf))
+                @foreach($reservas_pdf as $reserva)
+                  @if(!empty($reserva->pagos))
+                     @foreach($reserva->pagos as $pago)
+                        <tr>
+                          <td class="data-tabla-detalles borde-derecha" style="text-align:center;">
+                            <p>
+                              {{ $reserva->numero_reserva }}
+                            </p>
+                          </td>
+                          <td class="data-tabla-detalles borde-derecha" style="text-align:center;">
+                            <p>
+                              {{ $pago->tipo }}
+                            </p>
+                          </td>
+                          <td class="data-tabla-detalles borde-derecha" style="text-align:center;">
+                            <p>
+                              {{ $pago->created_at }}
+                            </p>
+                          </td>
+                          
+                          @if($pago->numero_cheque == null)
+                          <td class="data-tabla-detalles borde-derecha" style="text-align:center;">
+                            <p>
+                              {{ $pago->metodoPago->nombre }}
+                            </p>
+                          </td>
+                          @else
+                          <td class="data-tabla-detalles borde-derecha" style="text-align:center;">
+                            <p>
+                              {{ $pago->metodoPago->nombre }} {{$pago->numero_cheque }}
+                            </p>
+                          </td>
+                          @endif
 
-          @foreach($reservas_pdf as $reserva)
-              @if(!empty($reserva->pagos))
-               @foreach($reserva->pagos as $pago)
-              <tr>
-                <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $reserva->numero_reserva }}</p></td>
-                <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->tipo }}</p></td>
-                <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->created_at }}</p></td>
-                @if($pago->numero_cheque == null)
-                <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->metodoPago->nombre }}</p></td>
-                @else
-                <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->metodoPago->nombre }} {{$pago->numero_cheque }}</p></td>
-                @endif
+                          @if($pago->tipoComprobante == null)
+                          <td class="data-tabla-detalles borde-derecha" style="text-align:center;">
+                            <p>
+                              
+                            </p>
+                          </td>
+                          @else
+                          <td class="data-tabla-detalles borde-derecha" style="text-align:center;">
+                            <p>
+                              {{ $pago->tipoComprobante->nombre }}
+                            </p>
+                          </td>
+                          @endif
 
-                @if($pago->tipoComprobante == null)
-                <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p></p></td>
-                @else
-                <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->tipoComprobante->nombre }}</p></td>
-                @endif
-
-                @if($pago->numero_operacion == null)
-                <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p></p></td>
-                @else
-                <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->numero_operacion }}</p></td>
-                @endif
-                
-                      @if($pago->tipo_moneda_id == 1)
-
-
-                        <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->tipoMoneda->nombre }} ${{ number_format($pago->monto_equivalente) }}</p></td>
-
-
-
-                        @else 
-
-
-                        <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $pago->tipoMoneda->nombre }} ${{ $pago->monto_equivalente }}</p></td>
-
-
-
-                      @endif
-              </tr>
-               @endforeach
-               @endif
-              @endforeach
+                          @if($pago->numero_operacion == null)
+                          <td class="data-tabla-detalles borde-derecha" style="text-align:center;">
+                            <p>
+                              
+                            </p>
+                          </td>
+                          @else
+                          <td class="data-tabla-detalles borde-derecha" style="text-align:center;">
+                            <p>
+                              {{ $pago->numero_operacion }}
+                            </p>
+                          </td>
+                          @endif
+                          
+                          @if($pago->tipo_moneda_id == 1)
+                            <td class="data-tabla-detalles borde-derecha" style="text-align:center;">
+                              <p>
+                                {{ $pago->tipoMoneda->nombre }} ${{ number_format($pago->monto_equivalente) }}
+                              </p>
+                            </td>
+                          @else 
+                            <td class="data-tabla-detalles borde-derecha" style="text-align:center;">
+                              <p>
+                                {{ $pago->tipoMoneda->nombre }} ${{ $pago->monto_equivalente }}
+                              </p>
+                            </td>
+                          @endif
+                        </tr>
+                     @endforeach
+                  @endif
+                @endforeach
+              @endif
             </table>
           </div>
         </div>
