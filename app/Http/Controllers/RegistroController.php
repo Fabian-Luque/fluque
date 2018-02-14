@@ -56,6 +56,7 @@ class RegistroController extends Controller {
 				$propiedad->numero_habitaciones = 0;
 				$propiedad->tipo_propiedad_id 	= 1;
 				$propiedad->estado_cuenta_id 	= 3;
+				$propiedad->codigo 				= (string) Uuid::generate(4);
 				$propiedad->save();
 
 				$user->propiedad()->attach($propiedad->id);
