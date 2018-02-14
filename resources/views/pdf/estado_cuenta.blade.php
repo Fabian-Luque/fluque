@@ -260,16 +260,18 @@
                 <p class="negrita">
                   Reserva Nº {{ $reserva->numero_reserva }} - Habitacion {{ $reserva->habitacion->nombre }} - {{ $reserva->habitacion->tipoHabitacion->nombre }}
                 </p>
+<?php $i = 0; ?>
 
                   <table class="tabla-comsumos margen">
                   @foreach($huesped->servicios as $servicio)
+                  <?php $i = $i + 1; ?>
                     <tr>
                       <td class="data-tabla-detalles borde-derecha">
                         <p class="">{{ $servicio->pivot->created_at->format('d-m-Y') }}   -  {{ $servicio->pivot->cantidad }} {{ $servicio->nombre }}
                         </p>
                       </td>
                       @if($reserva->tipo_moneda_id == 1)
-                        <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{  number_format($servicio->pivot->precio_total) }}</p></td>        
+                        <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{  number_format($servicio->pivot->precio_total) }}</p></td>
                       @endif
                     </tr>
                     <tr>
@@ -285,11 +287,12 @@
                           </p>
                         </td>
                     @endif
+
+                    @if($i == $huesped->servicios->count())
+                      <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{  $huesped->servicios->pivot->precio_total }}</p></td>
+                    @endif
                   </tr>
                   @endforeach
-                  <tr>
-                    <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{  $huesped->servicios[0]->pivot->precio_total }}</p></td>
-                  </tr>
                 </table>
               @endforeach
             @endif
