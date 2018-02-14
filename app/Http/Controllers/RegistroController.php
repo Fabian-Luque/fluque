@@ -34,7 +34,6 @@ use \Illuminate\Database\QueryException;
 class RegistroController extends Controller {
 
 	public function signup(Request $request) { // paso 1
-		return 
 		$validator = Validator::make(
 			$request->all(), 
 			array(
