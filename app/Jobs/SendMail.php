@@ -16,7 +16,6 @@ class SendMail extends Job implements ShouldQueue {
     use InteractsWithQueue, SerializesModels;
 
     protected $array;
-
     /**
      * Create a new job instance.
      *
@@ -49,21 +48,30 @@ class SendMail extends Job implements ShouldQueue {
             if (strcmp($this->array['opp'], "reservas-varias") == 0) {
                 $propiedad_id = $array['propiedad']->id;
 
-                $reservas = Reserva::whereHas(
-                    'tipoHabitacion',
-                    function($query) use ($propiedad_id) {
-                        $query->where(
-                            'propiedad_id', 
-                            $propiedad_id
-                        );
-                    }
-                )->orderby('id','DESC')
-                ->where(
-                    'n_reserva_motor', 
-                    $array['arr']['reserva']->n_reserva_motor
-                )->whereIn('estado_reserva_id', [1,2,3,4,5])
-                ->get();
-
+                if (!empty($array['arr']['reserva'])) { // si no esta vacio, son reservas del motor
+                    $reservas = Reserva::whereHas(
+                        'tipoHabitacion',
+                        function($query) use ($propiedad_id) {
+                            $query->where(
+                                'propiedad_id', 
+                                $propiedad_id
+                            );
+                        }
+                    )->orderby('id','DESC')
+                    ->where(
+                        'n_reserva_motor', 
+                        $array['arr']['reserva']->n_reserva_motor
+                    )->whereIn('estado_reserva_id', [1,2,3,4,5])
+                    ->get();
+                } else {
+                    $reservas = Reserva::whereIn(
+                        'id',
+                        $array['arr']['reservas_pdf']->pluck(
+                            'id'
+                        )->all()
+                    )->get();
+                }
+                
                 $subtotal = 0;
                 $porpagar = 0;
                 $total    = 0;
@@ -88,11 +96,53 @@ class SendMail extends Job implements ShouldQueue {
                     'total'        => $total,
                     'nombre_moneda'=> $nombre_moneda
                 ];
-            } else {
+            } elseif (strcmp($this->array['opp'], "reservas-estado-c") == 0) {
+                $reserva = Reserva::whereIn(
+                    'id', 
+                    $array['arr']['reservas_pdf']
+                )->where('cliente_id', $array['arr']['cliente_id'])
+                 ->with('cliente.pais', 'cliente.region')
+                 ->with('tipoMoneda')
+                 ->with('habitacion.tipoHabitacion')
+                 ->with(
+                    'pagos.tipoMoneda', 
+                    'pagos.metodoPago', 
+                    'pagos.tipoComprobante'
+                 )->get();
+
+                $reserva = $reserva->toArray();
+
                 $data_correo = [
-                    'array' => $array
+                    'array'       => $array,
+                    'reservaspdf' => $reserva
                 ];
+            } elseif ($array['arr']['comp'] == 1) {
+                $data_correo = [
+                    'reservaspdf'  => $array['arr']['reservas_pdf'],
+                    'array'        => $array,
+                    'iva'          => $array['arr']['iva'],
+                    'subtotal'     => $array['arr']['neto'],
+                    'total'        => $array['arr']['total'],
+                    'nombre_moneda'=> $array['arr']['nombre_moneda']
+                ];
+
+                if (!empty($array['arr']['por_pagar'])) {
+                    $data_correo['porpagar'] = $array['arr']['por_pagar'];
+                }
+            } else {
+                if (strcmp($this->array['opp'], "estado-cuenta") == 0) {
+                    $data_correo = [
+                        'array' => $array,
+                        'reservas_pdf' => $array['arr']['reservas_pdf']
+                    ];
+                } else {
+                    $data_correo = [
+                        'array' => $array
+                    ];
+                }
             }
+
+            echo "send!!!";
 
             $mailer->send(
                 $this->array['vista_coreo'], 
@@ -101,12 +151,12 @@ class SendMail extends Job implements ShouldQueue {
                     $message->to(
                         $array['cliente_email'], 
                         $array['cliente_email']
-                    )->subject('Mensaje de '.$array['propiedad']->nombre);
+                    )->subject('Mensaje de '.$array['arr']['de']);
         
                     if (strcmp($array['propiedad_email'], '') != 0) {
                         $message->cc($array['propiedad_email']);
                     }
-
+/*
                     if (strlen($array['vista_pdf']) != 0) {
                         $pdf = PDF::loadView(
                             $array['vista_pdf'], 
@@ -118,6 +168,7 @@ class SendMail extends Job implements ShouldQueue {
                             $array['nombre_pdf']
                         );
                     }
+*/
                 }
             );
         } catch(\Exception $e){

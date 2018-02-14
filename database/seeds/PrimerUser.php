@@ -7,7 +7,7 @@ class PrimerUser extends Seeder {
         DB::table('users')->insert(
             array(
                 'name' 	   => 'admin',
-                'email'    => 'cambiodeclave@gofeels.com',
+                'email'    => 'no-reply@gofeels.com',
                 'password' => bcrypt('12345678')
             )
         );

@@ -31,6 +31,13 @@ Route::post('ejmm', 'CorreoController@SendFileByEmail');
 
 
 Route::get(
+  '/upload', 
+  function () {
+    return view('correos.testimg');
+  }
+);
+
+Route::get(
   '/gmap', 
   function () {
     return view('administrador.gmap');
@@ -153,12 +160,19 @@ Route::put('cliente/motor/{id}', 'ClienteController@update');
 Route::get('obtener/colores', 'MotorRaController@getColoresPropiedad');
 
 
-
+Route::get('comprobar/{correo}/{retorno}/{token}', 'RegistroController@comprobar'); // paso 2
 Route::get('reset/password/{token}', 'ApiAuthController@ResetPassword');
 
 Route::group(['as' => 'api.jarvis.'], function() {
 	Route::post('registro', 'UserController@store');
 	Route::post('/signin', 'ApiAuthController@signin');
+	
+	Route::post('/signup', 'RegistroController@signup'); // paso 1
+	Route::post('/login', 'RegistroController@signin'); // paso 3
+	Route::post('/configurar', 'RegistroController@configurar'); // paso 4
+	Route::post('/temporadas', 'RegistroController@calendario'); // paso 5
+	Route::post('/habitaciones', 'RegistroController@habitaciones'); // paso 6
+	Route::post('/stripe', 'RegistroController@stripe'); // paso 7
 
 	Route::group(['middleware' => ['jwt.auth']], function () {
 		Route::post('cambio/password', 'ApiAuthController@ResetPassUser');
@@ -184,8 +198,8 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::post('habitaciones/excel','ExcelController@importHabitaciones');
 		Route::post('servicios/excel','ExcelController@importServicios');
 		Route::delete('consumo/{id}', 'HuespedController@eliminarConsumo');
-		Route::post('pdf/estado/cuenta', 'PDFController@estadoCuenta');
 		Route::post('pdf/estado/cuenta/resumen', 'PDFController@estadoCuentaResumen');
+		Route::post('pdf/estado/cuenta', 'PDFController@estadoCuenta');
 		Route::post('pdf/reporte', 'PDFController@reporte');
 		Route::post('pdf/reporte/financiero', 'PDFController@reporteFinanciero');
 		Route::post('pdf/entradas', 'PDFController@entradas');
@@ -214,6 +228,7 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::post('eliminar/moneda/propiedad', 'PropiedadController@eliminarMoneda');
 		Route::put('editar/moneda/{id}', 'PropiedadController@editarMoneda');
 		Route::get('reporte', 'PropiedadController@reportesDiario');
+		Route::get('pernoctacion/tipo/habitacion', 'PropiedadController@pernoctacionTipoHabitacion');
 		Route::get('paises', 'PropiedadController@getPaises');
 		Route::get('regiones', 'PropiedadController@getRegiones');
 		Route::post('calendario/temporada', 'TemporadaController@calendario');
@@ -223,7 +238,7 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::post('eliminar/calendario', 'TemporadaController@eliminarCalendario');
 		Route::get('temporada/precios', 'TemporadaController@getPreciosTemporadas');
 		Route::post('editar/temporadas', 'TemporadaController@editarTemporadas');
-		Route::get('reportes', 'PropiedadController@reportes');
+		Route::get('reportes', 'PropiedadController@reporteGeneral');
 		Route::post('reportes/pago', 'PropiedadController@pagos');
 		Route::get('zonas/horarias', 'PropiedadController@getZonasHorarias');
 		Route::put('pago/{id}', 'ReservaController@editarPago');
@@ -282,6 +297,9 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::get('reservas/credito', 'ReservaController@getCuentasCredito');
 		Route::post('confirmar/pago', 'ReservaController@confirmarPagoReserva');
 		Route::post('obtener/reservas/cliente', 'MotorRaController@getReservasCliente');
+		Route::post('obtener/consumos/particulares', 'PropiedadController@getConsumosParticulares');
+		Route::post('editar/consumos/particulares', 'PropiedadController@editarConsumoParticulares');
+		Route::post('eliminar/consumos/particulares', 'PropiedadController@eliminarConsumosParticulares');
 
 
 		// rutas mapa geolozalizacion 
@@ -334,6 +352,20 @@ Route::post('invoice/stripe/obtener','StripeController@InvoiceStripeObtener');
 Route::post('myallocator/configurar', 'MyallocatorController@Configuracion');
 
 
+
+Route::post('upload/images', 'S3Controller@UploadImage');
+Route::post('get/images', 'S3Controller@GetImage');
+Route::post('get/images/byfolder', 'S3Controller@GetAllImagesByDir');
+Route::post('delete/images', 'S3Controller@DeleteImage');
+Route::post('delete/directory', 'S3Controller@DeleteDirectory');
+Route::post('update/image', 'S3Controller@UpdateImage');
+Route::post('update/directory', 'S3Controller@UpdateNameDirectory');
+
+
+
+
+
+
 Route::post('mensaje/enviar', 'ChatController@SendMessage');
 Route::post('mensaje/obtener', 'ChatController@GetAllMessages');
 Route::post('conversacion/obtener', 'ChatController@GetConversacion');
@@ -350,6 +382,9 @@ Route::post('pdf/comprobante/reserva/resumen2', 'PDFController@comprobanteReserv
 
 
 Route::post('asignar/prueba', 'MotorRaController@prueba');
+
+Route::post('correo', 'PDFController@envm');
+
 
 
 

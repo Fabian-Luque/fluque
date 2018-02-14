@@ -168,7 +168,6 @@ class ChatController extends Controller {
                     } 
                 }
             }
-
             // return $ultimos;
             foreach ($ultimos as $ultimo) {
                 if ($ultimo->propiedad_emisor->id != $receptor_id) {

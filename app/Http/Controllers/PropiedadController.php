@@ -30,6 +30,8 @@ use App\CuentaBancaria;
 use App\TipoCuenta;
 use App\PropiedadTipoDeposito;
 use App\TipoDeposito;
+use App\PropiedadServicio;
+use App\Caja;
 use Illuminate\Support\Facades\Config;
 use Input;
 use Illuminate\Http\Request;
@@ -93,6 +95,12 @@ class PropiedadController extends Controller
                 $query->where('created_at','>=' , $fecha_inicio)->where('created_at', '<' , $fecha_fin);
         })->with(['habitacion.tipoHabitacion', 'tipoFuente', 'huespedes.servicios'])->get();
 
+        $consumos = PropiedadServicio::where('propiedad_id', $propiedad_id)
+        ->where('created_at','>=' , $fecha_inicio)
+        ->where('created_at', '<' , $fecha_fin)
+        ->with('servicio')
+        ->get();
+
         $propiedad_monedas    = $propiedad->tipoMonedas;
         $total_habitacion     = [];
         $total_consumos       = [];
@@ -103,6 +111,13 @@ class PropiedadController extends Controller
             $suma_pagos              = 0;
             $ingresos_por_habitacion = 0;
             $ingresos_por_consumos   = 0;
+
+            foreach ($consumos as $consumo) {
+                if ($moneda->id == $consumo->tipo_moneda_id) {
+                    $ingresos_por_consumos += $consumo->precio_total;
+                    $suma_pagos += $consumo->precio_total;
+                }
+            }
             foreach ($pagos_tipo_moneda as $pago) {
                 if ($pago->estado == 1) {
                     $suma_pagos += $pago->monto_equivalente;
@@ -149,6 +164,13 @@ class PropiedadController extends Controller
                             if ($metodo->nombre == $pago->MetodoPago->nombre) {
                                 $suma_ingreso += $pago->monto_equivalente;
                             }
+                        }
+                    }
+                }
+                foreach ($consumos  as $consumo) {
+                    if ($moneda->id == $consumo->tipo_moneda_id) {
+                        if ($metodo->id == $consumo->metodo_pago_id) {
+                            $suma_ingreso += $consumo->precio_total;
                         }
                     }
                 }
@@ -267,7 +289,8 @@ class PropiedadController extends Controller
         $cantidad_servicios = [];
         $servicios_vendidos = [];
         foreach ($servicios as $servicio) {
-        $cantidad_vendido   = 0;
+        $cantidad_vendido_huespedes   = 0;
+        $cantidad_vendido_particulares = 0;
             foreach ($pagos as $pago) {
                 if ($pago->estado == 1) {
                     foreach ($pago->reserva->huespedes as $huesped) {
@@ -276,7 +299,7 @@ class PropiedadController extends Controller
                                 $id = $serv->pivot->id;
                                 if (!in_array($id, $servicios_vendidos)) {
                                     if ($serv->pivot->estado == "Pagado") {
-                                        $cantidad_vendido += $serv->pivot->cantidad;
+                                        $cantidad_vendido_huespedes += $serv->pivot->cantidad;
                                         array_push($servicios_vendidos, $id);
                                     }
                                 }
@@ -286,9 +309,18 @@ class PropiedadController extends Controller
                 }
             }
 
+            foreach ($consumos  as $consumo) {
+                if ($servicio->id == $consumo->servicio_id) {
+                    $cantidad_vendido_particulares += $consumo->cantidad;
+                }
+            }
+
+
             $cantidad_serv['id']       = $servicio->id;
             $cantidad_serv['nombre']   = $servicio->nombre;
-            $cantidad_serv['cantidad'] = $cantidad_vendido;
+            $cantidad_serv['cantidad_vendido_huespedes']    = $cantidad_vendido_huespedes;
+            $cantidad_serv['cantidad_vendido_particulares'] = $cantidad_vendido_particulares;
+            $cantidad_serv['total'] = $cantidad_vendido_huespedes + $cantidad_vendido_particulares;
             array_push($cantidad_servicios, $cantidad_serv);
         }
 
@@ -371,6 +403,12 @@ class PropiedadController extends Controller
                             $query->where('propiedad_id', $propiedad_id);
                     })->with('tipoComprobante', 'metodoPago', 'tipoMoneda')->with('reserva')->get();
 
+                    $consumos = PropiedadServicio::where('propiedad_id', $propiedad_id)
+                    ->where('created_at','>=' , $fecha_inicio)
+                    ->where('created_at', '<' , $fecha_fin)
+                    ->with('servicio')
+                    ->get();
+
                     $i = 1;
                     foreach ($moneda_propiedad as $moneda) {
                         $suma_pagos = 0;
@@ -381,6 +419,13 @@ class PropiedadController extends Controller
                                 }
                             }
                         }
+
+                        foreach ($consumos  as $consumo) {
+                            if ($moneda->id == $consumo->tipo_moneda_id) {
+                                $suma_pagos += $consumo->precio_total;
+                            }
+                        }
+
                         $ingreso['moneda-'.$i]      = $moneda->nombre;
                         $ingreso['monto-'.$i]       = $suma_pagos;
                         $ingreso['mes']             = $mes_año;
@@ -495,6 +540,97 @@ class PropiedadController extends Controller
         $grafico =[ 'grafico_1' => $ingresos_mes];
         return $grafico;
     }
+
+
+    // public function reporteConsumoParticularesAnual(Request $request)
+    // {
+    //     if ($request->has('propiedad_id')) {
+    //         $propiedad_id = $request->input('propiedad_id');
+    //         $propiedad    = Propiedad::where('id', $propiedad_id)->first();
+    //         if (is_null($propiedad)) {
+    //             $retorno = array(
+    //                 'msj'    => "Propiedad no encontrada",
+    //                 'errors' => true);
+    //             return Response::json($retorno, 404);
+    //         }
+    //     } else {
+    //         $retorno = array(
+    //             'msj'    => "No se envia propiedad_id",
+    //             'errors' => true);
+    //         return Response::json($retorno, 400);
+    //     }
+
+    //     if ($request->has('ano_actual')) {
+    //         $ano_actual = $request->input('ano_actual');
+    //     } else {
+    //         $retorno = array(
+    //            'msj'    => "No se envia año actual",
+    //            'errors' => true);
+    //         return Response::json($retorno, 400);
+    //     }
+
+    //     $moneda_propiedad = $propiedad->tipoMonedas;
+    //     $cantidad_monedas = count($moneda_propiedad);
+    //     $años             = Config::get('reportes.años');
+    //     $meses            = Config::get('reportes.meses');
+    //     $aux_consumos     = [];
+
+    //     foreach ($meses as $mes) {
+    //         $mes_año = $mes;    
+    //         foreach ($años as $año) {
+    //             foreach ($año[$ano_actual] as $m) {
+    //                 $fecha_inicio = $m[$mes_año]['inicio'];
+    //                 $fecha_fin    = $m[$mes_año]['fin'];
+
+    //                 if ($fecha_inicio) {
+    //                     $getInicio       = new Carbon($fecha_inicio);
+    //                     $inicio          = $getInicio->startOfDay();
+    //                     $zona_horaria    = ZonaHoraria::where('id', $propiedad->zona_horaria_id)->first();
+    //                     $pais            = $zona_horaria->nombre;
+    //                     $fecha_inicio    = Carbon::createFromFormat('Y-m-d H:i:s', $inicio, $pais)->tz('UTC');
+    //                 }
+
+    //                 if ($fecha_fin) {
+    //                     $fin             = new Carbon($fecha_fin);
+    //                     $fechaFin        = $fin->addDay();
+    //                     $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $fechaFin, $pais)->tz('UTC');
+    //                 }
+
+    //                 $consumos = PropiedadServicio::where('propiedad_id', $propiedad_id)
+    //                 ->where('created_at','>=' , $fecha_inicio)
+    //                 ->where('created_at', '<' , $fecha_fin)
+    //                 ->with('servicio')
+    //                 ->with('TipoComprobante')
+    //                 ->with('tipoMoneda')
+    //                 ->get();
+
+    //                 $i = 1;
+    //                 foreach ($moneda_propiedad as $moneda) {
+    //                     $total = 0;
+    //                     foreach ($consumos as $consumo) { 
+    //                         if ($moneda->id == $egreso->tipo_moneda_id) {
+    //                             $total += $egreso->monto;
+    //                         }
+    //                     }
+    //                     $csm['moneda-'.$i]      = $moneda->nombre;
+    //                     $csm['monto-'.$i]       = $total;
+    //                     $csm['mes']             = $mes_año;
+    //                     $csm['fecha_inicio']    = $m[$mes_año]['inicio'];
+    //                     $csm['fecha_fin']       = $m[$mes_año]['fin'];
+    //                     $i++;
+    //                 }
+    //                 $consumos = $csm;
+    //             }
+    //         }
+    //         array_push($ingresos_mes, $consumos);
+    //     }
+
+    //     $grafico =[ 'grafico_1' => $ingresos_mes];
+    //     return $grafico;
+    // }
+
+
+
 
     /**
      * Reporte egresos de propiedad y caja por fechas
@@ -638,11 +774,11 @@ class PropiedadController extends Controller
 
     }
 
-    public function reportes(Request $request)
+    public function reporteGeneral(Request $request)
     {
         if ($request->has('propiedad_id')) {
             $propiedad_id = $request->input('propiedad_id');
-            $propiedad    = Propiedad::where('id', $propiedad_id)->first();
+            $propiedad    = Propiedad::where('id', $propiedad_id)->with('tiposHabitacion')->with('habitaciones')->first();
             if (is_null($propiedad)) {
                 $retorno = array(
                     'msj'    => "Propiedad no encontrada",
@@ -696,7 +832,10 @@ class PropiedadController extends Controller
                 $query->where('checkin', '<=', $auxInicio);
                 $query->where('checkout', '>',  $auxInicio);
         });                
-        })->with('huespedes.pais')->get();
+        })
+        ->whereIn('estado_reserva_id', [3,4,5])
+        ->with('habitacion')
+        ->with('huespedes.pais')->get();
 
         /* INGRESOS TOTALES DEL DIA  */
         $ingresos_totales_dia = [];
@@ -765,6 +904,40 @@ class PropiedadController extends Controller
             }       
         }
 
+        // pernoctacion por tipo habitacion
+        $pernoctacion_tipo_habitacion = [];
+        foreach ($propiedad->tiposHabitacion as $tipo) {
+            $llegadas     = 0;
+            $pernoctacion = 0;
+            foreach ($reservas as $reserva) {
+                if ($tipo->id == $reserva->habitacion->tipoHabitacion->id) {
+                    $llegadas += $reserva->ocupacion;
+                    $pernoctacion += ($reserva->ocupacion * $reserva->noches);
+                }
+            }
+            $per['tipo_habitacion']   = $tipo;
+            $per['llegadas']          = $llegadas;
+            $per['pernoctacion']      = $pernoctacion;
+            array_push($pernoctacion_tipo_habitacion, $per);
+        }
+
+        //pernoctacion por habitacion
+        $pernoctacion_habitacion = [];
+        foreach ($propiedad->habitaciones as $habitacion) {
+            $llegadas     = 0;
+            $pernoctacion = 0;
+            foreach ($reservas as $reserva) {
+                if ($habitacion->id == $reserva->habitacion->id) {
+                    $llegadas += $reserva->ocupacion;
+                    $pernoctacion += ($reserva->ocupacion * $reserva->noches);
+                }
+            }
+            $pern['habitacion']        = $habitacion;
+            $pern['llegadas']          = $llegadas;
+            $pern['pernoctacion']      = $pernoctacion;
+            array_push($pernoctacion_habitacion, $pern);
+        }
+
        $residentes_extranjero = [];
        foreach ($paises as $pais) {
             $huespedes = 0;
@@ -780,7 +953,6 @@ class PropiedadController extends Controller
             $extranjeros = [ 'nombre' => $pais->nombre, 'llegadas' => $huespedes, 'pernoctacion' => $noches];
             array_push($residentes_extranjero, $extranjeros);
         }
-
 
         /* REGIONES*/
         $regiones = Region::where('pais_id', $propiedad->pais_id)->get();
@@ -823,20 +995,21 @@ class PropiedadController extends Controller
         $grafico = [['nombre' => 'Ocupado','valor' => $suma],['nombre' => 'Disponible', 'valor' => ($total_noches - $suma)]];
 
         $data = [ 
-                'ingresos_totales'          => $ingresos_totales_dia,
-                'reservas_realizadas'       => count($reservas_creadas),
-                'reservas_anuladas'         => count($reservas_anuladas),
-                'reservas_no_show'          => count($reservas_no_show),
-                'ingresos_por_habitacion'   => $ingresos_habitacion,
-                'ingresos_por_servicios'    => $ingresos_consumos,
-                'residentes'                => [['nombre' => 'Locales' , 'regiones' => $residentes_pais_propiedad], ['nombre' => 'Extranjeros' , 'paises' => $residentes_extranjero]],
-                'grafico'                   => $grafico
+                'ingresos_totales'             => $ingresos_totales_dia,
+                'reservas_realizadas'          => count($reservas_creadas),
+                'reservas_anuladas'            => count($reservas_anuladas),
+                'reservas_no_show'             => count($reservas_no_show),
+                'ingresos_por_habitacion'      => $ingresos_habitacion,
+                'ingresos_por_servicios'       => $ingresos_consumos,
+                'pernoctacion_tipo_habitacion' => $pernoctacion_tipo_habitacion,
+                'pernoctacion_habitacion'      => $pernoctacion_habitacion,
+                'residentes'                   => [['nombre' => 'Locales' , 'regiones' => $residentes_pais_propiedad], ['nombre' => 'Extranjeros' , 'paises' => $residentes_extranjero]],
+                'grafico'                      => $grafico
             ]; 
 
         return $data;
 
-    } //fin metodo reportesMensual
-
+    }
 
     /**
      * Reporte de pagos de propiedad
@@ -1170,70 +1343,81 @@ class PropiedadController extends Controller
             $numero_operacion    = $request->input('numero_operacion');
             $tipo_comprobante_id = $request->input('tipo_comprobante_id');
             $numero_cheque       = $request->input('numero_cheque');
+            $tipo_moneda_id      = $request->input('tipo_moneda_id');
 
-            if (!is_null($propiedad)) {
-                $servicios = $request->input('venta_servicio');
-                foreach ($servicios as $servicio) {
-                    $servicio_id         = $servicio['servicio_id'];
-                    $cantidad            = $servicio['cantidad'];
-                    $precio_total        = $servicio['precio_total'];
-                    $serv                = Servicio::where('id', $servicio_id)->where('propiedad_id', $request->input('propiedad_id'))->first();
-                    $cantidad_disponible = $serv->cantidad_disponible;
+            $caja_abierta  = Caja::where('propiedad_id', $propiedad->id)->where('estado_caja_id', 1)->first();
 
-                    if (!is_null($serv)) {
-                        if ($serv->categoria_id == 2) {
-                            if ($cantidad >= 1) {
-                                if ($serv->cantidad_disponible > 0) {
-                                    if ($cantidad <= $serv->cantidad_disponible) {
-                                        $servicio_id         = $serv->id;
-                                        $servicio_nombre     = $serv->nombre;
-                                        $cantidad_disponible = $cantidad_disponible - $cantidad;
-                                        $serv->update(array('cantidad_disponible' => $cantidad_disponible));
-                                        $propiedad->vendeServicios()->attach($servicio_id, ['metodo_pago_id' => $metodo_pago_id, 'cantidad' => $cantidad, 'precio_total' => $precio_total, 'numero_operacion' => $numero_operacion, 'tipo_comprobante_id' => $tipo_comprobante_id, 'numero_cheque' => $numero_cheque]);
+            if (!is_null($caja_abierta)) {
+                if (!is_null($propiedad)) {
+                    $servicios = $request->input('venta_servicio');
+                    foreach ($servicios as $servicio) {
+                        $servicio_id         = $servicio['servicio_id'];
+                        $cantidad            = $servicio['cantidad'];
+                        $precio_total        = $servicio['precio_total'];
+                        $serv                = Servicio::where('id', $servicio_id)->where('propiedad_id', $request->input('propiedad_id'))->first();
+                        $cantidad_disponible = $serv->cantidad_disponible;
+
+                        if (!is_null($serv)) {
+                            if ($serv->categoria_id == 2) {
+                                if ($cantidad >= 1) {
+                                    if ($serv->cantidad_disponible > 0) {
+                                        if ($cantidad <= $serv->cantidad_disponible) {
+                                            $servicio_id         = $serv->id;
+                                            $servicio_nombre     = $serv->nombre;
+                                            $cantidad_disponible = $cantidad_disponible - $cantidad;
+                                            $serv->update(array('cantidad_disponible' => $cantidad_disponible));
+                                            $propiedad->vendeServicios()->attach($servicio_id, ['metodo_pago_id' => $metodo_pago_id, 'cantidad' => $cantidad, 'precio_total' => $precio_total, 'numero_operacion' => $numero_operacion, 'tipo_comprobante_id' => $tipo_comprobante_id, 'numero_cheque' => $numero_cheque, 'tipo_moneda_id' => $tipo_moneda_id, 'caja_id' => $caja_abierta->id]);
+
+                                        } else {
+                                            $data = array(
+                                                'msj'    => " La cantidad ingresada es mayor al stock del producto",
+                                                'errors' => true,);
+                                            return Response::json($data, 400);
+                                        }
 
                                     } else {
                                         $data = array(
-                                            'msj'    => " La cantidad ingresada es mayor al stock del producto",
+                                            'msj'    => " El servicio no tiene stock",
                                             'errors' => true,);
                                         return Response::json($data, 400);
                                     }
 
                                 } else {
                                     $data = array(
-                                        'msj'    => " El servicio no tiene stock",
+                                        'msj'    => " La cantidad ingresada no corresponde",
                                         'errors' => true,);
                                     return Response::json($data, 400);
                                 }
 
-                            } else {
-                                $data = array(
-                                    'msj'    => " La cantidad ingresada no corresponde",
-                                    'errors' => true,);
-                                return Response::json($data, 400);
+                            } elseif ($serv->categoria_id == 1) {
+                                $propiedad->vendeServicios()->attach($servicio_id, ['metodo_pago_id' => $metodo_pago_id, 'cantidad' => $cantidad, 'precio_total' => $precio_total, 'numero_operacion' => $numero_operacion, 'tipo_comprobante_id' => $tipo_comprobante_id, 'numero_cheque' => $numero_cheque, 'tipo_moneda_id' => $tipo_moneda_id, 'caja_id' => $caja_abierta->id]);
                             }
 
-                        } elseif ($serv->categoria_id == 1) {
-                            $propiedad->vendeServicios()->attach($servicio_id, ['metodo_pago_id' => $metodo_pago_id, 'cantidad' => $cantidad, 'precio_total' => $precio_total, 'numero_operacion' => $numero_operacion, 'tipo_comprobante_id' => $tipo_comprobante_id, 'numero_cheque' => $numero_cheque]);
+                        } else {
+                            $retorno = array(
+                                'msj'    => "El servicio no pertenece a la propiedad",
+                                'errors' => true,);
+                            return Response::json($retorno, 400);
                         }
-
-                    } else {
-                        $retorno = array(
-                            'msj'    => "El servicio no pertenece a la propiedad",
-                            'errors' => true,);
-                        return Response::json($retorno, 400);
                     }
-                }
-                $retorno = array(
-                    'msj'   => "Servicios ingresados correctamente",
-                    'erros' => false,);
-                return Response::json($retorno, 201);
+                    $retorno = array(
+                        'msj'   => "Servicios ingresados correctamente",
+                        'erros' => false,);
+                    return Response::json($retorno, 201);
 
+                } else {
+                    $data = array(
+                        'msj'    => "Propiedad no encontrada",
+                        'errors' => true,);
+                    return Response::json($data, 404);
+                }
             } else {
-                $data = array(
-                    'msj'    => "Propiedad no encontrada",
-                    'errors' => true,);
-                return Response::json($data, 404);
+                $retorno = array(
+                    'msj'    => "No hay caja abierta",
+                    'errors' => true);
+                return Response::json($retorno, 400);
             }
+
 
         } else {
             $retorno = array(
@@ -1242,6 +1426,189 @@ class PropiedadController extends Controller
             return Response::json($retorno, 400);
         }
 
+    }
+
+    public function getConsumosParticulares(Request $request)
+    {
+        if ($request->has('propiedad_id')) {
+            $propiedad_id = $request->input('propiedad_id');
+            $propiedad    = Propiedad::where('id', $propiedad_id)->with('tipoMonedas')->first();
+            if (is_null($propiedad)) {
+                $retorno = array(
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia propiedad_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        if ($request->has('fecha_inicio')) {
+            $getInicio       = new Carbon($request->input('fecha_inicio'));
+            $inicio          = $getInicio->startOfDay();
+            $zona_horaria    = ZonaHoraria::where('id', $propiedad->zona_horaria_id)->first();
+            $pais            = $zona_horaria->nombre;
+            $fecha_inicio    = Carbon::createFromFormat('Y-m-d H:i:s', $inicio, $pais)->tz('UTC');
+        }
+
+        if ($request->has('fecha_fin')) {
+            $fin             = new Carbon($request->input('fecha_fin'));
+            $fechaFin        = $fin->addDay();
+            $fin_fecha       = $fechaFin->startOfDay();
+            $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $fechaFin, $pais)->tz('UTC');
+        } else {
+            $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $inicio, $pais)->tz('UTC')->addDay();
+        }
+
+        $consumos = PropiedadServicio::where('propiedad_id', $propiedad_id)
+        ->where('created_at','>=' , $fecha_inicio)
+        ->where('created_at', '<' , $fecha_fin)
+        ->with('servicio.precios')
+        ->with('TipoComprobante')
+        ->with('metodoPago')
+        ->with('tipoMoneda')
+        ->get();
+
+        $num_op = [];
+        $num_operacion = $consumos->lists('numero_operacion');
+        foreach ($num_operacion as $num) {
+            if (count($num_op) == 0) {
+                array_push($num_op, $num);
+            } else {
+                if (!in_array($num, $num_op)) {
+                    array_push($num_op, $num);
+                }
+            }
+        }
+
+        $monedas = [];
+        foreach ($propiedad->tipoMonedas as $moneda) {
+            $total = 0;
+            foreach ($consumos as $consumo) {
+                if ($moneda->id == $consumo->tipo_moneda_id) {
+                    $total += $consumo->precio_total;
+                }
+            }
+            $m['id']     = $moneda->id;
+            $m['nombre'] = $moneda->nombre;
+            $m['cantidad_decimales'] = $moneda->cantidad_decimales;
+            $m['total'] = $total;
+            array_push($monedas, $m);
+        }
+
+        $nums = [];
+        $cantidad = count($consumos);
+        foreach ($num_op as $num) {
+            $cons = [];
+            $total_precio = 0;
+            foreach ($consumos as $consumo) {
+                if ($num == $consumo->numero_operacion) {
+                    $total_precio += $consumo->precio_total;
+                    array_push($cons, $consumo);
+                        $tipo_moneda_id      = $cons[0]->tipoMoneda->id;
+                        $cantidad_decimales  = $cons[0]->tipoMoneda->cantidad_decimales;
+                        $nombre              = $cons[0]->tipoMoneda->nombre;
+                        $tipo_comprobante    = $cons[0]->tipoComprobante->nombre;
+                        $tipo_comprobante_id = $cons[0]->tipoComprobante->id;
+                        $metodo_pago         = $cons[0]->metodoPago->nombre;
+                        $metodo_pago_id      = $cons[0]->metodoPago->id;
+                        $numero_cheque       = $cons[0]->numero_cheque;
+                }
+            }
+            $csm['numero_operacion']    = $num;
+            $csm['total']               = $total_precio;
+            $csm['tipo_moneda_id']      = $tipo_moneda_id;
+            $csm['cantidad_decimales']  = $cantidad_decimales;
+            $csm['nombre']              = $nombre;
+            $csm['tipo_comprobante']    = $tipo_comprobante;
+            $csm['tipo_comprobante_id'] = $tipo_comprobante_id;
+            $csm['metodo_pago']         = $metodo_pago;
+            $csm['metodo_pago_id']      = $metodo_pago_id;
+            $csm['numero_cheque']       = $numero_cheque;
+            $csm['consumos']            = $cons;
+            array_push($nums, $csm);
+        }
+        $data['monedas']  = $monedas;
+        $data['consumos'] = $nums;
+
+        return $data;
+    }
+
+    /**
+     * editar consumos de particulares
+     *
+     * @author ALLEN
+     *
+     * @param  Request          $request ()
+     * @return Response::json
+     */
+    public function editarConsumoParticulares(Request $request)
+    {
+        if ($request->has('servicios') && $request->has('numero_operacion') && $request->has('metodo_pago_id') && $request->has('tipo_comprobante_id')) {
+            $servicios = $request->servicios;
+            $numero_operacion = $request->numero_operacion;
+            $metodo_pago_id = $request->metodo_pago_id;
+            $tipo_comprobante_id = $request->tipo_comprobante_id;
+            $numero_cheque = $request->numero_cheque;
+        } else {
+            $retorno = array(
+                'msj'    => "La solicitud esta incompleta",
+                'errors' => true,);
+            return Response::json($retorno, 400);
+        }
+
+        foreach ($servicios as $servicio) {
+            $ser    = PropiedadServicio::where('id', $servicio['id'])->first();
+            $cantidad = $servicio['cantidad'];
+            $precio_total = $servicio['precio_total'];
+
+            if ($cantidad == 0) {
+                $ser->delete();
+            } else {
+                $ser->update(array('cantidad' => $cantidad, 'precio_total' => $precio_total, 'numero_operacion' => $numero_operacion, 'metodo_pago_id' => $metodo_pago_id, 'tipo_comprobante_id' => $tipo_comprobante_id, 'numero_cheque' => $numero_cheque));
+            }
+        }
+
+        $data = array(
+            'errors' => false,
+            'msj'    => 'Servicios actualizado satisfactoriamente',);
+        return Response::json($data, 201);
+
+    }
+
+    /**
+     * Eliminar consumos de particulares
+     *
+     * @author ALLEN
+     *
+     * @param  Request          $request ()
+     * @return Response::json
+     */
+
+    public function eliminarConsumosParticulares(Request $request)
+    {
+        if ($request->has('servicios')) {
+            $servicios = $request->servicios;
+
+            foreach ($servicios as $servicio) {
+                $servicio  = PropiedadServicio::findOrFail($servicio);
+                $servicio->delete();
+            }
+
+            $retorno = array(
+                'errors' => false,
+                'msg'    => 'Servicios eliminado satisfactoriamente',);
+            return Response::json($retorno, 202);
+
+        } else {
+            $retorno = array(
+                'msj'    => "La solicitud esta incompleta",
+                'errors' => true,);
+            return Response::json($retorno, 400);
+        }
     }
 
     public function index(Request $request)
@@ -1313,36 +1680,26 @@ class PropiedadController extends Controller
         if ($validator->fails()) {
 
             $data = [
-
                 'errors' => true,
-                'msg'    => $validator->messages(),
-
-            ];
-
+                'msg'    => $validator->messages(),];
             return Response::json($data, 400);
 
         } else {
-
-            $propiedad = Propiedad::findOrFail($id);
-
+            $propiedad              = Propiedad::findOrFail($id);
             $moneda_propiedad       = $propiedad->tipoMonedas;
             $tipos_habitacion       = $propiedad->tiposHabitacion;
             $temporadas_propiedad   = $propiedad->temporadas;
 
             if (count($tipos_habitacion) != 0 && count($temporadas_propiedad) != 0) {
                 if ($request->has('tipo_cobro_id')) {
-
                     foreach ($tipos_habitacion as $tipo) {
                         foreach ($tipo['precios'] as $precio) {
                             $id                      = $precio->id;
                             $precio_tipo_habitacion  = PrecioTemporada::findOrFail($id);
                             $precio_tipo_habitacion->delete();
                         }
-                        
                     }
-                    
                     if ($request->input('tipo_cobro_id') != 3) {
-
                         foreach ($tipos_habitacion as $tipo) {
                             foreach ($temporadas_propiedad as $temporada) {
                                 foreach ($moneda_propiedad as $moneda) {
@@ -1358,15 +1715,12 @@ class PropiedadController extends Controller
                             }
                         }
                     }else{
-
                         foreach ($tipos_habitacion as $tipo) {
                             $capacidad = $tipo->capacidad;
                             foreach ($temporadas_propiedad as $temporada) {
                                 foreach ($moneda_propiedad as $moneda) {
-
                                     for ($i=1; $i <= $capacidad  ; $i++) {
                                         $precio_temporada                     = new PrecioTemporada();
-
                                         $precio_temporada->cantidad_huespedes = $i;
                                         $precio_temporada->precio             = 0;
                                         $precio_temporada->tipo_habitacion_id = $tipo->id;
@@ -1381,21 +1735,13 @@ class PropiedadController extends Controller
                 }
             }
 
-
             $propiedad->update($request->all());
             $propiedad->touch();
 
-
-
             $data = [
-
                 'errors' => false,
-                'msg'    => 'Propiedad actualizada satisfactoriamente',
-
-            ];
-
+                'msg'    => 'Propiedad actualizada satisfactoriamente',];
             return Response::json($data, 201);
-
         }
 
     }

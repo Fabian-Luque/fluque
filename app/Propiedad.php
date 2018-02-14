@@ -125,7 +125,7 @@ class Propiedad extends Model {
 
     public function vendeServicios() {
         return $this->belongsToMany('App\Servicio', 'metodo_pago_propiedad_servicio')
-            ->withPivot('metodo_pago_id', 'tipo_comprobate_id', 'cantidad', 'precio_total', 'numero_operacion')
+            ->withPivot('metodo_pago_id', 'tipo_comprobate_id', 'cantidad', 'precio_total', 'numero_operacion', 'tipo_moneda_id')
             ->withTimestamps();
     }
 

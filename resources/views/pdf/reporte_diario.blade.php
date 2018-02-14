@@ -242,14 +242,106 @@
     <!-- Fin contenedor -->
 
 
+    <!-- <div class="page-break"></div> -->
+
+        <!-- <div class="page-break"></div> -->
+
+    <div class="page-break"></div>
+
+
+    <div class="contenedor">
+      <div class="estado-cuenta" style="margin-top: 20px;">
+
+        <!-- INICIO TABLA HUESPEDES EXTRANJEROS -->
+
+                <div class="titulo" style="text-align:left;">
+                  <h3 class="">Pernoctación tipos de habitación</h3>
+                </div>
+
+                <div class="detalles" style="margin:20px 0px;">
+                  <table class="tabla-detalles">
+                    <tr>
+                      <th class="data-tabla-detalles borde-derecha" style="width:300px;"><p>Tipo habitación</p></th>  
+                      <th class="data-tabla-detalles borde-derecha"><p>Llegadas</p></th>
+                      <th class="data-tabla-detalles borde-derecha"><p>Pernoctación</p></th>
+                    </tr>
+
+                    @foreach($pernoctacion_tipo_habitacion as $tipo)
+                    <tr>
+                      <td class="data-tabla-detalles borde-derecha"><p>{{ $tipo['tipo_habitacion']->nombre }}</p></td>
+                      <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $tipo['llegadas'] }}</p></td>
+                      <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $tipo['pernoctacion'] }}</p></td>
+
+                    </tr>
+                    @endforeach
+
+                  </table>
+                </div>
+
+        <!-- FIN TABLA HUESPEDES EXTRANJEROS -->
+
+
+      </div>
+      <!--  Fin estado-cuenta  -->
+    </div>
+    <!-- Fin contenedor -->
+
+
     <div class="footer">
       <p>Documento generado con Jarvis Frontdesk</p>
     </div>
 
 
     <!-- <div class="page-break"></div> -->
+       <!-- <div class="page-break"></div> -->
+
+    <div class="page-break"></div>
 
 
+    <div class="contenedor">
+      <div class="estado-cuenta" style="margin-top: 20px;">
+
+        <!-- INICIO TABLA HUESPEDES EXTRANJEROS -->
+
+                <div class="titulo" style="text-align:left;">
+                  <h3 class="">Pernoctación habitaciones</h3>
+                </div>
+
+                <div class="detalles" style="margin:20px 0px;">
+                  <table class="tabla-detalles">
+                    <tr>
+                      <th class="data-tabla-detalles borde-derecha" style="width:300px;"><p>Habitación</p></th>  
+                      <th class="data-tabla-detalles borde-derecha"><p>Llegadas</p></th>
+                      <th class="data-tabla-detalles borde-derecha"><p>Pernoctación</p></th>
+                    </tr>
+
+                    @foreach($pernoctacion_habitacion as $hab)
+                    <tr>
+                      <td class="data-tabla-detalles borde-derecha"><p>{{ $hab['habitacion']->nombre }}</p></td>
+                      <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $hab['llegadas'] }}</p></td>
+                      <td class="data-tabla-detalles borde-derecha" style="text-align:center;"><p>{{ $hab['pernoctacion'] }}</p></td>
+
+                    </tr>
+                    @endforeach
+
+                  </table>
+                </div>
+
+        <!-- FIN TABLA HUESPEDES EXTRANJEROS -->
+
+
+      </div>
+      <!--  Fin estado-cuenta  -->
+    </div>
+    <!-- Fin contenedor -->
+
+
+    <div class="footer">
+      <p>Documento generado con Jarvis Frontdesk</p>
+    </div>
+
+
+    <!-- <div class="page-break"></div> -->
 
 
   </body>

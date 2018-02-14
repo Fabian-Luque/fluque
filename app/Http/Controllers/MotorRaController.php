@@ -18,13 +18,17 @@ use App\ColorMotor;
 use App\ClasificacionColor;
 use App\MotorPropiedad;
 use Response;
-use Validator;
+use Illuminate\Support\Facades\Validator;
 use \Carbon\Carbon;
 use App\ZonaHoraria;
 use JWTAuth;
+use Storage;
+use Aws\S3\Exception\S3Exception;
+use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
+use Html;
 
-class MotorRaController extends Controller
-{
+class MotorRaController extends Controller {
+
     public function getDisponibilidad(Request $request)
     {
         if ($request->has('fecha_inicio') && $request->has('fecha_fin')) {
@@ -234,6 +238,53 @@ class MotorRaController extends Controller
             $data['cuentas_bancaria']   = $propiedad->cuentasBancaria;
             $data['politicas']          = $propiedad->politicas;
             $data['tipo_deposito']      = $propiedad->tipoDepositoPropiedad;
+
+            $nombre_prop = str_replace(" ","-", $propiedad->nombre);
+
+            foreach ($hab_disponibles as $hab_dis) {
+                $nom_tipo_hab = str_replace(" ","-", $hab_dis->nombre);
+
+                try {
+                    if ($this->SearchDirectory($nombre_prop."/tipos-habitaciones/".$nom_tipo_hab)['existe'] == true) {
+                        $files = Storage::disk('s3')->allFiles(
+                            $nombre_prop."/tipos-habitaciones/".$nom_tipo_hab
+                        );
+
+                        $imagenes = collect([]);
+
+                        for ($i = 0; $i < count($files); $i++) {
+                            $im = explode(
+                                "/", 
+                                $files[$i]
+                            ); 
+                            $date = Carbon::createFromTimestamp(
+                                explode(
+                                    "_", 
+                                    $im[count($im) - 1]
+                                )[0]
+                            )->toDateTimeString();
+                            
+                            $imagenes->push([
+                                'nombre' => "https://s3-sa-east-1.amazonaws.com/gofeels-props-images/".$nombre_prop."/tipos-habitaciones/".$nom_tipo_hab."/".$im[count($im) - 1], 
+                                'created_at' => $date
+                            ]);
+                        }
+
+                        $imagenes->sortBy('created_at');
+
+                        $ima['error'] = false;
+                        $ima['imgs'] = $imagenes;
+                    } else {
+                        $ima['error'] = true;
+                        $ima['imgs'] = 'El directorio no existe en amazon';
+                    }
+                } catch (S3Exception $e) {
+                    $ima['error'] = true;
+                    $ima['imgs'] = "Error: ".$e->getMessage();
+                }  
+                $hab_dis->imagenes = $ima;
+            }
+
             $data['tipos_habitaciones'] = $hab_disponibles;
             return $data;
 
@@ -720,9 +771,11 @@ class MotorRaController extends Controller
                 Event::fire(
                     new ReservasMotorEvent($propiedad_id)
                 );
-
+ 
                 $arr = array(
-                    'propiedad'     => $propiedad
+                    'propiedad'     => $propiedad,
+                    'comp'          => 0,
+                    'de'            => $propiedad->nombre
                 );
 
                 $this->EnvioCorreo(
@@ -836,7 +889,8 @@ class MotorRaController extends Controller
             $arr = array(
                 'propiedad'     => $propiedad,
                 'cliente'       => $reserva->cliente,
-                'reserva'       => $reserva
+                'reserva'       => $reserva,
+                'de'            => $propiedad->nombre
             ); 
 
             $this->EnvioCorreo(

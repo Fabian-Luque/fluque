@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
+use Storage;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -11,9 +13,41 @@ use App\Propiedad;
 use App\Cliente;
 use PDF;
 use App\Jobs\SendMail;
+use Illuminate\Support\Facades\Validator;
+use Response;
 
 class Controller extends BaseController {
     use AuthorizesRequests, AuthorizesResources, DispatchesJobs, ValidatesRequests;
+
+    public function SearchDirectory($directorio) { // amazon s3
+        $flag = false;
+        try {
+            if (!empty($directorio)) {
+                $directorios = Storage::disk('s3')->allDirectories("");
+
+                for ($i = 0; $i < count($directorios); $i++) { 
+                    if (strcmp($directorios[$i], $directorio) == 0) {
+                        $flag = true;
+                    }
+
+                    if ($flag == true) {
+                        break;
+                    }
+                }
+                
+                $retorno['error'] = false;
+                $retorno['msj'] = 'Delete exitoso';
+            } else {
+                $retorno['error'] = true;
+                $retorno['msj'] = "Datos requeridos";
+            }
+        } catch (S3Exception $e) {
+            $retorno['error'] = true;
+            $retorno['msj'] = $e->getMessage();
+        } 
+        $retorno['existe'] = $flag;
+        return $retorno;
+    }
 
     public function EnvioCorreo(Propiedad $propiedad, $cliente_email, $arr, $vista_coreo, $vista_pdf, $nombre_pdf, $opcion, $propiedad_email, $opp) {
 
@@ -243,9 +277,5 @@ class Controller extends BaseController {
         }
 
         return $data;
-
     }
-
-
-
 }
