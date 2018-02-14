@@ -232,23 +232,7 @@ a[x-apple-data-detectors=true] {
   </div>
   <!--[if mso]></td></tr></table><![endif]-->
 </div>
-                  
-                  
-                    <div class="">
-  <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 60px; padding-left: 60px; padding-top: 10px; padding-bottom: 10px;"><![endif]-->
-  <div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 60px; padding-left: 60px; padding-top: 10px; padding-bottom: 10px;">  
-    <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 12px;line-height: 14px"><span style="color: rgb(0, 0, 0); font-size: 12px; line-height: 14px;">Gracias por elegir a&#160;<strong>@if(!empty($array['propiedad']->nombre)) {{
-                          $array['propiedad']->nombre
-                          }} @endif </strong>. Hemos confirmado sus solicitudes de reservas.</span></p><p style="margin: 0;font-size: 12px;line-height: 14px"><span style="color: rgb(0, 0, 0); font-size: 12px; line-height: 14px;">&#160;</span></p><p style="margin: 0;font-size: 12px;line-height: 14px"><span style="color: rgb(0, 0, 0); font-size: 12px; line-height: 14px;">Si necesita hacer cambios, o precisa de ayuda, por favor llame a <strong>@if(!empty($array['propiedad']->telefono)) {{
-                          $array['propiedad']->telefono
-                          }} @endif</strong>, o envíenos un email a&#160;<strong>@if(!empty($array['propiedad']->email)) {{
-                          $array['propiedad']->email
-                          }} @endif </strong>.</span></p></div> 
-  </div>
-  <!--[if mso]></td></tr></table><![endif]-->
-</div>
-                  
-                  
+                            
                     
 <table border="0" cellpadding="0" cellspacing="0" width="100%" class="divider " style="border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;min-width: 100%;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%">
     <tbody>
@@ -436,44 +420,6 @@ a[x-apple-data-detectors=true] {
 </table>
 </div></div>
                     
-<table border="0" cellpadding="0" cellspacing="0" width="100%" class="divider " style="border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;min-width: 100%;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%">
-    <tbody>
-        <tr style="vertical-align: top">
-            <td class="divider_inner" style="word-break: break-word;border-collapse: collapse !important;vertical-align: top;padding-right: 60px;padding-left: 60px;padding-top: 10px;padding-bottom: 10px;min-width: 100%;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%">
-                <table class="divider_content" height="0px" align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;border-top: 2px solid #ffe15f;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%">
-                    <tbody>
-                        <tr style="vertical-align: top">
-                            <td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top;font-size: 0px;line-height: 0px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%">
-                                <span>&#160;</span>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </td>
-        </tr>
-    </tbody>
-</table>
-                  
-                  
-                    <div class="" style="font-size: 16px;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; text-align: center;"><div style="float: right; padding-right: 60px;">
-<table style="height: 51px; float: right; width: 228px; font-size: 12px;">
-<tbody>
-<tr style="height: 18px;">
-<td style="width: 78px; text-align: left; height: 18px;"> <strong> Sub total</strong></td>
-<td style="width: 138px; text-align: left; height: 18px;">{{ $nombre_moneda }} ${{ $subtotal }}</td>
-</tr>
-<tr style="height: 7px;">
-<td style="width: 78px; text-align: left; height: 7px;">  <strong>Total</strong></td>
-<td style="width: 138px; text-align: left; height: 7px;">{{ $nombre_moneda }} ${{ $total }}</td>
-</tr>
-<tr style="height: 7px;">
-<td style="width: 78px; text-align: left; height: 7px;">  <strong>Por pagar</strong></td>
-<td style="width: 138px; text-align: left; height: 7px;">{{ $nombre_moneda }} ${{ $porpagar }}</td>
-</tr>
-</tbody>
-</table>
-</div></div>
-
                   
               <!--[if (!mso)&(!IE)]><!--></div><!--<![endif]-->
               </div>

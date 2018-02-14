@@ -270,8 +270,6 @@
                       </td>
                       @if($reserva->tipo_moneda_id == 1)
                         <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{  number_format($servicio->pivot->precio_total) }}</p></td>
-                      @else 
-                        <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{  $servicio->pivot->precio_total }}</p></td>
                       @endif
                     </tr>
                     <tr>
@@ -288,7 +286,13 @@
                         </td>
                     @endif
                   </tr>
+
                   @endforeach
+                  <tr>
+                    <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{  $servicio->pivot->precio_total }}</p></td>
+                  </tr>
+
+                        
                 </table>
               @endforeach
             @endif
