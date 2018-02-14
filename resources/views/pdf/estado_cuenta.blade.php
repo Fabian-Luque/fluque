@@ -255,12 +255,13 @@
         @if(!empty($reservas_pdf))
           @foreach($reservas_pdf as $reserva)
             @if(!empty($reserva->huespedes))
-            <?php $i = 0; 
+
+              @foreach($reserva->huespedes as $huesped)
+                          <?php $i = 0; 
 foreach ($huesped->servicios as $servicio) {
     $i = $servicio->pivot->precio_total; 
 }
 ?>
-              @foreach($reserva->huespedes as $huesped)
                 <p class="negrita">{{ $huesped->nombre }} {{ $huesped->apellido }}</p>
                 <p class="negrita">
                   Reserva Nº {{ $reserva->numero_reserva }} - Habitacion {{ $reserva->habitacion->nombre }} - {{ $reserva->habitacion->tipoHabitacion->nombre }}
