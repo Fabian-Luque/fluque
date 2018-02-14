@@ -729,7 +729,8 @@ class PDFController extends Controller {
             } else {
                 $correo_prop = '';
             } 
-        } /* else {
+        } 
+        $correo_prop = '';/* else {
             $retorno['errors'] = true;
             $retorno['msj'] = "Datos requeridos: flag_envio";
             return Response::json($retorno, 400);
@@ -938,7 +939,8 @@ class PDFController extends Controller {
             } else {
                 $correo_prop = '';
             } 
-        } /* else {
+        }
+        $correo_prop = ''; /* else {
             $retorno['errors'] = true;
             $retorno['msj'] = "Datos requeridos: flag_envio";
             return Response::json($retorno, 400);
