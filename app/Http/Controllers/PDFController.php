@@ -917,7 +917,7 @@ class PDFController extends Controller {
     }
 
     public function estadoCuentaResumen(Request $request) {
-             $reservas     = $request['reservas'];
+        $reservas     = $request['reservas'];
         $propiedad_id = $request->propiedad_id;
         $cliente_id   = $request->cliente_id;
         $propiedad    = Propiedad::where(
@@ -1058,8 +1058,8 @@ class PDFController extends Controller {
                     $c_destino,
                     $arr,
                     "correos.estado_cuenta",
-                    'pdf.estado_cuenta',
-                    "estado_cuenta.pdf",
+                    'pdf.estado_cuenta_resumen',
+                    "estado_cuenta_resumen.pdf",
                     $request->opcion,
                     $correo_prop,
                     ""
@@ -1083,8 +1083,8 @@ class PDFController extends Controller {
                     $c_destino,
                     $arr,
                     "correos.estado_cuenta",
-                    'pdf.estado_cuenta',
-                    "estado_cuenta.pdf",
+                    'pdf.estado_cuenta_resumen',
+                    "estado_cuenta_resumen.pdf",
                     $request->opcion,
                     $correo_prop,
                     ""
@@ -1112,8 +1112,8 @@ class PDFController extends Controller {
                 $c_destino,
                 $arr,
                 "correos.estado_cuenta",
-                "pdf.estado_cuenta",
-                "estado_cuenta.pdf",
+                "pdf.estado_cuenta_resumen",
+                "estado_cuenta_resumen.pdf",
                 $request->opcion,
                 $correo_prop,
                 ""
