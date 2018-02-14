@@ -111,7 +111,7 @@ class SendMail extends Job implements ShouldQueue {
                  )->get();
 
                 $reserva = $reserva->toArray();
-dd($reserva);
+
                 $data_correo = [
                     'array'       => $array,
                     'reservaspdf' => $reserva

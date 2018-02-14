@@ -232,7 +232,22 @@ a[x-apple-data-detectors=true] {
   </div>
   <!--[if mso]></td></tr></table><![endif]-->
 </div>
-                        
+                  
+                  
+                    <div class="">
+  <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 60px; padding-left: 60px; padding-top: 10px; padding-bottom: 10px;"><![endif]-->
+  <div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 60px; padding-left: 60px; padding-top: 10px; padding-bottom: 10px;">  
+    <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 12px;line-height: 14px"><span style="color: rgb(0, 0, 0); font-size: 12px; line-height: 14px;">Gracias por elegir a&#160;<strong>@if(!empty($array['propiedad']->nombre)) {{
+                          $array['propiedad']->nombre
+                          }} @endif </strong>. Hemos confirmado sus solicitudes de reservas.</span></p><p style="margin: 0;font-size: 12px;line-height: 14px"><span style="color: rgb(0, 0, 0); font-size: 12px; line-height: 14px;">&#160;</span></p><p style="margin: 0;font-size: 12px;line-height: 14px"><span style="color: rgb(0, 0, 0); font-size: 12px; line-height: 14px;">Si necesita hacer cambios, o precisa de ayuda, por favor llame a <strong>@if(!empty($array['propiedad']->telefono)) {{
+                          $array['propiedad']->telefono
+                          }} @endif</strong>, o envíenos un email a&#160;<strong>@if(!empty($array['propiedad']->email)) {{
+                          $array['propiedad']->email
+                          }} @endif </strong>.</span></p></div> 
+  </div>
+  <!--[if mso]></td></tr></table><![endif]-->
+</div>
+                  
                   
                     
 <table border="0" cellpadding="0" cellspacing="0" width="100%" class="divider " style="border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;min-width: 100%;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%">
@@ -440,7 +455,24 @@ a[x-apple-data-detectors=true] {
 </table>
                   
                   
-
+                    <div class="" style="font-size: 16px;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; text-align: center;"><div style="float: right; padding-right: 60px;">
+<table style="height: 51px; float: right; width: 228px; font-size: 12px;">
+<tbody>
+<tr style="height: 18px;">
+<td style="width: 78px; text-align: left; height: 18px;"> <strong> Sub total</strong></td>
+<td style="width: 138px; text-align: left; height: 18px;">{{ $nombre_moneda }} ${{ $subtotal }}</td>
+</tr>
+<tr style="height: 7px;">
+<td style="width: 78px; text-align: left; height: 7px;">  <strong>Total</strong></td>
+<td style="width: 138px; text-align: left; height: 7px;">{{ $nombre_moneda }} ${{ $total }}</td>
+</tr>
+<tr style="height: 7px;">
+<td style="width: 78px; text-align: left; height: 7px;">  <strong>Por pagar</strong></td>
+<td style="width: 138px; text-align: left; height: 7px;">{{ $nombre_moneda }} ${{ $porpagar }}</td>
+</tr>
+</tbody>
+</table>
+</div></div>
 
                   
               <!--[if (!mso)&(!IE)]><!--></div><!--<![endif]-->
@@ -459,74 +491,59 @@ a[x-apple-data-detectors=true] {
               <div style="background-color: transparent; width: 100% !important;">
               <!--[if (!mso)&(!IE)]><!--><div style="border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent; padding-top:10px; padding-bottom:5px; padding-right: 0px; padding-left: 0px;"><!--<![endif]-->
 
-                   
+                  
+                    
+<table border="0" cellpadding="0" cellspacing="0" width="100%" class="divider " style="border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;min-width: 100%;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%">
+    <tbody>
+        <tr style="vertical-align: top">
+            <td class="divider_inner" style="word-break: break-word;border-collapse: collapse !important;vertical-align: top;padding-right: 60px;padding-left: 60px;padding-top: 0px;padding-bottom: 10px;min-width: 100%;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%">
+                <table class="divider_content" height="0px" align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;border-top: 2px solid #ffe15f;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%">
+                    <tbody>
+                        <tr style="vertical-align: top">
+                            <td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top;font-size: 0px;line-height: 0px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%">
+                                <span>&#160;</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    </tbody>
+</table>
+                  
                   
                     <div class="">
   <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 60px; padding-left: 60px; padding-top: 10px; padding-bottom: 10px;"><![endif]-->
   <div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 60px; padding-left: 60px; padding-top: 10px; padding-bottom: 10px;">  
-    <div style="line-height:14px;font-size:12px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;line-height: 14px;text-align: justify;font-size: 12px"><font color="#0068a5"><span style="font-size: 14px; line-height: 16px;"><b>Detalle de pagos</b></span></font><br></p></div>  
+    <div style="line-height:14px;font-size:12px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;line-height: 14px;text-align: justify;font-size: 12px"><font color="#0068a5"><span style="font-size: 14px; line-height: 16px;"><b>Políticas</b></span></font><br></p></div>  
   </div>
   <!--[if mso]></td></tr></table><![endif]-->
 </div>
                   
                   
- <div class="" style="font-size: 16px;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; text-align: center;"><div style="padding-left: 60px; padding-right: 60px;">
-<table style="height: 51px; float: center; width: 100%; font-size: 12px;">
-<tbody>
-<tr style="height: 18px;">
-<td style="width: 9%; text-align: left; height: 18px;"> <strong>N°</strong></td>
-<td style="width: 13%; text-align: left; height: 18px;"> <strong>T pago</strong></td>
-<td style="width: 12%; text-align: left; height: 18px;"><strong>Fecha</strong></td>
-<td style="width: 13%; text-align: left; height: 18px;"><strong>M pago</strong></td>
-<td style="width: 12.0661%; text-align: left; height: 18px;"><strong>Recibo</strong></td>
-<td style="width: 15.9339%; text-align: left; height: 18px;"><strong>Operacion</strong></td>
-<td style="width: 8%; text-align: left; height: 18px;"><strong>Monto</strong></td>
-</tr>
-@if(!empty($reservaspdf))
-  @foreach($reservaspdf as $reserva)
-    @if(!empty($reserva->pagos))
-      @foreach($reserva->pagos as $pago)
-        <tr style="height: 18px;">
-        <td style="width: 9%; text-align: left; height: 18px;">
-          {{ $reserva->numero_reserva }}
-        </td>
-        <td style="width: 13%; text-align: left; height: 18px;">
-          {{ $pago->tipo }}
-        </td>
-        <td style="width: 12%; text-align: left; height: 18px;">
-          {{ $pago->created_at }}
-        </td>
-        <td style="width: 13%; text-align: left; height: 18px;">
-          @if($pago->numero_cheque == null)
-            {{ $pago->metodoPago->nombre }}
-          @else
-            {{ $pago->metodoPago->nombre }} {{$pago->numero_cheque }}
-          @endif
-        </td>
-        <td style="width: 12.0661%; text-align: left; height: 18px;">
-          @if($pago->tipoComprobante == null)
-            &nbsp;
-          @else
-            {{ $pago->tipoComprobante->nombre }}
-          @endif
-        </td>
-        <td style="width: 15.9339%; text-align: left; height: 18px;">
-          @if($pago->numero_operacion == null)
-            &nbsp;          
-          @else
-            {{ $pago->numero_operacion }}
-          @endif
-        </td>
-        <td style="width: 8%; text-align: left; height: 18px;"> total</td>
-        </tr>
-      @endforeach
-    @endif
-  @endforeach
-@endif
-</tbody>
-</table>
+                    <div class="">
+  <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 60px; padding-left: 60px; padding-top: 10px; padding-bottom: 10px;"><![endif]-->
+  <div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 60px; padding-left: 60px; padding-top: 10px; padding-bottom: 10px;">  
+    <div style="font-size:12px;line-height:14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 12px;line-height: 14px;text-align: justify"><span style="color: rgb(0, 0, 0); font-size: 12px; line-height: 14px;">
+
+
+                          @if(!empty($array['propiedad']->politicas))
+                          <ul>
+                          @foreach($array['propiedad']->politicas as $politica)
+                          
+                          <li>
+                            {{ $politica->descripcion }}
+                          </li>
+                            @endforeach
+                            </ul>
+                          @endif
+                        
+
+    &#160;</span><br></p><br></div> 
+  </div>
+  <!--[if mso]></td></tr></table><![endif]-->
 </div>
-</div>                   
+                  
                   
                     
 <table border="0" cellpadding="0" cellspacing="0" width="100%" class="divider " style="border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;min-width: 100%;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%">
