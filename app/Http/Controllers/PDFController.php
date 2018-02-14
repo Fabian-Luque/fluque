@@ -178,7 +178,7 @@ class PDFController extends Controller {
     {
         if ($request->has('caja_id')) {
             $caja_id = $request->input('caja_id');
-            $caja    = Caja::where('id', $caja_id)->first();
+            $caja    = Caja::where('id', $caja_id)->with('montos.tipoMonto', 'montos.tipoMoneda')->with('user')->with('estadoCaja')->with('pagos.tipoComprobante','pagos.metodoPago', 'pagos.tipoMoneda', 'pagos.reserva')->with('egresosCaja.tipoMoneda', 'egresosCaja.egreso')->with('servicios')->first();
             if (is_null($caja)) {
                 $retorno = array(
                     'msj'    => "Caja no encontrada",
@@ -217,8 +217,6 @@ class PDFController extends Controller {
             return Response::json($retorno, 400);
         }
 
-        $caja  = Caja::where('id', $caja_id)->with('montos.tipoMonto', 'montos.tipoMoneda')->with('user')->with('estadoCaja')->with('pagos.tipoComprobante','pagos.metodoPago', 'pagos.tipoMoneda', 'pagos.reserva')->with('egresosCaja.tipoMoneda', 'egresosCaja.egreso')->first();
-
         if (!is_null($caja)) {
             $monedas = [];
             foreach ($propiedad->tipoMonedas as $tipo_moneda) {
@@ -228,6 +226,13 @@ class PDFController extends Controller {
                     if ($tipo_moneda->id == $pago->tipo_moneda_id) {
                         if ($pago->metodo_pago_id == 1 || $pago->metodo_pago_id == 4) {
                             $ingreso += $pago->monto_equivalente;
+                        }
+                    }
+                }
+                foreach ($caja->servicios as $servicio) {
+                    if ($tipo_moneda->id == $servicio->tipo_moneda_id) {
+                        if ($servicio->metodo_pago_id == 1) {
+                            $ingreso += $servicio->precio_total;
                         }
                     }
                 }
@@ -255,6 +260,13 @@ class PDFController extends Controller {
                         if ($moneda->id == $pago->tipo_moneda_id) {
                             if ($metodo->nombre == $pago->MetodoPago->nombre) {
                                 $suma_ingreso += $pago->monto_equivalente;
+                            }
+                        }
+                    }
+                    foreach ($caja->servicios  as $servicio) {
+                        if ($moneda->id == $servicio->tipo_moneda_id) {
+                            if ($metodo->id == $servicio->metodo_pago_id) {
+                                $suma_ingreso += $servicio->precio_total;
                             }
                         }
                     }

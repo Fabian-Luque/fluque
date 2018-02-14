@@ -11,6 +11,15 @@ class PropiedadServicio extends Model
 {
   	protected $table = 'metodo_pago_propiedad_servicio';
 
+    protected $fillable = [ 
+        'cantidad',
+        'precio_total', 
+        'numero_operacion',
+        'numero_cheque',
+        'metodo_pago_id',
+        'tipo_comprobante_id'
+    ];
+
     public function servicio() {
         return $this->belongsTo('App\Servicio', 'servicio_id'); 
     }
@@ -25,6 +34,10 @@ class PropiedadServicio extends Model
 
     public function metodoPago() {
         return $this->belongsTo('App\MetodoPago', 'metodo_pago_id'); 
+    }
+
+    public function caja() {
+        return $this->belongsTo('App\Caja', 'caja_id'); 
     }
 
 	public function getCreatedAtAttribute($value)
