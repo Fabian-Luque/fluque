@@ -87,6 +87,9 @@ class UserDashController extends Controller {
                         "",
                         ""
                     );   
+
+                    $data['accion'] = 'Crear cuenta';
+                    $data['msg'] = 'cuenta creada con exito';
                 } else {
                     $status            = trans('request.failure.code.bad_request');
                     $retorno['errors'] = true;
