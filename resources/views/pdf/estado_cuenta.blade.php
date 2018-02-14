@@ -274,14 +274,10 @@ foreach ($huesped->servicios as $servicio) {
                         <p class="">{{ $servicio->pivot->created_at->format('d-m-Y') }}   -  {{ $servicio->pivot->cantidad }} {{ $servicio->nombre }}
                         </p>
                       </td>
-                      @if($reserva->tipo_moneda_id == 1)
-                        <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{  number_format($servicio->pivot->precio_total) }}</p></td>
-                      @endif
+                     
                     </tr>
                     <tr>
-                    <th class="data-tabla-detalles borde-derecha">
-                      <p class="titulo align-right">Total</p>
-                    </th>
+                    
                     @if($reserva->tipo_moneda_id == 1)
                       <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{  number_format($huesped->monto_consumo)}}</p></td>
                     @else 
@@ -294,7 +290,15 @@ foreach ($huesped->servicios as $servicio) {
                   </tr>
                   @endforeach
                   <tr>
-                     <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{  $i }}</p></td>
+                    <th class="data-tabla-detalles borde-derecha">
+                      <p class="titulo align-right">Total</p>
+                    </th>
+                     @if($reserva->tipo_moneda_id == 1)
+                        <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{  number_format($i) }}</p></td>
+                        @else
+                        <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{  $i }}</p></td>
+                      @endif
+                     
                   </tr>
                 </table>
               @endforeach
