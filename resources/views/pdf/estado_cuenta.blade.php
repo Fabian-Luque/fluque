@@ -255,13 +255,14 @@
         @if(!empty($reservas_pdf))
           @foreach($reservas_pdf as $reserva)
             @if(!empty($reserva->huespedes))
-            <?php 
+            
+              @foreach($reserva->huespedes as $huesped)
+              <?php 
      
                         $total =  $huesped->monto_consumo;
                         
                     
                    ?>
-              @foreach($reserva->huespedes as $huesped)
                 <p class="negrita">{{ $huesped->nombre }} {{ $huesped->apellido }}</p>
                 <p class="negrita">
                   Reserva Nº {{ $reserva->numero_reserva }} - Habitacion {{ $reserva->habitacion->nombre }} - {{ $reserva->habitacion->tipoHabitacion->nombre }}
