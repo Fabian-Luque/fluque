@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use App\Http\Requests;
-use Tymon\JWTAuth\Facades\JWTAuth;
 use App\ResetPass;
 use Illuminate\Http\Response as HttpResponse;
 use DB;
