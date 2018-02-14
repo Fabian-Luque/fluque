@@ -29,7 +29,7 @@ use GuzzleHttp\Client;
 use Cartalyst\Stripe\Stripe;
 use Cartalyst\Stripe\Exception\MissingParameterException;
 use \Illuminate\Database\QueryException;
-use Webpatser\Uuid\Uuid;
+
 
 class RegistroController extends Controller {
 
