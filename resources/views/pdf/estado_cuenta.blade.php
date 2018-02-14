@@ -255,16 +255,19 @@
         @if(!empty($reservas_pdf))
           @foreach($reservas_pdf as $reserva)
             @if(!empty($reserva->huespedes))
+            <?php $i = 0; 
+foreach ($huesped->servicios as $servicio) {
+    $i = $servicio->pivot->precio_total; 
+}
+?>
               @foreach($reserva->huespedes as $huesped)
                 <p class="negrita">{{ $huesped->nombre }} {{ $huesped->apellido }}</p>
                 <p class="negrita">
                   Reserva Nº {{ $reserva->numero_reserva }} - Habitacion {{ $reserva->habitacion->nombre }} - {{ $reserva->habitacion->tipoHabitacion->nombre }}
                 </p>
-<?php $i = 0; ?>
 
                   <table class="tabla-comsumos margen">
                   @foreach($huesped->servicios as $servicio)
-                  <?php $i = $i + 1; ?>
                     <tr>
                       <td class="data-tabla-detalles borde-derecha">
                         <p class="">{{ $servicio->pivot->created_at->format('d-m-Y') }}   -  {{ $servicio->pivot->cantidad }} {{ $servicio->nombre }}
@@ -287,12 +290,11 @@
                           </p>
                         </td>
                     @endif
-
-                    @if($i == $huesped->servicios->count())
-                      <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{  $huesped->servicios->pivot->precio_total }}</p></td>
-                    @endif
                   </tr>
                   @endforeach
+                  <tr>
+                     <td class="data-tabla-detalles-right align-right"><p class="nombre">{{ $reserva->tipoMoneda->nombre }} ${{  $i }}</p></td>
+                  </tr>
                 </table>
               @endforeach
             @endif
