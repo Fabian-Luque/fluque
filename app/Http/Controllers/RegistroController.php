@@ -34,12 +34,13 @@ class RegistroController extends Controller {
 			$retorno['errors'] = true;
 			$retorno["msj"]    = $validator->errors();
 		} else {
-			$credentials = $request->only('email', 'password');
+			$credentials = $request->only(
+				'email', 'password'
+			);
 			$user = User::where(
 				'email', 
 				$credentials['email']
-			)->with('propiedad')
-			->first();
+			)->first();
 
 			if(is_null($user)) {
 				$user 			= new User();
