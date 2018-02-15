@@ -155,8 +155,10 @@ class RegistroController extends Controller {
 					$retorno['msg']    = 'Usuario o contraseÃ±a incorrecta';
 					$status            = trans('request.failure.code.forbidden');
 				} else {
-					$user->update(["paso" => 3]);
-					$paso 		  = $user->paso;
+					if ($user->paso == 2) {
+						$user->update(["paso" => 3]);
+						$paso = $user->paso;
+					}
 
 					$retorno = compact(
 						'token', 
