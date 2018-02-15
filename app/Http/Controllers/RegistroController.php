@@ -117,9 +117,9 @@ class RegistroController extends Controller {
 				$user->paso = 2;
 				$user->save();
 				
-				return Redirect::to("https://".$retorno."/#!/login");
+				return Redirect::to("https://".$retorno.".com/#!/login");
 			} else {
-				return Redirect::to("https://".$retorno."/#!/login");
+				return Redirect::to("https://".$retorno.".com/#!/login");
 			} 
 		} 
 		return Response::json($retorno); 
