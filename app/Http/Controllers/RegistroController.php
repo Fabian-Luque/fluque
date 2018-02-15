@@ -157,8 +157,8 @@ class RegistroController extends Controller {
 				} else {
 					if ($user->paso == 2) {
 						$user->update(["paso" => 3]);
-						$paso = $user->paso;
 					}
+					$paso = $user->paso;
 
 					$retorno = compact(
 						'token', 
