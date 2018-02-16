@@ -175,6 +175,11 @@ Route::group(['as' => 'api.jarvis.'], function() {
 	Route::post('/stripe', 'RegistroController@stripe'); // paso 7
 
 	Route::group(['middleware' => ['jwt.auth']], function () {
+		Route::post('upload/images', 'S3Controller@UploadImage');
+		Route::post('delete/images', 'S3Controller@DeleteImage');
+		Route::post('delete/directory', 'S3Controller@DeleteDirectory');
+		Route::post('update/image', 'S3Controller@UpdateImage');
+		Route::post('update/directory', 'S3Controller@UpdateNameDirectory');
 		Route::post('cambio/password', 'ApiAuthController@ResetPassUser');
 		Route::post('reserva/habitacion', 'ReservaController@reserva');
 		Route::get('reserva/propiedad', 'ReservaController@getReservas');
@@ -353,13 +358,10 @@ Route::post('myallocator/configurar', 'MyallocatorController@Configuracion');
 
 
 
-Route::post('upload/images', 'S3Controller@UploadImage');
+
 Route::post('get/images', 'S3Controller@GetImage');
 Route::post('get/images/byfolder', 'S3Controller@GetAllImagesByDir');
-Route::post('delete/images', 'S3Controller@DeleteImage');
-Route::post('delete/directory', 'S3Controller@DeleteDirectory');
-Route::post('update/image', 'S3Controller@UpdateImage');
-Route::post('update/directory', 'S3Controller@UpdateNameDirectory');
+
 
 
 

@@ -189,12 +189,11 @@ class RegistroController extends Controller {
 				'tipo_propiedad_id'   => 'required',
 				'pais_id' 	  	 	  => 'required',
 				'telefono' 	  		  => 'required',
-				'nombre_responsable'  => 'required',
 				'iva' 	  		      => 'required',
 				'email' 	  		  => 'required',
 				'region_id' 	  	  => 'required',
 				'porcentaje_deposito' => 'required',
-				'estado_cuenta_id' 	  => 'required',
+				'tipo_cobro_id'       => 'required',
 				'longitud' 	  		  => 'required',
 				'latitud' 	  		  => 'required'
 			)
@@ -218,13 +217,14 @@ class RegistroController extends Controller {
 			$propiedad->ciudad 				= $request->ciudad;
 			$propiedad->direccion 			= $request->direccion;
 			$propiedad->telefono 			= $request->telefono;
-			$propiedad->nombre_responsable 	= $request->nombre_responsable;
 			$propiedad->iva 				= $request->iva;
 			$propiedad->email 				= $request->email;
 			$propiedad->region_id 			= $request->region_id;
 			$propiedad->zona_horaria_id 	= $request->zona_horaria_id;
 			$propiedad->estado_cuenta_id 	= 2;
 			$propiedad->codigo 				= (string) Uuid::generate(4);
+			$propiedad->porcentaje_deposito = $request->porcentaje_deposito;
+			$propiedad->tipo_cobro_id		= $request->tipo_cobro_id;
 			$propiedad->save();
 
 			$ubicacion           			= new UbicacionProp();
