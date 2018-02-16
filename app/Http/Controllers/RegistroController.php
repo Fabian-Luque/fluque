@@ -20,6 +20,8 @@ use App\QvoUser;
 use App\DatosStripe;
 use App\UbicacionProp;
 use App\ZonaHoraria;
+use App\PropiedadTipoDeposito;
+
 use Illuminate\Support\Facades\Event;
 use Response;
 use JWTAuth;
@@ -192,8 +194,9 @@ class RegistroController extends Controller {
 				'iva' 	  		      => 'required',
 				'email' 	  		  => 'required',
 				'region_id' 	  	  => 'required',
-				'porcentaje_deposito' => 'required',
+				'porcentaje_deposito' => '',
 				'tipo_cobro_id'       => 'required',
+				'tipo_deposito_id'	  => 'required',
 				'zona_horaria_id' 	  => 'required',
 				'longitud' 	  		  => 'required',
 				'latitud' 	  		  => 'required'
@@ -224,7 +227,6 @@ class RegistroController extends Controller {
 			$propiedad->zona_horaria_id 	= $request->zona_horaria_id;
 			$propiedad->estado_cuenta_id 	= 2;
 			$propiedad->codigo 				= (string) Uuid::generate(4);
-			$propiedad->porcentaje_deposito = $request->porcentaje_deposito;
 			$propiedad->tipo_cobro_id		= $request->tipo_cobro_id;
 			$propiedad->save();
 
@@ -235,6 +237,12 @@ class RegistroController extends Controller {
 				$request->latitud 
 			);
 			$ubicacion->save();
+
+			$tipo_deposito                   = new PropiedadTipoDeposito();
+            $tipo_deposito->valor            = $request->porcentaje_deposito;
+            $tipo_deposito->propiedad_id     = $request->prop_id;
+            $tipo_deposito->tipo_deposito_id = $request->tipo_deposito_id;
+            $tipo_deposito->save();
 
 			$user = $propiedad->user->first();
 			$user->update(["paso" => 4]);
