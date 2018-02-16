@@ -194,6 +194,7 @@ class RegistroController extends Controller {
 				'region_id' 	  	  => 'required',
 				'porcentaje_deposito' => 'required',
 				'tipo_cobro_id'       => 'required',
+				'zona_horaria_id' 	  => 'required',
 				'longitud' 	  		  => 'required',
 				'latitud' 	  		  => 'required'
 			)
