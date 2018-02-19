@@ -217,11 +217,6 @@ class HabitacionController extends Controller
             'piso'                => 'required|numeric',
             'propiedad_id'        => 'required|numeric',
             'tipo_habitacion_id'  => 'required|numeric',
-            'bano'                => 'required',
-            'tv'                  => 'required',
-            'wifi'                => 'required',
-            'frigobar'            => 'required',
-
         );
 
         $validator = Validator::make($request->all(), $rules);
@@ -246,14 +241,6 @@ class HabitacionController extends Controller
                 $habitacion->propiedad_id        = $request->get('propiedad_id');
                 $habitacion->tipo_habitacion_id  = $request->get('tipo_habitacion_id');
                 $habitacion->save();
-
-                $equipamiento                = new Equipamiento();
-                $equipamiento->bano          = $request->get('bano');
-                $equipamiento->tv            = $request->get('tv');
-                $equipamiento->wifi          = $request->get('wifi');
-                $equipamiento->frigobar      = $request->get('frigobar');
-                $equipamiento->habitacion_id = $habitacion->id;
-                $equipamiento->save();
 
                 $tipo_habitacion = TipoHabitacion::where('id', $request->get('tipo_habitacion_id'))->first();
                 $cantidad = $tipo_habitacion->cantidad;
