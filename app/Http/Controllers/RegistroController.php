@@ -35,6 +35,32 @@ use \Illuminate\Database\QueryException;
 
 class RegistroController extends Controller {
 
+	public function SetEstado(Request $request) { 
+		$validator = Validator::make(
+			$request->all(), 
+			array(
+				'prop_id'       => 'required',
+				'paso'       	=> 'required'
+			)
+		);
+
+		if ($validator->fails()) {
+			$retorno['errors'] = true;
+			$retorno["msj"]    = $validator->errors();
+		} else {
+			$propiedad = Propiedad::where(
+				'id', 
+				$request->prop_id
+			)->first();
+
+			$propiedad->paso = $request->paso;
+
+			$retorno['errors'] = false;
+			$retorno['msg']    = "Propiedad en paso: ".$propiedad->paso;
+		}
+		return Response::json($retorno); 
+	}
+
 	public function signup(Request $request) { // paso 1
 		$validator = Validator::make(
 			$request->all(), 
