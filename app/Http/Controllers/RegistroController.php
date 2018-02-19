@@ -253,6 +253,38 @@ class RegistroController extends Controller {
 		return Response::json($retorno); 
 	}
 
+	public function Getconfig(Request $request) { 
+		$validator = Validator::make(
+			$request->all(), 
+			array(
+				'prop_id'       	  => 'required'
+			)
+		);
+
+		if ($validator->fails()) {
+			$retorno['errors'] = true;
+			$retorno["msj"]    = $validator->errors();
+		} else {
+			$propiedad = Propiedad::where(
+				'id', 
+				$request->prop_id
+			)->with(
+				'tipoPropiedad',
+				'ubicacion',
+				'pais',
+				'region',
+				'zonaHoraria' ,
+				'tipoMonedas', 
+				'tipoCobro',
+				'tipoDepositoPropiedad'
+			)->first();
+
+			$retorno['errors'] = false;
+			$retorno["msj"]    = $propiedad;
+		}
+		return Response::json($retorno); 
+	}
+
 	public function calendario(Request $request) { // paso 5
 		$retorno = app('App\Http\Controllers\TemporadaController')->calendario(
 			$request
