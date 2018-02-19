@@ -25,6 +25,15 @@ class UbicacionProp extends Model {
   		return $this->hasOne('App\Propiedad');
 	}
 
+    public static function getLocation($prop_id) {
+        return DB::select(
+            'SELECT id, prop_id, X(location) as latitud, Y(location) as longitud, created_at, updated_at FROM ubicacion_propiedad WHERE prop_id=?', 
+            array(
+                $prop_id
+            )
+        );
+    }
+
     public static function getPropiedadesCercanas($latitud, $longitud, $radio, $prop_id) {
         return DB::select(
             'SELECT id, prop_id, X(location) as latitud, Y(location) as longitud, created_at, updated_at FROM ubicacion_propiedad WHERE haversine(location,?, ?) < ? AND NOT prop_id = ?', 

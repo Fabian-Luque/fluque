@@ -298,7 +298,6 @@ class RegistroController extends Controller {
 				$request->prop_id
 			)->with(
 				'tipoPropiedad',
-				'ubicacion',
 				'pais',
 				'region',
 				'zonaHoraria' ,
@@ -307,8 +306,19 @@ class RegistroController extends Controller {
 				'tipoDepositoPropiedad'
 			)->first();
 
-			$retorno['errors'] = false;
-			$retorno["msj"]    = $propiedad;
+			if (!is_null($propiedad)) {
+				$propiedad->ubicacion = collect(
+					UbicacionProp::getLocation(
+						$request->prop_id
+					)
+				);
+
+				$retorno['errors'] = false;
+				$retorno["msj"]    = $propiedad;
+			} else {
+				$retorno['errors'] = true;
+				$retorno["msj"]    = "La propiedad no existe";
+			}
 		}
 		return Response::json($retorno); 
 	}
