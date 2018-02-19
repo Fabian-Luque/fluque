@@ -214,7 +214,6 @@ class HabitacionController extends Controller
         $rules = array(
 
             'nombre'              => 'required',
-            'piso'                => 'required|numeric',
             'propiedad_id'        => 'required|numeric',
             'tipo_habitacion_id'  => 'required|numeric',
         );
@@ -271,11 +270,6 @@ class HabitacionController extends Controller
             'nombre'              => '',
             'piso'                => 'numeric',
             'tipo_habitacion_id'  => 'numeric',
-            'bano'                => '',
-            'tv'                  => '',
-            'wifi'                => '',
-            'frigobar'            => '',
-
         );
 
         $validator = Validator::make($request->all(), $rules);
