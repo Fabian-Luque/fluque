@@ -23,7 +23,8 @@ class Propiedad extends Model {
         'telefono', 
         'email', 
         'nombre_responsable', 
-        'descripcion','iva', 
+        'descripcion',
+        'iva', 
         'porcentaje_deposito', 
         'pais_id', 
         'estado_cuenta_id',
@@ -35,7 +36,7 @@ class Propiedad extends Model {
     ];
 
     public function ubicacion() {
-        return $this->hasOne('App\UbicacionProp');
+        return $this->hasOne('App\UbicacionProp', 'prop_id');
     }
 
     public function user() {
