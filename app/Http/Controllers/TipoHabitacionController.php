@@ -38,7 +38,7 @@ class TipoHabitacionController extends Controller
 	}   
 
 
-	public function store(Request $request)
+	public function store(Request $request, $si=false)
 	{
 		$rules = array(
 
@@ -107,12 +107,19 @@ class TipoHabitacionController extends Controller
                 }
             }
 
-            $data = [
-                'errors' => false,
-                'msg'    => 'Tipo Habitacion creado satisfactoriamente',
-            ];
-            return Response::json($data, 201);
-
+            if ($si == true) {
+                $data = [
+                    'errors' => false,
+                    'msg'    => $tipoHabitacion,
+                ];
+                return Response::json($data, 201);
+            } else {
+                $data = [
+                    'errors' => false,
+                    'msg'    => 'Tipo Habitacion creado satisfactoriamente',
+                ];
+                return Response::json($data, 201);
+            }
         }
 
 	}
