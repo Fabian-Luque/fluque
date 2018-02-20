@@ -14,6 +14,7 @@ use Webpatser\Uuid\Uuid;
 use App\Estadocuenta;
 use App\Http\Controllers\Controller;
 use App\Propiedad;
+use App\PropiedadMoneda;
 use App\TipoPropiedad;
 use App\TipoHabitacion;
 use App\User;
@@ -211,23 +212,25 @@ class RegistroController extends Controller {
 		$validator = Validator::make(
 			$request->all(), 
 			array(
-				'prop_id'       	  => 'required',
-				'nombre' 	  		  => 'required',
-				'direccion' 	  	  => 'required',
-				'ciudad' 	  		  => 'required',
-				'numero_habitaciones' => 'required',
-				'tipo_propiedad_id'   => 'required',
-				'pais_id' 	  	 	  => 'required',
-				'telefono' 	  		  => 'required',
-				'iva' 	  		      => 'required',
-				'email' 	  		  => 'required',
-				'region_id' 	  	  => 'required',
-				'porcentaje_deposito' => '',
-				'tipo_cobro_id'       => 'required',
-				'tipo_deposito_id'	  => 'required',
-				'zona_horaria_id' 	  => 'required',
-				'longitud' 	  		  => 'required',
-				'latitud' 	  		  => 'required'
+				'prop_id'       	  	  => 'required',
+				'nombre' 	  		  	  => 'required',
+				'direccion' 	  	  	  => 'required',
+				'ciudad' 	  		  	  => 'required',
+				'numero_habitaciones' 	  => 'required',
+				'tipo_propiedad_id'   	  => 'required',
+				'pais_id' 	  	 	  	  => 'required',
+				'telefono' 	  		  	  => 'required',
+				'iva' 	  		      	  => 'required',
+				'email' 	  		  	  => 'required',
+				'region_id' 	  	  	  => 'required',
+				'porcentaje_deposito' 	  => '',
+				'tipo_cobro_id'       	  => 'required',
+				'tipo_deposito_id'	  	  => 'required',
+				'zona_horaria_id' 	  	  => 'required',
+				'clasificacion_moneda_id' => 'required',
+				'tipo_moneda_id' 		  => 'required',
+				'longitud' 	  		  	  => 'required',
+				'latitud' 	  		  	  => 'required'
 			)
 		);
 
@@ -258,19 +261,59 @@ class RegistroController extends Controller {
 			$propiedad->tipo_cobro_id		= $request->tipo_cobro_id;
 			$propiedad->save();
 
-			$ubicacion           			= new UbicacionProp();
-			$ubicacion->prop_id  			= $propiedad->id;
-			$ubicacion->location 			= new Point(
-				$request->longitud,
-				$request->latitud 
-			);
+
+			$ubicacion 						= UbicacionProp::where(
+				'prop_id',
+				$request->prop_id
+			)->first();
+
+			if (!is_null($ubicacion)) {
+				$ubicacion           			= new UbicacionProp();
+				$ubicacion->prop_id  			= $propiedad->id;
+				$ubicacion->location 			= new Point(
+					$request->longitud,
+					$request->latitud 
+				);
+			} else {
+				$ubicacion->location 			= new Point(
+					$request->longitud,
+					$request->latitud 
+				);
+			}
 			$ubicacion->save();
 
-			$tipo_deposito                   = new PropiedadTipoDeposito();
-            $tipo_deposito->valor            = $request->porcentaje_deposito;
-            $tipo_deposito->propiedad_id     = $request->prop_id;
-            $tipo_deposito->tipo_deposito_id = $request->tipo_deposito_id;
-            $tipo_deposito->save();
+			$tipo_deposito                   	 = PropiedadTipoDeposito::where(
+				'propiedad_id',
+				$request->prop_id
+			)->first();
+
+			if (!is_null($tipo_deposito)) {
+				$tipo_deposito->valor            = $request->porcentaje_deposito;
+	            $tipo_deposito->tipo_deposito_id = $request->tipo_deposito_id;
+	            $tipo_deposito->save();
+			} else {
+				$tipo_deposito                   = new PropiedadTipoDeposito();
+	            $tipo_deposito->valor            = $request->porcentaje_deposito;
+	            $tipo_deposito->propiedad_id     = $request->prop_id;
+	            $tipo_deposito->tipo_deposito_id = $request->tipo_deposito_id;
+	            $tipo_deposito->save();
+        	}
+
+        	$moneda 						 	 = PropiedadMoneda::where(
+        		'propiedad_id',
+        		$request->prop_id
+        	)->first();
+
+        	if (!is_null($moneda)) {
+        		$moneda->clasificacion_moneda_id = $request->clasificacion_moneda_id;
+	            $moneda->tipo_moneda_id			 = $request->tipo_moneda_id;
+	            $moneda->save();
+        	} else {
+        		$moneda 						 = new PropiedadMoneda();
+	            $moneda->clasificacion_moneda_id = $request->clasificacion_moneda_id;
+	            $moneda->tipo_moneda_id			 = $request->tipo_moneda_id;
+	            $moneda->save();
+        	}
 
 			$user = $propiedad->user->first();
 			$user->update(["paso" => 4]);
