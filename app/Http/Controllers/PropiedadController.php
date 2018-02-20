@@ -541,97 +541,6 @@ class PropiedadController extends Controller
         return $grafico;
     }
 
-
-    // public function reporteConsumoParticularesAnual(Request $request)
-    // {
-    //     if ($request->has('propiedad_id')) {
-    //         $propiedad_id = $request->input('propiedad_id');
-    //         $propiedad    = Propiedad::where('id', $propiedad_id)->first();
-    //         if (is_null($propiedad)) {
-    //             $retorno = array(
-    //                 'msj'    => "Propiedad no encontrada",
-    //                 'errors' => true);
-    //             return Response::json($retorno, 404);
-    //         }
-    //     } else {
-    //         $retorno = array(
-    //             'msj'    => "No se envia propiedad_id",
-    //             'errors' => true);
-    //         return Response::json($retorno, 400);
-    //     }
-
-    //     if ($request->has('ano_actual')) {
-    //         $ano_actual = $request->input('ano_actual');
-    //     } else {
-    //         $retorno = array(
-    //            'msj'    => "No se envia año actual",
-    //            'errors' => true);
-    //         return Response::json($retorno, 400);
-    //     }
-
-    //     $moneda_propiedad = $propiedad->tipoMonedas;
-    //     $cantidad_monedas = count($moneda_propiedad);
-    //     $años             = Config::get('reportes.años');
-    //     $meses            = Config::get('reportes.meses');
-    //     $aux_consumos     = [];
-
-    //     foreach ($meses as $mes) {
-    //         $mes_año = $mes;    
-    //         foreach ($años as $año) {
-    //             foreach ($año[$ano_actual] as $m) {
-    //                 $fecha_inicio = $m[$mes_año]['inicio'];
-    //                 $fecha_fin    = $m[$mes_año]['fin'];
-
-    //                 if ($fecha_inicio) {
-    //                     $getInicio       = new Carbon($fecha_inicio);
-    //                     $inicio          = $getInicio->startOfDay();
-    //                     $zona_horaria    = ZonaHoraria::where('id', $propiedad->zona_horaria_id)->first();
-    //                     $pais            = $zona_horaria->nombre;
-    //                     $fecha_inicio    = Carbon::createFromFormat('Y-m-d H:i:s', $inicio, $pais)->tz('UTC');
-    //                 }
-
-    //                 if ($fecha_fin) {
-    //                     $fin             = new Carbon($fecha_fin);
-    //                     $fechaFin        = $fin->addDay();
-    //                     $fecha_fin       = Carbon::createFromFormat('Y-m-d H:i:s', $fechaFin, $pais)->tz('UTC');
-    //                 }
-
-    //                 $consumos = PropiedadServicio::where('propiedad_id', $propiedad_id)
-    //                 ->where('created_at','>=' , $fecha_inicio)
-    //                 ->where('created_at', '<' , $fecha_fin)
-    //                 ->with('servicio')
-    //                 ->with('TipoComprobante')
-    //                 ->with('tipoMoneda')
-    //                 ->get();
-
-    //                 $i = 1;
-    //                 foreach ($moneda_propiedad as $moneda) {
-    //                     $total = 0;
-    //                     foreach ($consumos as $consumo) { 
-    //                         if ($moneda->id == $egreso->tipo_moneda_id) {
-    //                             $total += $egreso->monto;
-    //                         }
-    //                     }
-    //                     $csm['moneda-'.$i]      = $moneda->nombre;
-    //                     $csm['monto-'.$i]       = $total;
-    //                     $csm['mes']             = $mes_año;
-    //                     $csm['fecha_inicio']    = $m[$mes_año]['inicio'];
-    //                     $csm['fecha_fin']       = $m[$mes_año]['fin'];
-    //                     $i++;
-    //                 }
-    //                 $consumos = $csm;
-    //             }
-    //         }
-    //         array_push($ingresos_mes, $consumos);
-    //     }
-
-    //     $grafico =[ 'grafico_1' => $ingresos_mes];
-    //     return $grafico;
-    // }
-
-
-
-
     /**
      * Reporte egresos de propiedad y caja por fechas
      *
@@ -2135,100 +2044,90 @@ class PropiedadController extends Controller
 
     public function getRegiones(Request $request){
 
-        $pais_id = $request->input('pais_id');
-
+        $pais_id  = $request->input('pais_id');
         $regiones = Region::where('pais_id', $pais_id)->get();
 
         return $regiones;
-
-
     }
 
     public function getZonasHorarias()
     {
-
         $zonas = ZonaHoraria::all();
-
         return $zonas;
-
-
     }
 
     public function getTipoCobro()
     {
         $tipoCobros = TipoCobro::all();
         return $tipoCobros;
-
     }
 
     public function getTipoCuenta()
     {
         $tipoCuenta = TipoCuenta::all();
         return $tipoCuenta;
-
     }
 
     public function getTipoDeposito()
     {
         $tipoDeposito = TipoDeposito::all();
         return $tipoDeposito;
-
     }
 
-    public function crearPais(Request $request)
-    {
+    // public function crearPais(Request $request)
+    // {
 
-        foreach($request['countries'] as $countrie){
+    //     foreach($request['countries'] as $countrie){
 
-            $country = $countrie['country'];
+    //         $country = $countrie['country'];
 
-            $pais             = new Pais();
-            $pais->nombre     = $countrie['country'];
-            $pais->save();
+    //         $pais             = new Pais();
+    //         $pais->nombre     = $countrie['country'];
+    //         $pais->save();
 
-            foreach ($countrie['states'] as $state) {
+    //         foreach ($countrie['states'] as $state) {
                 
-                $region             = new Region();
-                $region->nombre     = $state;
-                $region->pais_id    = $pais->id;
-                $region->save();
+    //             $region             = new Region();
+    //             $region->nombre     = $state;
+    //             $region->pais_id    = $pais->id;
+    //             $region->save();
 
-            }
-
-
-        }
-
-        return "paises creados";
-
-    }
-
-    public function crearZona(Request $request)
-    {
-        foreach ($request['zonas_horarias'] as $zona) {
-
-            $zona_horaria               = new ZonaHoraria();
-            $zona_horaria->nombre       = $zona;
-            $zona_horaria->save();
+    //         }
 
 
-        }
+    //     }
 
-        return "zonas horarias creadas";
+    //     return "paises creados";
 
-    }
+    // }
 
-    public function CrearCodigo()
-    {
-        $propiedades = Propiedad::all();
-        foreach ($propiedades as $propiedad) {
-            $propiedad = Propiedad::where('id', $propiedad->id)->first();
-            $propiedad->update(array('codigo' => str_random(50)));
+    // public function crearZona(Request $request)
+    // {
+    //     foreach ($request['zonas_horarias'] as $zona) {
 
-        }
+    //         $zona_horaria               = new ZonaHoraria();
+    //         $zona_horaria->nombre       = $zona;
+    //         $zona_horaria->save();
 
-        return "creados";
 
-    }
+    //     }
+
+    //     return "zonas horarias creadas";
+
+    // }
+
+    // public function CrearCodigo()
+    // {
+    //     $propiedades = Propiedad::all();
+    //     foreach ($propiedades as $propiedad) {
+    //         $propiedad = Propiedad::where('id', $propiedad->id)->first();
+    //         $propiedad->update(array('codigo' => str_random(50)));
+
+    //     }
+
+    //     return "creados";
+
+    // }
 
 
 

@@ -12,6 +12,7 @@ use App\TipoHabitacion;
 use App\TipoMoneda;
 use App\Calendario;
 use App\Reserva;
+use App\Bloqueo;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -196,23 +197,57 @@ class HabitacionController extends Controller
 
     }
 
+    public function bloqueoHabitacion(Request $request)
+    {
+        if ($request->has('habitacion_id')) {
+            $habitacion_id   = $request->input('habitacion_id');
+            $habitacion      = Habitacion::where('id', $habitacion_id)->first();
+            if (is_null($habitacion)) {
+                $retorno  = array(
+                    'msj'    => "Habitacion no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia habitacion_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        if ($request->has('fecha_inicio') && $request->has('fecha_fin')) {
+            $bloqueo                = new Bloqueo();
+            $bloqueo->fecha_inicio  = $request->fecha_inicio;
+            $bloqueo->fecha_fin     = $request->fecha_fin;
+            $bloqueo->habitacion_id = $habitacion->id;
+            $bloqueo->save();
+
+            $retorno['errors'] = false;
+            $retorno['msj']    = "Habitacion bloqueda satisfactoriamente";
+            return Response::json($retorno, 201);
+
+        } else {
+
+            $retorno['errors'] = false;
+            $retorno['msj']    = "Incompleto";
+            return Response::json($retorno, 201);
+        }
+
+    }
+
 
     public function index(Request $request)
     {
-
         if ($request->has('propiedad_id')) {
             $habitaciones = Habitacion::where('propiedad_id', $request->input('propiedad_id'))->with('estado')->with('tipoHabitacion')->with('equipamiento')->get();
             return $habitaciones;
-
         }
 
     }
 
     public function store(Request $request)
     {
-
         $rules = array(
-
             'nombre'              => 'required',
             'propiedad_id'        => 'required|numeric',
             'tipo_habitacion_id'  => 'required|numeric',
@@ -221,7 +256,6 @@ class HabitacionController extends Controller
         $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {
-
             $data = [
                 'errors' => true,
                 'msg'    => $validator->messages(),];
@@ -257,14 +291,12 @@ class HabitacionController extends Controller
                     'msg'    => 'Habitaciones ya creadas',];
                 return Response::json($data, 400);
             }
-
         }
 
     }
 
     public function update(Request $request, $id)
     {
-
         $rules = array(
 
             'nombre'              => '',
@@ -485,7 +517,6 @@ class HabitacionController extends Controller
 
     public function destroy($id)
     {
-
         $habitaciones = Habitacion::where('id', $id)->whereHas('calendarios', function ($query) {
             $query->where('reservas', 1);})->get();
 
@@ -495,44 +526,29 @@ class HabitacionController extends Controller
             $habitacion->delete();
 
             $data = [
-
                 'errors' => false,
-                'msg'    => 'Habitacion eliminada satisfactoriamente',
-
-            ];
-
+                'msg'    => 'Habitacion eliminada satisfactoriamente',];
             return Response::json($data, 202);
 
         } elseif (count($habitaciones) == 1) {
-
             $data = [
-
                 'errors' => true,
-                'msg'    => 'Metodo fallido',
-
-            ];
-
+                'msg'    => 'Metodo fallido',];
             return Response::json($data, 401);
-
         }
 
     }
 
     public function getTipoHabitacion()
     {
-
         $tipoHabitacion = TipoHabitacion::all();
         return $tipoHabitacion;
-
     }
 
     public function getTipoMoneda()
     {
-
         $tipoMoneda = TipoMoneda::all();
-
         return $tipoMoneda;
-
     }
 
 }
