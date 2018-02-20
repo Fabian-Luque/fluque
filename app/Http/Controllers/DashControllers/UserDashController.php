@@ -140,6 +140,33 @@ class UserDashController extends Controller {
         }
     }
 
+    public function getUsers(Request $request) {  
+        if ($request->has('id')) {
+            $user = User::where(
+                'id',
+                $request->id
+            )->with('propiedad')->first();
+
+            $ub = UbicacionProp::where(
+                'prop_id',
+                $user->propiedad[0]->id
+            )->first();
+            
+            $user->propiedad[0]->ubicacion = $ub;
+            if (count($user) != 0) {
+                $data['errors'] = false;
+                $data['msg']    = $user;
+            } else {
+                $data['errors'] = true;
+                $data['msg']    = 'Usuario no encontrado';
+            }
+            return Response::json($data);
+        } else {
+            $data = User::all();
+        }
+        return Response::json($data);
+    }
+
     public function UpdateUser(Request $request)  {
         $rules = array(
             'nombre'                => '',

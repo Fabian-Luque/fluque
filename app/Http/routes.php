@@ -178,6 +178,7 @@ Route::group(['as' => 'api.jarvis.'], function() {
 
 	Route::group(['middleware' => ['jwt.auth']], function () {
 		Route::post('propiedades/obtener', 'DashControllers\UserDashController@getViewPropiedad');
+		Route::post('cuentas/obtener', 'DashControllers\UserDashController@getUsers');
 		Route::post('upload/images', 'S3Controller@UploadImage');
 		Route::post('delete/images', 'S3Controller@DeleteImage');
 		Route::post('delete/directory', 'S3Controller@DeleteDirectory');
