@@ -275,10 +275,14 @@ class UserDashController extends Controller {
             $prop->created = trim($prop->created);
         }
 
-        return View('administrador.prop')->with(
-            'props', 
-            $propiedades
-        );
+        if ($request->has('new')) {
+            return Response::json($propiedades);
+        } else {
+            return View('administrador.prop')->with(
+                'props', 
+                $propiedades
+            );
+        }
     }
 
     public function CreateUserP(Request $request) {
