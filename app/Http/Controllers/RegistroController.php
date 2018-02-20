@@ -341,6 +341,31 @@ class RegistroController extends Controller {
 		return $retorno; 
 	}
 
+	public function GetTiposHabitacion(Request $request) {
+		$validator = Validator::make(
+			$request->all(), 
+			array(
+				'prop_id' => 'required'
+			)
+		);
+
+		if ($validator->fails()) {
+			$retorno['errors'] = true;
+			$retorno["msj"]    = $validator->errors();
+
+			return Response::json($retorno); 
+		} else {
+			$tipos = TipoHabitacion::where(
+				'propiedad_id', 
+				$request->prop_id
+			)->get();
+
+			$retorno['errors'] = false;
+			$retorno["msj"]    = $tipos;
+		}
+		return Response::json($retorno); 
+	}
+
 	public function habitaciones(Request $request) { // paso 6
 		$validator = Validator::make(
 			$request->all(), 

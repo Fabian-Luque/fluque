@@ -175,6 +175,7 @@ Route::group(['as' => 'api.jarvis.'], function() {
 	Route::post('/stripe', 'RegistroController@stripe'); // paso 7
 	Route::post('/configuracion/obtener', 'RegistroController@Getconfig');
 	Route::post('/paso/modificar', 'RegistroController@SetEstado');
+	Route::post('tipo-habitacion/obtener', 'RegistroController@GetTiposHabitacion');
 
 	Route::group(['middleware' => ['jwt.auth']], function () {
 		Route::post('propiedades/obtener', 'DashControllers\UserDashController@getViewPropiedad');
