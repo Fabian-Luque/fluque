@@ -236,7 +236,6 @@ class HabitacionController extends Controller
             if ($cantidad_habitaciones > $habitaciones_ingresadas) {
                 $habitacion                      = new Habitacion();
                 $habitacion->nombre              = $request->get('nombre');
-                $habitacion->piso                = $request->get('piso');
                 $habitacion->propiedad_id        = $request->get('propiedad_id');
                 $habitacion->tipo_habitacion_id  = $request->get('tipo_habitacion_id');
                 $habitacion->save();
@@ -268,7 +267,6 @@ class HabitacionController extends Controller
         $rules = array(
 
             'nombre'              => '',
-            'piso'                => 'numeric',
             'tipo_habitacion_id'  => 'numeric',
         );
 
