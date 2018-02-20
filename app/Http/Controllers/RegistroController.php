@@ -391,13 +391,16 @@ class RegistroController extends Controller {
 			);
 
 			if ($resp->getData()->errors == false) {
+				$request->merge([ 
+					'tipo_habitacion_id' => $resp->getData()->msg->id
+				]);
+
 				for ($i = 0; $i < $request->cant_x_tipo; $i++) { 
 					$request->nombre = "".($i + 1);
 					$resp = app('App\Http\Controllers\HabitacionController')->store(
 						$request
 					);
 				}
-				return Response::json($resp->getData());
 
 				$retorno['errors'] = false;
 				$retorno["msj"]    = "Operacion realizada con exito";
