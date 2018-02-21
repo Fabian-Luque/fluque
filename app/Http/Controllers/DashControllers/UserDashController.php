@@ -140,6 +140,32 @@ class UserDashController extends Controller {
         }
     }
 
+    public function UpdateCuenta(Request $request) {  
+        if ($request->has('id')) {
+            $user = User::where(
+                'id',
+                $request->id
+            )->first();
+
+            if (!is_null($user)) {
+                $user->name = $request->name;
+                $user->email = $request->email;
+                $user->phone = $request->phone;
+                $user->save();
+
+                $data['errors'] = false;
+                $data['msg']    = 'Registro actualizado con exito';
+            } else {
+                $data['errors'] = true;
+                $data['msg']    = 'Registro no encontrado';
+            }
+        } else {
+            $data['errors'] = true;
+            $data['msg']    = 'Datos requeridos';
+        }
+        return Response::json($data);
+    }
+
     public function getUsers(Request $request) {  
         if ($request->has('id')) {
             $user = User::where(

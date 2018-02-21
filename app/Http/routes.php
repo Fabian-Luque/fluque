@@ -176,9 +176,17 @@ Route::group(['as' => 'api.jarvis.'], function() {
 	Route::post('/configuracion/obtener', 'RegistroController@Getconfig');
 	Route::post('/paso/modificar', 'RegistroController@SetEstado');
 	Route::post('tipo-habitacion/obtener', 'RegistroController@GetTiposHabitacion');
+
+// rutas dash
 Route::post('cuentas/obtener', 'DashControllers\UserDashController@getUsers');
+Route::post('cuentas/actualizar', 'DashControllers\UserDashController@UpdateCuenta');
+Route::post('propiedades/obtener', 'DashControllers\UserDashController@getViewPropiedad');
+
+
+
 	Route::group(['middleware' => ['jwt.auth']], function () {
-		Route::post('propiedades/obtener', 'DashControllers\UserDashController@getViewPropiedad');
+		
+		
 		
 		Route::post('upload/images', 'S3Controller@UploadImage');
 		Route::post('delete/images', 'S3Controller@DeleteImage');
