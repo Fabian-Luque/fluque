@@ -171,8 +171,8 @@ class UserDashController extends Controller {
             $data["cant"] = User::count();
             $data["cuentas"] = User::whereBetween(
                 'id', [
-                    ($rango * 30) - 30, 
-                    $rango * 30
+                    ($rango * 30), 
+                    ($rango * 30) + 30
                 ]
             )->get();
         }
