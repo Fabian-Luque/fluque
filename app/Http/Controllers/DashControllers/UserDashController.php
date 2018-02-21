@@ -162,7 +162,19 @@ class UserDashController extends Controller {
             }
             return Response::json($data);
         } else {
-            $data = User::all();
+            if (!$request->has('rango')) {
+                $rango = 30;
+            } else {
+                $rango = $request->rango;
+            }
+            
+            $data["cant"] = User::count();
+            $data["cuentas"] = User::whereBetween(
+                'id', [
+                    $rango - 30, 
+                    $rango
+                ]
+            )->get();
         }
         return Response::json($data);
     }

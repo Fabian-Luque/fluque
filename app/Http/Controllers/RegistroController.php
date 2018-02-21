@@ -227,7 +227,6 @@ class RegistroController extends Controller {
 				'tipo_cobro_id'       	  => 'required',
 				'tipo_deposito_id'	  	  => 'required',
 				'zona_horaria_id' 	  	  => 'required',
-				'clasificacion_moneda_id' => 'required',
 				'tipo_moneda_id' 		  => 'required',
 				'longitud' 	  		  	  => 'required',
 				'latitud' 	  		  	  => 'required'
@@ -260,7 +259,6 @@ class RegistroController extends Controller {
 			$propiedad->codigo 				= (string) Uuid::generate(4);
 			$propiedad->tipo_cobro_id		= $request->tipo_cobro_id;
 			$propiedad->save();
-
 
 			$ubicacion 						= UbicacionProp::where(
 				'prop_id',
@@ -305,12 +303,12 @@ class RegistroController extends Controller {
         	)->first();
 
         	if (!is_null($moneda)) {
-        		$moneda->clasificacion_moneda_id = $request->clasificacion_moneda_id;
+        		$moneda->clasificacion_moneda_id = 1;
 	            $moneda->tipo_moneda_id			 = $request->tipo_moneda_id;
 	            $moneda->save();
         	} else {
         		$moneda 						 = new PropiedadMoneda();
-	            $moneda->clasificacion_moneda_id = $request->clasificacion_moneda_id;
+	            $moneda->clasificacion_moneda_id = 2;
 	            $moneda->tipo_moneda_id			 = $request->tipo_moneda_id;
 	            $moneda->save();
         	}
