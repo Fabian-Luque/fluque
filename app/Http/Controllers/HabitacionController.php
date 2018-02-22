@@ -215,10 +215,11 @@ class HabitacionController extends Controller
             return Response::json($retorno, 400);
         }
 
-        if ($request->has('fecha_inicio') && $request->has('fecha_fin')) {
+        if ($request->has('fecha_inicio') && $request->has('fecha_fin') && $request->has('noches')) {
             $bloqueo                = new Bloqueo();
             $bloqueo->fecha_inicio  = $request->fecha_inicio;
             $bloqueo->fecha_fin     = $request->fecha_fin;
+            $bloqueo->noches        = $request->noches;
             $bloqueo->habitacion_id = $habitacion->id;
             $bloqueo->save();
 
@@ -232,6 +233,32 @@ class HabitacionController extends Controller
             $retorno['msj']    = "Incompleto";
             return Response::json($retorno, 201);
         }
+
+    }
+
+    public function eliminarBloqueoHabitacion(Request $request)
+    {
+        if ($request->has('bloqueo_id')) {
+            $bloqueo_id   = $request->input('bloqueo_id');
+            $bloqueo      = Bloqueo::where('id', $bloqueo_id)->first();
+            if (is_null($bloqueo)) {
+                $retorno  = array(
+                    'msj'    => "No encontrado",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia bloqueo_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        $bloqueo->delete();
+
+        $retorno['error'] = false;
+        $retorno['msj']   = 'Habitación desbloqueada';
+        return Response::json($retorno, 202);
 
     }
 

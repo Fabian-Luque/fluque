@@ -192,7 +192,7 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::post('calificacion', 'ClienteController@calificacion');
 		Route::post('pago', 'ReservaController@pagoReserva');
 		Route::post('panel', 'ReservaController@panel');
-		Route::get('calendario', 'ReservaController@calendario');
+		
 		Route::post('usuarios/excel','ExcelController@importUsuarios');
 		Route::post('propiedades/excel','ExcelController@importPropiedades');
 		Route::post('habitaciones/excel','ExcelController@importHabitaciones');
@@ -321,6 +321,9 @@ Route::group(['as' => 'api.jarvis.'], function() {
 
 });
 
+	Route::post('bloqueo/habitacion', 'HabitacionController@bloqueoHabitacion');
+	Route::post('eliminar/bloqueo/habitacion', 'HabitacionController@eliminarBloqueoHabitacion');
+	Route::get('calendario', 'ReservaController@calendario');
     Route::get('crear/permisos', 'RolController@crearPermisos');
 
 

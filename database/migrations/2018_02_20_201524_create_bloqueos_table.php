@@ -16,8 +16,9 @@ class CreateBloqueosTable extends Migration
             $table->increments('id');
             $table->date('fecha_inicio');
             $table->date('fecha_fin');
+            $table->integer('noches');
             $table->integer('habitacion_id')->unsigned();
-            $table->foreign('habitacion_id')->references('id')->on('bloqueos')->onDelete('cascade');
+            $table->foreign('habitacion_id')->references('id')->on('habitaciones')->onDelete('cascade');
             $table->timestamps();
         });
     }
