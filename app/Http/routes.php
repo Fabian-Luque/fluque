@@ -46,7 +46,6 @@ Route::get('obtener/colores', 'MotorRaController@getColoresPropiedad');
 
 Route::get('comprobar/{correo}/{retorno}/{token}', 'RegistroController@comprobar'); // paso 2
 Route::get('reset/password/{token}', 'ApiAuthController@ResetPassword');
-Route::post('dash/signin', 'ApiAuthController@SigninDash');
 
 Route::group(['as' => 'api.jarvis.'], function() {
 	Route::post('registro', 'UserController@store');
