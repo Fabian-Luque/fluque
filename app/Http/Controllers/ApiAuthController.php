@@ -68,7 +68,7 @@ class ApiAuthController extends Controller {
             $user_id = $user->id;
             $propiedad_id = $user->propiedad[0]['id'];
 
-            if (strcmp($request->email, config('app.ADMIN_MAIL')) != 0) {
+            if (strcmp($request->email, config('app.ADMIN_MAIL')) == 0) {
                 if (!$token = JWTAuth::attempt($credentials)) {
                     $data['errors'] = trans('request.failure.status');
                     $data['msg']    = 'Usuario o contraseña incorrecta';
