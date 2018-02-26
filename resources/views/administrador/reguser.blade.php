@@ -527,6 +527,7 @@ window.onclick = function(event) {
 
 </form>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDEkW1BFkszUjGoFG5kSYNksJIgMD1b8K0&libraries=places&callback=initAutocomplete" async defer></script>
+
 @endsection
 </div>
 

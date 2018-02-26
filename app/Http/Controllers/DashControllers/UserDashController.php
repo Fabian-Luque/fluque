@@ -27,20 +27,35 @@ use Webpatser\Uuid\Uuid;
 class UserDashController extends Controller {
 
     public function CreateUser(Request $request) {
-        if ($request->has('name') && $request->has('email') && $request->has('password') && $request->has('phone') && $request->has('nombre') && $request->has('direccion') && $request->has('tipo_propiedad_id') && $request->has('tipo_cuenta') && $request->has('ciudad') && $request->has('numero_habitaciones') && $request->has('latitud') && $request->has('longitud') && $request->has('periodo')) {
+        $validator = Validator::make(
+            $request->all(), 
+            array(
+                'name'                => 'required',
+                'email'               => 'required',
+                'password'            => 'required',
+                'phone'               => 'required',
+                'direccion'           => 'required',
+                'tipo_propiedad_id'   => 'required',
+                'tipo_cuenta'         => 'required',
+                'numero_habitaciones' => 'required',
+                'latitud'             => 'required',
+                'longitud'            => 'required'
+            )
+        );
+
+        if ($validator->fails()) {
+            $retorno['errors'] = true;
+            $retorno["msj"] = $validator->errors();
+        } else {
             $us = User::where('email',$request->email)->first();
             if (!isset($us->email)) {
                 $codigo = (string) Uuid::generate(4);
-                $prop   = Propiedad::where('codigo', $codigo)->first();
+                $prop   = Propiedad::where(
+                    'codigo', 
+                    $codigo
+                )->first();
 
                 if (is_null($prop)) {
-
-                    if ($request->has('dias_prueba')) {
-                        $dias_prueba = $request->dias_prueba;
-                    } else {
-                        $dias_prueba = 15;
-                    }
-
                     $usuario = new User();
                     $usuario->name = $request->name;
                     $usuario->email = $request->email;
@@ -103,10 +118,7 @@ class UserDashController extends Controller {
             $data['accion'] = 'Crear usuario';
             $data['msg'] = 'Datos requeridos';
         }
-        return redirect('dash/adminuser')->with(
-            'respuesta', 
-            $data
-        );
+        return Response::json($data);
     }
 
     public function ReadUser(Request $request) {  
@@ -236,7 +248,7 @@ class UserDashController extends Controller {
 
             $ubicacion = UbicacionProp::where('prop_id', $propiedad->id)->first(); 
 
-           if (is_null($ubicacion)) {
+            if (is_null($ubicacion)) {
                 $ubicacion           = new UbicacionProp();
                 $ubicacion->prop_id  = $propiedad_id;
                 $ubicacion->location = new Point(
@@ -245,16 +257,15 @@ class UserDashController extends Controller {
                 );
                 $ubicacion->save();
 
-           } else {
+            } else {
                 $location = new Point(
                     $request->longitud,
                     $request->latitud
                 );
                 $ubicacion->update(array('location' => $location));
-           }
+            }
 
             $data['msg'] = 'Registro Actualizado Satisfactoriamente';
-
         } else {
             $data['msg'] = "";
             foreach ($validator->messages()->all() as $msg) {
@@ -348,183 +359,5 @@ class UserDashController extends Controller {
                 $propiedades
             );
         }
-    }
-
-    public function CreateUserP(Request $request) {
-        if ($request->has('name') && $request->has('email') && $request->has('password') && $request->has('phone') && $request->has('nombre') && $request->has('direccion') && $request->has('tipo_propiedad_id') && $request->has('tipo_cuenta') && $request->has('ciudad') && $request->has('numero_habitaciones') && $request->has('latitud') && $request->has('longitud') && $request->has('periodo')) {
-            $us = User::where('email',$request->email)->first();
-            if (!isset($us->email)) {
-                $codigo = str_random(50);
-                $prop   = Propiedad::where('codigo', $codigo)->first();
-
-                if (is_null($prop)) {
-
-                    if ($request->has('dias_prueba')) {
-                        $dias_prueba = $request->dias_prueba;
-                    } else {
-                        $dias_prueba = 15;
-                    }
-
-                    $usuario = new User();
-                    $usuario->name = $request->name;
-                    $usuario->email = $request->email;
-                    $usuario->password = $request->password;
-                    $usuario->phone = $request->phone;
-                    $usuario->rol_id = 1;
-                    $usuario->estado_id = 1;
-                    $usuario->save();
-
-                    $propiedad = new Propiedad();
-                    $propiedad->nombre = $request->nombre;
-                    $propiedad->direccion = $request->direccion;
-                    $propiedad->ciudad = $request->ciudad;
-                    $propiedad->numero_habitaciones = $request->numero_habitaciones;
-                    $propiedad->tipo_propiedad_id = $request->tipo_propiedad_id;
-                    $propiedad->estado_cuenta_id = $request->tipo_cuenta;
-                    $propiedad->codigo = $codigo;
-                    $propiedad->save();
-
-                    $usuario->propiedad()->attach($propiedad->id);
-
-                    $ubicacion           = new UbicacionProp();
-                    $ubicacion->prop_id  = $propiedad->id;
-                    $ubicacion->location = new Point(
-                        $request->latitud, 
-                        $request->longitud
-                    );
-                    $ubicacion->save();
-
-                    $user = $usuario;
-                    $client = new Client();
-
-                    $data['accion'] = 'Crear usuario';
-                    $data['msg'] = 'Usuario creado exitosamente';
-
-                    if (!is_null($propiedad->id)) {
-                        try {
-                            $body = $client->request(
-                                'POST',  
-                                config('app.qvo_url_base').'/customers', [
-                                    'json' => [
-                                        'email' => $propiedad->user[0]->email,
-                                        'name'  => $propiedad->nombre
-                                    ],
-                                    'headers' => [
-                                        'Authorization' => 'Bearer '.config('app.qvo_key')
-                                    ]
-                                ]
-                            )->getBody();
-    
-                            $response = json_decode($body);
-                            $retorno['errors'] = false;
-                            $retorno["msj"] = $response;
-
-                            $qvo_user = new QvoUser();
-                            $qvo_user->prop_id = $propiedad->id;
-                            $qvo_user->qvo_id  = $response->id;
-                            $qvo_user->save();
-
-                            try {
-                                $body = $client->request(
-                                    'POST', 
-                                    config('app.DOLAR_PRICE_API')
-                                )->getBody();
-            
-                                $dolar_price = json_decode($body); 
-                                $dolar_price = intval($dolar_price->quotes->USDCLP);
-                            } catch (GuzzleException $e) {
-                                $dolar_price = 600;
-                            }
-
-                            if ($propiedad->numero_habitaciones > 27) {
-                                $precio = round($dolar_price * 27);    
-                            } else {
-                                $precio = round(
-                                    $dolar_price * $propiedad->numero_habitaciones
-                                );
-                            }
-
-                            try {
-                                $body = $client->request(
-                                    'POST',  
-                                    config('app.qvo_url_base').'/plans', [
-                                        'json' => [
-                                            'id' => $propiedad->id,
-                                            'name' => $propiedad->nombre,
-                                            'price' => $precio * intval(
-                                                config('app.PRECIO_X_HAB_QVO')
-                                            ),
-                                            'currency' => 'CLP',
-                                            'interval' => 'year',
-                                            'trial_period_days' => $dias_prueba
-                                        ],
-                                        'headers' => [
-                                            'Authorization' => 'Bearer '.config('app.qvo_key')
-                                        ]
-                                    ]
-                                )->getBody();
-
-                                $response = json_decode($body);
-
-                                try {
-                                    $body = $client->request(
-                                        'POST', 
-                                        config('app.qvo_url_base').'/subscriptions', [
-                                            'json' => [
-                                                'customer_id' => $qvo_user->qvo_id,
-                                                'plan_id' => $propiedad->id
-                                            ],
-                                            'headers' => [
-                                                'Authorization' => 'Bearer '.config('app.qvo_key')
-                                            ]
-                                        ]
-                                    )->getBody();
-                                    $response = json_decode($body);
-
-                                    $qvo_user->solsub_id = $response->id;
-                                    $qvo_user->save(); 
-
-                                    $retorno['errors'] = false;
-                                    $retorno["msj"]    = $response;
-                                } catch (GuzzleException $e) {
-                                    $status            = trans('request.failure.code.bad_request');
-                                    $retorno['errors'] = true;
-                                    $retorno["msj"]    = json_decode(
-                                        (string)$e->getResponse()->getBody()
-                                    );
-                                } 
-                            } catch (GuzzleException $e) {
-                                $status            = trans('request.failure.code.bad_request');
-                                $retorno['errors'] = true;
-                                $retorno["msj"] = json_decode(
-                                    (string)$e->getResponse()->getBody()
-                                );
-                            }  
-                        } catch (GuzzleException $e) {
-                            $status = trans('request.failure.code.bad_request');
-                            $retorno['errors'] = true;
-                            $retorno["msj"] = json_decode(
-                                (string)$e->getResponse()->getBody()
-                            );
-                        } 
-                    } else {
-                        $status            = trans('request.failure.code.bad_request');
-                        $retorno['errors'] = true;
-                        $retorno['msj']    = "El usuario no se encuentra registrado";
-                    }
-                } else {
-                    $status            = trans('request.failure.code.bad_request');
-                    $retorno['errors'] = true;
-                    $retorno['msj']    = "Error al intentar crear la cuenta";
-                }
-            } else {
-                $data['accion'] = 'Crear usuario';
-                $data['msg'] = 'Error. El correo ingresado ya esta en uso';
-            }
-        } else {
-            $data['accion'] = 'Crear usuario';
-            $data['msg'] = 'Datos requeridos';
-        }
-        return Response::json($data);
     }
 }
