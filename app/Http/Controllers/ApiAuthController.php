@@ -48,8 +48,14 @@ class ApiAuthController extends Controller {
         		    break;
         	    }
             } elseif ((strcmp($request->email, config('app.ADMIN_MAIL')) === 0) && $request->has('dash')) {
-                $data   = compact('token', 'user_id', 'propiedad_id');
-                $status = trans('request.success.code');
+                if (!$token = JWTAuth::attempt($credentials)) {
+                    $data['errors'] = trans('request.failure.status');
+                    $data['msg']    = 'Usuario o contraseña incorrecta';
+                    $status         = trans('request.failure.code.forbidden');
+                } else {
+                    $data   = compact('token', 'user_id', 'propiedad_id');
+                    $status = trans('request.success.code');
+                }
             } else {
                 $data['errors'] = trans('request.failure.status');
                 $data['msg']    = 'Su cuenta se encuentra inactiva';
