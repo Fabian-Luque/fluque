@@ -68,7 +68,7 @@ class ApiAuthController extends Controller {
             $user_id = $user->id;
             $propiedad_id = $user->propiedad[0]['id'];
 
-            if (strcmp($request->email, config('app.ADMIN_MAIL')) == 0) {
+            if (strcmp($request->email, config('app.ADMIN_MAIL')) === 0) {
                 if (!$token = JWTAuth::attempt($credentials)) {
                     $data['errors'] = trans('request.failure.status');
                     $data['msg']    = 'Usuario o contraseña incorrecta';
@@ -80,14 +80,12 @@ class ApiAuthController extends Controller {
             } else {
                 $data['errors'] = trans('request.failure.status');
                 $data['msg']    = 'Su cuenta se encuentra inactiva';
-                $status         = trans('request.failure.code.forbidden');
             }
         } else {
             $data['errors'] = trans('request.failure.status');
             $data['msg']    = trans('request.failure.bad');
-            $status         = trans('request.failure.code.not_founded');
         } 
-        return Response::json($data, $status); 
+        return Response::json($data); 
     }
 
     public function  ResetPassUser(Request $request) {
