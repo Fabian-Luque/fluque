@@ -224,9 +224,9 @@ class UserDashController extends Controller {
         } else {
             $data["cant"] = Propiedad::count();
             if ($request->has('rango') && $request->has('todos')) {
-                $data["cuentas"] = Propiedad::all();
+                $data["propiedades"] = Propiedad::all();
             } elseif ($request->has('rango')) {
-                $data["cuentas"] = Propiedad::whereBetween(
+                $data["propiedades"] = Propiedad::whereBetween(
                     'id', [
                         ($request->rango * 30), 
                         ($request->rango * 30) + 30
