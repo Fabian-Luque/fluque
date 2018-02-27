@@ -196,13 +196,37 @@ class UserDashController extends Controller {
                 $data['errors'] = true;
                 $data['msg']    = 'Usuario no encontrado';
             }
-            return Response::json($data);
         } else {
             $data["cant"] = User::count();
             if ($request->has('rango') && $request->has('todos')) {
                 $data["cuentas"] = User::all();
             } elseif ($request->has('rango')) {
                 $data["cuentas"] = User::whereBetween(
+                    'id', [
+                        ($request->rango * 30), 
+                        ($request->rango * 30) + 30
+                    ]
+                )->get();
+            } 
+        }
+        return Response::json($data);
+    }
+
+    public function getProps(Request $request) {  
+        if ($request->has('id')) {
+            $propiedades = Propiedad::where(
+                'id',
+                $request->id
+            )->first();
+
+            $data['errors'] = false;
+            $data['msg']    = $propiedades;
+        } else {
+            $data["cant"] = Propiedad::count();
+            if ($request->has('rango') && $request->has('todos')) {
+                $data["cuentas"] = Propiedad::all();
+            } elseif ($request->has('rango')) {
+                $data["cuentas"] = Propiedad::whereBetween(
                     'id', [
                         ($request->rango * 30), 
                         ($request->rango * 30) + 30
