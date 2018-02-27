@@ -114,10 +114,7 @@ class UserDashController extends Controller {
                 $data['accion'] = 'Crear usuario';
                 $data['msg'] = 'Error. El correo ingresado ya esta en uso';
             }
-        } else {
-            $data['accion'] = 'Crear usuario';
-            $data['msg'] = 'Datos requeridos';
-        }
+        } 
         return Response::json($data);
     }
 

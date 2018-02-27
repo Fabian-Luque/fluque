@@ -5,6 +5,7 @@ use App\Events\ReservasMotorEvent;
 use App\User;
 
 Route::auth();
+
 Route::get(
   '/', 
   function () {
@@ -12,22 +13,137 @@ Route::get(
   }
 );
 
-Route::post('reset/password', 'ApiAuthController@ResetPassword')->name('cambiar.pass');
-Route::post('resetpass/email', 'CorreoController@sendmail')->name('reset.pass.sendmail');
+Route::post('propiedad/cercana/obtener','GeoController@PropiedadesCercanas');
+
+
+Route::post('guardar/ubicacion/propiedad', 'GeoController@UbicacionCreate');
+Route::post('googlemaps', 'GeoController@GoogleMaps');
+
+Route::post('mapjs', 'GeoController@GoogleMaps');
+Route::post('locate/prop', 'GeoController@AddLocatePropiedad');
+
+
+Route::get('hotelescercanos', 'GeoController@Gmaps');
+Route::post('hoteles/cercanos', 'GeoController@Gmaps');
+
+
+Route::post('ejmm', 'CorreoController@SendFileByEmail');
+
 
 Route::get(
-	'sendmailreset', 
-	function() {
-	    return View::make('administrador.sendmailresetpass');
-	}
+  '/upload', 
+  function () {
+    return view('correos.testimg');
+  }
 );
 
 Route::get(
-	'resetpass', 
-	function() {
-	    return View::make('administrador.resetpass');
-	}
+  '/gmap', 
+  function () {
+    return view('administrador.gmap');
+  }
 );
+
+Route::get(
+  '/p', 
+  function () {
+    return view('administrador.prueba');
+  }
+);
+
+//////////////////////// rutas dash ////////////////////////////
+
+
+Route::group(['prefix' => 'dash', 'middleware' => ['auth']], 
+  function() {
+
+    
+      Route::get(
+      'adminhome', 
+      function() {
+          return View::make('administrador.home_admin');
+      }
+    );
+
+
+
+    Route::get(
+      'adminprop', 
+      function() {
+          return View::make('administrador.prop');
+      }
+    );
+
+    Route::get(
+      'adminreguser', 
+      function() {
+          return View::make('administrador.reguser');
+      }
+    );
+    Route::get('adminreguser', 'DashControllers\UserDashController@getViewTipoPropiedad');
+
+    Route::get('adminprop', 'DashControllers\UserDashController@getViewPropiedad');
+
+    Route::get(
+      'adminuser', 
+      function() {
+          return View::make('administrador.user');
+      }
+    );
+
+    Route::get(
+      'edituser', 
+      function() {
+          return View::make('administrador.editmodal');
+      }
+    );
+
+    Route::get(
+      'edituserp', 
+      function() {
+          return View::make('administrador.editmodalp');
+      }
+    );
+
+    Route::get(
+      'buscauser', 
+      function() {
+          return View::make('administrador.accionesC');
+      }
+    );
+    
+    Route::get('adminuser', 'DashControllers\UserDashController@ReadUser');
+        
+    
+
+    Route::post('actualizar/user', 'DashControllers\UserDashController@UpdateUser')->name('editar.user');
+    Route::post('obtener/user', 'DashControllers\UserDashController@ReadUser');
+    Route::post('eliminar/user', 'DashControllers\UserDashController@DeleteUser');
+  }
+);
+//////////////////////// rutas dash  ///////////////////////////////////////
+
+
+
+
+
+  Route::post('reset/password', 'ApiAuthController@ResetPassword')->name('cambiar.pass');
+
+  Route::post('resetpass/email', 'CorreoController@sendmail')->name('reset.pass.sendmail');
+  
+  Route::get(
+    'sendmailreset', 
+    function() {
+        return View::make('administrador.sendmailresetpass');
+    }
+  );
+
+  Route::get(
+    'resetpass', 
+    function() {
+        return View::make('administrador.resetpass');
+    }
+  );
 
 //// motor de reserva
 Route::get('motor/reserva', 'MotorWidgetControllers\MotorController@getMotor');
@@ -50,7 +166,7 @@ Route::get('reset/password/{token}', 'ApiAuthController@ResetPassword');
 Route::group(['as' => 'api.jarvis.'], function() {
 	Route::post('registro', 'UserController@store');
 	Route::post('signin', 'ApiAuthController@signin');
-
+	
 	Route::post('/signup', 'RegistroController@signup'); // paso 1
 	Route::post('/signin2', 'RegistroController@signin'); // paso 3
 	Route::post('/configurar', 'RegistroController@configurar'); // paso 4
@@ -63,20 +179,11 @@ Route::group(['as' => 'api.jarvis.'], function() {
 
 
 	Route::group(['middleware' => ['jwt.auth']], function () {
-
-		/////////////////// rutas dash
-		Route::post('cuenta/crear', 'DashControllers\UserDashController@CreateUser');
+		Route::post('cuentas/crear', 'DashControllers\UserDashController@CreateUser');
 		Route::post('cuentas/obtener', 'DashControllers\UserDashController@getUsers');
 		Route::post('cuentas/actualizar', 'DashControllers\UserDashController@UpdateCuenta');
-
 		Route::post('propiedades/obtener', 'DashControllers\UserDashController@getViewPropiedad');
-	    Route::get('adminreguser', 'DashControllers\UserDashController@getViewTipoPropiedad');
-	    Route::get('adminprop', 'DashControllers\UserDashController@getViewPropiedad');
-	    Route::get('adminuser', 'DashControllers\UserDashController@ReadUser');
-	    Route::post('actualizar/user', 'DashControllers\UserDashController@UpdateUser');
-	    Route::post('obtener/user', 'DashControllers\UserDashController@ReadUser');
-	    ////////////////////////////////
-		
+
 		Route::post('upload/images', 'S3Controller@UploadImage');
 		Route::post('delete/images', 'S3Controller@DeleteImage');
 		Route::post('delete/directory', 'S3Controller@DeleteDirectory');
@@ -236,7 +343,7 @@ Route::group(['as' => 'api.jarvis.'], function() {
 
 Route::post('evento', 'DashControllers\UserDashController@evento');
 
-Route::post('crear/user', 'DashControllers\UserDashController@CreateUserP');
+
 
 
 
@@ -288,7 +395,6 @@ Route::post('pdf/comprobante/reserva/resumen2', 'PDFController@comprobanteReserv
 Route::post('asignar/prueba', 'MotorRaController@prueba');
 
 Route::post('correo', 'PDFController@envm');
-
 
 
 
