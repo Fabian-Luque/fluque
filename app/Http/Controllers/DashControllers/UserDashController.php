@@ -270,6 +270,8 @@ class UserDashController extends Controller {
             $propiedades = Propiedad::where(
                 'id',
                 $request->id
+            )->with(
+                'ubicacion'
             )->first();
 
             $data['errors'] = false;
