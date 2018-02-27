@@ -176,6 +176,59 @@ class UserDashController extends Controller {
         return Response::json($data);
     }
 
+    public function UpdatePropiedad(Request $request) {
+        $validator = Validator::make(
+            $request->all(), 
+            array(
+                'id'                    => 'required',
+                'nombre'                => 'required',
+                'email'                 => 'required',
+                'telefono'              => 'required',
+                'numero_habitaciones'   => 'required',
+                'ciudad'                => 'required',
+                'latitud'               => 'required',
+                'longitud'              => 'required'
+            )
+        );
+
+        if ($validator->fails()) {
+            $retorno['errors'] = true;
+            $retorno["msj"] = $validator->errors();
+        } else {
+            $propiedad = Propiedad::where(
+                'id',
+                $request->id
+            )->first();
+
+            if (!is_null($propiedad)) {
+                $propiedad->nombre = $request->nombre;
+                $propiedad->email = $request->email;
+                $propiedad->telefono = $request->telefono;
+                $propiedad->numero_habitaciones = $request->hab;
+                $propiedad->ciudad = $request->ciudad;
+                $propiedad->save();
+
+                $ubicacion = UbicacionProp::where(
+                    'id',
+                    $request->id
+                )->first();
+
+                $ubicacion->location = new Point(
+                    $request->longitud,
+                    $request->latitud 
+                );
+                $ubicacion->save();
+
+                $retorno['errors'] = false;
+                $retorno['msg']    = 'Registro actualizado con exito';
+            } else {
+                $retorno['errors'] = true;
+                $retorno['msg']    = 'Registro no encontrado';
+            }
+        }
+        return Response::json($retorno);
+    }
+
     public function getUsers(Request $request) {  
         if ($request->has('id')) {
             $user = User::where(
