@@ -103,19 +103,18 @@ class UserDashController extends Controller {
                         ""
                     );   
 
-                    $data['accion'] = 'Crear cuenta';
-                    $data['msg'] = 'cuenta creada con exito';
+                    $retorno['accion'] = 'Crear cuenta';
+                    $retorno['msg'] = 'cuenta creada con exito';
                 } else {
-                    $status            = trans('request.failure.code.bad_request');
                     $retorno['errors'] = true;
                     $retorno['msj']    = "Error al intentar crear la cuenta";
                 }
             } else {
-                $data['accion'] = 'Crear usuario';
-                $data['msg'] = 'Error. El correo ingresado ya esta en uso';
+                $retorno['accion'] = 'Crear usuario';
+                $retorno['msg'] = 'Error. El correo ingresado ya esta en uso';
             }
         } 
-        return Response::json($data);
+        return Response::json($retorno);
     }
 
     public function ReadUser(Request $request) {  
@@ -197,19 +196,22 @@ class UserDashController extends Controller {
             }
             return Response::json($data);
         } else {
+            $data["cant"] = User::count();
             if (!$request->has('rango')) {
-                $rango = 30;
+                if ($request->rango == -1) {
+                    $data["cuentas"] = User::all();
+                } else {
+                    $rango = 30;
+                    $data["cuentas"] = User::whereBetween(
+                        'id', [
+                            ($rango * 30), 
+                            ($rango * 30) + 30
+                        ]
+                    )->get();
+                }
             } else {
                 $rango = $request->rango;
             }
-
-            $data["cant"] = User::count();
-            $data["cuentas"] = User::whereBetween(
-                'id', [
-                    ($rango * 30), 
-                    ($rango * 30) + 30
-                ]
-            )->get();
         }
         return Response::json($data);
     }

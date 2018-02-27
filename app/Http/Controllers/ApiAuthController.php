@@ -52,7 +52,7 @@ class ApiAuthController extends Controller {
                     $data['msg']    = 'Usuario o contraseña incorrecta';
                     $status         = trans('request.failure.code.forbidden');
                 } else {
-                    $data   = compact('token', 'user_id');
+                    $data   = compact('token');
                     $status = trans('request.success.code');
                 }
             } else {
