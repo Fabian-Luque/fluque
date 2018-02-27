@@ -34,6 +34,8 @@ class UserDashController extends Controller {
                 'email'               => 'required',
                 'password'            => 'required',
                 'phone'               => 'required',
+                'nombre'              => 'required',
+                'ciudad'              => 'required',
                 'direccion'           => 'required',
                 'tipo_propiedad_id'   => 'required',
                 'tipo_cuenta'         => 'required',
