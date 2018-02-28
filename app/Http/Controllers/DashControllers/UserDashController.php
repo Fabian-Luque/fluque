@@ -288,7 +288,7 @@ class UserDashController extends Controller {
             $data['errors'] = false;
             $data['msg']    = $propiedades;
         } else {
-            $data["cant"] = Propiedad::count();
+            $data["cant"] = Propiedad::all()->count();
             if ($request->has('rango') && $request->has('todos')) {
                 $data["propiedades"] = Propiedad::all();
             } elseif ($request->has('rango')) {
