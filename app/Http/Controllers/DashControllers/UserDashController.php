@@ -289,10 +289,18 @@ class UserDashController extends Controller {
                 )->get();
             } 
             foreach ($data["propiedades"] as $prop) {
-                $prop->ubicacion = UbicacionProp::where(
+                $ub = UbicacionProp::where(
                     'prop_id',
                     $prop->id
                 )->first();
+                
+                if (!is_null($ub)) {
+                    $prop->latitud  = $ub->location->getLat();
+                    $prop->longitud = $ub->location->getLng();
+                } else {
+                    $prop->latitud  = null;
+                    $prop->longitud = null;
+                }
             }
         }
         return Response::json($data);
