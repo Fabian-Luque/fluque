@@ -209,7 +209,7 @@ class UserDashController extends Controller {
                 $propiedad->save();
 
                 $ubicacion = UbicacionProp::where(
-                    'id',
+                    'prop_id',
                     $request->id
                 )->first();
 
@@ -288,6 +288,12 @@ class UserDashController extends Controller {
                     ]
                 )->get();
             } 
+            foreach ($data["propiedades"] as $prop) {
+                $prop->ubicacion = UbicacionProp::where(
+                    'prop_id',
+                    $prop->id
+                )->first();
+            }
         }
         return Response::json($data);
     }
