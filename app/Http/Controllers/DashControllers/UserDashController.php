@@ -213,10 +213,21 @@ class UserDashController extends Controller {
                     $request->id
                 )->first();
 
-                $ubicacion->location = new Point(
-                    $request->longitud,
-                    $request->latitud 
-                );
+                if (!is_null($ubicacion)) {
+                    $ubicacion->location = new Point(
+                        $request->latitud,
+                        $request->longitud 
+                    );
+                    
+                } else {
+                    $ubicacion           = new UbicacionProp();
+                    $ubicacion->prop_id  = $request->id;
+                    $ubicacion->location = new Point(
+                        $request->latitud,
+                        $request->longitud 
+                    );
+                }
+
                 $ubicacion->save();
 
                 $retorno['errors'] = false;
