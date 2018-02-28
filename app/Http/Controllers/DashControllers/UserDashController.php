@@ -204,7 +204,7 @@ class UserDashController extends Controller {
                 $propiedad->nombre = $request->nombre;
                 $propiedad->email = $request->email;
                 $propiedad->telefono = $request->telefono;
-                $propiedad->numero_habitaciones = $request->hab;
+                $propiedad->numero_habitaciones = $request->numero_habitaciones;
                 $propiedad->ciudad = $request->ciudad;
                 $propiedad->save();
 
