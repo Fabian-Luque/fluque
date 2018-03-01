@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Propiedad;
 use App\TipoPropiedad;
 use App\User;
-use App\QvoUser;
+use App\Reserva;
 use App\DatosStripe;
 use App\UbicacionProp;
 use App\ZonaHoraria;
@@ -313,6 +313,80 @@ class UserDashController extends Controller {
                     $prop->longitud = null;
                 }
             }
+        }
+        return Response::json($data);
+    }
+
+    public function getReservas(Request $request) {
+        if ($request->has('prop_id')) {
+            $id        = $request->prop_id;
+            $propiedad = Propiedad::where(
+                'id', 
+                $id
+            )->first();
+            
+            if(is_null($propiedad)) {
+                $retorno['errors'] = true;
+                $retorno['msg'] = "Propiedad no encontrada";
+            } else {
+                $reservas = Reserva::select(
+                    'reservas.id', 
+                    'numero_reserva',
+                    'checkin', 
+                    'habitacion_id', 
+                    'estado_reserva_id',
+                    'checkout',
+                    'ocupacion', 
+                    'monto_total',
+                    'estado_reserva.nombre as estado',
+                    'cliente_id', 
+                    'clientes.nombre as nombre_cliente', 
+                    'clientes.apellido as apellido_cliente', 
+                    'noches', 
+                    'tipo_moneda.nombre as nombre_moneda', 
+                    'cantidad_decimales', 
+                    'monto_por_pagar'
+                )->whereHas(
+                    'habitacion', 
+                    function($query) use ($id) {
+                        $query->where('propiedad_id', $id);
+                    }
+                )->with([
+                    'huespedes' => function ($q) {
+                        $q->select('huespedes.id', 'nombre', 'apellido');
+                    }
+                ])->with(
+                    'habitacion.tipoHabitacion'
+                )->with(
+                    'cliente.pais', 
+                    'cliente.region'
+                )->join(
+                    'clientes', 
+                    'clientes.id',
+                    '=',
+                    'cliente_id'
+                )->join(
+                    'tipo_moneda', 
+                    'tipo_moneda.id', 
+                    '=', 
+                    'tipo_moneda_id'
+                )->join(
+                    'estado_reserva', 
+                    'estado_reserva.id', 
+                    '=', 
+                    'estado_reserva_id'
+                )->orderBy(
+                    'reservas.id', 
+                    'desc'
+                )->take(50)
+                ->get();
+
+                $retorno['errors'] = false;
+                $retorno['msg'] = $reservas;
+            }
+        } else {
+            $retorno['errors'] = true;
+            $retorno['msg'] = "No se envia propiedad_id";
         }
         return Response::json($data);
     }
