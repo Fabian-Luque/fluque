@@ -383,6 +383,7 @@ class UserDashController extends Controller {
 
                 $retorno['errors'] = false;
                 $retorno['msg'] = $reservas;
+                $retorno['cant'] = $reservas->count();
             }
         } else {
             $retorno['errors'] = true;
