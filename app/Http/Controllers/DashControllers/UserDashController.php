@@ -388,7 +388,7 @@ class UserDashController extends Controller {
             $retorno['errors'] = true;
             $retorno['msg'] = "No se envia propiedad_id";
         }
-        return Response::json($data);
+        return Response::json($retorno);
     }
 
     public function UpdateUser(Request $request)  {
