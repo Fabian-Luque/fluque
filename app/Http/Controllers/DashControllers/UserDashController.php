@@ -382,18 +382,26 @@ class UserDashController extends Controller {
 
                 $retorno['cant'] = $reservas->count();
 
-                if ($request->has('rango') && !$request->has('todos')) {
-                    if (($request->rango * 30) > $retorno['cant']) {
+                if (!($request->has('rango') && $request->has('todos'))) {
+                    if ($retorno['cant'] > (($request->rango * 30) + 30)) {
                         $reservas = collect(
                             array_slice(
                                 $reservas->toArray(), 
-                                ($request->rango * 30) - 1, 
-                                ($request->rango * 30) + 29
+                                ($request->rango * 30), 
+                                ($request->rango * 30) + 30
+                            )
+                        ); 
+                    } else {
+                        $reservas = collect(
+                            array_slice(
+                                $reservas->toArray(), 
+                                ($request->rango * 30), 
+                                $retorno['cant']
                             )
                         ); 
                     }
                 } 
-            
+
                 $retorno['errors'] = false;
                 $retorno['msg'] = $reservas;
             }
