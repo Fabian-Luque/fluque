@@ -1389,7 +1389,7 @@ class PropiedadController extends Controller
                                     return Response::json($data, 400);
                                 }
 
-                            } elseif ($serv->categoria_id == 1) {
+                            } elseif ($serv->categoria_id == 1 || $serv->categoria_id == 3) {
                                 $propiedad->vendeServicios()->attach($servicio_id, ['metodo_pago_id' => $metodo_pago_id, 'cantidad' => $cantidad, 'precio_total' => $precio_total, 'numero_operacion' => $numero_operacion, 'tipo_comprobante_id' => $tipo_comprobante_id, 'numero_cheque' => $numero_cheque, 'tipo_moneda_id' => $tipo_moneda_id, 'caja_id' => $caja_abierta->id]);
                             }
 
