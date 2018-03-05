@@ -32,7 +32,8 @@ class Propiedad extends Model {
         'tipo_propiedad_id', 
         'tipo_cobro_id', 
         'zona_horaria_id', 
-        'codigo'
+        'codigo',
+        'monto_contrato'
     ];
 
     public function ubicacion() {

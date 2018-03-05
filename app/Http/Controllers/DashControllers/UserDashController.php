@@ -40,6 +40,7 @@ class UserDashController extends Controller {
                 'tipo_propiedad_id'   => 'required',
                 'tipo_cuenta'         => 'required',
                 'numero_habitaciones' => 'required',
+                'monto_contrato'      => 'required',
                 'latitud'             => 'required',
                 'longitud'            => 'required'
             )
@@ -51,66 +52,56 @@ class UserDashController extends Controller {
         } else {
             $us = User::where('email',$request->email)->first();
             if (!isset($us->email)) {
-                $codigo = (string) Uuid::generate(4);
-                $prop   = Propiedad::where(
-                    'codigo', 
-                    $codigo
-                )->first();
+                $usuario = new User();
+                $usuario->name = $request->name;
+                $usuario->email = $request->email;
+                $usuario->password = $request->password;
+                $usuario->phone = $request->phone;
+                $usuario->rol_id = 1;
+                $usuario->estado_id = 1;
+                $usuario->save();
 
-                if (is_null($prop)) {
-                    $usuario = new User();
-                    $usuario->name = $request->name;
-                    $usuario->email = $request->email;
-                    $usuario->password = $request->password;
-                    $usuario->phone = $request->phone;
-                    $usuario->rol_id = 1;
-                    $usuario->estado_id = 1;
-                    $usuario->save();
+                $propiedad = new Propiedad();
+                $propiedad->nombre = $request->nombre;
+                $propiedad->direccion = $request->direccion;
+                $propiedad->ciudad = $request->ciudad;
+                $propiedad->numero_habitaciones = $request->numero_habitaciones;
+                $propiedad->tipo_propiedad_id = $request->tipo_propiedad_id;
+                $propiedad->estado_cuenta_id = $request->tipo_cuenta;
+                $propiedad->monto_contrato = $request->monto_contrato;
+                $propiedad->codigo = $codigo;
+                $propiedad->save();
 
-                    $propiedad = new Propiedad();
-                    $propiedad->nombre = $request->nombre;
-                    $propiedad->direccion = $request->direccion;
-                    $propiedad->ciudad = $request->ciudad;
-                    $propiedad->numero_habitaciones = $request->numero_habitaciones;
-                    $propiedad->tipo_propiedad_id = $request->tipo_propiedad_id;
-                    $propiedad->estado_cuenta_id = $request->tipo_cuenta;
-                    $propiedad->codigo = $codigo;
-                    $propiedad->save();
+                $usuario->propiedad()->attach($propiedad->id);
 
-                    $usuario->propiedad()->attach($propiedad->id);
+                $ubicacion           = new UbicacionProp();
+                $ubicacion->prop_id  = $propiedad->id;
+                $ubicacion->location = new Point(
+                    $request->longitud,
+                    $request->latitud 
+                );
+                $ubicacion->save();
 
-                    $ubicacion           = new UbicacionProp();
-                    $ubicacion->prop_id  = $propiedad->id;
-                    $ubicacion->location = new Point(
-                        $request->longitud,
-                        $request->latitud 
-                    );
-                    $ubicacion->save();
+                $arr = array(
+                    'user' => $request->email,
+                    'pass' => $request->password,
+                    'de'   => 'Gofeels' 
+                );
 
-                    $arr = array(
-                        'user' => $request->email,
-                        'pass' => $request->password,
-                        'de'   => 'Gofeels' 
-                    );
+                $this->EnvioCorreo(
+                    $propiedad,
+                    $request->email,
+                    $arr,
+                    "correos.bienvenida",
+                    "",
+                    "",
+                    1,
+                    "",
+                    ""
+                );   
 
-                    $this->EnvioCorreo(
-                        $propiedad,
-                        $request->email,
-                        $arr,
-                        "correos.bienvenida",
-                        "",
-                        "",
-                        1,
-                        "",
-                        ""
-                    );   
-
-                    $retorno['accion'] = 'Crear cuenta';
-                    $retorno['msg'] = 'cuenta creada con exito';
-                } else {
-                    $retorno['errors'] = true;
-                    $retorno['msj']    = "Error al intentar crear la cuenta";
-                }
+                $retorno['accion'] = 'Crear cuenta';
+                $retorno['msg'] = 'cuenta creada con exito';
             } else {
                 $retorno['accion'] = 'Crear usuario';
                 $retorno['msg'] = 'Error. El correo ingresado ya esta en uso';
