@@ -183,7 +183,7 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::post('cuentas/obtener', 'DashControllers\UserDashController@getUsers');
 		Route::post('cuentas/actualizar', 'DashControllers\UserDashController@UpdateCuenta');
 		Route::post('dash/reserva/obtener', 'DashControllers\UserDashController@getReservas');
-		
+		Route::post('dash/change/pass', 'DashControllers\UserDashController@ChagePass');
 
 		Route::post('propiedades/obtener', 'DashControllers\UserDashController@getProps');
 		Route::post('propiedades/actualizar', 'DashControllers\UserDashController@UpdatePropiedad');

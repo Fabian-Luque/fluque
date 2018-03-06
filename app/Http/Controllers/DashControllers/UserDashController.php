@@ -48,7 +48,7 @@ class UserDashController extends Controller {
 
         if ($validator->fails()) {
             $retorno['errors'] = true;
-            $retorno["msj"] = $validator->errors();
+            $retorno["msg"] = $validator->errors();
         } else {
             $usuario = User::where(
                 'email',
@@ -112,6 +112,37 @@ class UserDashController extends Controller {
                 $retorno['msg'] = 'Error. El correo ingresado ya esta en uso';
             }
         } 
+        return Response::json($retorno);
+    }
+
+    public function ChagePass(Request $request) {
+        $validator = Validator::make(
+            $request->all(), 
+            array(
+                'user_id'             => 'required'                
+            )
+        );
+
+        if ($validator->fails()) {
+            $retorno['errors'] = true;
+            $retorno["msg"] = $validator->errors();
+        } else {
+            $usuario = User::where(
+                'id',
+                $request->user_id
+            )->first();
+
+            if (!is_null($usuario)) {
+                $usuario->password  = $request->password;
+                $usuario->save();
+
+                $retorno['errors'] = false;
+                $retorno['msg'] = 'Contraseña actualizada con exito';
+            } else {
+                $retorno['errors'] = true;
+                $retorno['msg'] = 'Registro no encontrado';
+            } 
+        }
         return Response::json($retorno);
     }
 
