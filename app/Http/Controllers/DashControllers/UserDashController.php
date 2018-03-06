@@ -119,7 +119,8 @@ class UserDashController extends Controller {
         $validator = Validator::make(
             $request->all(), 
             array(
-                'user_id'             => 'required'                
+                'user_id'             => 'required',
+                'password'            => 'required'                
             )
         );
 
