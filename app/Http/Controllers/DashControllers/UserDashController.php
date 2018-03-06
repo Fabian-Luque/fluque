@@ -50,26 +50,30 @@ class UserDashController extends Controller {
             $retorno['errors'] = true;
             $retorno["msj"] = $validator->errors();
         } else {
-            $us = User::where('email',$request->email)->first();
-            if (!isset($us->email)) {
-                $usuario = new User();
-                $usuario->name = $request->name;
-                $usuario->email = $request->email;
-                $usuario->password = $request->password;
-                $usuario->phone = $request->phone;
-                $usuario->rol_id = 1;
+            $usuario = User::where(
+                'email',
+                $request->email
+            )->first();
+            
+            if (is_null($usuario)) {
+                $usuario            = new User();
+                $usuario->name      = $request->name;
+                $usuario->email     = $request->email;
+                $usuario->password  = $request->password;
+                $usuario->phone     = $request->phone;
+                $usuario->rol_id    = 1;
                 $usuario->estado_id = 1;
                 $usuario->save();
 
-                $propiedad = new Propiedad();
-                $propiedad->nombre = $request->nombre;
-                $propiedad->direccion = $request->direccion;
-                $propiedad->ciudad = $request->ciudad;
+                $propiedad                      = new Propiedad();
+                $propiedad->nombre              = $request->nombre;
+                $propiedad->direccion           = $request->direccion;
+                $propiedad->ciudad              = $request->ciudad;
                 $propiedad->numero_habitaciones = $request->numero_habitaciones;
-                $propiedad->tipo_propiedad_id = $request->tipo_propiedad_id;
-                $propiedad->estado_cuenta_id = $request->tipo_cuenta;
-                $propiedad->monto_contrato = $request->monto_contrato;
-                $propiedad->codigo = $codigo;
+                $propiedad->tipo_propiedad_id   = $request->tipo_propiedad_id;
+                $propiedad->estado_cuenta_id    = $request->tipo_cuenta;
+                $propiedad->monto_contrato      = $request->monto_contrato;
+                $propiedad->codigo              = $codigo;
                 $propiedad->save();
 
                 $usuario->propiedad()->attach($propiedad->id);
@@ -85,7 +89,8 @@ class UserDashController extends Controller {
                 $arr = array(
                     'user' => $request->email,
                     'pass' => $request->password,
-                    'de'   => 'Gofeels' 
+                    'de'   => 'Gofeels',
+                    'comp' => 0 
                 );
 
                 $this->EnvioCorreo(
