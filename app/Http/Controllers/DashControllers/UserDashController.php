@@ -73,7 +73,7 @@ class UserDashController extends Controller {
                 $propiedad->tipo_propiedad_id   = $request->tipo_propiedad_id;
                 $propiedad->estado_cuenta_id    = $request->tipo_cuenta;
                 $propiedad->monto_contrato      = $request->monto_contrato;
-                $propiedad->codigo              = $codigo;
+                $propiedad->codigo              = (string) Uuid::generate(4);
                 $propiedad->save();
 
                 $usuario->propiedad()->attach($propiedad->id);
