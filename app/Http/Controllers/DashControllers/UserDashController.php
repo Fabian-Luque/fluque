@@ -115,37 +115,6 @@ class UserDashController extends Controller {
         return Response::json($retorno);
     }
 
-    public function ReadUser(Request $request) {  
-        if ($request->has('id')) {
-            $user = User::where(
-                'id',
-                $request->id
-            )->with('propiedad')->first();
-
-            $ub = UbicacionProp::where(
-                'prop_id',
-                $user->propiedad[0]->id
-            )->first();
-            
-            $user->propiedad[0]->ubicacion = $ub;
-            if (count($user) != 0) {
-                $data['errors'] = false;
-                $data['msg']    = $user;
-            } else {
-                $data['errors'] = true;
-                $data['msg']    = 'Usuario no encontrado';
-            }
-            return Response::json($data);
-        } else {
-            $data = User::all();
-
-            return View('administrador.user')->with(
-                'users', 
-                $data
-            );
-        }
-    }
-
     public function UpdateCuenta(Request $request) {  
         if ($request->has('id')) {
             $user = User::where(
@@ -259,7 +228,7 @@ class UserDashController extends Controller {
         } else {
             $data["cant"] = User::count();
             if ($request->has('rango') && $request->has('todos')) {
-                $data["cuentas"] = User::all();
+                $data["cuentas"] = User::orderBy('id')->get();
             } elseif ($request->has('rango')) {
                 $data["cuentas"] = User::whereBetween(
                     'id', [
@@ -286,7 +255,7 @@ class UserDashController extends Controller {
         } else {
             $data["cant"] = Propiedad::all()->count();
             if ($request->has('rango') && $request->has('todos')) {
-                $data["propiedades"] = Propiedad::all();
+                $data["propiedades"] = Propiedad::orderBy('id')->get();
             } elseif ($request->has('rango')) {
                 $data["propiedades"] = Propiedad::whereBetween(
                     'id', [
