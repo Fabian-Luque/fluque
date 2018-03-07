@@ -40,6 +40,7 @@ class UserDashController extends Controller {
                 'tipo_propiedad_id'   => 'required',
                 'tipo_cuenta'         => 'required',
                 'numero_habitaciones' => 'required',
+                'monto_contrato'      => 'required',
                 'latitud'             => 'required',
                 'longitud'            => 'required'
             )
@@ -47,70 +48,65 @@ class UserDashController extends Controller {
 
         if ($validator->fails()) {
             $retorno['errors'] = true;
-            $retorno["msj"] = $validator->errors();
+            $retorno["msg"] = $validator->errors();
         } else {
-            $us = User::where('email',$request->email)->first();
-            if (!isset($us->email)) {
-                $codigo = (string) Uuid::generate(4);
-                $prop   = Propiedad::where(
-                    'codigo', 
-                    $codigo
-                )->first();
+            $usuario = User::where(
+                'email',
+                $request->email
+            )->first();
+            
+            if (is_null($usuario)) {
+                $usuario            = new User();
+                $usuario->name      = $request->name;
+                $usuario->email     = $request->email;
+                $usuario->password  = $request->password;
+                $usuario->phone     = $request->phone;
+                $usuario->rol_id    = 1;
+                $usuario->estado_id = 1;
+                $usuario->save();
 
-                if (is_null($prop)) {
-                    $usuario = new User();
-                    $usuario->name = $request->name;
-                    $usuario->email = $request->email;
-                    $usuario->password = $request->password;
-                    $usuario->phone = $request->phone;
-                    $usuario->rol_id = 1;
-                    $usuario->estado_id = 1;
-                    $usuario->save();
+                $propiedad                      = new Propiedad();
+                $propiedad->nombre              = $request->nombre;
+                $propiedad->direccion           = $request->direccion;
+                $propiedad->ciudad              = $request->ciudad;
+                $propiedad->numero_habitaciones = $request->numero_habitaciones;
+                $propiedad->tipo_propiedad_id   = $request->tipo_propiedad_id;
+                $propiedad->estado_cuenta_id    = $request->tipo_cuenta;
+                $propiedad->monto_contrato      = $request->monto_contrato;
+                $propiedad->codigo              = (string) Uuid::generate(4);
+                $propiedad->save();
 
-                    $propiedad = new Propiedad();
-                    $propiedad->nombre = $request->nombre;
-                    $propiedad->direccion = $request->direccion;
-                    $propiedad->ciudad = $request->ciudad;
-                    $propiedad->numero_habitaciones = $request->numero_habitaciones;
-                    $propiedad->tipo_propiedad_id = $request->tipo_propiedad_id;
-                    $propiedad->estado_cuenta_id = $request->tipo_cuenta;
-                    $propiedad->codigo = $codigo;
-                    $propiedad->save();
+                $usuario->propiedad()->attach($propiedad->id);
 
-                    $usuario->propiedad()->attach($propiedad->id);
+                $ubicacion           = new UbicacionProp();
+                $ubicacion->prop_id  = $propiedad->id;
+                $ubicacion->location = new Point(
+                    $request->longitud,
+                    $request->latitud 
+                );
+                $ubicacion->save();
 
-                    $ubicacion           = new UbicacionProp();
-                    $ubicacion->prop_id  = $propiedad->id;
-                    $ubicacion->location = new Point(
-                        $request->longitud,
-                        $request->latitud 
-                    );
-                    $ubicacion->save();
+                $arr = array(
+                    'user' => $request->email,
+                    'pass' => $request->password,
+                    'de'   => 'Gofeels',
+                    'comp' => 0 
+                );
 
-                    $arr = array(
-                        'user' => $request->email,
-                        'pass' => $request->password,
-                        'de'   => 'Gofeels' 
-                    );
+                $this->EnvioCorreo(
+                    $propiedad,
+                    $request->email,
+                    $arr,
+                    "correos.bienvenida",
+                    "",
+                    "",
+                    1,
+                    "",
+                    ""
+                );   
 
-                    $this->EnvioCorreo(
-                        $propiedad,
-                        $request->email,
-                        $arr,
-                        "correos.bienvenida",
-                        "",
-                        "",
-                        1,
-                        "",
-                        ""
-                    );   
-
-                    $retorno['accion'] = 'Crear cuenta';
-                    $retorno['msg'] = 'cuenta creada con exito';
-                } else {
-                    $retorno['errors'] = true;
-                    $retorno['msj']    = "Error al intentar crear la cuenta";
-                }
+                $retorno['accion'] = 'Crear cuenta';
+                $retorno['msg'] = 'cuenta creada con exito';
             } else {
                 $retorno['accion'] = 'Crear usuario';
                 $retorno['msg'] = 'Error. El correo ingresado ya esta en uso';
@@ -119,35 +115,36 @@ class UserDashController extends Controller {
         return Response::json($retorno);
     }
 
-    public function ReadUser(Request $request) {  
-        if ($request->has('id')) {
-            $user = User::where(
-                'id',
-                $request->id
-            )->with('propiedad')->first();
+    public function ChagePass(Request $request) {
+        $validator = Validator::make(
+            $request->all(), 
+            array(
+                'user_id'             => 'required',
+                'password'            => 'required'                
+            )
+        );
 
-            $ub = UbicacionProp::where(
-                'prop_id',
-                $user->propiedad[0]->id
-            )->first();
-            
-            $user->propiedad[0]->ubicacion = $ub;
-            if (count($user) != 0) {
-                $data['errors'] = false;
-                $data['msg']    = $user;
-            } else {
-                $data['errors'] = true;
-                $data['msg']    = 'Usuario no encontrado';
-            }
-            return Response::json($data);
+        if ($validator->fails()) {
+            $retorno['errors'] = true;
+            $retorno["msg"] = $validator->errors();
         } else {
-            $data = User::all();
+            $usuario = User::where(
+                'id',
+                $request->user_id
+            )->first();
 
-            return View('administrador.user')->with(
-                'users', 
-                $data
-            );
+            if (!is_null($usuario)) {
+                $usuario->password  = $request->password;
+                $usuario->save();
+
+                $retorno['errors'] = false;
+                $retorno['msg'] = 'Contraseña actualizada con exito';
+            } else {
+                $retorno['errors'] = true;
+                $retorno['msg'] = 'Registro no encontrado';
+            } 
         }
+        return Response::json($retorno);
     }
 
     public function UpdateCuenta(Request $request) {  
@@ -263,7 +260,7 @@ class UserDashController extends Controller {
         } else {
             $data["cant"] = User::count();
             if ($request->has('rango') && $request->has('todos')) {
-                $data["cuentas"] = User::all();
+                $data["cuentas"] = User::orderBy('id')->get();
             } elseif ($request->has('rango')) {
                 $data["cuentas"] = User::whereBetween(
                     'id', [
@@ -290,7 +287,7 @@ class UserDashController extends Controller {
         } else {
             $data["cant"] = Propiedad::all()->count();
             if ($request->has('rango') && $request->has('todos')) {
-                $data["propiedades"] = Propiedad::all();
+                $data["propiedades"] = Propiedad::orderBy('id')->get();
             } elseif ($request->has('rango')) {
                 $data["propiedades"] = Propiedad::whereBetween(
                     'id', [
@@ -378,12 +375,32 @@ class UserDashController extends Controller {
                 )->orderBy(
                     'reservas.id', 
                     'desc'
-                )->take(50)
-                ->get();
+                )->get();
+
+                $retorno['cant'] = $reservas->count();
+
+                if (!($request->has('rango') && $request->has('todos'))) {
+                    if ($retorno['cant'] > (($request->rango * 30) + 30)) {
+                        $reservas = collect(
+                            array_slice(
+                                $reservas->toArray(), 
+                                ($request->rango * 30), 
+                                ($request->rango * 30) + 30
+                            )
+                        ); 
+                    } else {
+                        $reservas = collect(
+                            array_slice(
+                                $reservas->toArray(), 
+                                ($request->rango * 30), 
+                                $retorno['cant']
+                            )
+                        ); 
+                    }
+                } 
 
                 $retorno['errors'] = false;
                 $retorno['msg'] = $reservas;
-                $retorno['cant'] = $reservas->count();
             }
         } else {
             $retorno['errors'] = true;
