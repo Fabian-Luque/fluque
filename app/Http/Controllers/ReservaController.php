@@ -19,6 +19,7 @@ use App\Temporada;
 use App\TipoComprobante;
 use App\Caja;
 use App\HuespedReservaServicio;
+use App\Bloqueo;
 use Illuminate\Http\Request;
 use Response;
 use \Carbon\Carbon;
@@ -2064,6 +2065,19 @@ class ReservaController extends Controller
         ->join('clientes', 'clientes.id','=','cliente_id')
         ->whereBetween('checkout', $fechas)->whereIn('estado_reserva_id', [1,2,3,4,5])->get();
 
+        $bloqueos_inicio = Bloqueo::select('bloqueos.id', 'fecha_inicio as checkin', 'fecha_fin as checkout', 'noches', 'habitacion_id')
+        ->whereHas('habitacion', function($query) use($id){
+            $query->where('propiedad_id', $id);})
+        ->whereBetween('fecha_inicio', $fechas)
+        ->get();
+
+        $bloqueos_fin   = Bloqueo::select('bloqueos.id', 'fecha_inicio as checkin', 'fecha_fin as checkout', 'noches', 'habitacion_id')
+        ->whereHas('habitacion', function($query) use($id){
+            $query->where('propiedad_id', $id);})
+        ->whereBetween('fecha_fin', $fechas)
+        ->get();
+
+
         $habitaciones_tipo = [];
 
         foreach ($tipos as $tipo) {
@@ -2111,6 +2125,41 @@ class ReservaController extends Controller
             }
         }
 
+        /// Habitaciones bloquedas 
+        foreach ($bloqueos_inicio as $bloqueo) {
+            $bloqueo->nombre  = 'Bloqueada';
+            $inicio           = new Carbon($fecha_inicio);
+            $checkout         = $bloqueo->checkout;
+            $fin              = new Carbon($checkout);
+            $diferencia       = $inicio->diffInDays($fin);
+            $checkin          = new Carbon($bloqueo->checkin);
+            $posicion_checkin = $inicio->diffInDays($checkin) + 1;
+            if ($diferencia <= ($cantidad_dias -1 )) {
+                $noches         = $bloqueo->noches;
+                $bloqueo->left  = ($posicion_checkin * $ancho_celdas)-30;
+                $bloqueo->right = (($ancho_calendario - $bloqueo->left - ($noches * $ancho_celdas)) + $ancho_celdas)-60;
+                array_push($reservas_calendario, $bloqueo);
+             } else {
+                $bloqueo->left  = ($posicion_checkin * $ancho_celdas)-30;
+                $bloqueo->right = 0;
+                array_push($reservas_calendario, $bloqueo);
+            }
+        }
+
+        foreach ($bloqueos_fin as $bloqueo) {
+            $bloqueo->nombre  = 'Bloqueada';
+            $checkin           = $bloqueo->checkin;
+            $in                = new Carbon($checkin);
+            $inicio            = new Carbon($fecha_inicio);
+            $checkout          = new Carbon($bloqueo->checkout);
+            $posicion_checkout = $checkout->diffInDays($inicio) + 1;
+            if ($in < $inicio ) {
+                $bloqueo->left  = 0;
+                $bloqueo->right = (($ancho_calendario - ( $ancho_celdas * $posicion_checkout)) + $ancho_celdas)-30;
+                array_push($reservas_calendario, $bloqueo);
+            }
+        }
+        
         array_push($calendario, $habitaciones_tipo);
         array_push($calendario, $reservas_calendario);
 
