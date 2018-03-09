@@ -15,50 +15,32 @@ class Habitacion extends Model
 	protected $fillable = ['nombre','estado_habitacion_id','tipo_habitacion_id'];
 
 	public function propiedad(){
-
 		return $this->belongsTo('App\Propiedad', 'propiedad_id');
-
-
-
 	}
 
 	public function equipamiento(){
-
-
 		return $this->hasOne('App\Equipamiento', 'habitacion_id');
-
-
 	}
 
 	public function calendarios(){
-
 		return $this->hasMany('App\Calendario', 'habitacion_id');
-
-
 	}
 
 	public function reservas(){
-
 		return $this->hasMany('App\Reserva', 'habitacion_id');
-
-
 	}
 
 	public function tipoHabitacion(){
-
 		return $this->belongsTo('App\TipoHabitacion', 'tipo_habitacion_id');
-
-
 	}
-
 
 	public function estado(){
-
 		return $this->belongsTo('App\EstadoHabitacion', 'estado_habitacion_id');
-
-
 	}
-	
+
+	public function bloqueos(){
+		return $this->hasMany('App\Bloqueo', 'habitacion_id');
+	}
 
 
 }
