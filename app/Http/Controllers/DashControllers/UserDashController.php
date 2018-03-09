@@ -260,9 +260,19 @@ class UserDashController extends Controller {
         } else {
             $data["cant"] = User::count();
             if ($request->has('rango') && $request->has('todos')) {
-                $data["cuentas"] = User::orderBy('id')->get();
+                $data["cuentas"] = User::where(
+                    'email', 
+                    '!=', 
+                    config('app.ADMIN_MAIL')
+                )->orderBy(
+                    'id'
+                )->get();
             } elseif ($request->has('rango')) {
-                $data["cuentas"] = User::whereBetween(
+                $data["cuentas"] = User::where(
+                    'email', 
+                    '!=', 
+                    config('app.ADMIN_MAIL')
+                )->whereBetween(
                     'id', [
                         ($request->rango * 30), 
                         ($request->rango * 30) + 30
