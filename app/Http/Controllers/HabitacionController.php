@@ -216,13 +216,35 @@ class HabitacionController extends Controller
         }
 
         if ($request->has('fecha_inicio') && $request->has('fecha_fin') && $request->has('noches')) {
-            $bloqueo                = new Bloqueo();
-            $bloqueo->fecha_inicio  = $request->fecha_inicio;
-            $bloqueo->fecha_fin     = $request->fecha_fin;
-            $bloqueo->noches        = $request->noches;
-            $bloqueo->habitacion_id = $habitacion->id;
-            $bloqueo->save();
 
+            $fecha_inicio = $request->fecha_inicio;
+            $fecha_fin    = $request->fecha_fin;
+            $propiedad_id = $habitacion->propiedad_id;
+
+            $reservas = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
+                $query->where('propiedad_id', $propiedad_id);
+            })
+            ->where('habitacion_id', $habitacion_id)
+            ->where('checkin', '>' , $fecha_inicio)
+            ->where('checkin', '<' ,$fecha_fin)
+            ->whereIn('estado_reserva_id', [1,2,3,4,5])
+            ->first();
+
+            if (!is_null($reservas)) {
+                $bloqueo                = new Bloqueo();
+                $bloqueo->fecha_inicio  = $request->fecha_inicio;
+                $bloqueo->fecha_fin     = $request->fecha_fin;
+                $bloqueo->noches        = $request->noches;
+                $bloqueo->habitacion_id = $habitacion->id;
+                $bloqueo->save();
+                
+            } else {
+                $retorno = array(
+                    'msj'    => "No permitido",
+                    'errors' => true);
+                return Response::json($retorno, 400);
+            }
+ 
             $retorno['errors'] = false;
             $retorno['msj']    = "Habitacion bloqueda satisfactoriamente";
             return Response::json($retorno, 201);
