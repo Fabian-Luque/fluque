@@ -207,7 +207,7 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::post('ingreso/huesped', 'HuespedController@ingresoHuesped');
 		Route::get('huesped/reserva', 'HuespedController@getHuespedes');
 		Route::post('ingreso/consumo', 'HuespedController@ingresoConsumo');
-		Route::post('ingreso/comanda', 'HuespedController@ingresoComanda');
+		Route::post('ingreso/comanda/huesped', 'HuespedController@ingresoComanda');
 		Route::post('calificacion', 'ClienteController@calificacion');
 		Route::post('pago', 'ReservaController@pagoReserva');
 		Route::post('panel', 'ReservaController@panel');
