@@ -230,7 +230,15 @@ class HabitacionController extends Controller
             ->whereIn('estado_reserva_id', [1,2,3,4,5])
             ->first();
 
-            if (is_null($reservas)) {
+            $bloqueo = Bloqueo::whereHas('habitacion', function($query) use($propiedad_id){
+                $query->where('propiedad_id', $propiedad_id);
+            })
+            ->where('habitacion_id', $habitacion_id)
+            ->where('fecha_inicio', '>' , $fecha_inicio)
+            ->where('fecha_fin', '<' ,$fecha_fin)
+            ->first();
+
+            if (is_null($reservas) && is_null($bloqueo)) {
                 $bloqueo                = new Bloqueo();
                 $bloqueo->fecha_inicio  = $request->fecha_inicio;
                 $bloqueo->fecha_fin     = $request->fecha_fin;
