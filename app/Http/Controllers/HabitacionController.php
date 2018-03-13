@@ -235,17 +235,23 @@ class HabitacionController extends Controller
             })
             ->where('habitacion_id', $habitacion_id)
             ->where('fecha_inicio', '>' , $fecha_inicio)
-            ->where('fecha_fin', '<' ,$fecha_fin)
+            ->orWhere('fecha_fin', '<' ,$fecha_fin)
             ->first();
 
-            if (is_null($reservas) || is_null($bloqueo)) {
-                $bloqueo                = new Bloqueo();
-                $bloqueo->fecha_inicio  = $request->fecha_inicio;
-                $bloqueo->fecha_fin     = $request->fecha_fin;
-                $bloqueo->noches        = $request->noches;
-                $bloqueo->habitacion_id = $habitacion->id;
-                $bloqueo->save();
-                
+            if (is_null($reservas)) {
+                if (is_null($bloqueo)) {
+                    $bloqueo                = new Bloqueo();
+                    $bloqueo->fecha_inicio  = $request->fecha_inicio;
+                    $bloqueo->fecha_fin     = $request->fecha_fin;
+                    $bloqueo->noches        = $request->noches;
+                    $bloqueo->habitacion_id = $habitacion->id;
+                    $bloqueo->save();
+                } else {
+                    $retorno = array(
+                        'msj'    => "No permitido",
+                        'errors' => true);
+                    return Response::json($retorno, 400);
+                }
             } else {
                 $retorno = array(
                     'msj'    => "No permitido",
