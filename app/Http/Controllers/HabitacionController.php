@@ -235,7 +235,7 @@ class HabitacionController extends Controller
             })
             ->where('habitacion_id', $habitacion_id)
             ->where('fecha_inicio', '>' , $fecha_inicio)
-            ->orWhere('fecha_fin', '<' ,$fecha_fin)
+            ->Where('fecha_fin', '<' ,$fecha_fin)
             ->first();
 
             if (is_null($reservas)) {
