@@ -238,7 +238,7 @@ class HabitacionController extends Controller
             ->where('fecha_fin', '<' ,$fecha_fin)
             ->first();
 
-            if (is_null($reservas) && is_null($bloqueo)) {
+            if (is_null($reservas) || is_null($bloqueo)) {
                 $bloqueo                = new Bloqueo();
                 $bloqueo->fecha_inicio  = $request->fecha_inicio;
                 $bloqueo->fecha_fin     = $request->fecha_fin;
