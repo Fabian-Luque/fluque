@@ -331,7 +331,7 @@ class HuespedController extends Controller
                                     'errors' => true,);
                                 return Response::json($data, 400);
                             }
-                        } elseif ($servicio->categoria_id == 1 || $serv->categoria_id == 3 ) {
+                        } elseif ($servicio->categoria_id == 1 || $servicio->categoria_id == 3 ) {
                             $reserva->reservasHuespedes()->attach($huesped_id, ['servicio_id' => $servicio_id, 'cantidad' => $cantidad, 'precio_total' => $precio_total]);
                             $consumo   = $precio_total + $reserva->monto_consumo;
                             $total     = $precio_total + $reserva->monto_total;
