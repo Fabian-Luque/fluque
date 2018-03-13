@@ -392,9 +392,9 @@ class HabitacionController extends Controller
             $cant            = $tipo_hab->cantidad;
             $tipo_hab->update(array('cantidad' => $cant + 1));
 
-            $equipamiento = Equipamiento::findOrFail($id);
-            $equipamiento->update($request->all());
-            $equipamiento->touch();
+            // $equipamiento = Equipamiento::findOrFail($id);
+            // $equipamiento->update($request->all());
+            // $equipamiento->touch();
 
             $data = [
                 'errors' => false,
