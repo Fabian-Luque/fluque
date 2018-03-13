@@ -230,7 +230,7 @@ class HabitacionController extends Controller
             ->whereIn('estado_reserva_id', [1,2,3,4,5])
             ->first();
 
-            if (!is_null($reservas)) {
+            if (is_null($reservas)) {
                 $bloqueo                = new Bloqueo();
                 $bloqueo->fecha_inicio  = $request->fecha_inicio;
                 $bloqueo->fecha_fin     = $request->fecha_fin;
