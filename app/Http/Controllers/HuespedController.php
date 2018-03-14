@@ -214,45 +214,31 @@ class HuespedController extends Controller
 
     public function ingresoConsumo(Request $request)
     {
-
         if ($request->has('consumo_servicio')) {
-
             $consumos = $request->input('consumo_servicio');
-
         }
 
         foreach ($consumos as $consumo) {
-
             $reserva_id  = $consumo['reserva_id'];
             $huesped_id  = $consumo['huesped_id'];
             $servicio_id = $consumo['servicio_id'];
             $cantidad    = $consumo['cantidad'];
 
-            $reserva = Reserva::where('id', $reserva_id)->first();
-
+            $reserva         = Reserva::where('id', $reserva_id)->first();
             $servicio        = Servicio::where('id', $servicio_id)->first();
             $precio_servicio = PrecioServicio::where('tipo_moneda_id', $reserva->tipo_moneda_id)->where('servicio_id', $servicio->id)->lists('precio_servicio')->first();
 
             $precio_total = $cantidad * $precio_servicio;
-
             $cantidad_disponible = $servicio->cantidad_disponible;
 
             if ($cantidad >= 1) {
-
                 if (!is_null($servicio)) {
-
                     if ($servicio->categoria_id == 2) {
-
                         if ($servicio->cantidad_disponible > 0) {
-
                             if ($cantidad <= $servicio->cantidad_disponible) {
-
                                 $cantidad_disponible = $cantidad_disponible - $cantidad;
-
                                 $servicio->update(array('cantidad_disponible' => $cantidad_disponible));
-
                                 $reserva->reservasHuespedes()->attach($huesped_id, ['servicio_id' => $servicio_id, 'cantidad' => $cantidad, 'precio_total' => $precio_total]);
-
                                 $consumo   = $precio_total + $reserva->monto_consumo;
                                 $total     = $precio_total + $reserva->monto_total;
                                 $por_pagar = $precio_total + $reserva->monto_por_pagar;
@@ -260,76 +246,120 @@ class HuespedController extends Controller
                                 $reserva->update(array('monto_consumo' => $consumo, 'monto_total' => $total, 'monto_por_pagar' => $por_pagar));
 
                             } else {
-
                                 $data = array(
-
                                     'msj'    => " La cantidad ingresada es mayor al stock del producto",
-                                    'errors' => true,
-
-                                );
-
+                                    'errors' => true,);
                                 return Response::json($data, 400);
-
                             }
-
                         } else {
-
                             $data = array(
-
                                 'msj'    => " El servicio no tiene stock",
-                                'errors' => true,
-
-                            );
-
+                                'errors' => true,);
                             return Response::json($data, 400);
-
                         }
-
                     } elseif ($servicio->categoria_id == 1) {
-
                         $reserva->reservasHuespedes()->attach($huesped_id, ['servicio_id' => $servicio_id, 'cantidad' => $cantidad, 'precio_total' => $precio_total]);
-
                         $consumo   = $precio_total + $reserva->monto_consumo;
                         $total     = $precio_total + $reserva->monto_total;
                         $por_pagar = $precio_total + $reserva->monto_por_pagar;
-
                         $reserva->update(array('monto_consumo' => $consumo, 'monto_total' => $total, 'monto_por_pagar' => $por_pagar));
-
                     }
-
                 } else {
-
                     $data = array(
-
                         'msj'    => " No se encuentra servicio",
-                        'errors' => true,
-
-                    );
-
+                        'errors' => true,);
                     return Response::json($data, 404);
-
                 }
             } else {
-
                 $data = array(
-
                     'msj'    => " La cantidad ingresada no corresponde",
-                    'errors' => true,
-
-                );
-
+                    'errors' => true,);
                 return Response::json($data, 400);
-
             }
+        }
+        $data = array(
+            'msj'    => "Consumo ingresado satisfactoriamente",
+            'errors' => false,);
+        return Response::json($data, 201);
 
+    }
+
+    public function ingresoComanda(Request $request)
+    {
+        if ($request->has('consumo_servicio')) {
+            $consumos = $request->input('consumo_servicio');
         }
 
+        foreach ($consumos as $consumo) {
+            $reserva_id     = $consumo['reserva_id'];
+            $huesped_id     = $consumo['huesped_id'];
+            $servicio_id    = $consumo['servicio_id'];
+            $cantidad       = $consumo['cantidad'];
+            $tipo_moneda_id = $consumo['tipo_moneda_id'];
+            $precio_total   = $consumo['precio_total'];
+
+            $reserva         = Reserva::where('id', $reserva_id)->first();
+            $servicio        = Servicio::where('id', $servicio_id)->first();
+            $precio_servicio = PrecioServicio::where('tipo_moneda_id', $reserva->tipo_moneda_id)->where('servicio_id', $servicio->id)->lists('precio_servicio')->first();
+
+            $cantidad_disponible = $servicio->cantidad_disponible;
+
+            if ($reserva->tipo_moneda_id == $tipo_moneda_id) {
+                if ($cantidad >= 1) {
+                    if (!is_null($servicio)) {
+                        if ($servicio->categoria_id == 2) {
+                            if ($servicio->cantidad_disponible > 0) {
+                                if ($cantidad <= $servicio->cantidad_disponible) {
+                                    $cantidad_disponible = $cantidad_disponible - $cantidad;
+                                    $servicio->update(array('cantidad_disponible' => $cantidad_disponible));
+                                    $reserva->reservasHuespedes()->attach($huesped_id, ['servicio_id' => $servicio_id, 'cantidad' => $cantidad, 'precio_total' => $precio_total]);
+                                    $consumo   = $precio_total + $reserva->monto_consumo;
+                                    $total     = $precio_total + $reserva->monto_total;
+                                    $por_pagar = $precio_total + $reserva->monto_por_pagar;
+
+                                    $reserva->update(array('monto_consumo' => $consumo, 'monto_total' => $total, 'monto_por_pagar' => $por_pagar));
+
+                                } else {
+                                    $data = array(
+                                        'msj'    => " La cantidad ingresada es mayor al stock del producto",
+                                        'errors' => true,);
+                                    return Response::json($data, 400);
+                                }
+                            } else {
+                                $data = array(
+                                    'msj'    => " El servicio no tiene stock",
+                                    'errors' => true,);
+                                return Response::json($data, 400);
+                            }
+                        } elseif ($servicio->categoria_id == 1 || $servicio->categoria_id == 3 ) {
+                            $reserva->reservasHuespedes()->attach($huesped_id, ['servicio_id' => $servicio_id, 'cantidad' => $cantidad, 'precio_total' => $precio_total]);
+                            $consumo   = $precio_total + $reserva->monto_consumo;
+                            $total     = $precio_total + $reserva->monto_total;
+                            $por_pagar = $precio_total + $reserva->monto_por_pagar;
+                            $reserva->update(array('monto_consumo' => $consumo, 'monto_total' => $total, 'monto_por_pagar' => $por_pagar));
+                        }
+                    } else {
+                        $data = array(
+                            'msj'    => " No se encuentra servicio",
+                            'errors' => true,);
+                        return Response::json($data, 404);
+                    }
+                } else {
+                    $data = array(
+                        'msj'    => " La cantidad ingresada no corresponde",
+                        'errors' => true,);
+                    return Response::json($data, 400);
+                }
+            } else {
+                $data = array(
+                    'msj'    => " La moneda no coincide con la reserva ",
+                    'errors' => true,);
+                return Response::json($data, 400);
+            }
+        }
         $data = array(
-
             'msj'    => "Consumo ingresado satisfactoriamente",
-            'errors' => false,
-        );
-
+            'errors' => false,);
         return Response::json($data, 201);
 
     }

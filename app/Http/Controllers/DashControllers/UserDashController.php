@@ -183,6 +183,7 @@ class UserDashController extends Controller {
                 'telefono'              => 'required',
                 'numero_habitaciones'   => 'required',
                 'ciudad'                => 'required',
+                'monto_contrato'        => 'required',
                 'latitud'               => 'required',
                 'longitud'              => 'required'
             )
@@ -198,11 +199,12 @@ class UserDashController extends Controller {
             )->first();
 
             if (!is_null($propiedad)) {
-                $propiedad->nombre = $request->nombre;
-                $propiedad->email = $request->email;
-                $propiedad->telefono = $request->telefono;
+                $propiedad->nombre              = $request->nombre;
+                $propiedad->email               = $request->email;
+                $propiedad->telefono            = $request->telefono;
                 $propiedad->numero_habitaciones = $request->numero_habitaciones;
-                $propiedad->ciudad = $request->ciudad;
+                $propiedad->ciudad              = $request->ciudad;
+                $propiedad->monto_contrato      = $request->monto_contrato;
                 $propiedad->save();
 
                 $ubicacion = UbicacionProp::where(
@@ -211,15 +213,15 @@ class UserDashController extends Controller {
                 )->first();
 
                 if (!is_null($ubicacion)) {
-                    $ubicacion->location = new Point(
+                    $ubicacion->location        = new Point(
                         $request->latitud,
                         $request->longitud 
                     );
                     
                 } else {
-                    $ubicacion           = new UbicacionProp();
-                    $ubicacion->prop_id  = $request->id;
-                    $ubicacion->location = new Point(
+                    $ubicacion                  = new UbicacionProp();
+                    $ubicacion->prop_id         = $request->id;
+                    $ubicacion->location        = new Point(
                         $request->latitud,
                         $request->longitud 
                     );
