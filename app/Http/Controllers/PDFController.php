@@ -506,7 +506,7 @@ class PDFController extends Controller {
             foreach ($propiedad_monedas as $moneda) {
                 $suma_ingreso   = 0;
                 foreach ($pagos as $pago) {
-                    if ($pago->estado == 1) {
+                    if ($pago->estado == 1 && $pago->tipo == "Pago habitacion") {
                         if ($moneda->id == $pago->tipo_moneda_id) {
                             if ($fuente->nombre == $pago->reserva->tipoFuente->nombre) {
                                 $suma_ingreso += $pago->monto_equivalente;
@@ -543,7 +543,7 @@ class PDFController extends Controller {
             foreach ($propiedad_monedas as $moneda) {
                 $suma_ingreso   = 0;
                 foreach ($pagos as $pago) {
-                    if ($pago->estado == 1) {
+                    if ($pago->estado == 1 && $pago->tipo == "Pago habitacion") {
                         if ($moneda->id == $pago->tipo_moneda_id) {
                             if ($tipo->nombre == $pago->reserva->habitacion->tipoHabitacion->nombre) {
                                 $suma_ingreso += $pago->monto_equivalente;
