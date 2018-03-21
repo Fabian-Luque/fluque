@@ -17,6 +17,7 @@ use App\Cliente;
 use App\ColorMotor;
 use App\ClasificacionColor;
 use App\MotorPropiedad;
+use App\Bloqueo;
 use Response;
 use Illuminate\Support\Facades\Validator;
 use \Carbon\Carbon;
@@ -85,6 +86,7 @@ class MotorRaController extends Controller {
             $tipos_habitacion = [];
             foreach ($tipo_habitacion_propiedad as $tipo) {
 
+                $tipo_hab_id = $tipo->id;
                 $reservas = Reserva::where(function ($query) use ($fecha_inicio, $fecha_fin) {
                     $query->where(function ($query) use ($fecha_inicio, $fecha_fin) {
                         $query->where('checkin', '>=', $fecha_inicio);
@@ -100,6 +102,30 @@ class MotorRaController extends Controller {
                 ->whereIn('estado_reserva_id', [1,2,3,4,5])
                 ->get();
 
+                $bloqueo = Bloqueo::whereHas('habitacion', function($query) use($propiedad_id, $fecha_inicio, $fecha_fin ,$tipo_hab_id){
+                $query->where('propiedad_id', $propiedad_id);
+                $query->where('tipo_habitacion_id', $tipo_hab_id);
+                })
+                ->where(function ($query) use ($fecha_inicio, $fecha_fin) {
+                    $query->where(function ($query) use ($fecha_inicio, $fecha_fin) {
+                        $query->where('fecha_inicio', '>=', $fecha_inicio);
+                        $query->where('fecha_inicio', '<',  $fecha_fin);
+                    });
+                    $query->orWhere(function($query) use ($fecha_inicio,$fecha_fin){
+                        $query->where('fecha_inicio', '<=', $fecha_inicio);
+                        $query->where('fecha_fin', '>',  $fecha_inicio);
+                    });                
+                })
+                ->get();
+
+                // return $bloqueo = Bloqueo::whereHas('habitacion', function($query) use($propiedad_id, $tipo_hab_id){
+                // $query->where('propiedad_id', $propiedad_id);
+                // $query->where('tipo_habitacion_id', $tipo_hab_id);
+                // })
+                // ->where('fecha_inicio', '>' , $fecha_inicio)
+                // ->Where('fecha_fin', '<' ,$fecha_fin)
+                // ->get();
+
                 $disponible_venta = $tipo->disponible_venta;
                 $cantidad_disponibles = 0;
                 foreach ($habitaciones_disponibles as $habitacion) {
@@ -107,6 +133,8 @@ class MotorRaController extends Controller {
                         $cantidad_disponibles += 1;
                     }
                 }
+
+                $cantidad_disponibles = $cantidad_disponibles - count($bloqueo);
 
                 if ($disponible_venta <= $cantidad_disponibles) {
                     $disponibles = $disponible_venta;
