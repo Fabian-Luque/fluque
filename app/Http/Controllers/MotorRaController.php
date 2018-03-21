@@ -118,14 +118,6 @@ class MotorRaController extends Controller {
                 })
                 ->get();
 
-                // return $bloqueo = Bloqueo::whereHas('habitacion', function($query) use($propiedad_id, $tipo_hab_id){
-                // $query->where('propiedad_id', $propiedad_id);
-                // $query->where('tipo_habitacion_id', $tipo_hab_id);
-                // })
-                // ->where('fecha_inicio', '>' , $fecha_inicio)
-                // ->Where('fecha_fin', '<' ,$fecha_fin)
-                // ->get();
-
                 $disponible_venta = $tipo->disponible_venta;
                 $cantidad_disponibles = 0;
                 foreach ($habitaciones_disponibles as $habitacion) {
