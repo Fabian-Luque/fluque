@@ -15,7 +15,8 @@ Route::get(
 
 
 Route::post('test','PagoFacilController@prueba');
-
+Route::post('pagofacil/callback','PagoFacilController@CallBack');
+Route::post('pagofacil/retorno','PagoFacilController@Retorno');
 
 Route::post('propiedad/cercana/obtener','GeoController@PropiedadesCercanas');
 
