@@ -227,10 +227,10 @@ class RegistroController extends Controller {
 				'tipo_cobro_id'       	  => 'required',
 				'tipo_deposito_id'	  	  => 'required',
 				'zona_horaria_id' 	  	  => 'required',
-				'tipo_moneda_id' 		  => 'required',
+				'monedas' 				  => 'required',
 				'longitud' 	  		  	  => 'required',
 				'latitud' 	  		  	  => 'required'
-			)
+			) 
 		);
 
 		if ($validator->fails()) {
@@ -297,21 +297,13 @@ class RegistroController extends Controller {
 	            $tipo_deposito->save();
         	}
 
-        	$moneda 						 	 = PropiedadMoneda::where(
-        		'propiedad_id',
-        		$request->prop_id
-        	)->first();
+        	$request->merge([ 
+				'propiedad_id' => $request->prop_id
+			]);
 
-        	if (!is_null($moneda)) {
-        		$moneda->clasificacion_moneda_id = 1;
-	            $moneda->tipo_moneda_id			 = $request->tipo_moneda_id;
-	            $moneda->save();
-        	} else {
-        		$moneda 						 = new PropiedadMoneda();
-	            $moneda->clasificacion_moneda_id = 2;
-	            $moneda->tipo_moneda_id			 = $request->tipo_moneda_id;
-	            $moneda->save();
-        	}
+        	app('App\Http\Controllers\PropiedadController')->ingresoMonedas(
+				$request
+			);
 
 			$user = $propiedad->user->first();
 			$user->update(["paso" => 4]);

@@ -13,6 +13,10 @@ Route::get(
   }
 );
 
+
+Route::post('test','PagoFacilController@prueba');
+
+
 Route::post('propiedad/cercana/obtener','GeoController@PropiedadesCercanas');
 
 

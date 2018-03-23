@@ -30,6 +30,11 @@ class ComposerStaticInitbcb33382402e24f96f2e06601081b7fc
         array (
             'phpDocumentor\\Reflection\\' => 25,
         ),
+        'c' => 
+        array (
+            'ctala\\transaccion\\' => 18,
+            'ctala\\' => 6,
+        ),
         'X' => 
         array (
             'XdgBaseDir\\' => 11,
@@ -158,6 +163,14 @@ class ComposerStaticInitbcb33382402e24f96f2e06601081b7fc
             0 => __DIR__ . '/..' . '/phpdocumentor/reflection-common/src',
             1 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
             2 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
+        ),
+        'ctala\\transaccion\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/ctala/transaccion-default',
+        ),
+        'ctala\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/ctala/http-helper/src',
         ),
         'XdgBaseDir\\' => 
         array (
@@ -556,7 +569,7 @@ class ComposerStaticInitbcb33382402e24f96f2e06601081b7fc
         'AddForeignkeyTableInfoMyallocator' => __DIR__ . '/../..' . '/database/migrations/2016_10_02_054111_add_foreignkey_table_info_myallocator.php',
         'AddIvaDescuentoToReservasTable' => __DIR__ . '/../..' . '/database/migrations/2017_12_26_191816_add_iva_descuento_to_reservas_table.php',
         'AddMetodoPagoIdAndNumeroChequeToPagoTable' => __DIR__ . '/../..' . '/database/migrations/2017_12_22_223246_add_metodo_pago_id_and_numero_cheque_to_pago_table.php',
-        'AddMontoContratoPropiedades' => __DIR__ . '/../..' . '/database/migrations/2018_03_05_202527_add_monto_contrato_propiedades.php',
+        'AddMontoContratoPropiedades' => __DIR__ . '/../..' . '/database/migrations/2016_10_02_054110_add_monto_contrato_propiedades.php',
         'AddMontoDepositoToReservasTable' => __DIR__ . '/../..' . '/database/migrations/2017_11_15_030238_add_monto_deposito_to_reservas_table.php',
         'AddNReservaMotorReservasTable' => __DIR__ . '/../..' . '/database/migrations/2017_12_25_015902_add_n_reserva_motor_reservas_table.php',
         'AddNReservaPropiedadToReservasTable' => __DIR__ . '/../..' . '/database/migrations/2018_01_05_160544_add_n_reserva_propiedad_to_reservas_table.php',
@@ -587,6 +600,7 @@ class ComposerStaticInitbcb33382402e24f96f2e06601081b7fc
         'ClasificacionMonedaTableSeeder' => __DIR__ . '/../..' . '/database/seeds/ClasificacionMonedaTableSeeder.php',
         'ColorMotorTableSeeder' => __DIR__ . '/../..' . '/database/seeds/ColorMotorTableSeeder.php',
         'Cpdf' => __DIR__ . '/..' . '/dompdf/dompdf/lib/Cpdf.php',
+        'CreateBloqueosTable' => __DIR__ . '/../..' . '/database/migrations/2018_02_20_201524_create_bloqueos_table.php',
         'CreateCajasTable' => __DIR__ . '/../..' . '/database/migrations/2017_09_04_144621_create_cajas_table.php',
         'CreateCalendarioTable' => __DIR__ . '/../..' . '/database/migrations/2017_05_27_034336_create_calendario_table.php',
         'CreateCalendariosTable' => __DIR__ . '/../..' . '/database/migrations/2016_10_31_155024_create_calendarios_table.php',
