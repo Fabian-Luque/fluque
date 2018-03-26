@@ -7,6 +7,8 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'phpDocumentor\\Reflection\\' => array($vendorDir . '/phpdocumentor/reflection-common/src', $vendorDir . '/phpdocumentor/type-resolver/src', $vendorDir . '/phpdocumentor/reflection-docblock/src'),
+    'ctala\\transaccion\\' => array($vendorDir . '/ctala/transaccion-default'),
+    'ctala\\' => array($vendorDir . '/ctala/http-helper/src'),
     'XdgBaseDir\\' => array($vendorDir . '/dnoegel/php-xdg-base-dir/src'),
     'Webmozart\\Assert\\' => array($vendorDir . '/webmozart/assert/src'),
     'WebSocketClient\\' => array($vendorDir . '/gabrielbull/websocket-client/src/WebSocketClient'),
