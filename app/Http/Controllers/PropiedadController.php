@@ -199,10 +199,12 @@ class PropiedadController extends Controller
             foreach ($propiedad_monedas as $moneda) {
                 $suma_ingreso   = 0;
                 foreach ($pagos as $pago) {
-                    if ($pago->estado == 1 && $pago->tipo == "Pago habitacion") {
-                        if ($moneda->id == $pago->tipo_moneda_id) {
-                            if ($fuente->nombre == $pago->reserva->tipoFuente->nombre) {
-                                $suma_ingreso += $pago->monto_equivalente;
+                    if ($pago->estado == 1) {
+                        if ($pago->tipo == "Pago habitacion" || $pago->tipo == "Confirmacion de reserva") {
+                            if ($moneda->id == $pago->tipo_moneda_id) {
+                                if ($fuente->nombre == $pago->reserva->tipoFuente->nombre) {
+                                    $suma_ingreso += $pago->monto_equivalente;
+                                }
                             }
                         }
                     }
