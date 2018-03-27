@@ -416,9 +416,9 @@ class RegistroController extends Controller {
 		} else {
 
 			foreach ($request->tipos_de_hab as $t_hab) {
-				dd($t_hab);
+				dd($t_hab['monto']);
 				$request->merge([ 
-					'monto' => $t_hab->monto
+					'monto' => $t_hab['monto']
 				]);
 				$request->merge([ 
 					'prop_id' => $t_hab->prop_id				
