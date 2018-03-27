@@ -13,6 +13,7 @@ use ctala\transaccion\classes\Response as Resp;
 use Webpatser\Uuid\Uuid;
 use App\Events\PagoFacilEvent;
 use Illuminate\Support\Facades\Event;
+use GuzzleHttp\Client;
 
 class PagoFacilController extends Controller {
 
@@ -30,11 +31,9 @@ class PagoFacilController extends Controller {
         	$retorno['errors'] = true;
         	$retorno["msj"] = $validator->errors();
         } else {
-			$token_tienda = "1214124";
-
 			$transaccion = new Transaccion(
 				(string) Uuid::generate(4), 
-				$token_tienda, 
+				"1214124", // token de tienda
 				$request->monto, 
 				config('app.PAGOFACIL_TOKEN_SERVICIO'), 
 				$request->email
@@ -43,8 +42,25 @@ class PagoFacilController extends Controller {
 				config('app.PAGOFACIL_TOKEN_SECRET')
 			);
 
+			$respu = $transaccion->getArrayResponse();
+
+    		$client = new Client();
+
+			$response = $client->request(
+				'POST', 
+				config('app.PAGOFACIL_URL'), [
+				'form_params' => [
+					"ct_email" 			=> $respu['ct_email'],
+        			"ct_monto" 			=> $respu['ct_monto'],
+        			"ct_order_id" 		=> $respu['ct_order_id'],
+        			"ct_token_service" 	=> $respu['ct_email'],
+        			"ct_token_tienda" 	=> $respu['ct_email'],
+        			"ct_firma" 			=> $respu['ct_email']
+				]
+			]);
+
 			$retorno['errors'] = false;
-        	$retorno["msj"] = $transaccion->getArrayResponse();
+        	$retorno["msj"] = $response->getEffectiveUrl();
 		}
 		return Response::json($retorno);
 	}
@@ -76,8 +92,7 @@ class PagoFacilController extends Controller {
         } else {
         	Event::fire(
                 new PagoFacilEvent(
-                    $mensaje->receptor_id,
-                    $conv_no_leidas->count()
+                    $request->ct_order_id
                 )
             );
 
@@ -88,6 +103,39 @@ class PagoFacilController extends Controller {
 	}
 
 	public function Retorno(Request $request) {
-		# code...
+		$validator = Validator::make(
+        	$request->all(), 
+        	array(
+            	"ct_order_id"   		  => 'required',
+		        "ct_token_tienda"   	  => 'required',
+		        "ct_monto"   			  => 'required',
+		        "ct_token_service"   	  => 'required',
+		        "ct_estado"   			  => 'required',
+		        "ct_authorization_code"   => 'required',
+		        "ct_payment_type_code"    => 'required',
+		        "ct_card_number"   		  => 'required',
+		        "ct_card_expiration_date" => 'required',
+		        "ct_shares_number"   	  => 'required',
+		        "ct_accounting_date"      => 'required',
+		        "ct_transaction_date"     => 'required',
+		        "ct_order_id_mall"   	  => 'required',
+		        "ct_firma"   			  => 'required'
+           	)
+        );
+
+        if ($validator->fails()) {
+        	$retorno['errors'] = true;
+        	$retorno["msj"] = $validator->errors();
+        } else {
+        	Event::fire(
+                new PagoFacilEvent(
+                    $request->ct_order_id
+                )
+            );
+
+        	$retorno['errors'] = false;
+        	$retorno["msj"] = $request->all();
+        }
+        return Response::json($retorno);
 	}
 }
