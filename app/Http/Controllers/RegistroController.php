@@ -414,8 +414,9 @@ class RegistroController extends Controller {
 
 			return Response::json($retorno); 
 		} else {
-			dd($request->all());
+
 			foreach ($request->tipos_de_hab as $t_hab) {
+				dd($t_hab);
 				$request->merge([ 
 					'monto' => $t_hab->monto
 				]);
