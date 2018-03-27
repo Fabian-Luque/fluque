@@ -407,6 +407,7 @@ class RegistroController extends Controller {
 			)
 		);
 
+
 		if ($validator->fails()) {
 			$retorno['errors'] = true;
 			$retorno["msj"]    = $validator->errors();
@@ -415,17 +416,17 @@ class RegistroController extends Controller {
 		} else {
 			foreach ($request->tipos_de_hab as $t_hab) {
 				$request->merge([ 
-					'monto' => $t_hab["monto"]
+					'monto' => $t_hab->monto
 				]);
 				$request->merge([ 
-					'prop_id' => $t_hab["prop_id"]
+					'prop_id' => $t_hab->prop_id				
 				]);
 				$request->merge([ 
-					'email' => $t_hab["email"]
+					'email' => $t_hab->email
 				]);
 			
 				$request->merge([ 
-					'propiedad_id' => $t_hab["prop_id"]
+					'propiedad_id' => $t_hab->prop_id
 				]);
 
 				$resp = app('App\Http\Controllers\TipoHabitacionController')->store(
