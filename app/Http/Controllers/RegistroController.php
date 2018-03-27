@@ -414,17 +414,15 @@ class RegistroController extends Controller {
 
 			return Response::json($retorno); 
 		} else {
-
 			foreach ($request->tipos_de_hab as $t_hab) {
-				dd($t_hab->monto);
 				$request->merge([ 
-					'monto' => $t_hab['monto']
+					'cant_x_tipo' => $t_hab->cant_x_tipo
 				]);
 				$request->merge([ 
-					'prop_id' => $t_hab->prop_id				
+					'capacidad' => $t_hab->capacidad				
 				]);
 				$request->merge([ 
-					'email' => $t_hab->email
+					'nombre' => $t_hab->nombre
 				]);
 			
 				$request->merge([ 
