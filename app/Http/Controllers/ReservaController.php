@@ -1982,9 +1982,17 @@ class ReservaController extends Controller
         $reservas = Reserva::select('reservas.id','numero_reserva', 'checkin', 'checkout')
         ->whereHas('habitacion', function($query) use($id){
             $query->where('propiedad_id', $id);})
-        ->where('checkin','>=' ,$fecha_inicio)
-        ->where('checkout', '<=', $fecha_fin)
-        ->whereIn('estado_reserva_id', [3,4,5,6])
+        ->where(function ($query) use ($fecha_inicio, $fecha_fin) {
+                    $query->where(function ($query) use ($fecha_inicio, $fecha_fin) {
+                        $query->where('checkin', '>=', $fecha_inicio);
+                        $query->where('checkin', '<',  $fecha_fin);
+                    });
+                    $query->orWhere(function($query) use ($fecha_inicio,$fecha_fin){
+                        $query->where('checkin', '<=', $fecha_inicio);
+                        $query->where('checkout', '>',  $fecha_inicio);
+                    });                
+                })
+        ->whereIn('estado_reserva_id', [3,4,5])
         ->get();
 
         $numero_habitaciones = $propiedad->numero_habitaciones;
