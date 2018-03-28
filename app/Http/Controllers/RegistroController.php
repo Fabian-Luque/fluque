@@ -403,10 +403,10 @@ class RegistroController extends Controller {
 		$validator = Validator::make(
 			$request->all(), 
 			array(
-				'prop_id'       	  => 'required',
-				'cant_x_tipo'         => 'required|numeric'
+				'tipos_de_hab'       	  => 'required'
 			)
 		);
+
 
 		if ($validator->fails()) {
 			$retorno['errors'] = true;
@@ -414,63 +414,76 @@ class RegistroController extends Controller {
 
 			return Response::json($retorno); 
 		} else {
-			$request->merge([ 
-				'propiedad_id' => $request->prop_id
-			]);
-
-			$resp = app('App\Http\Controllers\TipoHabitacionController')->store(
-				$request,
-				true
-			);
-
-			if ($resp->getData()->errors == false) {
+			foreach ($request->tipos_de_hab as $t_hab) {
+		
 				$request->merge([ 
-					'tipo_habitacion_id' => $resp->getData()->msg->id
+					'cant_x_tipo' => $t_hab["cant_x_tipo"]
+				]);
+				$request->merge([ 
+					'capacidad' => $t_hab["capacidad"]				
+				]);
+				$request->merge([ 
+					'nombre' => $t_hab["nombre"]
+				]);
+			
+				$request->merge([ 
+					'propiedad_id' => $t_hab["prop_id"]
 				]);
 
-				for ($i = 0; $i < $request->cant_x_tipo; $i++) { 
-					$request->nombre = "".($i + 1);
-					$resp = app('App\Http\Controllers\HabitacionController')->store(
-						$request
-					);
-				}
+				$resp = app('App\Http\Controllers\TipoHabitacionController')->store(
+					$request,
+					true
+				);
 
-				$retorno['errors'] = false;
-				$retorno["msj"]    = "Operacion realizada con exito";
+				if ($resp->getData()->errors == false) {
+					$request->merge([ 
+						'tipo_habitacion_id' => $resp->getData()->msg->id
+					]);
 
-				$tipos = TipoHabitacion::where(
-					'propiedad_id', 
-					$request->prop_id
-				)->get();
+					for ($i = 0; $i < $request->cant_x_tipo; $i++) { 
+						$request->nombre = "".($i + 1);
+						$resp = app('App\Http\Controllers\HabitacionController')->store(
+							$request
+						);
+					}
 
-				foreach ($tipos as $tipo) {
-					$tipo->habitaciones = Habitacion::where(
-						'tipo_habitacion_id',
-						$tipo->id
+					$retorno['errors'] = false;
+					$retorno["msj"]    = "Operacion realizada con exito";
+
+					$tipos = TipoHabitacion::where(
+						'propiedad_id', 
+						$request->prop_id
 					)->get();
-				}
 
-				$retorno["tipos"] = $tipos;
+					foreach ($tipos as $tipo) {
+						$tipo->habitaciones = Habitacion::where(
+							'tipo_habitacion_id',
+							$tipo->id
+						)->get();
+					}
 
-				return Response::json($retorno); 
-			} else {
-				$retorno['errors'] = true;
-				$retorno["msj"]    = $resp->getData()->msg;
-				$tipos = TipoHabitacion::where(
-					'propiedad_id', 
-					$request->prop_id
-				)->get();
+					$retorno["tipos"] = $tipos;
 
-				foreach ($tipos as $tipo) {
-					$tipo->habitaciones = Habitacion::where(
-						'tipo_habitacion_id',
-						$tipo->id
+					return Response::json($retorno); 
+				} else {
+					$retorno['errors'] = true;
+					$retorno["msj"]    = $resp->getData()->msg;
+					$tipos = TipoHabitacion::where(
+						'propiedad_id', 
+						$request->prop_id
 					)->get();
+
+					foreach ($tipos as $tipo) {
+						$tipo->habitaciones = Habitacion::where(
+							'tipo_habitacion_id',
+							$tipo->id
+						)->get();
+					}
+
+					$retorno["tipos"] = $tipos;
+
+					return $retorno; 
 				}
-
-				$retorno["tipos"] = $tipos;
-
-				return $retorno; 
 			}
 		}
 	}

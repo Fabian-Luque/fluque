@@ -34,6 +34,7 @@ return [
     
     'PAGOFACIL_TOKEN_SECRET' => env('PAGOFACIL_TOKEN_SECRET', null),
     'PAGOFACIL_TOKEN_SERVICIO' => env('PAGOFACIL_TOKEN_SERVICIO', null),
+    'PAGOFACIL_URL' => env('PAGOFACIL_URL', null),
 
 
     /*
