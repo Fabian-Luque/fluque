@@ -239,8 +239,8 @@ class TemporadaController extends Controller
         }
 
         if ($request->has('inicio') && $request->has('fin')) {
-            $inicio = $request->has('inicio');
-            $fin    = $request->has('fin');
+            $inicio = $request->inicio;
+            $fin    = $request->fin;
 
         } else {
             $retorno = array(
