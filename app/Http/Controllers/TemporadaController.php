@@ -220,6 +220,47 @@ class TemporadaController extends Controller
 
     }
 
+    public function obtenerCalendario(Request $request)
+    {
+        if ($request->has('propiedad_id')) {
+            $propiedad_id = $request->input('propiedad_id');
+            $propiedad    = Propiedad::where('id', $propiedad_id)->with('tipoMonedas')->first();
+            if (is_null($propiedad)) {
+                $retorno = array(
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia propiedad_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        if ($request->has('inicio') && $request->has('fin')) {
+            $inicio = $request->has('inicio');
+            $fin    = $request->has('fin');
+
+        } else {
+            $retorno = array(
+                'errors' => true,
+                'msg'    => 'Solicitud incompleta',);
+            return Response::json($data, 400);
+        }
+
+        $temporadas = Temporada::where('propiedad_id', $request->propiedad_id)
+        ->with(['calendarios' => function ($q) use($inicio, $fin){
+            $q
+              ->where('fecha', '>=' ,$inicio)
+              ->where('fecha', '<=' , $fin);
+        }])
+        ->get();
+
+        return $temporadas;
+
+    }
+
     public function getCalendario(Request $request)
     {
 
@@ -230,20 +271,26 @@ class TemporadaController extends Controller
             if (!is_null($propiedad)) {
 
                 $propiedad_id = $request->get('propiedad_id');
-                $now          = Carbon::now();
+                // $now          = Carbon::now();
 
-                $comienzo     = $now->startOfMonth(); //primer dia del mes
-                $fecha_inicio = $comienzo->format('Y-m-d');
+                // $comienzo     = $now->startOfMonth(); //primer dia del mes
+                // $fecha_inicio = $comienzo->format('Y-m-d');
 
-                $termino       = $comienzo->addYears(1); //suma un año a fecha comienzo
-                $fecha_termino = $termino->format('Y-m-d');
+                // $termino       = $comienzo->addYears(1); //suma un año a fecha comienzo
+                // $fecha_termino = $termino->format('Y-m-d');
 
                 $auxTemporada = 0;
                 $periodos     = [];
                 $dias         = [];
-                $auxInicio    = new Carbon($fecha_inicio);
-                $inicio       = $auxInicio->subMonths(4);
-                $auxFin       = new Carbon($fecha_termino);
+                // $auxInicio    = new Carbon($fecha_inicio);
+                // $inicio       = $auxInicio->subMonths(4);
+                // $auxFin       = new Carbon($fecha_termino);
+
+                $comienzo = $request->fecha_inicio;
+                $termino  = $request->fecha_termino;
+
+                $inicio       = new Carbon($comienzo);
+                $auxFin       = new Carbon($termino);
 
                 while ($inicio <= $auxFin) {
 
@@ -263,7 +310,6 @@ class TemporadaController extends Controller
                         } else {
 
                             if ($auxTemporada == 0) {
-
                                 $day = ["fecha" => $fecha->fecha];
                                 array_push($dias, $day);
 
