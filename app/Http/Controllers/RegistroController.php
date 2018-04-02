@@ -248,6 +248,7 @@ class RegistroController extends Controller {
 			$propiedad->pais_id 			= $request->pais_id;
 			$propiedad->ciudad 				= $request->ciudad;
 			$propiedad->direccion 			= $request->direccion;
+			$propiedad->numero_habitaciones = 0;
 			$propiedad->telefono 			= $request->telefono;
 			$propiedad->iva 				= $request->iva;
 			$propiedad->email 				= $request->email;
