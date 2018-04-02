@@ -262,7 +262,6 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::post('calendario/temporada', 'TemporadaController@calendario');
 		Route::post('precio/temporada', 'HabitacionController@temporada');
 		Route::get('precio/habitacion', 'HabitacionController@precioHabitacion');
-		Route::get('periodo/calendario', 'TemporadaController@getCalendario');
 		Route::post('eliminar/calendario', 'TemporadaController@eliminarCalendario');
 		Route::get('temporada/precios', 'TemporadaController@getPreciosTemporadas');
 		Route::post('editar/temporadas', 'TemporadaController@editarTemporadas');
@@ -328,6 +327,7 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::post('obtener/consumos/particulares', 'PropiedadController@getConsumosParticulares');
 		Route::post('editar/consumos/particulares', 'PropiedadController@editarConsumoParticulares');
 		Route::post('eliminar/consumos/particulares', 'PropiedadController@eliminarConsumosParticulares');
+		Route::get('obtener/calendario/temporadas', 'TemporadaController@obtenerCalendario');
 
 
 		// rutas mapa geolozalizacion 
@@ -348,6 +348,7 @@ Route::group(['as' => 'api.jarvis.'], function() {
 });
 
 });
+
 
 	Route::post('bloqueo/habitacion', 'HabitacionController@bloqueoHabitacion');
 	Route::post('eliminar/bloqueo/habitacion', 'HabitacionController@eliminarBloqueoHabitacion');
