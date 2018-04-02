@@ -216,7 +216,6 @@ class RegistroController extends Controller {
 				'nombre' 	  		  	  => 'required',
 				'direccion' 	  	  	  => 'required',
 				'ciudad' 	  		  	  => 'required',
-				'numero_habitaciones' 	  => 'required',
 				'tipo_propiedad_id'   	  => 'required',
 				'pais_id' 	  	 	  	  => 'required',
 				'telefono' 	  		  	  => 'required',
@@ -245,7 +244,6 @@ class RegistroController extends Controller {
 			$propiedad->nombre 				= $request->nombre;
 			$propiedad->direccion 			= $request->direccion;
 			$propiedad->ciudad 				= $request->ciudad;
-			$propiedad->numero_habitaciones = $request->numero_habitaciones;
 			$propiedad->tipo_propiedad_id 	= $request->tipo_propiedad_id;
 			$propiedad->pais_id 			= $request->pais_id;
 			$propiedad->ciudad 				= $request->ciudad;
@@ -399,6 +397,21 @@ class RegistroController extends Controller {
 		return Response::json($retorno); 
 	}
 
+	public function ejm(Request $request) {
+		$hab = Habitacion::where(
+				'propiedad_id', 
+				$request->prop_id
+			)->get();
+
+			$propiedad = Propiedad::findOrFail(
+				$request->prop_id
+			);
+			$propiedad->numero_habitaciones = $hab->count();
+			$propiedad->save();
+
+		return Response::json($hab->count()); 
+	}
+
 	public function habitaciones(Request $request) { // paso 6
 		$validator = Validator::make(
 			$request->all(), 
@@ -463,6 +476,17 @@ class RegistroController extends Controller {
 					}
 
 					$retorno["tipos"] = $tipos;
+
+					$hab = Habitacion::where(
+						'propiedad_id', 
+						$request->prop_id
+					)->get();
+
+					$propiedad = Propiedad::findOrFail(
+						$request->prop_id
+					);
+					$propiedad->numero_habitaciones = $hab->count();
+					$propiedad->save();
 
 					return Response::json($retorno); 
 				} else {

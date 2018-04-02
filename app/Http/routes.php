@@ -14,6 +14,10 @@ Route::get(
 );
 
 
+
+Route::post('hab','RegistroController@ejm');
+
+
 Route::post('test','PagoFacilController@prueba');
 Route::post('pagofacil/callback','PagoFacilController@CallBack');
 Route::post('pagofacil/retorno','PagoFacilController@Retorno');
