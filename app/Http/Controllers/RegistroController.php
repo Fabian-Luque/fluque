@@ -479,11 +479,11 @@ class RegistroController extends Controller {
 
 					$hab = Habitacion::where(
 						'propiedad_id', 
-						$request->prop_id
+						$request->propiedad_id
 					)->get();
 
 					$propiedad = Propiedad::findOrFail(
-						$request->prop_id
+						$request->propiedad_id
 					);
 					$propiedad->numero_habitaciones = $hab->count();
 					$propiedad->save();
