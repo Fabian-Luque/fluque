@@ -264,7 +264,7 @@ class RegistroController extends Controller {
 				$request->prop_id
 			)->first();
 
-			if (!is_null($ubicacion)) {
+			if (is_null($ubicacion)) {
 				$ubicacion           			= new UbicacionProp();
 				$ubicacion->prop_id  			= $propiedad->id;
 				$ubicacion->location 			= new Point(
