@@ -70,7 +70,9 @@ class RegistroController extends Controller {
 			array(
 				'email'       => 'required',
 				'password'    => 'required',
-				'url_retorno' => 'required'
+				'url_retorno' => 'required',
+				'name'		  => 'required',
+				'phone'		  => 'required'
 			)
 		);
 
@@ -91,6 +93,8 @@ class RegistroController extends Controller {
 				$user->paso  	= 1;
 				$user->email 	= $request->email;
 				$user->password = $request->password;
+				$user->name 	= $request->name;
+				$user->phone 	= $request->phone;
 				$user->save();
 
 				$propiedad 			  			= new Propiedad();
