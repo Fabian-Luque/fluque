@@ -344,7 +344,7 @@ Route::group(['as' => 'api.jarvis.'], function() {
 });
 
 });
-
+	Route::get('obtener/reservas/cliente', 'ClienteController@getReservasCliente');
 
 	Route::post('bloqueo/habitacion', 'HabitacionController@bloqueoHabitacion');
 	Route::post('eliminar/bloqueo/habitacion', 'HabitacionController@eliminarBloqueoHabitacion');
