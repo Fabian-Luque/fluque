@@ -670,7 +670,7 @@ class ReservaController extends Controller
 
                 } else {
                     $retorno = array(
-                        'msj'       => "Error: La reserva ya fué creada",
+                        'msj'       => "Error: La habitación ya fue reservada",
                         'errors'    => true);
                     return Response::json($retorno, 400);
                 }
