@@ -89,12 +89,14 @@ class RegistroController extends Controller {
 			)->first();
 
 			if(is_null($user)) {
-				$user 			= new User();
-				$user->paso  	= 1;
-				$user->email 	= $request->email;
-				$user->password = $request->password;
-				$user->name 	= $request->name;
-				$user->phone 	= $request->phone;
+				$user 			 = new User();
+				$user->paso  	 = 1;
+				$user->email 	 = $request->email;
+				$user->password  = $request->password;
+				$user->name 	 = $request->name;
+				$user->rol_id 	 = 1;
+				$user->estado_id = 1;
+				$user->phone 	 = $request->phone;
 				$user->save();
 
 				$propiedad 			  			= new Propiedad();
@@ -424,7 +426,6 @@ class RegistroController extends Controller {
 				'tipos_de_hab'       	  => 'required'
 			)
 		);
-
 
 		if ($validator->fails()) {
 			$retorno['errors'] = true;
