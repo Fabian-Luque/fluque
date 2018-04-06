@@ -228,7 +228,6 @@ class RegistroController extends Controller {
 				'iva' 	  		      	  => 'required',
 				'email' 	  		  	  => 'required',
 				'region_id' 	  	  	  => 'required',
-				'porcentaje_deposito' 	  => '',
 				'tipo_cobro_id'       	  => 'required',
 				'tipo_deposito_id'	  	  => 'required',
 				'zona_horaria_id' 	  	  => 'required',
@@ -293,14 +292,19 @@ class RegistroController extends Controller {
 			if (!is_null($tipo_deposito)) {
 				$tipo_deposito->valor            = $request->porcentaje_deposito;
 	            $tipo_deposito->tipo_deposito_id = $request->tipo_deposito_id;
-	            $tipo_deposito->save();
 			} else {
 				$tipo_deposito                   = new PropiedadTipoDeposito();
-	            $tipo_deposito->valor            = $request->porcentaje_deposito;
 	            $tipo_deposito->propiedad_id     = $request->prop_id;
-	            $tipo_deposito->tipo_deposito_id = $request->tipo_deposito_id;
-	            $tipo_deposito->save();
         	}
+
+        	if ($request->has('porcentaje_deposito')) {
+        		$tipo_deposito->valor            = $request->porcentaje_deposito;
+        	} else {
+        		$tipo_deposito->valor            = 0;
+        	}
+        	
+	        $tipo_deposito->tipo_deposito_id = $request->tipo_deposito_id;
+	        $tipo_deposito->save();
 
         	$request->merge([ 
 				'propiedad_id' => $request->prop_id
