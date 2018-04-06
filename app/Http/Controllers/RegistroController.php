@@ -430,6 +430,7 @@ class RegistroController extends Controller {
 				'tipos_de_hab'       	  => 'required'
 			)
 		);
+		$flag = false;
 
 		if ($validator->fails()) {
 			$retorno['errors'] = true;
@@ -498,7 +499,10 @@ class RegistroController extends Controller {
 					$propiedad->numero_habitaciones = $hab->count();
 					$propiedad->save();
 
-					return Response::json($retorno); 
+					$user = $propiedad->user->first();
+					$user->update(["paso" => 6]);
+
+					$flag = true;
 				} else {
 					$retorno['errors'] = true;
 					$retorno["msj"]    = $resp->getData()->msg;
@@ -513,11 +517,14 @@ class RegistroController extends Controller {
 							$tipo->id
 						)->get();
 					}
-
 					$retorno["tipos"] = $tipos;
-
-					return $retorno; 
 				}
+			}
+
+			if ($flag == true) {
+				return Response::json($retorno); 
+			} else {
+				return $retorno; 
 			}
 		}
 	}
