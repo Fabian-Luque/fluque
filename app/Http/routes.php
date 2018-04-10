@@ -16,6 +16,7 @@ Route::get(
 
 
 Route::post('hab','RegistroController@ejm');
+Route::post('pasarela-pago/selecionar','RegistroController@SeleccionPago');
 
 
 Route::post('test','PagoFacilController@prueba');

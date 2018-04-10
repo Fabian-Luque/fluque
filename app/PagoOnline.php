@@ -3,14 +3,14 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-
+ 
 class PagoOnline extends Model {
     protected $table = 'pagos_online';
     protected $fillable = [ 
     	'id', 
     	'estado',
     	'fecha_facturacion',
-    	'pas_pago',
+    	'pas_pago_id',
     	'prop_id',
     	'plan_id',
     	'created_at',

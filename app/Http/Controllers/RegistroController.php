@@ -24,7 +24,7 @@ use App\DatosStripe;
 use App\UbicacionProp;
 use App\ZonaHoraria;
 use App\PropiedadTipoDeposito;
-
+use App\PagoOnline;
 use Illuminate\Support\Facades\Event;
 use Response;
 use JWTAuth;
@@ -531,6 +531,43 @@ class RegistroController extends Controller {
 				return $retorno; 
 			}
 		}
+	}
+
+	public function SeleccionPago(Request $request) { // paso 7
+		$validator = Validator::make(
+			$request->all(), 
+			array(
+				'estado'		 	=> 'required',
+				'fecha_facturacion'	=> 'required',
+				'pas_pago_id'		=> 'required',
+				'prop_id'			=> 'required',
+				'plan_id'			=> 'required'
+			)
+		);
+
+		if ($validator->fails()) {
+			$retorno['errors'] = true;
+			$retorno["msj"]    = $validator->errors();
+		} else {
+			$propiedad = Propiedad::findOrFail(
+				$request->prop_id
+			);
+					
+			$pago = new PagoOnline();
+			$pago->estado 			  = $request->estado;
+	    	$pago->fecha_facturacion  = $request->fecha_facturacion;
+	    	$pago->pas_pago_id 		  = $request->pas_pago_id;
+	    	$pago->prop_id 			  = $request->prop_id;
+	    	$pago->plan_id 			  = $request->plan_id;
+	    	$pago->save();
+
+	    	$user = $propiedad->user->first();
+			$user->update(["paso" => 7]);
+
+	    	$retorno['errors'] = false;
+			$retorno["msj"]    = "Pasarela de pago seleccionada con exito";
+		}
+		return Response::json($retorno); 
 	}
 
 	public function stripe(Request $request) { // paso 7
