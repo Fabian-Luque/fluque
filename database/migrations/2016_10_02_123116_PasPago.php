@@ -10,7 +10,7 @@ class PasPago extends Migration {
             function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('nombre');
-                $table->string('pas_pago_id');
+                $table->integer('pas_pago_id')->unsigned();
             }
         );
     }

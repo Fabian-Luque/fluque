@@ -14,6 +14,7 @@ class PagoOnline extends Migration {
                 $table->integer('pas_pago_id')->unsigned();
                 $table->integer('prop_id')->unsigned();
                 $table->integer('plan_id')->unsigned();
+
                 $table->foreign('prop_id')
                     ->references('id')
                 ->on('propiedades');
@@ -21,19 +22,12 @@ class PagoOnline extends Migration {
                     ->references('id')
                 ->on('planes');
                 $table->foreign('pas_pago_id')
-                    ->references('id')
+                    ->references('pas_pago_id')
                 ->on('pasarela_pago');
                 $table->timestamps();
             }
         );
     }
 
-
-'pasarela_pago', 
-            function (Blueprint $table) {
-                $table->increments('id');
-                $table->string('nombre');
-                $table->string('pas_pago_id');
-            }
     public function down() {}
 }
