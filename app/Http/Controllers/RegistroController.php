@@ -465,7 +465,7 @@ class RegistroController extends Controller {
 					]);
 
 					for ($i = 0; $i < $request->cant_x_tipo; $i++) { 
-						$request->nombre = "".($i + 1);
+						$request->merge(['nombre' => ($i + 1)]);
 						$resp = app('App\Http\Controllers\HabitacionController')->store(
 							$request
 						);
