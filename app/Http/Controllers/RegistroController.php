@@ -472,7 +472,7 @@ class RegistroController extends Controller {
 					}
 
 					$retorno['errors'] = false;
-					$retorno["msj"]    = "Operacion realizada con exito";
+					$retorno["msj"]    = "Operacion realizada con exito\n\n".$resp;
 
 					$tipos = TipoHabitacion::where(
 						'propiedad_id', 
