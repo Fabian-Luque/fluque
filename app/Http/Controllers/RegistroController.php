@@ -454,6 +454,11 @@ class RegistroController extends Controller {
 					'propiedad_id' => $t_hab["prop_id"]
 				]);
 
+				$hab = Habitacion::where(
+					'propiedad_id', 
+					$request->propiedad_id
+				)->get();
+
 				$resp = app('App\Http\Controllers\TipoHabitacionController')->store(
 					$request,
 					true
@@ -465,7 +470,11 @@ class RegistroController extends Controller {
 					]);
 
 					for ($i = 0; $i < $request->cant_x_tipo; $i++) { 
-						$request->merge(['nombre' => ($i + 1)]);
+						$hab = Habitacion::where(
+							'propiedad_id', 
+							$request->propiedad_id
+						)->get();
+						$request->merge(['nombre' => ($hab->count() + 1)]);
 						$resp = app('App\Http\Controllers\HabitacionController')->store(
 							$request
 						);
@@ -487,11 +496,6 @@ class RegistroController extends Controller {
 					}
 
 					$retorno["tipos"] = $tipos;
-
-					$hab = Habitacion::where(
-						'propiedad_id', 
-						$request->propiedad_id
-					)->get();
 
 					$propiedad = Propiedad::findOrFail(
 						$request->propiedad_id
