@@ -4,7 +4,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class PasPago extends Migration {
-    public function up() {/*
+    public function up() {
         Schema::create(
             'pasarela_pago', 
             function (Blueprint $table) {
@@ -18,7 +18,6 @@ class PasPago extends Migration {
                 'nombre' => 'pagofacil'
             ]
         ]);
-        */
     }
 
     public function down() {

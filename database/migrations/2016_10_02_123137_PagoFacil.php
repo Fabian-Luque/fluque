@@ -4,7 +4,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class PagoFacil extends Migration {
-    public function up() { /*
+    public function up() { 
         Schema::create(
             'pago_facil', 
             function (Blueprint $table) {
@@ -19,7 +19,7 @@ class PagoFacil extends Migration {
                 ->on('pagos_online');
                 $table->timestamps();
             }
-        );*/
+        );
     }
 
     public function down() {
