@@ -4,7 +4,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class PagoOnline extends Migration {
-    public function up() {
+    public function up() {/*
         Schema::create(
             'pagos_online', 
             function (Blueprint $table) {
@@ -18,16 +18,21 @@ class PagoOnline extends Migration {
                 $table->foreign('prop_id')
                     ->references('id')
                 ->on('propiedades');
+
                 $table->foreign('plan_id')
                     ->references('id')
                 ->on('planes');
+
                 $table->foreign('pas_pago_id')
                     ->references('pas_pago_id')
                 ->on('pasarela_pago');
                 $table->timestamps();
             }
         );
+        */
     }
 
-    public function down() {}
+    public function down() {
+        Schema::drop('pagos_online');
+    }
 }

@@ -536,7 +536,7 @@ class RegistroController extends Controller {
 	public function SeleccionPago(Request $request) { // paso 7
 		$validator = Validator::make(
 			$request->all(), 
-			array(
+			array( 
 				'estado'		 	=> 'required',
 				'fecha_facturacion'	=> 'required',
 				'pas_pago_id'		=> 'required',
