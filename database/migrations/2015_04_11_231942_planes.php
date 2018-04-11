@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class Plan extends Migration {
+class Planes extends Migration {
     public function up() {
         Schema::create(
             'planes', 
