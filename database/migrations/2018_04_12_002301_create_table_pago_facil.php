@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class PagoFacil extends Migration {
+class CreateTablePagoFacil extends Migration {
     public function up() { 
         Schema::create(
             'pago_facil', 
