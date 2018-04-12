@@ -24,6 +24,7 @@ use App\Habitacion;
 use App\DatosStripe;
 use App\UbicacionProp;
 use App\ZonaHoraria;
+use App\PagoFacil;
 use App\PropiedadTipoDeposito;
 use App\PagoOnline;
 use Illuminate\Support\Facades\Event;
@@ -534,9 +535,21 @@ class RegistroController extends Controller {
 		}
 	}
 
+	public function getPagoFacil(Request $request) {
+		$pago = PagoFacil::with('pagoOnline')->get();
+		return Response::json($pago); 
+	}
+
 	public function getPlanes(Request $request) {
 		$planes = Plan::all();
 		return Response::json($planes); 
+	}
+
+	public function getPagos(Request $request) {
+		$pagos = PagoOnline::with('pas_pago')
+			->with('planes')
+		->get();
+		return Response::json($pagos); 
 	}
  
 	public function SeleccionPago(Request $request) { // paso 7

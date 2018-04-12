@@ -18,6 +18,11 @@ Route::get(
 Route::post('hab','RegistroController@ejm');
 Route::post('pasarela-pago/selecionar','RegistroController@SeleccionPago');
 Route::post('planes/obtener','RegistroController@getPlanes');
+Route::post('pagos-online/obtener','RegistroController@getPagos');
+Route::post('pagos-facil/obtener','RegistroController@getPagoFacil');
+
+
+
 
 Route::post('test','PagoFacilController@prueba');
 Route::post('pagofacil/callback','PagoFacilController@CallBack');

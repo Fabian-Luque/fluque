@@ -18,8 +18,14 @@ class PagoOnline extends Model {
     ];
 
     public function planes() {
-        return $this->hasOne('App\Plan');
+        return $this->hasOne('App\Plan', 'id');
     }
+
+    public function pas_pago() {
+        return $this->hasOne('App\PasPago', 'pas_pago_id');
+    }
+
+    
 
     public function propiedades() {
         return $this->belongsToMany(
