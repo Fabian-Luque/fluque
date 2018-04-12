@@ -34,9 +34,15 @@ class CreateTablePlanes extends Migration {
 
     public function down() {
         if (Schema::hasTable('planes')) {
-            Schema::drop('pago_facil');
-            Schema::drop('pagos_online');
-            Schema::drop('pasarela_pago');
+            if (Schema::hasTable('pago_facil')) {
+                Schema::drop('pago_facil');
+            }
+            if (Schema::hasTable('pagos_online')) {
+                Schema::drop('pagos_online');
+            }
+            if (Schema::hasTable('pasarela_pago')) {
+                Schema::drop('pasarela_pago');
+            }
             Schema::drop('planes');
         }
     }
