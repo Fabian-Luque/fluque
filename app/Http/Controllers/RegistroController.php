@@ -18,6 +18,7 @@ use App\PropiedadMoneda;
 use App\TipoPropiedad;
 use App\TipoHabitacion;
 use App\User;
+use App\Plan;
 use App\QvoUser;
 use App\Habitacion;
 use App\DatosStripe;
@@ -533,6 +534,11 @@ class RegistroController extends Controller {
 		}
 	}
 
+	public function getPlanes(Request $request) {
+		$planes = Plan::all();
+		return Response::json($planes); 
+	}
+ 
 	public function SeleccionPago(Request $request) { // paso 7
 		$validator = Validator::make(
 			$request->all(), 
