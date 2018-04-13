@@ -58,11 +58,11 @@ class RegistroController extends Controller {
 				$request->prop_id
 			)->first();
 
-			$propiedad->paso = $request->paso;
-			$propiedad->save();
+			$user = $propiedad->user->first();
+			$user->update(["paso" => $request->paso]);
 
 			$retorno['errors'] = false;
-			$retorno['msg']    = "Propiedad en paso: ".$propiedad->paso;
+			$retorno['msg']    = "Paso modificado a: ".$user->paso;
 		}
 		return Response::json($retorno); 
 	}
