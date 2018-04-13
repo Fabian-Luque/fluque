@@ -59,6 +59,7 @@ class RegistroController extends Controller {
 			)->first();
 
 			$propiedad->paso = $request->paso;
+			$propiedad->save();
 
 			$retorno['errors'] = false;
 			$retorno['msg']    = "Propiedad en paso: ".$propiedad->paso;
