@@ -60,7 +60,7 @@ class PagoFacilController extends Controller {
 			]);
 
 			$retorno['errors'] = false;
-        	$retorno["msj"] = $response->getEffectiveUrl();
+        	$retorno["msj"] = $response->getStatusCode();
 		}
 		return Response::json($retorno);
 	}
