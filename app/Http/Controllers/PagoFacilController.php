@@ -60,7 +60,7 @@ class PagoFacilController extends Controller {
 			]);
 
 			$retorno['errors'] = false;
-        	$retorno["msj"] = $response->getStatusCode();
+        	$retorno["msj"] = $respu;
 		}
 		return Response::json($retorno);
 	}
@@ -90,7 +90,8 @@ class PagoFacilController extends Controller {
 
     	Event::fire(
             new PagoFacilEvent(
-                $request->ct_order_id
+                "hola",
+                "chao"
             )
         );
 	}
@@ -98,7 +99,8 @@ class PagoFacilController extends Controller {
 	public function Retorno(Request $request) {
 		Event::fire(
             new PagoFacilEvent(
-                $request->ct_order_id
+                "hola",
+                "chao"
             )
         );
 	}

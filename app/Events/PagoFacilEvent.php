@@ -10,10 +10,12 @@ class PagoFacilEvent extends Event {
     use SerializesModels;
     public $data;
     public $evento;
+    public $pasarela;
 
-    public function __construct($propiedad_id) {
-        $this->data = $propiedad_id;
-        $this->evento = "pagofacil";
+    public function __construct($propiedad_id, $pasa) {
+        $this->data     = $propiedad_id;
+        $this->evento   = "pago-online";
+        $this->pasarela = $pasa;
     }
 
     public function broadcastOn() {
