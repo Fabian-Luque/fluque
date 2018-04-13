@@ -24,7 +24,7 @@ Route::post('pagos-facil/obtener','RegistroController@getPagoFacil');
 
 
 
-Route::post('test','PagoFacilController@prueba');
+Route::post('pago-facil/pagar','PagoFacilController@Trans');
 Route::post('pagofacil/callback','PagoFacilController@CallBack');
 Route::post('pagofacil/retorno','PagoFacilController@Retorno');
 

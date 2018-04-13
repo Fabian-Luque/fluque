@@ -17,7 +17,7 @@ use GuzzleHttp\Client;
 
 class PagoFacilController extends Controller {
 
-	public function Prueba(Request $request) {
+	public function Trans(Request $request) {
 		$validator = Validator::make(
         	$request->all(), 
         	array(
@@ -66,6 +66,7 @@ class PagoFacilController extends Controller {
 	}
 
 	public function CallBack(Request $request) {
+		/*
 		$validator = Validator::make(
         	$request->all(), 
         	array(
@@ -85,57 +86,20 @@ class PagoFacilController extends Controller {
 		        "ct_firma"   			  => 'required'
            	)
         );
+		*/
 
-        if ($validator->fails()) {
-        	$retorno['errors'] = true;
-        	$retorno["msj"] = $validator->errors();
-        } else {
-        	Event::fire(
-                new PagoFacilEvent(
-                    $request->ct_order_id
-                )
-            );
-
-        	$retorno['errors'] = false;
-        	$retorno["msj"] = $request->all();
-        }
-        return Response::json($retorno);
+    	Event::fire(
+            new PagoFacilEvent(
+                $request->ct_order_id
+            )
+        );
 	}
 
 	public function Retorno(Request $request) {
-		$validator = Validator::make(
-        	$request->all(), 
-        	array(
-            	"ct_order_id"   		  => 'required',
-		        "ct_token_tienda"   	  => 'required',
-		        "ct_monto"   			  => 'required',
-		        "ct_token_service"   	  => 'required',
-		        "ct_estado"   			  => 'required',
-		        "ct_authorization_code"   => 'required',
-		        "ct_payment_type_code"    => 'required',
-		        "ct_card_number"   		  => 'required',
-		        "ct_card_expiration_date" => 'required',
-		        "ct_shares_number"   	  => 'required',
-		        "ct_accounting_date"      => 'required',
-		        "ct_transaction_date"     => 'required',
-		        "ct_order_id_mall"   	  => 'required',
-		        "ct_firma"   			  => 'required'
-           	)
+		Event::fire(
+            new PagoFacilEvent(
+                $request->ct_order_id
+            )
         );
-
-        if ($validator->fails()) {
-        	$retorno['errors'] = true;
-        	$retorno["msj"] = $validator->errors();
-        } else {
-        	Event::fire(
-                new PagoFacilEvent(
-                    $request->ct_order_id
-                )
-            );
-
-        	$retorno['errors'] = false;
-        	$retorno["msj"] = $request->all();
-        }
-        return Response::json($retorno);
 	}
 }
