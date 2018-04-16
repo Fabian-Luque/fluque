@@ -334,6 +334,7 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::post('editar/consumos/particulares', 'PropiedadController@editarConsumoParticulares');
 		Route::post('eliminar/consumos/particulares', 'PropiedadController@eliminarConsumosParticulares');
 		Route::get('obtener/calendario/temporadas', 'TemporadaController@obtenerCalendario');
+		Route::get('obtener/reservas/cliente', 'ClienteController@getReservasCliente');
 
 
 		// rutas mapa geolozalizacion 
@@ -354,7 +355,6 @@ Route::group(['as' => 'api.jarvis.'], function() {
 });
 
 });
-	Route::get('obtener/reservas/cliente', 'ClienteController@getReservasCliente');
 
 	Route::post('bloqueo/habitacion', 'HabitacionController@bloqueoHabitacion');
 	Route::post('eliminar/bloqueo/habitacion', 'HabitacionController@eliminarBloqueoHabitacion');
