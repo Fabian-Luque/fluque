@@ -158,13 +158,23 @@ class ClienteController extends Controller
             return Response::json($retorno, 400);
         }
 
-        $reservas = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
-            $query->where('propiedad_id', $propiedad_id);
+        // $reservas = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
+        //     $query->where('propiedad_id', $propiedad_id);
+        // })
+        // ->with('estadoReserva')
+        // ->where('cliente_id', $cliente_id)
+        // ->whereIn('estado_reserva_id', [1,2,3])
+       	// ->get();
+
+        $reservas = Reserva::where(function ($query) use ($propiedad_id, $cliente_id) {
+            $query->whereHas('habitacion', function($query) use($propiedad_id, $cliente_id){
+            	$query->where('propiedad_id', $propiedad_id);
+        	});
+        	$query->where('cliente_id', $cliente_id);
+        	$query->whereIn('estado_reserva_id', [1,2,3]);    
         })
         ->with('estadoReserva')
-        ->where('cliente_id', $cliente_id)
-        ->whereIn('estado_reserva_id', [1,2,3])
-       	->get();
+        ->get();
 
        	$data['cliente']  = $cliente;
        	$data['reservas'] = $reservas;
