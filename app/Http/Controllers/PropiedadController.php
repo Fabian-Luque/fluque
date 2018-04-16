@@ -1582,7 +1582,6 @@ class PropiedadController extends Controller
             'iva'                 => 'numeric',
             'porcentaje_deposito' => 'numeric',
             'pais_id'             => 'numeric',
-            'region_id'           => 'numeric',
             'tipo_cobro_id'       => 'numeric',
             'zona_horaria_id'     => 'numeric',
 

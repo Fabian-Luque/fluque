@@ -18,13 +18,15 @@ use App\PropiedadMoneda;
 use App\TipoPropiedad;
 use App\TipoHabitacion;
 use App\User;
+use App\Plan;
 use App\QvoUser;
 use App\Habitacion;
 use App\DatosStripe;
 use App\UbicacionProp;
 use App\ZonaHoraria;
+use App\PagoFacil;
 use App\PropiedadTipoDeposito;
-
+use App\PagoOnline;
 use Illuminate\Support\Facades\Event;
 use Response;
 use JWTAuth;
@@ -56,10 +58,11 @@ class RegistroController extends Controller {
 				$request->prop_id
 			)->first();
 
-			$propiedad->paso = $request->paso;
+			$user = $propiedad->user->first();
+			$user->update(["paso" => $request->paso]);
 
 			$retorno['errors'] = false;
-			$retorno['msg']    = "Propiedad en paso: ".$propiedad->paso;
+			$retorno['msg']    = "Paso modificado a: ".$user->paso;
 		}
 		return Response::json($retorno); 
 	}
@@ -70,7 +73,9 @@ class RegistroController extends Controller {
 			array(
 				'email'       => 'required',
 				'password'    => 'required',
-				'url_retorno' => 'required'
+				'url_retorno' => 'required',
+				'name'		  => 'required',
+				'phone'		  => 'required'
 			)
 		);
 
@@ -87,10 +92,14 @@ class RegistroController extends Controller {
 			)->first();
 
 			if(is_null($user)) {
-				$user 			= new User();
-				$user->paso  	= 1;
-				$user->email 	= $request->email;
-				$user->password = $request->password;
+				$user 			 = new User();
+				$user->paso  	 = 1;
+				$user->email 	 = $request->email;
+				$user->password  = $request->password;
+				$user->name 	 = $request->name;
+				$user->rol_id 	 = 1;
+				$user->estado_id = 1;
+				$user->phone 	 = $request->phone;
 				$user->save();
 
 				$propiedad 			  			= new Propiedad();
@@ -216,14 +225,12 @@ class RegistroController extends Controller {
 				'nombre' 	  		  	  => 'required',
 				'direccion' 	  	  	  => 'required',
 				'ciudad' 	  		  	  => 'required',
-				'numero_habitaciones' 	  => 'required',
 				'tipo_propiedad_id'   	  => 'required',
 				'pais_id' 	  	 	  	  => 'required',
 				'telefono' 	  		  	  => 'required',
 				'iva' 	  		      	  => 'required',
 				'email' 	  		  	  => 'required',
 				'region_id' 	  	  	  => 'required',
-				'porcentaje_deposito' 	  => '',
 				'tipo_cobro_id'       	  => 'required',
 				'tipo_deposito_id'	  	  => 'required',
 				'zona_horaria_id' 	  	  => 'required',
@@ -245,11 +252,11 @@ class RegistroController extends Controller {
 			$propiedad->nombre 				= $request->nombre;
 			$propiedad->direccion 			= $request->direccion;
 			$propiedad->ciudad 				= $request->ciudad;
-			$propiedad->numero_habitaciones = $request->numero_habitaciones;
 			$propiedad->tipo_propiedad_id 	= $request->tipo_propiedad_id;
 			$propiedad->pais_id 			= $request->pais_id;
 			$propiedad->ciudad 				= $request->ciudad;
 			$propiedad->direccion 			= $request->direccion;
+			$propiedad->numero_habitaciones = 0;
 			$propiedad->telefono 			= $request->telefono;
 			$propiedad->iva 				= $request->iva;
 			$propiedad->email 				= $request->email;
@@ -265,7 +272,7 @@ class RegistroController extends Controller {
 				$request->prop_id
 			)->first();
 
-			if (!is_null($ubicacion)) {
+			if (is_null($ubicacion)) {
 				$ubicacion           			= new UbicacionProp();
 				$ubicacion->prop_id  			= $propiedad->id;
 				$ubicacion->location 			= new Point(
@@ -288,14 +295,19 @@ class RegistroController extends Controller {
 			if (!is_null($tipo_deposito)) {
 				$tipo_deposito->valor            = $request->porcentaje_deposito;
 	            $tipo_deposito->tipo_deposito_id = $request->tipo_deposito_id;
-	            $tipo_deposito->save();
 			} else {
 				$tipo_deposito                   = new PropiedadTipoDeposito();
-	            $tipo_deposito->valor            = $request->porcentaje_deposito;
 	            $tipo_deposito->propiedad_id     = $request->prop_id;
-	            $tipo_deposito->tipo_deposito_id = $request->tipo_deposito_id;
-	            $tipo_deposito->save();
         	}
+
+        	if ($request->has('porcentaje_deposito')) {
+        		$tipo_deposito->valor            = $request->porcentaje_deposito;
+        	} else {
+        		$tipo_deposito->valor            = 0;
+        	}
+        	
+	        $tipo_deposito->tipo_deposito_id = $request->tipo_deposito_id;
+	        $tipo_deposito->save();
 
         	$request->merge([ 
 				'propiedad_id' => $request->prop_id
@@ -399,6 +411,21 @@ class RegistroController extends Controller {
 		return Response::json($retorno); 
 	}
 
+	public function ejm(Request $request) {
+		$hab = Habitacion::where(
+				'propiedad_id', 
+				$request->prop_id
+			)->get();
+
+			$propiedad = Propiedad::findOrFail(
+				$request->prop_id
+			);
+			$propiedad->numero_habitaciones = $hab->count();
+			$propiedad->save();
+
+		return Response::json($hab->count()); 
+	}
+
 	public function habitaciones(Request $request) { // paso 6
 		$validator = Validator::make(
 			$request->all(), 
@@ -406,7 +433,7 @@ class RegistroController extends Controller {
 				'tipos_de_hab'       	  => 'required'
 			)
 		);
-
+		$flag = false;
 
 		if ($validator->fails()) {
 			$retorno['errors'] = true;
@@ -430,6 +457,11 @@ class RegistroController extends Controller {
 					'propiedad_id' => $t_hab["prop_id"]
 				]);
 
+				$hab = Habitacion::where(
+					'propiedad_id', 
+					$request->propiedad_id
+				)->get();
+
 				$resp = app('App\Http\Controllers\TipoHabitacionController')->store(
 					$request,
 					true
@@ -441,14 +473,18 @@ class RegistroController extends Controller {
 					]);
 
 					for ($i = 0; $i < $request->cant_x_tipo; $i++) { 
-						$request->nombre = "".($i + 1);
+						$hab = Habitacion::where(
+							'propiedad_id', 
+							$request->propiedad_id
+						)->get();
+						$request->merge(['nombre' => ($hab->count() + 1)]);
 						$resp = app('App\Http\Controllers\HabitacionController')->store(
 							$request
 						);
 					}
 
 					$retorno['errors'] = false;
-					$retorno["msj"]    = "Operacion realizada con exito";
+					$retorno["msj"]    = "Operacion realizada con exito\n\n".$resp;
 
 					$tipos = TipoHabitacion::where(
 						'propiedad_id', 
@@ -464,7 +500,16 @@ class RegistroController extends Controller {
 
 					$retorno["tipos"] = $tipos;
 
-					return Response::json($retorno); 
+					$propiedad = Propiedad::findOrFail(
+						$request->propiedad_id
+					);
+					$propiedad->numero_habitaciones = $hab->count();
+					$propiedad->save();
+
+					$user = $propiedad->user->first();
+					$user->update(["paso" => 6]);
+
+					$flag = true;
 				} else {
 					$retorno['errors'] = true;
 					$retorno["msj"]    = $resp->getData()->msg;
@@ -479,13 +524,70 @@ class RegistroController extends Controller {
 							$tipo->id
 						)->get();
 					}
-
 					$retorno["tipos"] = $tipos;
-
-					return $retorno; 
 				}
 			}
+
+			if ($flag == true) {
+				return Response::json($retorno); 
+			} else {
+				return $retorno; 
+			}
 		}
+	}
+
+	public function getPagoFacil(Request $request) {
+		$pago = PagoFacil::with('pagoOnline')->get();
+		return Response::json($pago); 
+	}
+
+	public function getPlanes(Request $request) {
+		$planes = Plan::all();
+		return Response::json($planes); 
+	}
+
+	public function getPagos(Request $request) {
+		$pagos = PagoOnline::with('pas_pago')
+			->with('planes')
+		->get();
+		return Response::json($pagos); 
+	}
+ 
+	public function SeleccionPago(Request $request) { // paso 7
+		$validator = Validator::make(
+			$request->all(), 
+			array( 
+				'estado'		 	=> 'required',
+				'fecha_facturacion'	=> 'required',
+				'pas_pago_id'		=> 'required',
+				'prop_id'			=> 'required',
+				'plan_id'			=> 'required'
+			)
+		);
+
+		if ($validator->fails()) {
+			$retorno['errors'] = true;
+			$retorno["msj"]    = $validator->errors();
+		} else {
+			$propiedad = Propiedad::findOrFail(
+				$request->prop_id
+			);
+					
+			$pago = new PagoOnline();
+			$pago->estado 			  = $request->estado;
+	    	$pago->fecha_facturacion  = $request->fecha_facturacion;
+	    	$pago->pas_pago_id 		  = $request->pas_pago_id;
+	    	$pago->prop_id 			  = $request->prop_id;
+	    	$pago->plan_id 			  = $request->plan_id;
+	    	$pago->save();
+
+	    	$user = $propiedad->user->first();
+			$user->update(["paso" => 7]);
+
+	    	$retorno['errors'] = false;
+			$retorno["msj"]    = "Pasarela de pago seleccionada con exito";
+		}
+		return Response::json($retorno); 
 	}
 
 	public function stripe(Request $request) { // paso 7

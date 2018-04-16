@@ -7,11 +7,21 @@ use App\ZonaHoraria;
 use JWTAuth;
 use \Carbon\Carbon;
 
-class Pago extends Model
-{
+class Pago extends Model {
     protected $table = 'pagos';
 
-    protected $fillable = ['monto_pago','monto_equivalente','tipo','numero_operacion','tipo_moneda_id','tipo_comprobante_id','caja_id','estado','reserva_id', 'created_at'];
+    protected $fillable = [
+    	'monto_pago',
+    	'monto_equivalente',
+    	'tipo',
+    	'numero_operacion',
+    	'tipo_moneda_id',
+    	'tipo_comprobante_id',
+    	'caja_id',
+    	'estado',
+    	'reserva_id', 
+    	'created_at'
+    ];
 
     protected $dates = ['created_at'];
 
