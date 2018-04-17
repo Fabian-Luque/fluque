@@ -67,7 +67,8 @@ class PagoFacilController extends Controller {
     	Event::fire(
             new PagoFacilEvent(
                 "pagofacil",
-                $request->all()
+                $request->all(),
+                intval(((int) $request->ct_order_id) / 10000000)
             )
         );
         return redirect(config('app.PANEL_PRINCIPAL'));
@@ -77,7 +78,8 @@ class PagoFacilController extends Controller {
 		Event::fire(
             new PagoFacilEvent(
                 "pagofacil",
-                $request->all()
+                $request->all(),
+                intval(((int) $request->ct_order_id) / 10000000)
             )
         );
         return redirect(config('app.PANEL_PRINCIPAL'));
