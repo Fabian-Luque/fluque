@@ -34,7 +34,7 @@ class PagoFacilController extends Controller {
         	$id = (string) Uuid::generate(4);
         	$idd = explode("-", $id);
 			$transaccion = new Transaccion(
-				$idd[0]."gofeels".$request->prop_id, 
+				($request->prop_id."gofeels".$idd[0]), 
 				config('app.PAGOFACIL_TOKEN_TIENDA'), 
 				$request->monto, 
 				config('app.PAGOFACIL_TOKEN_SERVICIO'), 
