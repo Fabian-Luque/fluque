@@ -31,10 +31,8 @@ class PagoFacilController extends Controller {
         	$retorno['errors'] = true;
         	$retorno["msj"] = $validator->errors();
         } else { 
-        	$id = (string) Uuid::generate(4);
-        	$idd = explode("-", $id);
 			$transaccion = new Transaccion(
-				($request->prop_id."gofeels".$idd[0]), 
+				($request->prop_id."".range(1000000, 9999999), 
 				config('app.PAGOFACIL_TOKEN_TIENDA'), 
 				$request->monto, 
 				config('app.PAGOFACIL_TOKEN_SERVICIO'), 
