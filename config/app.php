@@ -37,6 +37,8 @@ return [
     'PAGOFACIL_URL' => env('PAGOFACIL_URL', null),
     'PAGOFACIL_TOKEN_TIENDA' => env('PAGOFACIL_TOKEN_TIENDA', null),
 
+    'PANEL_PRINCIPAL' => env('PANEL_PRINCIPAL', null),
+
 
     /*
     |--------------------------------------------------------------------------

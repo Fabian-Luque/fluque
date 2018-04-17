@@ -72,6 +72,7 @@ class PagoFacilController extends Controller {
                 $request->all()
             )
         );
+        return redirect(config('app.PANEL_PRINCIPAL'));
 	}
 
 	public function Retorno(Request $request) {
@@ -81,5 +82,6 @@ class PagoFacilController extends Controller {
                 $request->all()
             )
         );
+        return redirect(config('app.PANEL_PRINCIPAL'));
 	}
 }
