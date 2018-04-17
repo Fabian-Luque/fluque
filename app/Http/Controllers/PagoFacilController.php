@@ -32,7 +32,7 @@ class PagoFacilController extends Controller {
         	$retorno["msj"] = $validator->errors();
         } else { 
 			$transaccion = new Transaccion(
-				($request->prop_id."".range(1000000, 9999999), 
+				($request->prop_id."".rand(1000000, 9999999), 
 				config('app.PAGOFACIL_TOKEN_TIENDA'), 
 				$request->monto, 
 				config('app.PAGOFACIL_TOKEN_SERVICIO'), 
