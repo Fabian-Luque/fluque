@@ -32,7 +32,7 @@ class PagoFacilController extends Controller {
         	$retorno["msj"] = $validator->errors();
         } else {
 			$transaccion = new Transaccion(
-				(string) Uuid::generate(4), 
+				"C1607", 
 				"1214124", // token de tienda
 				$request->monto, 
 				config('app.PAGOFACIL_TOKEN_SERVICIO'), 
@@ -46,23 +46,25 @@ class PagoFacilController extends Controller {
 
     		$client = new Client();
 
-			$response = $client->request(
-				'POST', 
+			$data = [
+				"ct_email" 			=> $respu['ct_email'],
+    			"ct_monto" 			=> $respu['ct_monto'],
+    			"ct_order_id" 		=> $respu['ct_order_id'],
+    			"ct_token_service" 	=> config('app.PAGOFACIL_TOKEN_SERVICIO'),
+    			"ct_token_tienda" 	=> $respu['ct_email'],
+    			"ct_firma" 			=> $respu['ct_email']
+			];
+			$response = $client->post(
 				config('app.PAGOFACIL_URL'), [
-				'form_params' => [
-					"ct_email" 			=> $respu['ct_email'],
-        			"ct_monto" 			=> $respu['ct_monto'],
-        			"ct_order_id" 		=> $respu['ct_order_id'],
-        			"ct_token_service" 	=> $respu['ct_email'],
-        			"ct_token_tienda" 	=> $respu['ct_email'],
-        			"ct_firma" 			=> $respu['ct_email']
+					'query' => $data
 				]
-			]);
+			);
+			$result = $response->getBody()->getContents();
 
 			$retorno['errors'] = false;
-        	$retorno["msj"] = $respu;
+        	$retorno["msj"] = "https://pagos-dev.pagofacil.org/?id=".$respu['ct_order_id']."&token_servicio=".config('app.PAGOFACIL_TOKEN_SERVICIO');
 		}
-		return Response::json($retorno);
+		return $result;//return Response::json($retorno);
 	}
 
 	public function CallBack(Request $request) {
@@ -91,7 +93,7 @@ class PagoFacilController extends Controller {
     	Event::fire(
             new PagoFacilEvent(
                 "hola",
-                "chao"
+                "pagofacil"
             )
         );
 	}
@@ -100,7 +102,7 @@ class PagoFacilController extends Controller {
 		Event::fire(
             new PagoFacilEvent(
                 "hola",
-                "chao"
+                "pagofacil"
             )
         );
 	}
