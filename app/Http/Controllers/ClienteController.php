@@ -124,6 +124,64 @@ class ClienteController extends Controller
 
 	}
 
+	public function getReservasCliente(Request $request)
+	{	
+		if ($request->has('propiedad_id')) {
+            $propiedad_id   = $request->input('propiedad_id');
+            $propiedad      = Propiedad::where('id', $propiedad_id)->first();
+            if (is_null($propiedad)) {
+                $retorno  = array(
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia propiedad_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+		if ($request->has('cliente_id')) {
+            $cliente_id   = $request->input('cliente_id');
+            $cliente      = Cliente::where('id', $cliente_id)->first();
+            if (is_null($cliente)) {
+                $retorno  = array(
+                    'msj'    => "Cliente no encontrado",
+                    'errors' => true);
+                return Response::json($retorno, 404);
+            }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia cliente_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        // $reservas = Reserva::whereHas('habitacion', function($query) use($propiedad_id){
+        //     $query->where('propiedad_id', $propiedad_id);
+        // })
+        // ->with('estadoReserva')
+        // ->where('cliente_id', $cliente_id)
+        // ->whereIn('estado_reserva_id', [1,2,3])
+       	// ->get();
+
+        $reservas = Reserva::where(function ($query) use ($propiedad_id, $cliente_id) {
+            $query->whereHas('habitacion', function($query) use($propiedad_id, $cliente_id){
+            	$query->where('propiedad_id', $propiedad_id);
+        	});
+        	$query->where('cliente_id', $cliente_id);
+        	$query->whereIn('estado_reserva_id', [1,2,3]);    
+        })
+        ->with('estadoReserva')
+        ->get();
+
+       	$data['cliente']  = $cliente;
+       	$data['reservas'] = $reservas;
+       	return $data;
+
+	}
+
 
 	public function getClientes(Request $request)
 	{
@@ -166,23 +224,18 @@ class ClienteController extends Controller
 	{
 		$rut 	 = $request->input('rut');
 	  	$cliente = Cliente::where('rut', $rut)->first();
-
 	  	if(!is_null($cliente)){
 
 			$data = array(
 				'msj' 	 => "El rut ya existe",
-				'errors' => true
-			);
-
+				'errors' => true);
 			return $data;
 
 	  	}else{
 
 	  		$data = array(
 				'msj' 	 => "Rut correcto",
-				'errors' => false
-			);
-
+				'errors' => false);
 			return $data;
 	  	}
 
@@ -190,29 +243,27 @@ class ClienteController extends Controller
 
 
     
-public function index(Request $request)
-{
-	if($request->has('rut')){
+	public function index(Request $request)
+	{
+		if ($request->has('rut')) {
 
-		$cliente_rut = $request->input('rut');
-		$cliente 	 = Cliente::where('rut', $cliente_rut)->first();
+			$cliente_rut = $request->input('rut');
+			$cliente 	 = Cliente::where('rut', $cliente_rut)->first();
+			if (is_null($cliente)) {
 
-		if(is_null($cliente)){
+				$data = array(
+					'msj' => "Cliente no encontrado",
+					'errors' => true);
+				return Response::json($data, 404);
 
-			$data = array(
-				'msj' => "Cliente no encontrado",
-				'errors' => true);
-			return Response::json($data, 404);
+			} else {
 
-		}else{
+				return $cliente = Cliente::where('rut', $cliente_rut)->with('pais', 'region')->first();
 
-		return $cliente = Cliente::where('rut', $cliente_rut)->with('pais', 'region')->first();
-
+			}
 		}
+
 	}
-
-
-}
 
 
 public function calificacion(Request $request)
