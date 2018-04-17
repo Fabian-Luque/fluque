@@ -30,11 +30,14 @@ class PagoFacilController extends Controller {
         if ($validator->fails()) {
         	$retorno['errors'] = true;
         	$retorno["msj"] = $validator->errors();
-        } else {
+        } else { 
+        	$id = str_replace(
+				"-",
+				"", 
+				(string) Uuid::generate(4)
+			);
 			$transaccion = new Transaccion(
-				$request->prop_id."-".str_replace(
-					"-","",(string) Uuid::generate(4)
-				), 
+				$id."-".$request->prop_id, 
 				config('app.PAGOFACIL_TOKEN_TIENDA'), 
 				$request->monto, 
 				config('app.PAGOFACIL_TOKEN_SERVICIO'), 
