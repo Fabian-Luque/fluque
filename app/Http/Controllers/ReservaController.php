@@ -739,6 +739,13 @@ class ReservaController extends Controller
             $monto_total       = $request->input('monto_total');
             $monto_por_pagar   = $request->input('monto_por_pagar');
 
+            if ($monto_por_pagar < 0) {
+                $retorno = array(
+                    'msj'    => "Error: No puedes modificar los montos si la reserva posee un pago",
+                    'errors' => true);
+                return Response::json($retorno, 400);
+            } 
+
             if ($reserva->estado_reserva_id == 4) {
                 if ($monto_por_pagar > 0) {
                 $reserva->update(array('estado_reserva_id' => 5,'monto_alojamiento' => $monto_alojamiento, 'monto_total' => $monto_total, 'monto_por_pagar' => $monto_por_pagar));
