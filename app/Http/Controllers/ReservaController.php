@@ -1208,13 +1208,13 @@ class ReservaController extends Controller
             $noches            = ((strtotime($reserva_checkout)-strtotime($reserva_checkin))/86400);
             $monto_alojamiento = $noches * $precio_habitacion;
             $monto_total       = $monto_alojamiento + $reserva->monto_consumo;
-            // $pagos_realizados  = $reserva->pagos;
-            // $monto_pagado      = 0;
-            // foreach($pagos_realizados as $pago){
-            //   $monto_pagado += $pago->monto_pago;
-            // }
+            $pagos_realizados  = $reserva->pagos;
+            $monto_pagado      = 0;
+            foreach($pagos_realizados as $pago){
+              $monto_pagado += $pago->monto_pago;
+            }
 
-            $monto_por_pagar = $request->('monto_por_pagar');
+            $monto_por_pagar = $monto_total - $monto_pagado;
 
             if ($monto_por_pagar < 0) {
                 $retorno = array(
