@@ -1204,25 +1204,25 @@ class ReservaController extends Controller
         }
 
         if($request->has('precio_habitacion')){
-          $precio_habitacion = $request->input('precio_habitacion');
-          $noches            = ((strtotime($reserva_checkout)-strtotime($reserva_checkin))/86400);
-          $monto_alojamiento = $noches * $precio_habitacion;
-          $monto_total       = $monto_alojamiento + $reserva->monto_consumo;
-          $pagos_realizados  = $reserva->pagos;
-          $monto_pagado      = 0;
+            $precio_habitacion = $request->input('precio_habitacion');
+            $noches            = ((strtotime($reserva_checkout)-strtotime($reserva_checkin))/86400);
+            $monto_alojamiento = $noches * $precio_habitacion;
+            $monto_total       = $monto_alojamiento + $reserva->monto_consumo;
+            $pagos_realizados  = $reserva->pagos;
+            $monto_pagado      = 0;
             foreach($pagos_realizados as $pago){
               $monto_pagado += $pago->monto_pago;
             }
 
             $monto_por_pagar = $monto_total - $monto_pagado;
 
-            if ($monto_por_pagar >= 0) {
-                $reserva->update(array('precio_habitacion' => $precio_habitacion ,'monto_alojamiento' => $monto_alojamiento , 'monto_total' => $monto_total , 'monto_por_pagar' => $monto_por_pagar));
-            } else {
+            if ($monto_por_pagar < 0) {
                 $retorno = array(
                     'msj'    => "Error: No puedes modificar los montos si la reserva posee un pago",
                     'errors' => true);
                 return Response::json($retorno, 400);
+            } else {
+                $reserva->update(array('precio_habitacion' => $precio_habitacion ,'monto_alojamiento' => $monto_alojamiento , 'monto_total' => $monto_total , 'monto_por_pagar' => $monto_por_pagar));
             }
           }
 
