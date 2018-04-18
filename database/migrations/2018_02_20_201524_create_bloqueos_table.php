@@ -12,15 +12,18 @@ class CreateBloqueosTable extends Migration
      */
     public function up()
     {
-        Schema::create('bloqueos', function (Blueprint $table) {
-            $table->increments('id');
-            $table->date('fecha_inicio');
-            $table->date('fecha_fin');
-            $table->integer('noches');
-            $table->integer('habitacion_id')->unsigned();
-            $table->foreign('habitacion_id')->references('id')->on('habitaciones')->onDelete('cascade');
-            $table->timestamps();
-        });
+        
+        if (!Schema::hasTable('bloqueos')) {
+            Schema::create('bloqueos', function (Blueprint $table) {
+                $table->increments('id');
+                $table->date('fecha_inicio');
+                $table->date('fecha_fin');
+                $table->integer('noches');
+                $table->integer('habitacion_id')->unsigned();
+                $table->foreign('habitacion_id')->references('id')->on('habitaciones')->onDelete('cascade');
+                $table->timestamps();
+            });
+        }
     }
 
     /**
