@@ -33,6 +33,8 @@ class Propiedad extends Model {
         'tipo_cobro_id', 
         'zona_horaria_id', 
         'codigo',
+        'razon_social',
+        'rut',
         'monto_contrato'
     ];
 
