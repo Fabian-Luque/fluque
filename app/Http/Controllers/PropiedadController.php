@@ -1579,6 +1579,8 @@ class PropiedadController extends Controller
             'email'               => '',
             'nombre_responsable'  => '',
             'descripcion'         => '',
+            'razon_social'        => '',
+            'rut'                 => '',
             'iva'                 => 'numeric',
             'porcentaje_deposito' => 'numeric',
             'pais_id'             => 'numeric',
