@@ -30,10 +30,10 @@ class PagoFacilController extends Controller {
         if ($validator->fails()) {
         	$retorno['errors'] = true;
         	$retorno["msj"] = $validator->errors();
-        } else {
+        } else { 
 			$transaccion = new Transaccion(
-				(string) Uuid::generate(4), 
-				"1214124", // token de tienda
+				($request->prop_id."".rand(1000000, 9999999)), 
+				config('app.PAGOFACIL_TOKEN_TIENDA'), 
 				$request->monto, 
 				config('app.PAGOFACIL_TOKEN_SERVICIO'), 
 				$request->email
@@ -43,65 +43,45 @@ class PagoFacilController extends Controller {
 			);
 
 			$respu = $transaccion->getArrayResponse();
-
     		$client = new Client();
 
-			$response = $client->request(
-				'POST', 
+			$data = [
+				"ct_email" 			=> $respu['ct_email'],
+    			"ct_monto" 			=> $respu['ct_monto'],
+    			"ct_order_id" 		=> $respu['ct_order_id'],
+    			"ct_token_service" 	=> config('app.PAGOFACIL_TOKEN_SERVICIO'),
+    			"ct_token_tienda" 	=> config('app.PAGOFACIL_TOKEN_TIENDA'),
+    			"ct_firma" 			=> $respu['ct_email']
+			];
+			$response = $client->post(
 				config('app.PAGOFACIL_URL'), [
-				'form_params' => [
-					"ct_email" 			=> $respu['ct_email'],
-        			"ct_monto" 			=> $respu['ct_monto'],
-        			"ct_order_id" 		=> $respu['ct_order_id'],
-        			"ct_token_service" 	=> $respu['ct_email'],
-        			"ct_token_tienda" 	=> $respu['ct_email'],
-        			"ct_firma" 			=> $respu['ct_email']
+					'query' => $data
 				]
-			]);
-
-			$retorno['errors'] = false;
-        	$retorno["msj"] = $respu;
+			);
+			$retorno = $response->getBody()->getContents();
 		}
-		return Response::json($retorno);
+		return $retorno;
 	}
 
 	public function CallBack(Request $request) {
-		/*
-		$validator = Validator::make(
-        	$request->all(), 
-        	array(
-            	"ct_order_id"   		  => 'required',
-		        "ct_token_tienda"   	  => 'required',
-		        "ct_monto"   			  => 'required',
-		        "ct_token_service"   	  => 'required',
-		        "ct_estado"   			  => 'required',
-		        "ct_authorization_code"   => 'required',
-		        "ct_payment_type_code"    => 'required',
-		        "ct_card_number"   		  => 'required',
-		        "ct_card_expiration_date" => 'required',
-		        "ct_shares_number"   	  => 'required',
-		        "ct_accounting_date"      => 'required',
-		        "ct_transaction_date"     => 'required',
-		        "ct_order_id_mall"   	  => 'required',
-		        "ct_firma"   			  => 'required'
-           	)
-        );
-		*/
-
     	Event::fire(
             new PagoFacilEvent(
-                "hola",
-                "chao"
+                "pagofacil",
+                $request->all(),
+                intval(((int) $request->ct_order_id) / 10000000)
             )
         );
+        return redirect(config('app.PANEL_PRINCIPAL'));
 	}
 
 	public function Retorno(Request $request) {
 		Event::fire(
             new PagoFacilEvent(
-                "hola",
-                "chao"
+                "pagofacil",
+                $request->all(),
+                intval(((int) $request->ct_order_id) / 10000000)
             )
         );
+        return redirect(config('app.PANEL_PRINCIPAL'));
 	}
 }

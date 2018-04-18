@@ -11,11 +11,13 @@ class PagoFacilEvent extends Event {
     public $data;
     public $evento;
     public $pasarela;
+    public $data_pago;
 
-    public function __construct($propiedad_id, $pasa) {
-        $this->data     = $propiedad_id;
-        $this->evento   = "pago-online";
-        $this->pasarela = $pasa;
+    public function __construct($pasa, $data_pago, $prop_id) {
+        $this->evento    = "pago-online";
+        $this->pasarela  = $pasa;
+        $this->data_pago = $data_pago;
+        $this->data      = $prop_id;
     }
 
     public function broadcastOn() {
