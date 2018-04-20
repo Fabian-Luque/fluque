@@ -553,9 +553,11 @@ class RegistroController extends Controller {
 	}
 
 	public function getPagos(Request $request) {
-		$pagos = PagoOnline::with('pas_pago')
-			->with('planes')
-		->get();
+		$pagos = PagoOnline::with('pas_pago')->get();
+
+		foreach ($pagos as $pago) {
+			$pago->plan = Plan::where('plan_id', $pago->plan_id)->first();
+		}
 		return Response::json($pagos); 
 	}
 
@@ -600,7 +602,7 @@ class RegistroController extends Controller {
 			$pago = new PagoOnline();
 			$pago->estado 			  = $request->estado;
 	    	$pago->fecha_facturacion  = $fecha_actual;
-	    	$pago->prox_fac  		  = $fecha_actual->addDays(30);
+	    	$pago->prox_fac  		  = $fecha_actual->addMonth();
 	    	$pago->pas_pago_id 		  = $request->pas_pago_id;
 	    	$pago->prop_id 			  = $request->prop_id;
 	    	$pago->plan_id 			  = $request->plan_id;
