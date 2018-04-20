@@ -9,6 +9,7 @@ class Plan extends Model {
 
     protected $fillable = [ 
     	'id', 
-    	'facturacion'
+    	'facturacion',
+    	'plan_id'
     ];
 }
