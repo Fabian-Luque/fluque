@@ -21,6 +21,9 @@ Route::post('planes/obtener','RegistroController@getPlanes');
 Route::post('pagos-online/obtener','RegistroController@getPagos');
 Route::post('pagos-facil/obtener','RegistroController@getPagoFacil');
 
+Route::post('pagos-facil/pasarelas/obtener','RegistroController@getPasarelas');
+
+
 
 Route::post('pago-facil/pagar','PagoFacilController@Trans');
 Route::post('pagofacil/callback','PagoFacilController@CallBack');
