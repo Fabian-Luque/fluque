@@ -598,8 +598,15 @@ class RegistroController extends Controller {
 			);
 
 			$fecha_actual = Carbon::now()->setTimezone('America/Santiago');
-					
-			$pago = new PagoOnline();
+
+			$pago = PagoOnline::where(
+				"prop_id", 
+				$request->prop_id
+			)->first();
+
+			if (is_null($pago)) {
+				$pago = new PagoOnline();
+			}
 			$pago->estado 			  = $request->estado;
 	    	$pago->fecha_facturacion  = $fecha_actual;
 	    	$pago->prox_fac  		  = $fecha_actual->addMonth();
