@@ -10,6 +10,7 @@ class PagoOnline extends Model {
     	'id', 
     	'estado',
     	'fecha_facturacion',
+        'prox_fac',
     	'pas_pago_id',
     	'prop_id',
     	'plan_id',

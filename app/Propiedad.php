@@ -169,6 +169,10 @@ class Propiedad extends Model {
             ->withTimestamps();
     }
 
+    public function PagoOnline(){
+        return $this->hasOne('App\PagoOnline', 'prop_id');
+    }
+
     public function coloresMotor(){
         return $this->belongsToMany('App\ColorMotor', 'motor_propiedad')
             ->withPivot('id','clasificacion_color_id')

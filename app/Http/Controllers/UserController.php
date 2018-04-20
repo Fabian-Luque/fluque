@@ -24,8 +24,8 @@ class UserController extends Controller {
         return Response::json(User::all());
     }
     public function show($id){
-        try {
-            $users        = User::where('id', $id)->with('propiedad.tipoPropiedad','propiedad.pais','propiedad.region','propiedad.zonaHoraria' ,'propiedad.tipoMonedas', 'propiedad.tipoCobro')->with('rol.permisos')->get();
+        try { 
+            $users        = User::where('id', $id)->with('propiedad.tipoPropiedad','propiedad.pais','propiedad.region','propiedad.zonaHoraria' ,'propiedad.tipoMonedas', 'propiedad.tipoCobro', 'propiedad.PagoOnline')->with('rol.permisos')->get();
             $propiedad_id = $users[0]->propiedad[0]['id'];
 
             $clientes = [];
