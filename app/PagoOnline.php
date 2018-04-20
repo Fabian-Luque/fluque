@@ -26,8 +26,6 @@ class PagoOnline extends Model {
         return $this->hasOne('App\PasPago', 'pas_pago_id');
     }
 
-    
-
     public function propiedades() {
         return $this->belongsToMany(
         	'App\Propiedad', 

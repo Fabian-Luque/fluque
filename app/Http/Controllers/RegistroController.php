@@ -29,6 +29,7 @@ use App\PropiedadTipoDeposito;
 use App\PagoOnline;
 use Illuminate\Support\Facades\Event;
 use Response;
+use \Carbon\Carbon;
 use JWTAuth;
 use Grimzy\LaravelMysqlSpatial\Types\Point;
 use GuzzleHttp\Exception\GuzzleException;
@@ -558,7 +559,6 @@ class RegistroController extends Controller {
 			$request->all(), 
 			array( 
 				'estado'		 	=> 'required',
-				'fecha_facturacion'	=> 'required',
 				'pas_pago_id'		=> 'required',
 				'prop_id'			=> 'required',
 				'plan_id'			=> 'required'
@@ -572,10 +572,12 @@ class RegistroController extends Controller {
 			$propiedad = Propiedad::findOrFail(
 				$request->prop_id
 			);
+			$fecha_actual = Carbon::now()->setTimezone('America/Santiago');
 					
 			$pago = new PagoOnline();
 			$pago->estado 			  = $request->estado;
-	    	$pago->fecha_facturacion  = $request->fecha_facturacion;
+	    	$pago->fecha_facturacion  = $fecha_actual;
+	    	$pago->prox_fac  		  = $fecha_actual->addDays(30);
 	    	$pago->pas_pago_id 		  = $request->pas_pago_id;
 	    	$pago->prop_id 			  = $request->prop_id;
 	    	$pago->plan_id 			  = $request->plan_id;
