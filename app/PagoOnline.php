@@ -19,7 +19,7 @@ class PagoOnline extends Model {
     ];
 
     public function planes() {
-        return $this->hasOne('App\Plan', 'id');
+        return $this->hasOne('App\Plan');
     }
 
     public function pas_pago() {
