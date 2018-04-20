@@ -38,7 +38,6 @@ use Cartalyst\Stripe\Stripe;
 use Cartalyst\Stripe\Exception\MissingParameterException;
 use \Illuminate\Database\QueryException;
 
-
 class RegistroController extends Controller {
 
 	public function SetEstado(Request $request) { 
@@ -349,7 +348,8 @@ class RegistroController extends Controller {
 				'zonaHoraria' ,
 				'tipoMonedas', 
 				'tipoCobro',
-				'tipoDepositoPropiedad'
+				'tipoDepositoPropiedad',
+				'PagoOnline'
 			)->first();
 
 			if (!is_null($propiedad)) {
@@ -572,6 +572,8 @@ class RegistroController extends Controller {
 			$propiedad = Propiedad::findOrFail(
 				$request->prop_id
 			);
+
+			/*
 			$fecha_actual = Carbon::now()->setTimezone('America/Santiago');
 					
 			$pago = new PagoOnline();
@@ -582,7 +584,7 @@ class RegistroController extends Controller {
 	    	$pago->prop_id 			  = $request->prop_id;
 	    	$pago->plan_id 			  = $request->plan_id;
 	    	$pago->save();
-
+*/
 	    	$user = $propiedad->user->first();
 			$user->update(["paso" => 7]);
 
