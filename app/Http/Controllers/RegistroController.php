@@ -548,8 +548,16 @@ class RegistroController extends Controller {
 	}
 
 	public function getPasarelas(Request $request) {
-		$pagos = PasPago::all();
-		return Response::json($pagos); 
+		$pasarelas = PasPago::all();
+		$retorno['nacionales'] = PasPago::where(
+			'procedencia', 
+			'nacional'
+		)->get();
+		$retorno['internacionales'] = PasPago::where(
+			'procedencia', 
+			'internacional'
+		)->get();
+		return Response::json($retorno); 
 	}
 
 	public function getPagos(Request $request) {
