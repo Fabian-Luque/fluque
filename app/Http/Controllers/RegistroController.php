@@ -166,6 +166,53 @@ class RegistroController extends Controller {
 		return Response::json($retorno); 
 	}
 
+	public function SetEstadoCuenta(Request $request) {
+		$validator = Validator::make(
+			$request->all(), 
+			array(
+				'prop_id'       => 'required',
+				'estado'      	=> 'required'
+			)
+		);
+
+		if ($validator->fails()) {
+			$retorno['errors'] = true;
+			$retorno["msg"]    = $validator->errors();
+		} else {
+			if ($request->estado != 1 && $request->estado != 2 && $request->estado != 3) {
+				$retorno['errors'] = true;
+				$retorno["msg"]    = "Estado invalido. Opciones validas: \n 1)Prueba \n2)Activa \n3)Inactiva";
+			} else {
+				$propiedad = Propiedad::where(
+					"id",
+					$request->prop_id
+				)->first();
+				$propiedad->estado_cuenta_id = $request->estado;
+				$propiedad->save();
+
+				$retorno['errors'] = false;
+
+				switch ($propiedad->estado_cuenta_id) {
+					case 1:
+						$retorno["msg"]    = "La cuenta se encuentra en un estado de prueba";
+						break;
+
+					case 2:
+						$retorno["msg"]    = "La cuenta se encuentra activa";
+						break;
+
+					case 3:
+						$retorno["msg"]    = "La cuenta se encuentra inactiva, y con restricciones";
+						break;
+					
+					default:
+						break;
+				}
+			}
+		}
+		return Response::json($retorno); 
+	}
+
 	public function signin(Request $request) { // paso 3
 		$validator = Validator::make(
 			$request->all(), 
@@ -191,29 +238,23 @@ class RegistroController extends Controller {
 				$user_id 	  = $user->id;
 				$propiedad_id = $user->propiedad[0]['id'];
 
-				if ($user->estado_id == 3) {
-					$retorno['errors'] = true;
-					$retorno['msg']    = trans('request.failure.bad');
-					$status            = trans('request.failure.code.not_founded');
-				} else {
-					if (!$token = JWTAuth::attempt($credentials)) {
+				if (!$token = JWTAuth::attempt($credentials)) {
 						$retorno['errors'] = trans('request.failure.status');
 						$retorno['msg']    = 'Usuario o contraseÃ±a incorrecta';
 						$status            = trans('request.failure.code.forbidden');
-					} else {
-						if ($user->paso == 2) {
-							$user->update(["paso" => 3]);
-						}
-						$paso = $user->paso;
-
-						$retorno = compact(
-							'token', 
-							'user_id', 
-							'propiedad_id', 
-							'paso'
-						);
-						$status  = trans('request.success.code');
+				} else {
+					if ($user->paso == 2) {
+						$user->update(["paso" => 3]);
 					}
+					$paso = $user->paso;
+
+					$retorno = compact(
+						'token', 
+						'user_id', 
+						'propiedad_id', 
+						'paso'
+					);
+					$status  = trans('request.success.code');
 				}
 			} else {
 				$retorno['errors'] = trans('request.failure.status');

@@ -22,7 +22,7 @@ Route::post('pagos-online/obtener','RegistroController@getPagos');
 Route::post('pagos-facil/obtener','RegistroController@getPagoFacil');
 
 Route::post('pasarelas/obtener','RegistroController@getPasarelas');
-
+Route::post('estado/cuenta/modificar','RegistroController@SetEstadoCuenta');
 
 
 Route::post('pago-facil/pagar','PagoFacilController@Trans');
