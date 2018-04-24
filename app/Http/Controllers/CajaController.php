@@ -23,7 +23,7 @@ class CajaController extends Controller
     {
         if ($request->has('caja_id')) {
             $caja_id = $request->input('caja_id');
-            $caja    = Caja::where('id', $caja_id)->with('montos.tipoMonto', 'montos.tipoMoneda')->with('user')->with('estadoCaja')->with('pagos.tipoComprobante','pagos.metodoPago', 'pagos.tipoMoneda', 'pagos.reserva')->with('egresosCaja.tipoMoneda', 'egresosCaja.egreso')->with('servicios.servicio.precios')->first();
+            $caja    = Caja::where('id', $caja_id)->with('montos.tipoMonto', 'montos.tipoMoneda')->with('user')->with('estadoCaja')->with('pagos.tipoComprobante','pagos.metodoPago', 'pagos.tipoMoneda', 'pagos.reserva.habitacion')->with('egresosCaja.tipoMoneda', 'egresosCaja.egreso')->with('servicios.servicio.precios')->first();
             if (is_null($caja)) {
                 $retorno = array(
                     'msj'    => "Caja no encontrada",
@@ -307,7 +307,7 @@ class CajaController extends Controller
             return Response::json($retorno, 400);
         }
 
-        $caja_abierta  = Caja::where('propiedad_id', $propiedad_id)->where('estado_caja_id', 1)->with('montos.tipoMonto', 'montos.tipoMoneda')->with('user')->with('estadoCaja')->with('pagos.tipoComprobante','pagos.metodoPago', 'pagos.tipoMoneda', 'pagos.reserva')->with('egresosCaja.tipoMoneda', 'egresosCaja.egreso')->with('servicios.servicio.precios', 'servicios.tipoComprobante', 'servicios.metodoPago', 'servicios.tipoMoneda')->first();
+        $caja_abierta  = Caja::where('propiedad_id', $propiedad_id)->where('estado_caja_id', 1)->with('montos.tipoMonto', 'montos.tipoMoneda')->with('user')->with('estadoCaja')->with('pagos.tipoComprobante','pagos.metodoPago', 'pagos.tipoMoneda', 'pagos.reserva.habitacion')->with('egresosCaja.tipoMoneda', 'egresosCaja.egreso')->with('servicios.servicio.precios', 'servicios.tipoComprobante', 'servicios.metodoPago', 'servicios.tipoMoneda')->first();
 
         if (!is_null($caja_abierta)) {
             $monedas = [];
