@@ -64,22 +64,44 @@ class PagoFacilController extends Controller {
 	}
 
 	public function CallBack(Request $request) {
+        $prop_id = intval(((int) $request->ct_order_id) / 10000000);
+        
+        if (strcmp($request->ct_estado, "COMPLETADA") == 0) {
+            $propiedad = Propiedad::where(
+                "id",
+                $prop_id
+            )->first();
+            $propiedad->estado_cuenta_id = 2;
+            $propiedad->save();
+        }
+        
     	Event::fire(
             new PagoFacilEvent(
                 "pagofacil",
                 $request->all(),
-                intval(((int) $request->ct_order_id) / 10000000)
+                $prop_id
             )
         );
         return redirect(config('app.PANEL_PRINCIPAL'));
 	}
 
 	public function Retorno(Request $request) {
-		Event::fire(
+        $prop_id = intval(((int) $request->ct_order_id) / 10000000);
+        
+        if (strcmp($request->ct_estado, "COMPLETADA") == 0) {
+            $propiedad = Propiedad::where(
+                "id",
+                $prop_id
+            )->first();
+            $propiedad->estado_cuenta_id = 2;
+            $propiedad->save();
+        }
+        
+        Event::fire(
             new PagoFacilEvent(
                 "pagofacil",
                 $request->all(),
-                intval(((int) $request->ct_order_id) / 10000000)
+                $prop_id
             )
         );
         return redirect(config('app.PANEL_PRINCIPAL'));
