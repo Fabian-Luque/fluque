@@ -14,6 +14,7 @@ use Webpatser\Uuid\Uuid;
 use App\Events\PagoFacilEvent;
 use Illuminate\Support\Facades\Event;
 use GuzzleHttp\Client;
+use App\Propiedad;
 
 class PagoFacilController extends Controller {
 
@@ -74,7 +75,7 @@ class PagoFacilController extends Controller {
             $propiedad->estado_cuenta_id = 2;
             $propiedad->save();
         }
-        
+
     	Event::fire(
             new PagoFacilEvent(
                 "pagofacil",
