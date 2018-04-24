@@ -190,24 +190,30 @@ class RegistroController extends Controller {
 			if(!is_null($user)) {
 				$user_id 	  = $user->id;
 				$propiedad_id = $user->propiedad[0]['id'];
-				
-				if (!$token = JWTAuth::attempt($credentials)) {
-					$retorno['errors'] = trans('request.failure.status');
-					$retorno['msg']    = 'Usuario o contraseÃ±a incorrecta';
-					$status            = trans('request.failure.code.forbidden');
-				} else {
-					if ($user->paso == 2) {
-						$user->update(["paso" => 3]);
-					}
-					$paso = $user->paso;
 
-					$retorno = compact(
-						'token', 
-						'user_id', 
-						'propiedad_id', 
-						'paso'
-					);
-					$status  = trans('request.success.code');
+				if ($user->estado_id == 3) {
+					$retorno['errors'] = true;
+					$retorno['msg']    = trans('request.failure.bad');
+					$status            = trans('request.failure.code.not_founded');
+				} else {
+					if (!$token = JWTAuth::attempt($credentials)) {
+						$retorno['errors'] = trans('request.failure.status');
+						$retorno['msg']    = 'Usuario o contraseÃ±a incorrecta';
+						$status            = trans('request.failure.code.forbidden');
+					} else {
+						if ($user->paso == 2) {
+							$user->update(["paso" => 3]);
+						}
+						$paso = $user->paso;
+
+						$retorno = compact(
+							'token', 
+							'user_id', 
+							'propiedad_id', 
+							'paso'
+						);
+						$status  = trans('request.success.code');
+					}
 				}
 			} else {
 				$retorno['errors'] = trans('request.failure.status');
