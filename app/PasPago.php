@@ -9,6 +9,7 @@ class PasPago extends Model {
     protected $fillable = [ 
     	'id', 
     	'nombre',
-    	'pas_pago_id'
+    	'pas_pago_id',
+    	'procedencia'
     ];
 }

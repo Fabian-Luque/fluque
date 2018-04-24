@@ -556,7 +556,10 @@ class RegistroController extends Controller {
 		$pagos = PagoOnline::with('pas_pago')->get();
 
 		foreach ($pagos as $pago) {
-			$pago->plan = Plan::where('plan_id', $pago->plan_id)->first();
+			$pago->plan = Plan::where(
+				'plan_id', 
+				$pago->plan_id
+			)->first();
 		}
 		return Response::json($pagos); 
 	}

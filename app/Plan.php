@@ -10,6 +10,7 @@ class Plan extends Model {
     protected $fillable = [ 
     	'id', 
     	'facturacion',
+    	'porcentaje_desc',
     	'plan_id'
     ];
 }
