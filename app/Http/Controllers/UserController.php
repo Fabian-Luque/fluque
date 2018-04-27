@@ -40,7 +40,7 @@ class UserController extends Controller {
             $clientes = [];
 
             try {
-                $prop = $users[0]->propiedad->first();
+                $prop = Propiedad::find($propiedad_id);
                 $pago_o = $prop->PagoOnline->first();
                 $uno = $pago_o->fecha_facturacion;
                 $dos = $pago_o->prox_fac;
