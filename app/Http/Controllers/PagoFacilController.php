@@ -72,8 +72,14 @@ class PagoFacilController extends Controller {
                 "id",
                 $prop_id
             )->first();
-            $propiedad->estado_cuenta_id = 2;
-            $propiedad->save();
+
+            if (!is_null($propiedad)) {
+            	$propiedad->estado_cuenta_id = 2;
+            	$propiedad->save();
+
+            	$user = $propiedad->user->first();
+				$user->update(["paso" => 8]);
+            }
         }
 
     	Event::fire(
@@ -94,11 +100,17 @@ class PagoFacilController extends Controller {
                 "id",
                 $prop_id
             )->first();
-            $propiedad->estado_cuenta_id = 2;
-            $propiedad->save();
+
+            if (!is_null($propiedad)) {
+            	$propiedad->estado_cuenta_id = 2;
+            	$propiedad->save();
+
+            	$user = $propiedad->user->first();
+				$user->update(["paso" => 8]);
+            }
         }
-        
-        Event::fire(
+
+    	Event::fire(
             new PagoFacilEvent(
                 "pagofacil",
                 $request->all(),
