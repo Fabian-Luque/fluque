@@ -15,6 +15,7 @@ use App\Events\PagoFacilEvent;
 use Illuminate\Support\Facades\Event;
 use GuzzleHttp\Client;
 use App\Propiedad;
+use App\PagoFacil;
 
 class PagoFacilController extends Controller {
 
@@ -66,12 +67,14 @@ class PagoFacilController extends Controller {
 
 	public function CallBack(Request $request) {
         $prop_id = intval(((int) $request->ct_order_id) / 10000000);
+
+        $propiedad = Propiedad::where(
+            "id",
+            $prop_id
+        )->first();
         
         if (strcmp($request->ct_estado, "COMPLETADA") == 0) {
-            $propiedad = Propiedad::where(
-                "id",
-                $prop_id
-            )->first();
+            
 
             if (!is_null($propiedad)) {
             	$propiedad->estado_cuenta_id = 2;
@@ -79,8 +82,19 @@ class PagoFacilController extends Controller {
 
             	$user = $propiedad->user->first();
 				$user->update(["paso" => 8]);
-            }
+			}
         }
+
+        $pago_o = $propiedad->PagoOnline;
+
+		$pago_f = new PagoFacil();
+		$pago_f->order_id = $request->ct_order_id;
+		$pago_f->monto 	  = $request->ct_monto;
+		$pago_f->email 	  = $request->$user->email;
+		$pago_f->status   = $request->ct_estado;
+		$pago_f->pago_id  = $pago_o->id;
+		$pago_f->monto 	  = $request->ct_monto;   
+		$pago_f->save();
 
     	Event::fire(
             new PagoFacilEvent(
@@ -94,12 +108,14 @@ class PagoFacilController extends Controller {
 
 	public function Retorno(Request $request) {
         $prop_id = intval(((int) $request->ct_order_id) / 10000000);
+
+        $propiedad = Propiedad::where(
+            "id",
+            $prop_id
+        )->first();
         
         if (strcmp($request->ct_estado, "COMPLETADA") == 0) {
-            $propiedad = Propiedad::where(
-                "id",
-                $prop_id
-            )->first();
+            
 
             if (!is_null($propiedad)) {
             	$propiedad->estado_cuenta_id = 2;
@@ -107,8 +123,19 @@ class PagoFacilController extends Controller {
 
             	$user = $propiedad->user->first();
 				$user->update(["paso" => 8]);
-            }
+			}
         }
+
+        $pago_o = $propiedad->PagoOnline;
+
+		$pago_f = new PagoFacil();
+		$pago_f->order_id = $request->ct_order_id;
+		$pago_f->monto 	  = $request->ct_monto;
+		$pago_f->email 	  = $request->$user->email;
+		$pago_f->status   = $request->ct_estado;
+		$pago_f->pago_id  = $pago_o->id;
+		$pago_f->monto 	  = $request->ct_monto;   
+		$pago_f->save();
 
     	Event::fire(
             new PagoFacilEvent(
