@@ -685,9 +685,11 @@ class RegistroController extends Controller {
 			}
 			$pago->estado 			  = $request->estado;
 	    	$pago->fecha_facturacion  = $fecha_actual;
-	    	$pago->prox_fac  		  = Carbon::now()->setTimezone(
+	    	$fecha_actual2 			  = Carbon::now()->setTimezone(
 	    		$zona->nombre
 	    	)->addMonths(1);
+
+	    	$pago->prox_fac  		  = $fecha_actual2;
 	    	$pago->pas_pago_id 		  = $request->pas_pago_id;
 	    	$pago->prop_id 			  = $request->prop_id;
 	    	$pago->plan_id 			  = $request->plan_id;
