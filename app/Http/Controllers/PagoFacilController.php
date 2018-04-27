@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Event;
 use GuzzleHttp\Client;
 use App\Propiedad;
 use App\PagoFacil;
+use App\PagoOnline;
 
 class PagoFacilController extends Controller {
 
@@ -74,8 +75,6 @@ class PagoFacilController extends Controller {
         )->first();
         
         if (strcmp($request->ct_estado, "COMPLETADA") == 0) {
-            
-
             if (!is_null($propiedad)) {
             	$propiedad->estado_cuenta_id = 2;
             	$propiedad->save();
@@ -85,7 +84,10 @@ class PagoFacilController extends Controller {
 			}
         }
 
-        $pago_o = $propiedad->PagoOnline;
+        $pago_o = PagoOnline::where(
+        	"prop_id",
+        	$propiedad->id
+        )->first();
 
 		$pago_f = new PagoFacil();
 		$pago_f->order_id = $request->ct_order_id;
@@ -115,8 +117,6 @@ class PagoFacilController extends Controller {
         )->first();
         
         if (strcmp($request->ct_estado, "COMPLETADA") == 0) {
-            
-
             if (!is_null($propiedad)) {
             	$propiedad->estado_cuenta_id = 2;
             	$propiedad->save();
@@ -126,7 +126,10 @@ class PagoFacilController extends Controller {
 			}
         }
 
-        $pago_o = $propiedad->PagoOnline;
+        $pago_o = PagoOnline::where(
+        	"prop_id",
+        	$propiedad->id
+        )->first();
 
 		$pago_f = new PagoFacil();
 		$pago_f->order_id = $request->ct_order_id;
