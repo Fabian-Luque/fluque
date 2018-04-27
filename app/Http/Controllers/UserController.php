@@ -19,6 +19,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Response;
 use JWTAuth;
+use \Carbon\Carbon;
 
 class UserController extends Controller {
     public function read(Request $request){
@@ -43,6 +44,7 @@ class UserController extends Controller {
             try {
                 $prop = Propiedad::find($propiedad_id);
                 $zona = $prop->zonaHoraria->first();
+
                 $pago_o = PagoOnline::where(
                     "prop_id", 
                     $propiedad_id
@@ -56,11 +58,11 @@ class UserController extends Controller {
                     $pago_o->prox_fac, 
                     $zona->nombre
                 );
-/*
+
                 if ($uno->diffInMonths($dos) >= 1) {
                     $prop->estado_cuenta_id = 3;
                     $prop->save();
-                }*/
+                }
             } catch (Exception $e) {}
 
             $reservas = Reserva::whereHas('tipoHabitacion', function ($query) use ($propiedad_id) {
