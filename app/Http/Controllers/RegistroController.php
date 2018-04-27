@@ -646,8 +646,9 @@ class RegistroController extends Controller {
 		$resp["uno"] = $fecha_actual;
 		$fecha_actual2 = Carbon::now()->setTimezone('America/Santiago')->addMonths(1);
 		$resp["dos"] = $fecha_actual2;
+
 		
-		return Response::json($resp); 
+		return Response::json($resp["dos"]->diffInMonths($resp["uno"])); 
 	}
 
 	public function SeleccionPago(Request $request) { // paso 7

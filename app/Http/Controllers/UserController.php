@@ -25,10 +25,30 @@ class UserController extends Controller {
     }
     public function show($id){
         try { 
-            $users        = User::where('id', $id)->with('propiedad.tipoPropiedad','propiedad.pais','propiedad.region','propiedad.zonaHoraria' ,'propiedad.tipoMonedas', 'propiedad.tipoCobro', 'propiedad.ubicacion', 'propiedad.PagoOnline')->with('rol.permisos')->get();
-            $propiedad_id = $users[0]->propiedad[0]['id'];
+            $users = User::where('id', $id)->with(
+                'propiedad.tipoPropiedad',
+                'propiedad.pais',
+                'propiedad.region',
+                'propiedad.zonaHoraria',
+                'propiedad.tipoMonedas', 
+                'propiedad.tipoCobro', 
+                'propiedad.ubicacion', 
+                'propiedad.PagoOnline'
+            )->with('rol.permisos')->get();
 
+            $propiedad_id = $users[0]->propiedad[0]['id'];
             $clientes = [];
+
+            try {
+                $prop = $users[0]->propiedad->first();
+                $uno = $prop->fecha_facturacion;
+                $dos = $prop->prox_fac;
+
+                ///$pago_o = $prop->PagoOnline->first();
+                if ($uno->diffInMonths($dos) >= 1) {
+                    $prop->estado_cuenta_id = 3;
+                }
+            } catch (Exception $e) {}
 
             $reservas = Reserva::whereHas('tipoHabitacion', function ($query) use ($propiedad_id) {
             $query->where('propiedad_id', $propiedad_id);})
