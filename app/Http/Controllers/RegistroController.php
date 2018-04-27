@@ -641,23 +641,6 @@ class RegistroController extends Controller {
 		return Response::json($pagos); 
 	}
 
-/*	public function FunctionName($value='') {
-		$pago_on = PagoOnline::findOrFail(
-			$request->pago_on_id
-		);
-
-		$fecha_actual = Carbon::now()->setTimezone('America/Santiago');
-				
-		$pago = new PagoOnline();
-		$pago->estado 			  = $request->estado;
-    	$pago->fecha_facturacion  = $fecha_actual;
-    	$pago->prox_fac  		  = $fecha_actual->addDays(30);
-    	$pago->pas_pago_id 		  = $request->pas_pago_id;
-    	$pago->prop_id 			  = $request->prop_id;
-    	$pago->plan_id 			  = $request->plan_id;
-    	$pago->save();
-	}
- */
 	public function SeleccionPago(Request $request) { // paso 7
 		$validator = Validator::make(
 			$request->all(), 
@@ -689,7 +672,7 @@ class RegistroController extends Controller {
 			}
 			$pago->estado 			  = $request->estado;
 	    	$pago->fecha_facturacion  = $fecha_actual;
-	    	$pago->prox_fac  		  = $fecha_actual->addMonth();
+	    	$pago->prox_fac  		  = $fecha_actual->addMonth(1);
 	    	$pago->pas_pago_id 		  = $request->pas_pago_id;
 	    	$pago->prop_id 			  = $request->prop_id;
 	    	$pago->plan_id 			  = $request->plan_id;
