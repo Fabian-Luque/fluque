@@ -56,11 +56,11 @@ class UserController extends Controller {
                     $pago_o->prox_fac, 
                     $zona->nombre
                 );
-
+/*
                 if ($uno->diffInMonths($dos) >= 1) {
                     $prop->estado_cuenta_id = 3;
                     $prop->save();
-                }
+                }*/
             } catch (Exception $e) {}
 
             $reservas = Reserva::whereHas('tipoHabitacion', function ($query) use ($propiedad_id) {
