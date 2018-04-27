@@ -92,7 +92,7 @@ class PagoFacilController extends Controller {
 		$pago_f = new PagoFacil();
 		$pago_f->order_id = $request->ct_order_id;
 		$pago_f->monto 	  = $request->ct_monto;
-		$pago_f->email 	  = $request->$user->email;
+		$pago_f->email 	  = $user->email;
 		$pago_f->status   = $request->ct_estado;
 		$pago_f->pago_id  = $pago_o->id;
 		$pago_f->monto 	  = $request->ct_monto;   
@@ -134,7 +134,7 @@ class PagoFacilController extends Controller {
 		$pago_f = new PagoFacil();
 		$pago_f->order_id = $request->ct_order_id;
 		$pago_f->monto 	  = $request->ct_monto;
-		$pago_f->email 	  = $request->$user->email;
+		$pago_f->email 	  = $user->email;
 		$pago_f->status   = $request->ct_estado;
 		$pago_f->pago_id  = $pago_o->id;
 		$pago_f->monto 	  = $request->ct_monto;   
