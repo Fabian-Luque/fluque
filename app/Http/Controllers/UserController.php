@@ -42,15 +42,24 @@ class UserController extends Controller {
 
             try {
                 $prop = Propiedad::find($propiedad_id);
+                $zona = $prop->zonaHoraria->first();
                 $pago_o = PagoOnline::where(
                     "prop_id", 
                     $propiedad_id
                 )->first();
-                $uno = $pago_o->fecha_facturacion;
-                $dos = $pago_o->prox_fac;
+
+                $uno = new Carbon(
+                    $pago_o->fecha_facturacion, 
+                    $zona->nombre
+                ); 
+                $dos = new Carbon(
+                    $pago_o->prox_fac, 
+                    $zona->nombre
+                );
 
                 if ($uno->diffInMonths($dos) >= 1) {
                     $prop->estado_cuenta_id = 3;
+                    $prop->save();
                 }
             } catch (Exception $e) {}
 
