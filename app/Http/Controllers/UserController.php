@@ -51,15 +51,15 @@ class UserController extends Controller {
                 )->first();
 
                 $uno = new Carbon(
-                    $pago_o->fecha_facturacion, 
-                    $zona->nombre
-                ); 
-                $dos = new Carbon(
                     $pago_o->prox_fac, 
                     $zona->nombre
                 );
 
-                if ($uno->diffInMonths($dos) >= 1) {
+                $dos = Carbon::now()->setTimezone(
+                    $zona->nombre
+                );
+
+                if ($uno->diffInMinutes($dos, false) >= 0 ) {
                     $prop->estado_cuenta_id = 3;
                     $prop->save();
                 }

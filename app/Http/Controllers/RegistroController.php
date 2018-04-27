@@ -648,7 +648,7 @@ class RegistroController extends Controller {
 		$resp["dos"] = $fecha_actual2;
 
 		
-		return Response::json($resp["dos"]->diffInMonths($resp["uno"])); 
+		return Response::json($resp["dos"]->diffInMinutes($resp["uno"],false)); 
 	}
 
 	public function SeleccionPago(Request $request) { // paso 7
