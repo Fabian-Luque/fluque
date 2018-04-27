@@ -585,8 +585,30 @@ class RegistroController extends Controller {
 	}
 
 	public function getPagoFacil(Request $request) {
-		$pago = PagoFacil::all();
-		return Response::json($pago); 
+		$validator = Validator::make(
+			$request->all(), 
+			array(
+				'prop_id'       	  => 'required'
+			)
+		);
+
+		if ($validator->fails()) {
+			$retorno = PagoFacil::all();
+		} else {
+			$pago_o = PagoOnline::where(
+				"prop_id",
+				$request->prop_id
+			)->first();
+
+			$pago = PagoFacil::where(
+				"pago_id",
+				$pago_o->id
+			)->get();
+
+			$pago_o->detalle = $pago;
+			$retorno = $pago_o;
+		}
+		return Response::json($retorno); 
 	}
 
 	public function getPlanes(Request $request) {
