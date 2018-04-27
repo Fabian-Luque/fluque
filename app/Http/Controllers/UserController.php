@@ -13,7 +13,8 @@ use App\Estado;
 use App\Caja;
 use App\Reserva;
 use App\Mensajeria; 
-use App\Cliente; 
+use App\Cliente;
+use App\PagoOnline; 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Response;
@@ -48,7 +49,6 @@ class UserController extends Controller {
                 $uno = $pago_o->fecha_facturacion;
                 $dos = $pago_o->prox_fac;
 
-                ///$pago_o = $prop->PagoOnline->first();
                 if ($uno->diffInMonths($dos) >= 1) {
                     $prop->estado_cuenta_id = 3;
                 }
