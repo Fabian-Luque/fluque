@@ -41,8 +41,9 @@ class UserController extends Controller {
 
             try {
                 $prop = $users[0]->propiedad->first();
-                $uno = $prop->fecha_facturacion;
-                $dos = $prop->prox_fac;
+                $pago_o = $prop->PagoOnline->first();
+                $uno = $pago_o->fecha_facturacion;
+                $dos = $pago_o->prox_fac;
 
                 ///$pago_o = $prop->PagoOnline->first();
                 if ($uno->diffInMonths($dos) >= 1) {
