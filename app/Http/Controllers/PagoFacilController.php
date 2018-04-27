@@ -89,7 +89,15 @@ class PagoFacilController extends Controller {
         	$propiedad->id
         )->first();
 
-		$pago_f = new PagoFacil();
+        $pago_f = PagoFacil::where(
+        	"order_id",
+        	$request->ct_order_id
+        )->first();
+
+        if (is_null($pago_f)) {
+        	$pago_f = new PagoFacil();
+        }
+		
 		$pago_f->order_id = $request->ct_order_id;
 		$pago_f->monto 	  = $request->ct_monto;
 		$pago_f->email 	  = $user->email;
@@ -131,7 +139,15 @@ class PagoFacilController extends Controller {
         	$propiedad->id
         )->first();
 
-		$pago_f = new PagoFacil();
+        $pago_f = PagoFacil::where(
+        	"order_id",
+        	$request->ct_order_id
+        )->first();
+
+        if (is_null($pago_f)) {
+        	$pago_f = new PagoFacil();
+        }
+		
 		$pago_f->order_id = $request->ct_order_id;
 		$pago_f->monto 	  = $request->ct_monto;
 		$pago_f->email 	  = $user->email;
