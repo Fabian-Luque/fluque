@@ -41,7 +41,10 @@ class UserController extends Controller {
 
             try {
                 $prop = Propiedad::find($propiedad_id);
-                $pago_o = $prop->PagoOnline->first();
+                $pago_o = PagoOnline::where(
+                    "prop_id", 
+                    $propiedad_id
+                )->first();
                 $uno = $pago_o->fecha_facturacion;
                 $dos = $pago_o->prox_fac;
 
