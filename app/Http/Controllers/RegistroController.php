@@ -641,6 +641,15 @@ class RegistroController extends Controller {
 		return Response::json($pagos); 
 	}
 
+	public function ejm_f(Request $request) {
+		$fecha_actual = Carbon::now()->setTimezone('America/Santiago');
+		$resp["uno"] = $fecha_actual;
+		$fecha_actual2 = Carbon::now()->setTimezone('America/Santiago')->addMonths(1);
+		$resp["dos"] = $fecha_actual2;
+		
+		return Response::json($resp); 
+	}
+
 	public function SeleccionPago(Request $request) { // paso 7
 		$validator = Validator::make(
 			$request->all(), 
@@ -660,7 +669,11 @@ class RegistroController extends Controller {
 				$request->prop_id
 			);
 
-			$fecha_actual = Carbon::now()->setTimezone('America/Santiago');
+			$zona = $propiedad->zonaHoraria->first();
+
+			$fecha_actual = Carbon::now()->setTimezone(
+				$zona->nombre
+			);
 
 			$pago = PagoOnline::where(
 				"prop_id", 
@@ -672,7 +685,9 @@ class RegistroController extends Controller {
 			}
 			$pago->estado 			  = $request->estado;
 	    	$pago->fecha_facturacion  = $fecha_actual;
-	    	$pago->prox_fac  		  = $fecha_actual->addMonth(1);
+	    	$pago->prox_fac  		  = Carbon::now()->setTimezone(
+	    		$zona->nombre
+	    	)->addMonths(1);
 	    	$pago->pas_pago_id 		  = $request->pas_pago_id;
 	    	$pago->prop_id 			  = $request->prop_id;
 	    	$pago->plan_id 			  = $request->plan_id;

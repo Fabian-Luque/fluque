@@ -14,12 +14,14 @@ Route::get(
 );
 
 
-
 Route::post('hab','RegistroController@ejm');
 Route::post('pasarela-pago/selecionar','RegistroController@SeleccionPago');
 Route::post('planes/obtener','RegistroController@getPlanes');
 Route::post('pagos-online/obtener','RegistroController@getPagos');
 Route::post('pagos-facil/obtener','RegistroController@getPagoFacil');
+
+Route::post('ejm_f','RegistroController@ejm_f');
+
 
 Route::post('pasarelas/obtener','RegistroController@getPasarelas');
 Route::post('estado/cuenta/modificar','RegistroController@SetEstadoCuenta');
@@ -30,7 +32,6 @@ Route::post('pagofacil/callback','PagoFacilController@CallBack');
 Route::post('pagofacil/retorno','PagoFacilController@Retorno');
 
 Route::post('propiedad/cercana/obtener','GeoController@PropiedadesCercanas');
-
 
 Route::post('guardar/ubicacion/propiedad', 'GeoController@UbicacionCreate');
 Route::post('googlemaps', 'GeoController@GoogleMaps');
