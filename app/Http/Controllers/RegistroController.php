@@ -585,7 +585,7 @@ class RegistroController extends Controller {
 	}
 
 	public function getPagoFacil(Request $request) {
-		$pago = PagoFacil::with('pagoOnline')->get();
+		$pago = PagoFacil::all();
 		return Response::json($pago); 
 	}
 
