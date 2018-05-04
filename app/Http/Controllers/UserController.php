@@ -59,7 +59,7 @@ class UserController extends Controller {
                     $zona->nombre
                 );
 
-                if ($uno->diffInMinutes($dos, false) >= 0 ) {
+                if ($uno->diffInMinutes($dos, false) >= 0) {
                     $prop->estado_cuenta_id = 3;
                     $prop->save();
                 }

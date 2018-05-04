@@ -632,6 +632,12 @@ class RegistroController extends Controller {
 	public function getPagos(Request $request) {
 		$pagos = PagoOnline::with('pas_pago')->get();
 
+		$propiedad = Propiedad::findOrFail(
+			$request->prop_id
+		);
+
+		$zona = $propiedad->zonaHoraria->first();
+
 		foreach ($pagos as $pago) {
 			$pago->plan = Plan::where(
 				'plan_id', 
@@ -683,24 +689,54 @@ class RegistroController extends Controller {
 
 			if (is_null($pago)) {
 				$pago = new PagoOnline();
+
+				$pago->estado 			  = $request->estado;
+		    	$pago->fecha_facturacion  = $fecha_actual;
+		    	$fecha_actual2 			  = Carbon::now()->setTimezone(
+		    		$zona->nombre
+		    	)->addMonths(1);
+
+		    	$pago->prox_fac  		  = $fecha_actual2;
+		    	$pago->pas_pago_id 		  = $request->pas_pago_id;
+		    	$pago->prop_id 			  = $request->prop_id;
+		    	$pago->plan_id 			  = $request->plan_id;
+		    	$pago->save();
+
+		    	$user = $propiedad->user->first();
+				$user->update(["paso" => 7]);
+			} else {
+				$uno = new Carbon(
+                    $pago->updated_at, 
+                    $zona->nombre
+                );
+                $diferencia = $fecha_actual->diffInDays(
+                	$uno, 
+                	false
+                );
+
+                if ($pago->estado == 1 && ($diferencia <= 0 && $diferencia > 16)) {
+					$pago->estado 			  = $request->estado;
+			    	$pago->fecha_facturacion  = $fecha_actual;
+			    	$fecha_actual2 			  = Carbon::now()->setTimezone(
+			    		$zona->nombre
+			    	)->addMonths(1);
+
+			    	$pago->prox_fac  		  = $fecha_actual2;
+			    	$pago->pas_pago_id 		  = $request->pas_pago_id;
+			    	$pago->prop_id 			  = $request->prop_id;
+			    	$pago->plan_id 			  = $request->plan_id;
+			    	$pago->save();
+
+			    	$user = $propiedad->user->first();
+					$user->update(["paso" => 7]);
+
+					$retorno['errors'] = false;
+					$retorno["msj"]    = "Pasarela de pago seleccionada con exito";
+				} else {
+					$retorno['errors'] = true;
+					$retorno["msj"]    = "Tiene que esperar hasta la proxima fecha de facturacion";
+				}
 			}
-			$pago->estado 			  = $request->estado;
-	    	$pago->fecha_facturacion  = $fecha_actual;
-	    	$fecha_actual2 			  = Carbon::now()->setTimezone(
-	    		$zona->nombre
-	    	)->addMonths(1);
-
-	    	$pago->prox_fac  		  = $fecha_actual2;
-	    	$pago->pas_pago_id 		  = $request->pas_pago_id;
-	    	$pago->prop_id 			  = $request->prop_id;
-	    	$pago->plan_id 			  = $request->plan_id;
-	    	$pago->save();
-
-	    	$user = $propiedad->user->first();
-			$user->update(["paso" => 7]);
-
-	    	$retorno['errors'] = false;
-			$retorno["msj"]    = "Pasarela de pago seleccionada con exito";
 		}
 		return Response::json($retorno); 
 	}
