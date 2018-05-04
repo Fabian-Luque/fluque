@@ -54,7 +54,7 @@ class PagoFacilController extends Controller {
     			"ct_order_id" 		=> $respu['ct_order_id'],
     			"ct_token_service" 	=> config('app.PAGOFACIL_TOKEN_SERVICIO'),
     			"ct_token_tienda" 	=> config('app.PAGOFACIL_TOKEN_TIENDA'),
-    			"ct_firma" 			=> $respu['ct_email']
+    			"ct_firma" 			=> $respu['ct_firma']
 			];
 			$response = $client->post(
 				config('app.PAGOFACIL_URL'), [

@@ -734,7 +734,7 @@ class RegistroController extends Controller {
 					$retorno["msj"]    = "Pasarela de pago seleccionada con exito";
 				} else {
 					$retorno['errors'] = true;
-					$retorno["msj"]    = "Tiene que esperar hasta la proxima fecha de facturacion";
+					$retorno["msj"]    = "Tiene que esperar hasta la proxima fecha de facturacion, o contactate con nuestro equipo de soporte";
 				}
 			}
 		}
