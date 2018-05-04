@@ -2332,7 +2332,7 @@ class ReservaController extends Controller
     public function getTipoComprobante()
     {
 
-      $TipoComprobante = TipoComprobante::all();
+      $TipoComprobante = TipoComprobante::orderBy('nombre', 'asc')->get();
 
       $respuesta = [
       'Tipo_comprobante' => $TipoComprobante,
