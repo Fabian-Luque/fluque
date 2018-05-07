@@ -22,7 +22,7 @@ use JWTAuth;
 use \Carbon\Carbon;
 
 class UserController extends Controller {
-    public function read(Request $request){
+    public function read(Request $request) {
         return Response::json(User::all());
     }
     public function show($id){
@@ -41,15 +41,15 @@ class UserController extends Controller {
             $propiedad_id = $users[0]->propiedad[0]['id'];
             $clientes = [];
 
-            try {
-                $prop = Propiedad::find($propiedad_id);
-                $zona = $prop->zonaHoraria->first();
+            $prop = Propiedad::find($propiedad_id);
+            $zona = $prop->zonaHoraria->first();
 
-                $pago_o = PagoOnline::where(
-                    "prop_id", 
-                    $propiedad_id
-                )->first();
+            $pago_o = PagoOnline::where(
+                "prop_id", 
+                $propiedad_id
+            )->first();
 
+            if (!is_null($pago_o) && !is_null($prop)) {
                 $uno = new Carbon(
                     $pago_o->prox_fac, 
                     $zona->nombre
@@ -63,7 +63,7 @@ class UserController extends Controller {
                     $prop->estado_cuenta_id = 3;
                     $prop->save();
                 }
-            } catch (Exception $e) {}
+            }
 
             $reservas = Reserva::whereHas('tipoHabitacion', function ($query) use ($propiedad_id) {
             $query->where('propiedad_id', $propiedad_id);})
