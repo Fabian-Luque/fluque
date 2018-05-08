@@ -10,7 +10,7 @@ Route::get(
   '/', 
   function () {
     return view('auth.login');
-  }
+  }pagos-facil/obtenerpagos-facil/obtener
 );
 
 
@@ -19,6 +19,10 @@ Route::post('pasarela-pago/selecionar','RegistroController@SeleccionPago');
 Route::post('planes/obtener','RegistroController@getPlanes');
 Route::post('pagos-online/obtener','RegistroController@getPagos');
 Route::post('pagos-facil/obtener','RegistroController@getPagoFacil');
+
+Route::post('propiedad/ubicacion/actualizar','DashControllers\UserDashController@UpdateUbicacion');
+
+
 
 Route::post('ejm_f','RegistroController@ejm_f');
 
