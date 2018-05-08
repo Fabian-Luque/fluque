@@ -279,7 +279,7 @@ class RegistroController extends Controller {
 				'telefono' 	  		  	  => 'required',
 				'iva' 	  		      	  => 'required',
 				'email' 	  		  	  => 'required',
-				'region_id' 	  	  	  => 'required',
+				'region_id' 	  	  	  => '',
 				'tipo_cobro_id'       	  => 'required',
 				'tipo_deposito_id'	  	  => 'required',
 				'zona_horaria_id' 	  	  => 'required',
