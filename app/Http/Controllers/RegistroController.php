@@ -226,7 +226,10 @@ class RegistroController extends Controller {
 			$retorno['errors'] = true;
 			$retorno["msg"]    = $validator->errors();
 		} else {
-			$user = User::find($request->user_id);
+			$user = User::where(
+				"id",
+				$request->user_id
+			)->first();
 
 			if (is_null($user)) {
 				$retorno['errors'] = false;
