@@ -362,15 +362,20 @@ class RegistroController extends Controller {
 				'propiedad_id' => $request->prop_id
 			]);
 
-        	app('App\Http\Controllers\PropiedadController')->ingresoMonedas(
+        	$resp = app('App\Http\Controllers\PropiedadController')->ingresoMonedas(
 				$request
 			);
 
-			$user = $propiedad->user->first();
-			$user->update(["paso" => 4]);
+			if ($resp->getData()->errors == false) {
+				$user = $propiedad->user->first();
+				$user->update(["paso" => 4]);
 
-			$retorno['errors'] = false;
-			$retorno["msj"]    = "Datos propiedad configurados";
+				$retorno['errors'] = false;
+				$retorno["msj"]    = "Datos propiedad configurados";
+			} else {
+				$retorno['errors'] = true;
+				$retorno["msj"]    = $resp->getData()->msj;
+			}
 		}
 		return Response::json($retorno); 
 	}

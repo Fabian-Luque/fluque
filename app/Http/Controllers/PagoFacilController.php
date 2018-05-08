@@ -102,22 +102,14 @@ class PagoFacilController extends Controller {
 		$pago_f->monto 	  = $request->ct_monto;
 		$pago_f->email 	  = $user->email;
 		$pago_f->status   = $request->ct_estado;
-		$pago_f->pago_id  = $pago_o->id;
-		$pago_f->monto 	  = $request->ct_monto;   
+		$pago_f->pago_id  = $pago_o->id;  
 		$pago_f->save();
 
-    	Event::fire(
-            new PagoFacilEvent(
-                "pagofacil",
-                $request->all(),
-                $prop_id
-            )
-        );
         return redirect(config('app.PANEL_PRINCIPAL'));
 	}
 
 	public function Retorno(Request $request) {
-        $prop_id = intval(((int) $request->ct_order_id) / 10000000);
+                $prop_id = intval(((int) $request->ct_order_id) / 10000000);
 
         $propiedad = Propiedad::where(
             "id",
@@ -152,17 +144,9 @@ class PagoFacilController extends Controller {
 		$pago_f->monto 	  = $request->ct_monto;
 		$pago_f->email 	  = $user->email;
 		$pago_f->status   = $request->ct_estado;
-		$pago_f->pago_id  = $pago_o->id;
-		$pago_f->monto 	  = $request->ct_monto;   
+		$pago_f->pago_id  = $pago_o->id;  
 		$pago_f->save();
 
-    	Event::fire(
-            new PagoFacilEvent(
-                "pagofacil",
-                $request->all(),
-                $prop_id
-            )
-        );
         return redirect(config('app.PANEL_PRINCIPAL'));
 	}
 }
