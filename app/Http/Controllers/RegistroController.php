@@ -554,7 +554,7 @@ class RegistroController extends Controller {
 						'tipo_habitacion_id' => $resp->getData()->msg->id
 					]);
 
-					for ($i = 0; $i < $request->cant_x_tipo; $i++) { 
+					for ($i = 0; $i <= $request->cant_x_tipo; $i++) { 
 						$hab = Habitacion::where(
 							'propiedad_id', 
 							$request->propiedad_id
