@@ -309,7 +309,11 @@ class RegistroController extends Controller {
 			$propiedad->telefono 			= $request->telefono;
 			$propiedad->iva 				= $request->iva;
 			$propiedad->email 				= $request->email;
-			$propiedad->region_id 			= $request->region_id;
+
+			if ($request->has('region_id')) {
+				$propiedad->region_id 			= $request->region_id;
+			}
+			
 			$propiedad->zona_horaria_id 	= $request->zona_horaria_id;
 			$propiedad->estado_cuenta_id 	= 2;
 			$propiedad->codigo 				= (string) Uuid::generate(4);
