@@ -1726,7 +1726,7 @@ class PropiedadController extends Controller
 
                 $retorno = array(
                     'msj'   => "Moneda ingresada correctamente",
-                    'erros' => false,);
+                    'errors' => false,);
                 return Response::json($retorno, 201);
             } else {
                 $retorno = array(
