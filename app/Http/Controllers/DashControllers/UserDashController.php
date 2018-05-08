@@ -40,8 +40,11 @@ class UserDashController extends Controller {
             $retorno['errors'] = true;
             $retorno["msg"] = $validator->errors();
         } else {
-            $ubicacion           = new UbicacionProp();
-            $ubicacion->prop_id  = $propiedad->id;
+            $ubicacion           = UbicacionProp::where(
+                "prop_id",
+                $request->prop_id
+            )->first();
+
             $ubicacion->location = new Point(
                 $request->longitud,
                 $request->latitud 
