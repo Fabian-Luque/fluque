@@ -705,6 +705,9 @@ class RegistroController extends Controller {
 
 		    	$user = $propiedad->user->first();
 				$user->update(["paso" => 7]);
+
+				$retorno['errors'] = false;
+				$retorno["msj"]    = "Pasarela de pago seleccionada con exito";
 			} else {
 				$uno = new Carbon(
                     $pago->updated_at, 
