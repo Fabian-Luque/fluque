@@ -233,7 +233,7 @@ class RegistroController extends Controller {
 				$retorno["msg"]    = $user->paso;
 			} else {
 				$retorno['errors'] = true;
-				$retorno["msg"]    = "Propiedad no encontrada";
+				$retorno["msg"]    = "Usuario no encontrado";
 			}
 		}
 		return Response::json($retorno); 
