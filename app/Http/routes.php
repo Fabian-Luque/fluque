@@ -10,7 +10,7 @@ Route::get(
   '/', 
   function () {
     return view('auth.login');
-  }pagos-facil/obtenerpagos-facil/obtener
+  }
 );
 
 
