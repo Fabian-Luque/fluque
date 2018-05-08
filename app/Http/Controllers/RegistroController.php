@@ -214,6 +214,31 @@ class RegistroController extends Controller {
 		return Response::json($retorno); 
 	}
 
+	public function getPaso(Request $request) {
+		$validator = Validator::make(
+			$request->all(), 
+			array(
+				'user_id'  => 'required'
+			)
+		);
+
+		if ($validator->fails()) {
+			$retorno['errors'] = true;
+			$retorno["msg"]    = $validator->errors();
+		} else {
+			$user = User::find($request->user_id);
+
+			if (is_null($user)) {
+				$retorno['errors'] = false;
+				$retorno["msg"]    = $user->paso;
+			} else {
+				$retorno['errors'] = true;
+				$retorno["msg"]    = "Propiedad no encontrada";
+			}
+		}
+		return Response::json($retorno); 
+	}
+
 	public function signin(Request $request) { // paso 3
 		$validator = Validator::make(
 			$request->all(), 

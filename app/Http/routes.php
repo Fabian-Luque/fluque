@@ -29,6 +29,7 @@ Route::post('ejm_f','RegistroController@ejm_f');
 
 Route::post('pasarelas/obtener','RegistroController@getPasarelas');
 Route::post('estado/cuenta/modificar','RegistroController@SetEstadoCuenta');
+Route::post('estado/cuenta/obtener','RegistroController@getPaso');
 
 
 Route::post('pago-facil/pagar','PagoFacilController@Trans');
