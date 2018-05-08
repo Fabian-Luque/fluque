@@ -231,7 +231,7 @@ class RegistroController extends Controller {
 				$request->user_id
 			)->first();
 
-			if (is_null($user)) {
+			if (!is_null($user)) {
 				$retorno['errors'] = false;
 				$retorno["msg"]    = $user->paso;
 			} else {
