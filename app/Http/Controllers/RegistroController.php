@@ -745,7 +745,7 @@ class RegistroController extends Controller {
 					if ($resp->getData()->errors == false) {
 						$user->update(["paso" => 0]);
 					} else {
-						dd($resp->getData());
+						//dd($resp->getData());
 					}
 				}
 			}
