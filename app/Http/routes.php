@@ -13,6 +13,7 @@ Route::get(
   }
 );
 
+Route::post('actualizar','RegistroController@PropCero');
 
 Route::post('hab','RegistroController@ejm');
 Route::post('pasarela-pago/selecionar','RegistroController@SeleccionPago');

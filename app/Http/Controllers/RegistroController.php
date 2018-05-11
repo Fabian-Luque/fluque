@@ -622,6 +622,7 @@ class RegistroController extends Controller {
 						$tipos = TipoHabitacion::where(
 							'propiedad_id', 
 							$request->prop_id
+
 						)->get();
 
 						foreach ($tipos as $tipo) {
@@ -715,9 +716,43 @@ class RegistroController extends Controller {
 		$resp["uno"] = $fecha_actual;
 		$fecha_actual2 = Carbon::now()->setTimezone('America/Santiago')->addMonths(1);
 		$resp["dos"] = $fecha_actual2;
-
-		
 		return Response::json($resp["dos"]->diffInMinutes($resp["uno"],false)); 
+	}
+
+	public function PropCero(Request $request) {
+		$users = User::where(
+			"paso",
+			0
+		)->get();
+
+		if ($users->count() != 0) {
+			foreach ($users as $user) {	
+				$propiedad = $user->propiedad->first();
+				
+				if (!is_null($propiedad)) {
+					$propiedad->zona_horaria_id = 176;
+					$propiedad->save();
+
+					$request->merge(['estado' 	   => 0]);
+					$request->merge(['pas_pago_id' => 1]);
+					$request->merge(['prop_id' 	   => $propiedad->id]);
+					$request->merge(['plan_id' 	   => 4]);
+
+					$resp = app('App\Http\Controllers\RegistroController')->SeleccionPago(
+						$request
+					);
+
+					if ($resp->getData()->errors == false) {
+						$user->update(["paso" => 0]);
+					} else {
+						dd($resp->getData());
+					}
+				}
+			}
+		}
+		
+		$retorno["listo"] = "actualizado";
+		return Response::json($retorno);
 	}
 
 	public function SeleccionPago(Request $request) { // paso 7
