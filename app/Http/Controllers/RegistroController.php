@@ -609,7 +609,7 @@ class RegistroController extends Controller {
 						$propiedad = Propiedad::findOrFail(
 							$request->propiedad_id
 						);
-						$propiedad->numero_habitaciones = $hab->count();
+						$propiedad->numero_habitaciones = $hab->count() + 1;
 						$propiedad->save();
 
 						$user = $propiedad->user->first();
