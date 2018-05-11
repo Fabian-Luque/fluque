@@ -22,8 +22,6 @@ Route::post('pagos-facil/obtener','RegistroController@getPagoFacil');
 
 Route::post('propiedad/ubicacion/actualizar','DashControllers\UserDashController@UpdateUbicacion');
 
-
-
 Route::post('ejm_f','RegistroController@ejm_f');
 
 
