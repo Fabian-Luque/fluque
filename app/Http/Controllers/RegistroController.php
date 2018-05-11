@@ -515,7 +515,8 @@ class RegistroController extends Controller {
 		$validator = Validator::make(
 			$request->all(), 
 			array(
-				'tipos_de_hab'       	  => 'required'
+				'tipos_de_hab'       	  => 'required',
+				'total_habitaciones'      => 'required'
 			)
 		);
 		$flag = false;
@@ -526,97 +527,112 @@ class RegistroController extends Controller {
 
 			return Response::json($retorno); 
 		} else {
-			foreach ($request->tipos_de_hab as $t_hab) {
-		
-				$request->merge([ 
-					'cant_x_tipo' => $t_hab["cant_x_tipo"]
-				]);
-				$request->merge([ 
-					'capacidad' => $t_hab["capacidad"]				
-				]);
-				$request->merge([ 
-					'nombre' => $t_hab["nombre"]
-				]);
-			
-				$request->merge([ 
-					'propiedad_id' => $t_hab["prop_id"]
-				]);
+			$propiedad = Propiedad::where(
+				"id",
+				$request->tipos_de_hab[0]["prop_id"]
+			)->first();
 
-				$hab = Habitacion::where(
-					'propiedad_id', 
-					$request->propiedad_id
-				)->get();
+			$hab = Habitacion::where(
+				'propiedad_id', 
+				$request->propiedad_id
+			)->get();
 
-				$resp = app('App\Http\Controllers\TipoHabitacionController')->store(
-					$request,
-					true
-				);
-
-				if ($resp->getData()->errors == false) {
+			if ($request->total_habitaciones <= ($propiedad->numero_habitaciones - $hab->count())) {
+				foreach ($request->tipos_de_hab as $t_hab) {
 					$request->merge([ 
-						'tipo_habitacion_id' => $resp->getData()->msg->id
+						'cant_x_tipo' => $t_hab["cant_x_tipo"]
+					]);
+					$request->merge([ 
+						'capacidad' => $t_hab["capacidad"]				
+					]);
+					$request->merge([ 
+						'nombre' => $t_hab["nombre"]
+					]);
+				
+					$request->merge([ 
+						'propiedad_id' => $t_hab["prop_id"]
 					]);
 
-					for ($i = 0; $i < $request->cant_x_tipo; $i++) { 
-						$hab = Habitacion::where(
-							'propiedad_id', 
-							$request->propiedad_id
-						)->get();
-						$request->merge(['nombre' => ($hab->count() + 1)]);
-						$resp = app('App\Http\Controllers\HabitacionController')->store(
-							$request
-						);
-					}
-
-					$retorno['errors'] = false;
-					$retorno["msj"]    = "Operacion realizada con exito\n\n".$resp;
-
-					$tipos = TipoHabitacion::where(
+					$hab = Habitacion::where(
 						'propiedad_id', 
-						$request->prop_id
-					)->get();
-
-					foreach ($tipos as $tipo) {
-						$tipo->habitaciones = Habitacion::where(
-							'tipo_habitacion_id',
-							$tipo->id
-						)->get();
-					}
-
-					$retorno["tipos"] = $tipos;
-
-					$propiedad = Propiedad::findOrFail(
 						$request->propiedad_id
-					);
-					$propiedad->numero_habitaciones = $hab->count();
-					$propiedad->save();
-
-					$user = $propiedad->user->first();
-					$user->update(["paso" => 6]);
-
-					$flag = true;
-				} else {
-					$retorno['errors'] = true;
-					$retorno["msj"]    = $resp->getData()->msg;
-					$tipos = TipoHabitacion::where(
-						'propiedad_id', 
-						$request->prop_id
 					)->get();
 
-					foreach ($tipos as $tipo) {
-						$tipo->habitaciones = Habitacion::where(
-							'tipo_habitacion_id',
-							$tipo->id
-						)->get();
-					}
-					$retorno["tipos"] = $tipos;
-				}
-			}
+					$resp = app('App\Http\Controllers\TipoHabitacionController')->store(
+						$request,
+						true
+					);
 
-			if ($flag == true) {
-				return Response::json($retorno); 
+					if ($resp->getData()->errors == false) {
+						$request->merge([ 
+							'tipo_habitacion_id' => $resp->getData()->msg->id
+						]);
+
+						for ($i = 0; $i < $request->cant_x_tipo; $i++) { 
+							$hab = Habitacion::where(
+								'propiedad_id', 
+								$request->propiedad_id
+							)->get();
+							$request->merge(['nombre' => ($hab->count() + 1)]);
+							$resp = app('App\Http\Controllers\HabitacionController')->store(
+								$request
+							);
+						}
+
+						$retorno['errors'] = false;
+						$retorno["msj"]    = "Operacion realizada con exito\n\n".$resp;
+
+						$tipos = TipoHabitacion::where(
+							'propiedad_id', 
+							$request->prop_id
+						)->get();
+
+						foreach ($tipos as $tipo) {
+							$tipo->habitaciones = Habitacion::where(
+								'tipo_habitacion_id',
+								$tipo->id
+							)->get();
+						}
+
+						$retorno["tipos"] = $tipos;
+
+						$propiedad = Propiedad::findOrFail(
+							$request->propiedad_id
+						);
+						$propiedad->numero_habitaciones = $hab->count();
+						$propiedad->save();
+
+						$user = $propiedad->user->first();
+						$user->update(["paso" => 6]);
+
+						$flag = true;
+					} else {
+						$retorno['errors'] = true;
+						$retorno["msj"]    = $resp->getData()->msg;
+						$tipos = TipoHabitacion::where(
+							'propiedad_id', 
+							$request->prop_id
+						)->get();
+
+						foreach ($tipos as $tipo) {
+							$tipo->habitaciones = Habitacion::where(
+								'tipo_habitacion_id',
+								$tipo->id
+							)->get();
+						}
+						$retorno["tipos"] = $tipos;
+					}
+				}
+
+				if ($flag == true) {
+					return Response::json($retorno); 
+				} else {
+					return $retorno; 
+				}
 			} else {
-				return $retorno; 
+				$retorno['errors'] = true;
+				$retorno["msj"]    = "El numero de habitaciones que desea crear, excede el total permitido por la Propiedad";
+				return Response::json($retorno);
 			}
 		}
 	}
