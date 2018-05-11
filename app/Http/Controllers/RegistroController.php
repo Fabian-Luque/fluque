@@ -722,7 +722,7 @@ class RegistroController extends Controller {
 	public function PropCero(Request $request) {
 		$users = User::where(
 			"paso",
-			0
+			$request->pas
 		)->get();
 
 		if ($users->count() != 0) {
@@ -742,11 +742,9 @@ class RegistroController extends Controller {
 						$request
 					);
 
-					if ($resp->getData()->errors == false) {
-						$user->update(["paso" => 8]);
-					} else {
-						//dd($resp->getData());
-					}
+					$us = User::find($user->id);
+					$us->paso = $request->pasto;
+					$us->save();			
 				}
 			}
 		}
