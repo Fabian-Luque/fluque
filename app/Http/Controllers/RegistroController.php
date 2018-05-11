@@ -537,7 +537,7 @@ class RegistroController extends Controller {
 				$request->propiedad_id
 			)->get();
 
-			if ($request->total_habitaciones <= ($propiedad->numero_habitaciones - $hab->count())) {
+			if (($request->total_habitaciones <= ($propiedad->numero_habitaciones - $hab->count())) || (($propiedad->numero_habitaciones == 0) && ($request->total_habitaciones <= $propiedad->numero_habitaciones))) {
 				foreach ($request->tipos_de_hab as $t_hab) {
 					$request->merge([ 
 						'cant_x_tipo' => $t_hab["cant_x_tipo"]
