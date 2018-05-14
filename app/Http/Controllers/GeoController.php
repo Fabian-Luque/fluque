@@ -266,48 +266,54 @@ class GeoController extends Controller {
                 $fecha_inicio = $request->fecha_inicio;
                 $fecha_fin    = $request->fecha_fin;
 
+                $props = [];
                 foreach ($propiedades as $prop) {
                     $prop->propiedad  = Propiedad::find($prop->prop_id);
                     $property         = Propiedad::where('id', $prop->prop_id)->with('tiposHabitacion')->first();
-                    $tipos_habitacion = $property->tiposHabitacion;
-                    $config           = $tipos_habitacion->where('venta_propiedad', 0);
 
-                    $habitaciones_disponibles = Habitacion::where(
-                        'propiedad_id', 
-                        $prop->prop_id
-                    )->whereDoesntHave(
-                        'reservas', 
-                        function ($query) use ($fecha_inicio, $fecha_fin) {
-                            $query->whereIn('estado_reserva_id', [1,2,3,4,5])->where(
-                                function ($query) use ($fecha_inicio, $fecha_fin) {
-                                    $query->where(
-                                        function ($query) use ($fecha_inicio, $fecha_fin) {
-                                            $query->where('checkin', '>=', $fecha_inicio);
-                                            $query->where('checkin', '<',  $fecha_fin);
-                                        }
-                                    );
-                                    $query->orWhere(
-                                        function($query) use ($fecha_inicio,$fecha_fin){
-                                            $query->where('checkin', '<=', $fecha_inicio);
-                                            $query->where('checkout', '>',  $fecha_inicio);
-                                        }
-                                    );                
-                                }
-                            );
+                    if ($property->estado_cuenta_id == 2) {
+                        $tipos_habitacion = $property->tiposHabitacion;
+                        $config           = $tipos_habitacion->where('venta_propiedad', 0);
+
+                        $habitaciones_disponibles = Habitacion::where(
+                            'propiedad_id', 
+                            $prop->prop_id
+                        )->whereDoesntHave(
+                            'reservas', 
+                            function ($query) use ($fecha_inicio, $fecha_fin) {
+                                $query->whereIn('estado_reserva_id', [1,2,3,4,5])->where(
+                                    function ($query) use ($fecha_inicio, $fecha_fin) {
+                                        $query->where(
+                                            function ($query) use ($fecha_inicio, $fecha_fin) {
+                                                $query->where('checkin', '>=', $fecha_inicio);
+                                                $query->where('checkin', '<',  $fecha_fin);
+                                            }
+                                        );
+                                        $query->orWhere(
+                                            function($query) use ($fecha_inicio,$fecha_fin){
+                                                $query->where('checkin', '<=', $fecha_inicio);
+                                                $query->where('checkout', '>',  $fecha_inicio);
+                                            }
+                                        );                
+                                    }
+                                );
+                            }
+                        )->get();
+
+                        $prop->n_habitaciones_disponibles = $habitaciones_disponibles->count();
+
+                        if ($habitaciones_disponibles->count() != 0 && count($tipos_habitacion) != count($config)) {
+                            $prop->disponible = true;
+                        } else {
+                            $prop->disponible = false;
                         }
-                    )->get();
 
-                    $prop->n_habitaciones_disponibles = $habitaciones_disponibles->count();
-
-                    if ($habitaciones_disponibles->count() != 0 && count($tipos_habitacion) != count($config)) {
-                        $prop->disponible = true;
-                    } else {
-                        $prop->disponible = false;
+                        array_push($props, $prop);
                     }
                 }
 
                 $retorno['errors'] = false;
-                $retorno['msj']    = $propiedades;
+                $retorno['msj']    = $props;
             } catch (QueryException $e) {
                 $retorno['errors'] = true;
                 $retorno['msj']    = "No existen propiedades en un radio ".$request->radio." KM^2";

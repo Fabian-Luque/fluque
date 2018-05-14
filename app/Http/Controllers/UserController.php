@@ -189,6 +189,7 @@ class UserController extends Controller {
             $usuario->password             = $request->get('password');
             $usuario->phone                = $request->get('phone');
             $usuario->rol_id               = $request->get('rol_id');
+            $usuario->paso                 = 8;
             $usuario->estado_id            = 1;
             $usuario->save();
 
