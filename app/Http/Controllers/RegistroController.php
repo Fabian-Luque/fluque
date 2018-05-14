@@ -784,6 +784,7 @@ class RegistroController extends Controller {
 
 			if (is_null($pago)) {
 				$pago = new PagoOnline();
+				$pago->fecha_facturacion  = $fecha_actual;
 
 				switch ($request->plan_id) {
                     case 1: //mensual
@@ -812,7 +813,6 @@ class RegistroController extends Controller {
                 }
 
 				$pago->estado 			  = $request->estado;
-		    	$pago->fecha_facturacion  = $fecha_actual;
 		    	$pago->prox_fac  		  = $fecha_actual2;
 		    	$pago->pas_pago_id 		  = $request->pas_pago_id;
 		    	$pago->prop_id 			  = $request->prop_id;
