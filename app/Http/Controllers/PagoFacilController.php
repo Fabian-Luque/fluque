@@ -90,19 +90,10 @@ class PagoFacilController extends Controller {
         if (strcmp($request->ct_estado, "COMPLETADA") == 0) {
             if (!is_null($propiedad)) {
                 $zona = $propiedad->zonaHoraria->first();
-                $fecha_actual            = Carbon::now()->setTimezone(
+                $fecha_actual = Carbon::now()->setTimezone(
                     $zona->nombre
                 );
                 
-                $uno = new Carbon(
-                    $pago_o->fecha_facturacion, 
-                    $zona->nombre
-                );
-
-                $dos = new Carbon(
-                    $pago_o->prox_fac, 
-                    $zona->nombre
-                );
                 $pago_o->fecha_facturacion = $fecha_actual;
 
                 if ($new_plan_id != 0) {
@@ -111,25 +102,29 @@ class PagoFacilController extends Controller {
 
                 switch ($pago_o->plan_id) {
                     case 1: //mensual
-                        $fecha_actual2 = Carbon::now()->setTimezone(
+                        $fecha_actual2 = new Carbon(
+                            $pago_o->fecha_facturacion, 
                             $zona->nombre
                         )->addMonths(1);
                         break;
 
                     case 2: //semestral
-                        $fecha_actual2 = Carbon::now()->setTimezone(
+                        $fecha_actual2 = new Carbon(
+                            $pago_o->fecha_facturacion, 
                             $zona->nombre
                         )->addMonths(6);
                         break;
 
                     case 3: //anual
-                        $fecha_actual2 = Carbon::now()->setTimezone(
+                        $fecha_actual2 = new Carbon(
+                            $pago_o->fecha_facturacion, 
                             $zona->nombre
                         )->addYear(1);
                         break;
                     
                     default:
-                        $fecha_actual2 = Carbon::now()->setTimezone(
+                        $fecha_actual2 = new Carbon(
+                            $pago_o->fecha_facturacion, 
                             $zona->nombre
                         )->addMonths(1);
                         break;
@@ -183,19 +178,10 @@ class PagoFacilController extends Controller {
         if (strcmp($request->ct_estado, "COMPLETADA") == 0) {
             if (!is_null($propiedad)) {
                 $zona = $propiedad->zonaHoraria->first();
-                $fecha_actual            = Carbon::now()->setTimezone(
+                $fecha_actual = Carbon::now()->setTimezone(
                     $zona->nombre
                 );
                 
-                $uno = new Carbon(
-                    $pago_o->fecha_facturacion, 
-                    $zona->nombre
-                );
-
-                $dos = new Carbon(
-                    $pago_o->prox_fac, 
-                    $zona->nombre
-                );
                 $pago_o->fecha_facturacion = $fecha_actual;
 
                 if ($new_plan_id != 0) {
@@ -204,25 +190,29 @@ class PagoFacilController extends Controller {
 
                 switch ($pago_o->plan_id) {
                     case 1: //mensual
-                        $fecha_actual2 = Carbon::now()->setTimezone(
+                        $fecha_actual2 = new Carbon(
+                            $pago_o->fecha_facturacion, 
                             $zona->nombre
                         )->addMonths(1);
                         break;
 
                     case 2: //semestral
-                        $fecha_actual2 = Carbon::now()->setTimezone(
+                        $fecha_actual2 = new Carbon(
+                            $pago_o->fecha_facturacion, 
                             $zona->nombre
                         )->addMonths(6);
                         break;
 
                     case 3: //anual
-                        $fecha_actual2 = Carbon::now()->setTimezone(
+                        $fecha_actual2 = new Carbon(
+                            $pago_o->fecha_facturacion, 
                             $zona->nombre
                         )->addYear(1);
                         break;
                     
                     default:
-                        $fecha_actual2 = Carbon::now()->setTimezone(
+                        $fecha_actual2 = new Carbon(
+                            $pago_o->fecha_facturacion, 
                             $zona->nombre
                         )->addMonths(1);
                         break;
