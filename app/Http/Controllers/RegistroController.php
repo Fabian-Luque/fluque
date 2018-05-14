@@ -788,25 +788,25 @@ class RegistroController extends Controller {
 
 				switch ($request->plan_id) {
                     case 1: //mensual
-                        $fecha_actual2            = Carbon::now()->setTimezone(
+                        $fecha_actual2 = Carbon::now()->setTimezone(
                             $zona->nombre
                         )->addMonths(1);
                         break;
 
                     case 2: //semestral
-                        $fecha_actual2            = Carbon::now()->setTimezone(
+                        $fecha_actual2 = Carbon::now()->setTimezone(
                             $zona->nombre
                         )->addMonths(6);
                         break;
 
                     case 3: //anual
-                        $fecha_actual2            = Carbon::now()->setTimezone(
+                        $fecha_actual2 = Carbon::now()->setTimezone(
                             $zona->nombre
                         )->addYear(1);
                         break;
                     
                     default:
-                        $fecha_actual2            = Carbon::now()->setTimezone(
+                        $fecha_actual2 = Carbon::now()->setTimezone(
                             $zona->nombre
                         )->addMonths(1);
                         break;

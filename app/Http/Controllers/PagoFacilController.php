@@ -96,8 +96,6 @@ class PagoFacilController extends Controller {
                     $pago_o->prox_fac, 
                     $zona->nombre
                 );
-
-                $dif = $uno->diffInDays($dos);
                 $pago_o->fecha_facturacion = $fecha_actual;
 
                 switch ($pago_o->plan_id) {
@@ -128,7 +126,7 @@ class PagoFacilController extends Controller {
             	$propiedad->estado_cuenta_id = 2;
             	$propiedad->save();
 
-                $pago_o->prox_fac = $fecha_actual2->addDays($dif);
+                $pago_o->prox_fac = $fecha_actual2;
                 $pago_o->estado   = 1;
                 $pago_o->save();
 
@@ -185,8 +183,6 @@ class PagoFacilController extends Controller {
                     $pago_o->prox_fac, 
                     $zona->nombre
                 );
-
-                $dif = $uno->diffInDays($dos);
                 $pago_o->fecha_facturacion = $fecha_actual;
 
                 switch ($pago_o->plan_id) {
@@ -217,7 +213,7 @@ class PagoFacilController extends Controller {
                 $propiedad->estado_cuenta_id = 2;
                 $propiedad->save();
 
-                $pago_o->prox_fac = $fecha_actual2->addDays($dif);
+                $pago_o->prox_fac = $fecha_actual2;
                 $pago_o->estado   = 1;
                 $pago_o->save();
 
