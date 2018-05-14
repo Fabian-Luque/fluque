@@ -715,7 +715,7 @@ class RegistroController extends Controller {
 		$resp["uno"] = $fecha_actual;
 		$fecha_actual2 = Carbon::now()->setTimezone('America/Santiago')->addMonths(1);
 		$resp["dos"] = $fecha_actual2;
-		return Response::json($resp["dos"]->diffInMinutes($resp["uno"],false)); 
+		return Response::json($resp); 
 	}
 
 	public function PropCero(Request $request) {
@@ -807,7 +807,7 @@ class RegistroController extends Controller {
                     default:
                         $fecha_actual2            = Carbon::now()->setTimezone(
                             $zona->nombre
-                        );
+                        )->addMonths(1);
                         break;
                 }
 
