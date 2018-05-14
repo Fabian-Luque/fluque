@@ -86,37 +86,49 @@ class PagoFacilController extends Controller {
                 $fecha_actual            = Carbon::now()->setTimezone(
                     $zona->nombre
                 );
+                
+                $uno = new Carbon(
+                    $pago_o->fecha_facturacion, 
+                    $zona->nombre
+                );
+
+                $dos = new Carbon(
+                    $pago_o->prox_fac, 
+                    $zona->nombre
+                );
+
+                $dif = $uno->diffInDays($dos);
+                $pago_o->fecha_facturacion = $fecha_actual;
 
                 switch ($pago_o->plan_id) {
                     case 1: //mensual
-                        $fecha_actual2            = Carbon::now()->setTimezone(
+                        $fecha_actual2 = Carbon::now()->setTimezone(
                             $zona->nombre
                         )->addMonths(1);
                         break;
 
                     case 2: //semestral
-                        $fecha_actual2            = Carbon::now()->setTimezone(
+                        $fecha_actual2 = Carbon::now()->setTimezone(
                             $zona->nombre
                         )->addMonths(6);
                         break;
 
                     case 3: //anual
-                        $fecha_actual2            = Carbon::now()->setTimezone(
+                        $fecha_actual2 = Carbon::now()->setTimezone(
                             $zona->nombre
                         )->addYear(1);
                         break;
                     
                     default:
-                        $fecha_actual2            = Carbon::now()->setTimezone(
+                        $fecha_actual2 = Carbon::now()->setTimezone(
                             $zona->nombre
-                        );
+                        )->addMonths(1);
                         break;
                 }
             	$propiedad->estado_cuenta_id = 2;
             	$propiedad->save();
 
-                $pago_o->fecha_facturacion = $fecha_actual;
-                $pago_o->prox_fac = $fecha_actual2;
+                $pago_o->prox_fac = $fecha_actual2->addDays($dif);
                 $pago_o->estado   = 1;
                 $pago_o->save();
 
@@ -163,37 +175,49 @@ class PagoFacilController extends Controller {
                 $fecha_actual            = Carbon::now()->setTimezone(
                     $zona->nombre
                 );
+                
+                $uno = new Carbon(
+                    $pago_o->fecha_facturacion, 
+                    $zona->nombre
+                );
+
+                $dos = new Carbon(
+                    $pago_o->prox_fac, 
+                    $zona->nombre
+                );
+
+                $dif = $uno->diffInDays($dos);
+                $pago_o->fecha_facturacion = $fecha_actual;
 
                 switch ($pago_o->plan_id) {
                     case 1: //mensual
-                        $fecha_actual2            = Carbon::now()->setTimezone(
+                        $fecha_actual2 = Carbon::now()->setTimezone(
                             $zona->nombre
                         )->addMonths(1);
                         break;
 
                     case 2: //semestral
-                        $fecha_actual2            = Carbon::now()->setTimezone(
+                        $fecha_actual2 = Carbon::now()->setTimezone(
                             $zona->nombre
                         )->addMonths(6);
                         break;
 
                     case 3: //anual
-                        $fecha_actual2            = Carbon::now()->setTimezone(
+                        $fecha_actual2 = Carbon::now()->setTimezone(
                             $zona->nombre
                         )->addYear(1);
                         break;
                     
                     default:
-                        $fecha_actual2            = Carbon::now()->setTimezone(
+                        $fecha_actual2 = Carbon::now()->setTimezone(
                             $zona->nombre
-                        );
+                        )->addMonths(1);
                         break;
                 }
                 $propiedad->estado_cuenta_id = 2;
                 $propiedad->save();
 
-                $pago_o->fecha_facturacion = $fecha_actual;
-                $pago_o->prox_fac = $fecha_actual2;
+                $pago_o->prox_fac = $fecha_actual2->addDays($dif);
                 $pago_o->estado   = 1;
                 $pago_o->save();
 
