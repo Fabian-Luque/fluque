@@ -35,7 +35,7 @@ class PagoFacilController extends Controller {
         	$retorno['errors'] = true;
         	$retorno["msj"] = $validator->errors();
         } else { 
-            if ($request->has("new_plan_id")) {
+            if ($request->has('new_plan_id')) {
                 $new_plan = $request->new_plan_id;
             } else {
                 $new_plan = 0;
@@ -100,33 +100,26 @@ class PagoFacilController extends Controller {
                     $pago_o->plan_id = $new_plan_id;
                 }
 
+                $fecha_actual2 = new Carbon(
+                    $pago_o->fecha_facturacion, 
+                    $zona->nombre
+                );
+
                 switch ($pago_o->plan_id) {
                     case 1: //mensual
-                        $fecha_actual2 = new Carbon(
-                            $pago_o->fecha_facturacion, 
-                            $zona->nombre
-                        )->addMonths(1);
+                        $fecha_actual2->addMonths(1);
                         break;
 
                     case 2: //semestral
-                        $fecha_actual2 = new Carbon(
-                            $pago_o->fecha_facturacion, 
-                            $zona->nombre
-                        )->addMonths(6);
+                        $fecha_actual2->addMonths(6);
                         break;
 
                     case 3: //anual
-                        $fecha_actual2 = new Carbon(
-                            $pago_o->fecha_facturacion, 
-                            $zona->nombre
-                        )->addYear(1);
+                        $fecha_actual2->addYear(1);
                         break;
                     
                     default:
-                        $fecha_actual2 = new Carbon(
-                            $pago_o->fecha_facturacion, 
-                            $zona->nombre
-                        )->addMonths(1);
+                        $fecha_actual2->addMonths(1);
                         break;
                 }
                 $propiedad->estado_cuenta_id = 2;
@@ -188,33 +181,26 @@ class PagoFacilController extends Controller {
                     $pago_o->plan_id = $new_plan_id;
                 }
 
+                $fecha_actual2 = new Carbon(
+                    $pago_o->fecha_facturacion, 
+                    $zona->nombre
+                );
+
                 switch ($pago_o->plan_id) {
                     case 1: //mensual
-                        $fecha_actual2 = new Carbon(
-                            $pago_o->fecha_facturacion, 
-                            $zona->nombre
-                        )->addMonths(1);
+                        $fecha_actual2->addMonths(1);
                         break;
 
                     case 2: //semestral
-                        $fecha_actual2 = new Carbon(
-                            $pago_o->fecha_facturacion, 
-                            $zona->nombre
-                        )->addMonths(6);
+                        $fecha_actual2->addMonths(6);
                         break;
 
                     case 3: //anual
-                        $fecha_actual2 = new Carbon(
-                            $pago_o->fecha_facturacion, 
-                            $zona->nombre
-                        )->addYear(1);
+                        $fecha_actual2->addYear(1);
                         break;
                     
                     default:
-                        $fecha_actual2 = new Carbon(
-                            $pago_o->fecha_facturacion, 
-                            $zona->nombre
-                        )->addMonths(1);
+                        $fecha_actual2->addMonths(1);
                         break;
                 }
                 $propiedad->estado_cuenta_id = 2;
