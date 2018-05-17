@@ -821,7 +821,7 @@ class RegistroController extends Controller {
 		    	$pago->save();
 
 		    	$user = $propiedad->user->first();
-				$user->update(["paso" => 7]);
+				$user->update(["paso" => 8]);
 
 				$retorno['errors'] = false;
 				$retorno["msj"]    = "Pasarela de pago seleccionada con exito";
