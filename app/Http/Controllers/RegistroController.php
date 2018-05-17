@@ -782,7 +782,7 @@ class RegistroController extends Controller {
 				$request->prop_id
 			)->first();
 
-			if (!is_null($pago)) {
+			if (is_null($pago)) {
 
 				$pago = new PagoOnline();
 				$pago->fecha_facturacion  = $fecha_actual;
@@ -821,7 +821,7 @@ class RegistroController extends Controller {
 		    	$pago->save();
 
 		    	$user = $propiedad->user->first();
-				$user->update(["paso" => 8]);
+				$user->update(["paso" => 7]);
 
 				$retorno['errors'] = false;
 				$retorno["msj"]    = "Pasarela de pago seleccionada con exito";
