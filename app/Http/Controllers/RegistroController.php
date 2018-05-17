@@ -715,7 +715,7 @@ class RegistroController extends Controller {
 		$resp["uno"] = $fecha_actual;
 		$fecha_actual2 = Carbon::now()->setTimezone('America/Santiago')->addMonths(1);
 		$resp["dos"] = $fecha_actual2;
-		return Response::json($resp["dos"]->diffInMinutes($resp["uno"],false)); 
+		return Response::json($resp); 
 	}
 
 	public function PropCero(Request $request) {
@@ -785,35 +785,35 @@ class RegistroController extends Controller {
 			if (!is_null($pago)) {
 
 				$pago = new PagoOnline();
+				$pago->fecha_facturacion  = $fecha_actual;
 
 				switch ($request->plan_id) {
                     case 1: //mensual
-                        $fecha_actual2            = Carbon::now()->setTimezone(
+                        $fecha_actual2 = Carbon::now()->setTimezone(
                             $zona->nombre
                         )->addMonths(1);
                         break;
 
                     case 2: //semestral
-                        $fecha_actual2            = Carbon::now()->setTimezone(
+                        $fecha_actual2 = Carbon::now()->setTimezone(
                             $zona->nombre
                         )->addMonths(6);
                         break;
 
                     case 3: //anual
-                        $fecha_actual2            = Carbon::now()->setTimezone(
+                        $fecha_actual2 = Carbon::now()->setTimezone(
                             $zona->nombre
                         )->addYear(1);
                         break;
                     
                     default:
-                        $fecha_actual2            = Carbon::now()->setTimezone(
+                        $fecha_actual2 = Carbon::now()->setTimezone(
                             $zona->nombre
-                        );
+                        )->addMonths(1);
                         break;
                 }
 
 				$pago->estado 			  = $request->estado;
-		    	$pago->fecha_facturacion  = $fecha_actual;
 		    	$pago->prox_fac  		  = $fecha_actual2;
 		    	$pago->pas_pago_id 		  = $request->pas_pago_id;
 		    	$pago->prop_id 			  = $request->prop_id;

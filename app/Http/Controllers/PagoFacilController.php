@@ -25,9 +25,9 @@ class PagoFacilController extends Controller {
 		$validator = Validator::make(
         	$request->all(), 
         	array(
-            	'monto'   => 'required',
-            	'email'   => 'required',
-            	'prop_id' => 'required',
+            	'monto'       => 'required',
+            	'email'       => 'required',
+            	'prop_id'     => 'required'
            	)
         );
 
@@ -35,8 +35,13 @@ class PagoFacilController extends Controller {
         	$retorno['errors'] = true;
         	$retorno["msj"] = $validator->errors();
         } else { 
+            if ($request->has('new_plan_id')) {
+                $new_plan = $request->new_plan_id;
+            } else {
+                $new_plan = 0;
+            }
 			$transaccion = new Transaccion(
-				($request->prop_id."".rand(1000000, 9999999)), 
+				($request->prop_id."".$new_plan."".rand(1000000, 9999999)), 
 				config('app.PAGOFACIL_TOKEN_TIENDA'), 
 				$request->monto, 
 				config('app.PAGOFACIL_TOKEN_SERVICIO'), 
@@ -68,7 +73,9 @@ class PagoFacilController extends Controller {
 	}
 
 	public function CallBack(Request $request) {
-        $prop_id = intval(((int) $request->ct_order_id) / 10000000);
+        $prop_id = intval(((int) $request->ct_order_id) / 100000000);
+        $aux = intval(((int) $request->ct_order_id) % 100000000);
+        $new_plan_id = intval(((int) $aux) / 10000000);
 
         $propiedad = Propiedad::where(
             "id",
@@ -83,140 +90,146 @@ class PagoFacilController extends Controller {
         if (strcmp($request->ct_estado, "COMPLETADA") == 0) {
             if (!is_null($propiedad)) {
                 $zona = $propiedad->zonaHoraria->first();
-                $fecha_actual            = Carbon::now()->setTimezone(
+                $fecha_actual = Carbon::now()->setTimezone(
                     $zona->nombre
                 );
-
-                switch ($pago_o->plan_id) {
-                    case 1: //mensual
-                        $fecha_actual2            = Carbon::now()->setTimezone(
-                            $zona->nombre
-                        )->addMonths(1);
-                        break;
-
-                    case 2: //semestral
-                        $fecha_actual2            = Carbon::now()->setTimezone(
-                            $zona->nombre
-                        )->addMonths(6);
-                        break;
-
-                    case 3: //anual
-                        $fecha_actual2            = Carbon::now()->setTimezone(
-                            $zona->nombre
-                        )->addYear(1);
-                        break;
-                    
-                    default:
-                        $fecha_actual2            = Carbon::now()->setTimezone(
-                            $zona->nombre
-                        );
-                        break;
-                }
-            	$propiedad->estado_cuenta_id = 2;
-            	$propiedad->save();
-
+                
                 $pago_o->fecha_facturacion = $fecha_actual;
-                $pago_o->prox_fac = $fecha_actual2;
-                $pago_o->estado   = 1;
-                $pago_o->save();
 
-            	$user = $propiedad->user->first();
-				$user->update(["paso" => 8]);
-			}
-        }
+                if ($new_plan_id != 0) {
+                    $pago_o->plan_id = $new_plan_id;
+                }
 
-        $pago_f = PagoFacil::where(
-        	"order_id",
-        	$request->ct_order_id
-        )->first();
-
-        if (is_null($pago_f)) {
-        	$pago_f = new PagoFacil();
-        }
-		
-		$pago_f->order_id = $request->ct_order_id;
-		$pago_f->monto 	  = $request->ct_monto;
-		$pago_f->email 	  = $user->email;
-		$pago_f->status   = $request->ct_estado;
-		$pago_f->pago_id  = $pago_o->id;  
-		$pago_f->save();
-
-        return redirect(config('app.PANEL_PRINCIPAL'));
-	}
-
-	public function Retorno(Request $request) {
-        $prop_id = intval(((int) $request->ct_order_id) / 10000000);
-
-        $propiedad = Propiedad::where(
-            "id",
-            $prop_id
-        )->first();
-
-        $pago_o = PagoOnline::where(
-            "prop_id",
-            $prop_id
-        )->first();
-        
-        if (strcmp($request->ct_estado, "COMPLETADA") == 0) {
-            if (!is_null($propiedad)) {
-                $zona = $propiedad->zonaHoraria->first();
-                $fecha_actual            = Carbon::now()->setTimezone(
+                $fecha_actual2 = new Carbon(
+                    $pago_o->fecha_facturacion, 
                     $zona->nombre
                 );
 
                 switch ($pago_o->plan_id) {
                     case 1: //mensual
-                        $fecha_actual2            = Carbon::now()->setTimezone(
-                            $zona->nombre
-                        )->addMonths(1);
+                        $fecha_actual2->addMonths(1);
                         break;
 
                     case 2: //semestral
-                        $fecha_actual2            = Carbon::now()->setTimezone(
-                            $zona->nombre
-                        )->addMonths(6);
+                        $fecha_actual2->addMonths(6);
                         break;
 
                     case 3: //anual
-                        $fecha_actual2            = Carbon::now()->setTimezone(
-                            $zona->nombre
-                        )->addYear(1);
+                        $fecha_actual2->addYear(1);
                         break;
                     
                     default:
-                        $fecha_actual2            = Carbon::now()->setTimezone(
-                            $zona->nombre
-                        );
+                        $fecha_actual2->addMonths(1);
                         break;
                 }
                 $propiedad->estado_cuenta_id = 2;
                 $propiedad->save();
 
-                $pago_o->fecha_facturacion = $fecha_actual;
                 $pago_o->prox_fac = $fecha_actual2;
                 $pago_o->estado   = 1;
                 $pago_o->save();
 
                 $user = $propiedad->user->first();
                 $user->update(["paso" => 8]);
+
+                $pago_f = PagoFacil::where(
+                    "order_id",
+                    $request->ct_order_id
+                )->first();
+
+                if (is_null($pago_f)) {
+                    $pago_f = new PagoFacil();
+                }
+                
+                $pago_f->order_id = $request->ct_order_id;
+                $pago_f->monto    = $request->ct_monto;
+                $pago_f->email    = $user->email;
+                $pago_f->status   = $request->ct_estado;
+                $pago_f->pago_id  = $pago_o->id;  
+                $pago_f->save();
             }
         }
 
-        $pago_f = PagoFacil::where(
-            "order_id",
-            $request->ct_order_id
+        return redirect(config('app.PANEL_PRINCIPAL'));
+	}
+
+	public function Retorno(Request $request) {
+        $prop_id = intval(((int) $request->ct_order_id) / 100000000);
+        $aux = intval(((int) $request->ct_order_id) % 100000000);
+        $new_plan_id = intval(((int) $aux) / 10000000);
+
+        $propiedad = Propiedad::where(
+            "id",
+            $prop_id
         )->first();
 
-        if (is_null($pago_f)) {
-            $pago_f = new PagoFacil();
-        }
+        $pago_o = PagoOnline::where(
+            "prop_id",
+            $prop_id
+        )->first();
         
-        $pago_f->order_id = $request->ct_order_id;
-        $pago_f->monto    = $request->ct_monto;
-        $pago_f->email    = $user->email;
-        $pago_f->status   = $request->ct_estado;
-        $pago_f->pago_id  = $pago_o->id;  
-        $pago_f->save();
+        if (strcmp($request->ct_estado, "COMPLETADA") == 0) {
+            if (!is_null($propiedad)) {
+                $zona = $propiedad->zonaHoraria->first();
+                $fecha_actual = Carbon::now()->setTimezone(
+                    $zona->nombre
+                );
+                
+                $pago_o->fecha_facturacion = $fecha_actual;
+
+                if ($new_plan_id != 0) {
+                    $pago_o->plan_id = $new_plan_id;
+                }
+
+                $fecha_actual2 = new Carbon(
+                    $pago_o->fecha_facturacion, 
+                    $zona->nombre
+                );
+
+                switch ($pago_o->plan_id) {
+                    case 1: //mensual
+                        $fecha_actual2->addMonths(1);
+                        break;
+
+                    case 2: //semestral
+                        $fecha_actual2->addMonths(6);
+                        break;
+
+                    case 3: //anual
+                        $fecha_actual2->addYear(1);
+                        break;
+                    
+                    default:
+                        $fecha_actual2->addMonths(1);
+                        break;
+                }
+                $propiedad->estado_cuenta_id = 2;
+                $propiedad->save();
+
+                $pago_o->prox_fac = $fecha_actual2;
+                $pago_o->estado   = 1;
+                $pago_o->save();
+
+                $user = $propiedad->user->first();
+                $user->update(["paso" => 8]);
+
+                $pago_f = PagoFacil::where(
+                    "order_id",
+                    $request->ct_order_id
+                )->first();
+
+                if (is_null($pago_f)) {
+                    $pago_f = new PagoFacil();
+                }
+                
+                $pago_f->order_id = $request->ct_order_id;
+                $pago_f->monto    = $request->ct_monto;
+                $pago_f->email    = $user->email;
+                $pago_f->status   = $request->ct_estado;
+                $pago_f->pago_id  = $pago_o->id;  
+                $pago_f->save();
+            }
+        }
 
         return redirect(config('app.PANEL_PRINCIPAL'));
 	}
