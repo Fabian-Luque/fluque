@@ -269,7 +269,7 @@ class GeoController extends Controller {
                 $props = [];
                 foreach ($propiedades as $prop) {
                     $prop->propiedad  = Propiedad::find($prop->prop_id);
-                    $property         = Propiedad::where('id', $prop->prop_id)->with('tiposHabitacion')->first();
+                    return $property         = Propiedad::where('id', $prop->prop_id)->with('tiposHabitacion')->first();
 
                     if ($property->estado_cuenta_id == 2) {
                         $tipos_habitacion = $property->tiposHabitacion;

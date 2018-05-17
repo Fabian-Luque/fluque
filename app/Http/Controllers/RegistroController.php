@@ -782,7 +782,8 @@ class RegistroController extends Controller {
 				$request->prop_id
 			)->first();
 
-			if (is_null($pago)) {
+			if (!is_null($pago)) {
+
 				$pago = new PagoOnline();
 
 				switch ($request->plan_id) {
@@ -825,6 +826,7 @@ class RegistroController extends Controller {
 				$retorno['errors'] = false;
 				$retorno["msj"]    = "Pasarela de pago seleccionada con exito";
 			} else {
+
 				$uno = new Carbon(
                     $pago->updated_at, 
                     $zona->nombre

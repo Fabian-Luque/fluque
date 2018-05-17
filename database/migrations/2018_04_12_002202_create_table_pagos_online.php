@@ -25,7 +25,7 @@ class CreateTablePagosOnline extends Migration {
                     ->on('planes');
 
                     $table->foreign('pas_pago_id')
-                        ->references('pas_pago_id')
+                        ->references('id')
                     ->on('pasarela_pago');
                     $table->timestamps();
                 }
