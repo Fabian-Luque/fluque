@@ -759,6 +759,7 @@ class RegistroController extends Controller {
 				'estado'		 	=> 'required',
 				'pas_pago_id'		=> 'required',
 				'prop_id'			=> 'required',
+				'interval_time'		=> 'required',
 				'plan_id'			=> 'required'
 			)
 		);
@@ -766,6 +767,7 @@ class RegistroController extends Controller {
 		if ($validator->fails()) {
 			$retorno['errors'] = true;
 			$retorno["msj"]    = $validator->errors();
+			return Response::json($retorno); 
 		} else {
 			$propiedad = Propiedad::findOrFail(
 				$request->prop_id
@@ -783,84 +785,83 @@ class RegistroController extends Controller {
 			)->first();
 
 			if (is_null($pago)) {
-
 				$pago = new PagoOnline();
-				$pago->fecha_facturacion  = $fecha_actual;
+			} 
+			$pago->fecha_facturacion  = $fecha_actual;
 
-				switch ($request->plan_id) {
-                    case 1: //mensual
-                        $fecha_actual2 = Carbon::now()->setTimezone(
-                            $zona->nombre
-                        )->addMonths(1);
-                        break;
+			switch ($request->plan_id) {
+                case 1: //mensual
+                    $fecha_actual2 = Carbon::now()->setTimezone(
+                        $zona->nombre
+                    )->addMonths(1 * $request->interval_time);
+                    break;
 
-                    case 2: //semestral
-                        $fecha_actual2 = Carbon::now()->setTimezone(
-                            $zona->nombre
-                        )->addMonths(6);
-                        break;
+                case 2: //semestral
+                    $fecha_actual2 = Carbon::now()->setTimezone(
+                        $zona->nombre
+                    )->addMonths(6 * $request->interval_time);
+                    break;
 
-                    case 3: //anual
-                        $fecha_actual2 = Carbon::now()->setTimezone(
-                            $zona->nombre
-                        )->addYear(1);
-                        break;
-                    
-                    default:
-                        $fecha_actual2 = Carbon::now()->setTimezone(
-                            $zona->nombre
-                        )->addMonths(1);
-                        break;
-                }
+                case 3: //anual
+                    $fecha_actual2 = Carbon::now()->setTimezone(
+                        $zona->nombre
+                    )->addYear(1 * $request->interval_time);
+                    break;
+                
+                default: //mensual
+                    $fecha_actual2 = Carbon::now()->setTimezone(
+                        $zona->nombre
+                    )->addMonths(1 * $request->interval_time);
+                    break;
+            }
 
-				$pago->estado 			  = $request->estado;
-		    	$pago->prox_fac  		  = $fecha_actual2;
-		    	$pago->pas_pago_id 		  = $request->pas_pago_id;
-		    	$pago->prop_id 			  = $request->prop_id;
-		    	$pago->plan_id 			  = $request->plan_id;
-		    	$pago->save();
-
-		    	$user = $propiedad->user->first();
-				$user->update(["paso" => 7]);
-
-				$retorno['errors'] = false;
-				$retorno["msj"]    = "Pasarela de pago seleccionada con exito";
-			} else {
-
-				$uno = new Carbon(
-                    $pago->updated_at, 
+            if (!is_null($pago)) {
+            	$fecha_actual2_anterior = new Carbon(
+                    $pago->prox_fac, 
                     $zona->nombre
                 );
-                $diferencia = $fecha_actual->diffInDays(
-                	$uno, 
-                	false
-                );
+            	
+            	$fecha_actual2->addDays(
+            		$fecha_actual2_anterior->diffInDays($fecha_actual2)
+            	);
+            }
 
-                if ($pago->estado == 1 && ($diferencia <= 0 && $diferencia > 16)) {
-					$pago->estado 			  = $request->estado;
-			    	$pago->fecha_facturacion  = $fecha_actual;
-			    	$fecha_actual2 			  = Carbon::now()->setTimezone(
-			    		$zona->nombre
-			    	)->addMonths(1);
+			$pago->estado 			  = $request->estado;
+	    	$pago->prox_fac  		  = $fecha_actual2;
+	    	$pago->pas_pago_id 		  = $request->pas_pago_id;
+	    	$pago->prop_id 			  = $request->prop_id;
+	    	$pago->plan_id 			  = $request->plan_id;
+	    	$pago->save();
 
-			    	$pago->prox_fac  		  = $fecha_actual2;
-			    	$pago->pas_pago_id 		  = $request->pas_pago_id;
-			    	$pago->prop_id 			  = $request->prop_id;
-			    	$pago->plan_id 			  = $request->plan_id;
-			    	$pago->save();
+	    	$plan = Plan::find($pago->plan_id);
 
-			    	$user = $propiedad->user->first();
-					$user->update(["paso" => 7]);
+	    	if ($propiedad->numero_habitaciones >= 27) {
+	    		$monto = $plan->precio_x_habitacion * 27;
+	    	} else {
+	    		$monto = $plan->precio_x_habitacion * $propiedad->numero_habitaciones;
+	    	}
+	    	
+	    	if ($monto == 0) {
+	    		$retorno['errors'] = false;
+				$retorno["msj"]    = "Es plan gratuito ha sido seleccionado con exito";
+				return Response::json($retorno); 
+	    	} else {
+	    		$request->merge([ 
+					'monto'   => $monto
+				]);
+				$request->merge([ 
+					'email'   => $propiedad->email
+				]);
 
-					$retorno['errors'] = false;
-					$retorno["msj"]    = "Pasarela de pago seleccionada con exito";
-				} else {
-					$retorno['errors'] = true;
-					$retorno["msj"]    = "Tiene que esperar hasta la proxima fecha de facturacion, o contactate con nuestro equipo de soporte";
-				}
-			}
+				$user = $propiedad->user->first();
+				$user->update(["paso" => 7]);
+
+		    	$resp = app('App\Http\Controllers\PagoFacilController')->Trans(
+					$request
+				);
+				return $resp;
+	    	}
 		}
-		return Response::json($retorno); 
 	}
 
 	public function stripe(Request $request) { // paso 7
