@@ -835,8 +835,8 @@ class RegistroController extends Controller {
 
 	    	$plan = Plan::find($pago->plan_id);
 
-	    	if ($propiedad->numero_habitaciones >= 27) {
-	    		$monto = $plan->precio_x_habitacion * 27;
+	    	if ($propiedad->numero_habitaciones >= 37) {
+	    		$monto = $plan->precio_x_habitacion * 37;
 	    	} else {
 	    		$monto = $plan->precio_x_habitacion * $propiedad->numero_habitaciones;
 	    	}
