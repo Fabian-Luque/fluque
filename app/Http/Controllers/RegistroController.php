@@ -801,7 +801,7 @@ class RegistroController extends Controller {
                   	$monto = $plan->precio_x_habitacion * $habitaciones;
                     $fecha_actual2 = Carbon::now()->setTimezone(
                         $zona->nombre
-                    )->addMonths(1 * $request->interval_time);
+                    )->addMonths((1 * $request->interval_time));
                     break;
 
                 case 2: //semestral
@@ -810,7 +810,7 @@ class RegistroController extends Controller {
                   	$monto   = $precio_mensual * 6;
                     $fecha_actual2  = Carbon::now()->setTimezone(
                         $zona->nombre
-                    )->addMonths(6 * $request->interval_time);
+                    )->addMonths((6 * $request->interval_time));
                     break;
 
                 case 3: //anual
@@ -819,14 +819,14 @@ class RegistroController extends Controller {
                   	$monto = $precio_mensual * 12;
                     $fecha_actual2 = Carbon::now()->setTimezone(
                         $zona->nombre
-                    )->addYear(1 * $request->interval_time);
+                    )->addYear((1 * $request->interval_time));
                     break;
                 
                 default: //mensual
                     $monto = $plan->precio_x_habitacion * $habitaciones;
                     $fecha_actual2 = Carbon::now()->setTimezone(
                         $zona->nombre
-                    )->addMonths(1 * $request->interval_time);
+                    )->addMonths((1 * $request->interval_time));
                     break;
             }
 
