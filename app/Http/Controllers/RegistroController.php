@@ -816,14 +816,16 @@ class RegistroController extends Controller {
             }
 
             if (!is_null($pago)) {
-            	$fecha_actual2_anterior = new Carbon(
-                    $pago->prox_fac, 
-                    $zona->nombre
-                );
-            	
-            	$fecha_actual2->addDays(
-            		$fecha_actual2_anterior->diffInDays($fecha_actual2)
-            	);
+            	if ($pago->plan_id != 4) {
+            		$fecha_actual2_anterior = new Carbon(
+	                    $pago->prox_fac, 
+	                    $zona->nombre
+	                );
+	            	
+	            	$fecha_actual2->addDays(
+	            		$fecha_actual2_anterior->diffInDays($fecha_actual2)
+	            	);
+            	}
             }
 
 			$pago->estado 			  = $request->estado;
