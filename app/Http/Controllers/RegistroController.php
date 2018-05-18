@@ -831,16 +831,14 @@ class RegistroController extends Controller {
             }
 
             if (!is_null($pago)) {
-            	if ($pago->plan_id != 4) {
-            		$fecha_actual2_anterior = new Carbon(
-	                    $pago->prox_fac, 
-	                    $zona->nombre
-	                );
-	            	
-	            	$fecha_actual2->addDays(
-	            		$fecha_actual2_anterior->diffInDays($fecha_actual2)
-	            	);
-            	}
+        		$fecha_actual2_anterior = new Carbon(
+                    $pago->prox_fac, 
+                    $zona->nombre
+                );
+            	
+            	$fecha_actual2->addDays(
+            		$fecha_actual2_anterior->diffInDays($fecha_actual2)
+            	);
             }
 
 			$pago->estado 		= 0;
@@ -850,10 +848,6 @@ class RegistroController extends Controller {
 	    	$pago->plan_id 		= $request->plan_id;
 	    	$pago->save();
 
-	    	
-
-	    	
-	    	
 	    	if ($monto == 0) {
 	    		$retorno['errors'] = false;
 				$retorno["msj"]    = "Es plan gratuito ha sido seleccionado con exito";
