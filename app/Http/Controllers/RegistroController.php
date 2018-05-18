@@ -788,27 +788,42 @@ class RegistroController extends Controller {
 				$pago = new PagoOnline();
 			} 
 			$pago->fecha_facturacion  = $fecha_actual;
+			$plan = Plan::find($request->plan_id);
+
+			if ($propiedad->numero_habitaciones >= 37) {
+	    		$habitaciones = 37;
+	    	} else {
+	    		$habitaciones = $propiedad->numero_habitaciones;
+	    	}
 
 			switch ($request->plan_id) {
                 case 1: //mensual
+                  	$monto = $plan->precio_x_habitacion * $habitaciones;
                     $fecha_actual2 = Carbon::now()->setTimezone(
                         $zona->nombre
                     )->addMonths(1 * $request->interval_time);
                     break;
 
                 case 2: //semestral
-                    $fecha_actual2 = Carbon::now()->setTimezone(
+                	$monto_s_base   = $plan->precio_x_habitacion * $habitaciones;
+                  	$precio_mensual = $monto_s_base - (($monto_s_base * 3) / 100);
+                  	$monto   = $precio_mensual * 6;
+                    $fecha_actual2  = Carbon::now()->setTimezone(
                         $zona->nombre
                     )->addMonths(6 * $request->interval_time);
                     break;
 
                 case 3: //anual
+                	$monto_a_base = $plan->precio_x_habitacion * $habitaciones;
+                  	$precio_mensual = ($monto_a_base - (($monto_a_base * 10) / 100)) ;
+                  	$monto = $precio_mensual * 12;
                     $fecha_actual2 = Carbon::now()->setTimezone(
                         $zona->nombre
                     )->addYear(1 * $request->interval_time);
                     break;
                 
                 default: //mensual
+                    $monto = $plan->precio_x_habitacion * $habitaciones;
                     $fecha_actual2 = Carbon::now()->setTimezone(
                         $zona->nombre
                     )->addMonths(1 * $request->interval_time);
@@ -835,13 +850,9 @@ class RegistroController extends Controller {
 	    	$pago->plan_id 		= $request->plan_id;
 	    	$pago->save();
 
-	    	$plan = Plan::find($request->plan_id);
+	    	
 
-	    	if ($propiedad->numero_habitaciones >= 37) {
-	    		$monto = $plan->precio_x_habitacion * 37;
-	    	} else {
-	    		$monto = $plan->precio_x_habitacion * $propiedad->numero_habitaciones;
-	    	}
+	    	
 	    	
 	    	if ($monto == 0) {
 	    		$retorno['errors'] = false;
