@@ -68,8 +68,7 @@ class PagoFacilController extends Controller {
     }
 
     public function CallBack(Request $request) {
-        $prop_id = intval(((int) $request->ct_order_id) / 100000000);
-        $aux = intval(((int) $request->ct_order_id) % 100000000);
+        $prop_id = intval(((int) $request->ct_order_id) / 10000000);
 
         $propiedad = Propiedad::where(
             "id",
@@ -117,8 +116,7 @@ class PagoFacilController extends Controller {
     }
 
     public function Retorno(Request $request) {
-        $prop_id = intval(((int) $request->ct_order_id) / 100000000);
-        $aux = intval(((int) $request->ct_order_id) % 100000000);
+        $prop_id = intval(((int) $request->ct_order_id) / 10000000);
 
         $propiedad = Propiedad::where(
             "id",
