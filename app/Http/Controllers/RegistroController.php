@@ -828,14 +828,14 @@ class RegistroController extends Controller {
             	}
             }
 
-			$pago->estado 			  = $request->estado;
-	    	$pago->prox_fac  		  = $fecha_actual2;
-	    	$pago->pas_pago_id 		  = $request->pas_pago_id;
-	    	$pago->prop_id 			  = $request->prop_id;
-	    	$pago->plan_id 			  = $request->plan_id;
+			$pago->estado 		= 0;
+	    	$pago->prox_fac 	= $fecha_actual2;
+	    	$pago->pas_pago_id 	= $request->pas_pago_id;
+	    	$pago->prop_id 		= $request->prop_id;
+	    	$pago->plan_id 		= $request->plan_id;
 	    	$pago->save();
 
-	    	$plan = Plan::find($pago->plan_id);
+	    	$plan = Plan::find($request->plan_id);
 
 	    	if ($propiedad->numero_habitaciones >= 37) {
 	    		$monto = $plan->precio_x_habitacion * 37;
