@@ -103,7 +103,9 @@ class PagoFacilController extends Controller {
                 $pago_f->status   = $request->ct_estado;
                 $pago_f->pago_id  = $pago_o->id;  
                 $pago_f->save();
-            } else {
+            } 
+        } else {
+            if (!is_null($propiedad)) {
                 $propiedad->estado_cuenta_id = 3;
                 $propiedad->save();
 
@@ -151,7 +153,9 @@ class PagoFacilController extends Controller {
                 $pago_f->status   = $request->ct_estado;
                 $pago_f->pago_id  = $pago_o->id;  
                 $pago_f->save();
-            } else {
+            } 
+        } else {
+            if (!is_null($propiedad)) {
                 $propiedad->estado_cuenta_id = 3;
                 $propiedad->save();
 
