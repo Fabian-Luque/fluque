@@ -797,7 +797,7 @@ class RegistroController extends Controller {
 	    		$habitaciones = $propiedad->numero_habitaciones;
 	    	}
 
-	    	if (!empty($pago->id)) {
+	    	if (empty($pago->id)) {
 				switch ($request->plan_id) {
 	                case 1: //mensual
 	                	$aux = (1 * $request->interval_time);
