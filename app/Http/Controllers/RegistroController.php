@@ -797,46 +797,88 @@ class RegistroController extends Controller {
 	    		$habitaciones = $propiedad->numero_habitaciones;
 	    	}
 
-			switch ($request->plan_id) {
-                case 1: //mensual
-                	$aux = (1 * $request->interval_time);
-                  	$monto = $plan->precio_x_habitacion * $habitaciones;
-                    $fecha_actual2 = Carbon::now()->setTimezone(
-                        $zona->nombre
-                    )->addMonths($aux);
-                    break;
+	    	if (!empty($pago->id)) {
+				switch ($request->plan_id) {
+	                case 1: //mensual
+	                	$aux = (1 * $request->interval_time);
+	                  	$monto = $plan->precio_x_habitacion * $habitaciones;
+	                    $fecha_actual2 = Carbon::now()->setTimezone(
+	                        $zona->nombre
+	                    )->addMonths($aux);
+	                    break;
 
-                case 2: //semestral
-                	$aux = (6 * $request->interval_time);
-                	$monto_s_base   = $plan->precio_x_habitacion * $habitaciones;
-                  	$precio_mensual = $monto_s_base - (($monto_s_base * 3) / 100);
-                  	$monto   = $precio_mensual * 6;
-                    $fecha_actual2  = Carbon::now()->setTimezone(
-                        $zona->nombre
-                    )->addMonths($aux);
-                    break;
+	                case 2: //semestral
+	                	$aux = (6 * $request->interval_time);
+	                	$monto_s_base   = $plan->precio_x_habitacion * $habitaciones;
+	                  	$precio_mensual = $monto_s_base - (($monto_s_base * 3) / 100);
+	                  	$monto   = $precio_mensual * 6;
+	                    $fecha_actual2  = Carbon::now()->setTimezone(
+	                        $zona->nombre
+	                    )->addMonths($aux);
+	                    break;
 
-                case 3: //anual
-                	$aux = (1 * $request->interval_time);
-                	$monto_a_base = $plan->precio_x_habitacion * $habitaciones;
-                  	$precio_mensual = ($monto_a_base - (($monto_a_base * 10) / 100)) ;
-                  	$monto = $precio_mensual * 12;
-                    $fecha_actual2 = Carbon::now()->setTimezone(
-                        $zona->nombre
-                    )->addYear($aux);
-                    break;
-                
-                default: //gratis
-                	$aux = (1 * $request->interval_time);
-                    $monto = $plan->precio_x_habitacion * $habitaciones;
-                    $fecha_actual2 = Carbon::now()->setTimezone(
-                        $zona->nombre
-                    )->addMonths($aux);
-                    break;
-            }
+	                case 3: //anual
+	                	$aux = (1 * $request->interval_time);
+	                	$monto_a_base = $plan->precio_x_habitacion * $habitaciones;
+	                  	$precio_mensual = ($monto_a_base - (($monto_a_base * 10) / 100)) ;
+	                  	$monto = $precio_mensual * 12;
+	                    $fecha_actual2 = Carbon::now()->setTimezone(
+	                        $zona->nombre
+	                    )->addYear($aux);
+	                    break;
+	                
+	                default: //gratis
+	                	$aux = (1 * $request->interval_time);
+	                    $monto = $plan->precio_x_habitacion * $habitaciones;
+	                    $fecha_actual2 = Carbon::now()->setTimezone(
+	                        $zona->nombre
+	                    )->addMonths($aux);
+	                    break;
+	            }
+	        } else {
+	        	switch ($request->plan_id) {
+	                case 1: //mensual
+	                	$aux = (1 * $request->interval_time);
+	                  	$monto = $plan->precio_x_habitacion * $habitaciones;
+	                    $fecha_actual2 = new Carbon(
+		                    $pago->prox_fac, 
+		                    $zona->nombre
+		                )->addMonths($aux);
+	                    break;
 
-            if (!empty($pago->id)) {
-        		$fecha_actual2_anterior = new Carbon(
+	                case 2: //semestral
+	                	$aux = (6 * $request->interval_time);
+	                	$monto_s_base   = $plan->precio_x_habitacion * $habitaciones;
+	                  	$precio_mensual = $monto_s_base - (($monto_s_base * 3) / 100);
+	                  	$monto   = $precio_mensual * 6;
+	                    $fecha_actual2 = new Carbon(
+		                    $pago->prox_fac, 
+		                    $zona->nombre
+		                )->addMonths($aux);
+	                    break;
+
+	                case 3: //anual
+	                	$aux = (1 * $request->interval_time);
+	                	$monto_a_base = $plan->precio_x_habitacion * $habitaciones;
+	                  	$precio_mensual = ($monto_a_base - (($monto_a_base * 10) / 100)) ;
+	                  	$monto = $precio_mensual * 12;
+	                    $fecha_actual2 = new Carbon(
+		                    $pago->prox_fac, 
+		                    $zona->nombre
+		                )->addYear($aux);
+	                    break;
+	                
+	                default: //gratis
+	                	$aux = (1 * $request->interval_time);
+	                    $monto = $plan->precio_x_habitacion * $habitaciones;
+	                    $fecha_actual2 = new Carbon(
+		                    $pago->prox_fac, 
+		                    $zona->nombre
+		                )->addMonths($aux);
+	                    break;
+	            }
+
+	            $fecha_actual2_anterior = new Carbon(
                     $pago->prox_fac, 
                     $zona->nombre
                 );
@@ -844,7 +886,7 @@ class RegistroController extends Controller {
             	$fecha_actual2->addDays(
             		$fecha_actual2_anterior->diffInDays($fecha_actual2)
             	);
-            }
+	        }
 
 			$pago->estado 		= 0;
 	    	$pago->prox_fac 	= $fecha_actual2;
