@@ -881,16 +881,13 @@ class RegistroController extends Controller {
 		                $fecha_actual2 = $fecha_actual2->addMonths($aux);
 	                    break;
 	            }
-	        }
-
-            if (!empty($pago->prox_fac)) {
-            	$fecha_actual2_anterior = new Carbon(
+	            $fecha_actual2_anterior = new Carbon(
                     $pago->prox_fac, 
                     $zona->nombre
                 );
             	$diff = $fecha_actual2_anterior->diffInDays($fecha_actual2);
             	$fecha_actual2->addDays($diff);
-            }
+	        }
 
 			$pago->estado 		= 0;
 	    	$pago->prox_fac 	= $fecha_actual2;
