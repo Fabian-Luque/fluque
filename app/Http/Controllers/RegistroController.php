@@ -843,7 +843,8 @@ class RegistroController extends Controller {
 	                    $fecha_actual2 = new Carbon(
 		                    $pago->prox_fac, 
 		                    $zona->nombre
-		                )->addMonths($aux);
+		                );
+		                $fecha_actual2->addMonths($aux);
 	                    break;
 
 	                case 2: //semestral
@@ -854,7 +855,8 @@ class RegistroController extends Controller {
 	                    $fecha_actual2 = new Carbon(
 		                    $pago->prox_fac, 
 		                    $zona->nombre
-		                )->addMonths($aux);
+		                );
+		                $fecha_actual2->addMonths($aux);
 	                    break;
 
 	                case 3: //anual
@@ -865,7 +867,8 @@ class RegistroController extends Controller {
 	                    $fecha_actual2 = new Carbon(
 		                    $pago->prox_fac, 
 		                    $zona->nombre
-		                )->addYear($aux);
+		                );
+		                $fecha_actual2->addYear($aux);
 	                    break;
 	                
 	                default: //gratis
@@ -874,7 +877,8 @@ class RegistroController extends Controller {
 	                    $fecha_actual2 = new Carbon(
 		                    $pago->prox_fac, 
 		                    $zona->nombre
-		                )->addMonths($aux);
+		                );
+		                $fecha_actual2->addMonths($aux);
 	                    break;
 	            }
 
@@ -882,10 +886,8 @@ class RegistroController extends Controller {
                     $pago->prox_fac, 
                     $zona->nombre
                 );
-            	
-            	$fecha_actual2->addDays(
-            		$fecha_actual2_anterior->diffInDays($fecha_actual2)
-            	);
+            	$diff = $fecha_actual2_anterior->diffInDays($fecha_actual2);
+            	$fecha_actual2->addDays($diff);
 	        }
 
 			$pago->estado 		= 0;
