@@ -786,7 +786,8 @@ class RegistroController extends Controller {
 
 			if (is_null($pago)) {
 				$pago = new PagoOnline();
-			} 
+			}
+
 			$pago->fecha_facturacion  = $fecha_actual;
 			$plan = Plan::find($request->plan_id);
 
@@ -798,35 +799,39 @@ class RegistroController extends Controller {
 
 			switch ($request->plan_id) {
                 case 1: //mensual
+                	$aux = (1 * $request->interval_time);
                   	$monto = $plan->precio_x_habitacion * $habitaciones;
                     $fecha_actual2 = Carbon::now()->setTimezone(
                         $zona->nombre
-                    )->addMonths((1 * $request->interval_time));
+                    )->addMonths($aux);
                     break;
 
                 case 2: //semestral
+                	$aux = (6 * $request->interval_time);
                 	$monto_s_base   = $plan->precio_x_habitacion * $habitaciones;
                   	$precio_mensual = $monto_s_base - (($monto_s_base * 3) / 100);
                   	$monto   = $precio_mensual * 6;
                     $fecha_actual2  = Carbon::now()->setTimezone(
                         $zona->nombre
-                    )->addMonths((6 * $request->interval_time));
+                    )->addMonths($aux);
                     break;
 
                 case 3: //anual
+                	$aux = (1 * $request->interval_time);
                 	$monto_a_base = $plan->precio_x_habitacion * $habitaciones;
                   	$precio_mensual = ($monto_a_base - (($monto_a_base * 10) / 100)) ;
                   	$monto = $precio_mensual * 12;
                     $fecha_actual2 = Carbon::now()->setTimezone(
                         $zona->nombre
-                    )->addYear((1 * $request->interval_time));
+                    )->addYear($aux);
                     break;
                 
-                default: //mensual
+                default: //gratis
+                	$aux = (1 * $request->interval_time);
                     $monto = $plan->precio_x_habitacion * $habitaciones;
                     $fecha_actual2 = Carbon::now()->setTimezone(
                         $zona->nombre
-                    )->addMonths((1 * $request->interval_time));
+                    )->addMonths($aux);
                     break;
             }
 
