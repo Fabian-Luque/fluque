@@ -831,7 +831,7 @@ class RegistroController extends Controller {
                     $monto = $plan->precio_x_habitacion * $habitaciones;
                     $fecha_actual2 = Carbon::now()->setTimezone(
                         $zona->nombre
-                    )->addMonths($aux);
+                    )->addMonths(1);
                     break;
             }
 
