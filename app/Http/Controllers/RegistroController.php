@@ -831,11 +831,10 @@ class RegistroController extends Controller {
                     $monto = $plan->precio_x_habitacion * $habitaciones;
                     $fecha_actual2 = Carbon::now()->setTimezone(
                         $zona->nombre
-                    )->addMonths(1);
+                    )->addMonths($aux);
                     break;
             }
 
-            /*
             if (!empty($pago->id)) {
         		$fecha_actual2_anterior = new Carbon(
                     $pago->prox_fac, 
@@ -846,7 +845,6 @@ class RegistroController extends Controller {
             		$fecha_actual2_anterior->diffInDays($fecha_actual2)
             	);
             }
-            */
 
 			$pago->estado 		= 0;
 	    	$pago->prox_fac 	= $fecha_actual2;
