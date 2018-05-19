@@ -835,7 +835,53 @@ class RegistroController extends Controller {
 	                    )->addMonths($aux);
 	                    break;
 	            }
-	        } 
+	        } else {
+	        	switch ($request->plan_id) {
+	                case 1: //mensual
+	                	$aux = (1 * $request->interval_time);
+	                  	$monto = $plan->precio_x_habitacion * $habitaciones;
+	                    $fecha_actual2 = new Carbon(
+		                    $pago->prox_fac, 
+		                    $zona->nombre
+		                );
+		                $fecha_actual2 = $fecha_actual2->addMonths($aux);
+	                    break;
+
+	                case 2: //semestral
+	                	$aux = (6 * $request->interval_time);
+	                	$monto_s_base   = $plan->precio_x_habitacion * $habitaciones;
+	                  	$precio_mensual = $monto_s_base - (($monto_s_base * 3) / 100);
+	                  	$monto   = $precio_mensual * 6;
+	                    $fecha_actual2 = new Carbon(
+		                    $pago->prox_fac, 
+		                    $zona->nombre
+		                );
+		                $fecha_actual2 = $fecha_actual2->addMonths($aux);
+	                    break;
+
+	                case 3: //anual
+	                	$aux = (1 * $request->interval_time);
+	                	$monto_a_base = $plan->precio_x_habitacion * $habitaciones;
+	                  	$precio_mensual = ($monto_a_base - (($monto_a_base * 10) / 100)) ;
+	                  	$monto = $precio_mensual * 12;
+	                    $fecha_actual2 = new Carbon(
+		                    $pago->prox_fac, 
+		                    $zona->nombre
+		                );
+		                $fecha_actual2 = $fecha_actual2->addYear($aux);
+	                    break;
+	                
+	                default: //gratis
+	                	$aux = (1 * $request->interval_time);
+	                    $monto = $plan->precio_x_habitacion * $habitaciones;
+	                    $fecha_actual2 = new Carbon(
+		                    $pago->prox_fac, 
+		                    $zona->nombre
+		                );
+		                $fecha_actual2 = $fecha_actual2->addMonths($aux);
+	                    break;
+	            }
+	        }
 
             if (!empty($pago->prox_fac)) {
             	$fecha_actual2_anterior = new Carbon(
