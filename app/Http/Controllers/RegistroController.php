@@ -835,7 +835,8 @@ class RegistroController extends Controller {
                     break;
             }
 
-            if (!is_null($pago)) {
+            /*
+            if (!empty($pago->id)) {
         		$fecha_actual2_anterior = new Carbon(
                     $pago->prox_fac, 
                     $zona->nombre
@@ -845,6 +846,7 @@ class RegistroController extends Controller {
             		$fecha_actual2_anterior->diffInDays($fecha_actual2)
             	);
             }
+            */
 
 			$pago->estado 		= 0;
 	    	$pago->prox_fac 	= $fecha_actual2;
