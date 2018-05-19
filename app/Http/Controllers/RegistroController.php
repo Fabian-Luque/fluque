@@ -788,7 +788,7 @@ class RegistroController extends Controller {
 				$pago = new PagoOnline();
 			}
 
-			$pago->fecha_facturacion  = $fecha_actual;
+			$pago->fecha_facturacion  = $fecha_actual->toDateTimeString();
 			$plan = Plan::find($request->plan_id);
 
 			if ($propiedad->numero_habitaciones >= 37) {
@@ -844,7 +844,7 @@ class RegistroController extends Controller {
 		                    $pago->prox_fac, 
 		                    $zona->nombre
 		                );
-		                $fecha_actual2 = $fecha_actual2->addMonths($aux);
+		                $fecha_actual2->addMonths($aux);
 	                    break;
 
 	                case 2: //semestral
@@ -856,7 +856,7 @@ class RegistroController extends Controller {
 		                    $pago->prox_fac, 
 		                    $zona->nombre
 		                );
-		                $fecha_actual2 = $fecha_actual2->addMonths($aux);
+		                $fecha_actual2->addMonths($aux);
 	                    break;
 
 	                case 3: //anual
@@ -868,7 +868,7 @@ class RegistroController extends Controller {
 		                    $pago->prox_fac, 
 		                    $zona->nombre
 		                );
-		                $fecha_actual2 = $fecha_actual2->addYear($aux);
+		                $fecha_actual2->addYear($aux);
 	                    break;
 	                
 	                default: //gratis
@@ -878,7 +878,7 @@ class RegistroController extends Controller {
 		                    $pago->prox_fac, 
 		                    $zona->nombre
 		                );
-		                $fecha_actual2 = $fecha_actual2->addMonths($aux);
+		                $fecha_actual2->addMonths($aux);
 	                    break;
 	            }
 	            $fecha_actual2_anterior = new Carbon(
@@ -890,12 +890,12 @@ class RegistroController extends Controller {
 	        }
 
 			$pago->estado 		= 0;
-	    	$pago->prox_fac 	= $fecha_actual2;
+	    	$pago->prox_fac 	= $fecha_actual2->toDateTimeString();
 	    	$pago->pas_pago_id 	= $request->pas_pago_id;
 	    	$pago->prop_id 		= $request->prop_id;
 	    	$pago->plan_id 		= $request->plan_id;
 	    	$pago->save();
-
+dd($pago);
 	    	if ($monto == 0) {
 	    		$retorno['errors'] = false;
 				$retorno["msj"]    = "Es plan gratuito ha sido seleccionado con exito";
