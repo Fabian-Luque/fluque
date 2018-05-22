@@ -71,6 +71,14 @@ class PagoFacilController extends Controller {
     public function CallBack(Request $request) {
         $prop_id = intval(((int) $request->ct_order_id) / 10000000);
 
+        Event::fire(
+            new PagoFacilEvent(
+                "pagofacil",
+                $request->all(),
+                $prop_id
+            )
+        );
+
         $propiedad = Propiedad::where(
             "id",
             $prop_id
@@ -121,6 +129,14 @@ class PagoFacilController extends Controller {
     public function Retorno(Request $request) {
         $prop_id = intval(((int) $request->ct_order_id) / 10000000);
 
+        Event::fire(
+            new PagoFacilEvent(
+                "pagofacil",
+                $request->all(),
+                $prop_id
+            )
+        );
+        
         $propiedad = Propiedad::where(
             "id",
             $prop_id
