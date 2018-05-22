@@ -78,7 +78,6 @@ class PagoFacilController extends Controller {
         $prop_id = intval(((int) $data) / 1000000);
         $aux = ("".(((int) $data) % 1000000) / 10000);
         $plan_id = (int) substr($aux, 0, 1);
-    
         
         if (strcmp($request->ct_estado, "COMPLETADA") == 0) {
             $request->merge([ 
@@ -109,19 +108,21 @@ class PagoFacilController extends Controller {
 
             $zona = $propiedad->zonaHoraria;
             
-
             $fecha1 = new Carbon(
-                            $pago_o->updated_at, 
-                            $zona->nombre
-                        );
+                $pago_o->updated_at, 
+                $zona->nombre
+            );
 
             $actual  = Carbon::now()->setTimezone(
-                            $zona->nombre
-                        );
+                $zona->nombre
+            );
 
+            $diff = $fecha1->diffInSeconds($actual);
+            $request->merge([ 
+                'diferencia' => $diff
+            ]);
 
-
-            if ($fecha1->diffInSeconds($actual) > 60  ) {
+            if ($diff > 60  ) {
                 Event::fire(
                     new PagoFacilEvent(
                         "pagofacil",
@@ -159,8 +160,6 @@ class PagoFacilController extends Controller {
                 $pago_o->estado   = 1;
                 $pago_o->save();
             }
-
-            
         } 
         return redirect(config('app.PANEL_PRINCIPAL'));
     }
@@ -201,19 +200,21 @@ class PagoFacilController extends Controller {
 
             $zona = $propiedad->zonaHoraria;
             
-
             $fecha1 = new Carbon(
-                            $pago_o->updated_at, 
-                            $zona->nombre
-                        );
+                $pago_o->updated_at, 
+                $zona->nombre
+            );
 
             $actual  = Carbon::now()->setTimezone(
-                            $zona->nombre
-                        );
+                $zona->nombre
+            );
 
+            $diff = $fecha1->diffInSeconds($actual);
+            $request->merge([ 
+                'diferencia' => $diff
+            ]);
 
-
-            if ($fecha1->diffInSeconds($actual) > 60  ) {
+            if ($diff > 60  ) {
                 Event::fire(
                     new PagoFacilEvent(
                         "pagofacil",
@@ -251,8 +252,6 @@ class PagoFacilController extends Controller {
                 $pago_o->estado   = 1;
                 $pago_o->save();
             }
-
-            
         } 
         return redirect(config('app.PANEL_PRINCIPAL'));
     }
