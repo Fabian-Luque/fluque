@@ -118,8 +118,9 @@ class PagoFacilController extends Controller {
             $actual  = Carbon::now()->setTimezone(
                             $zona->nombre
                         );
-$diferencia = $fecha1->diffInSeconds($actual);
-$request->merge([ 
+            $diferencia = $fecha1->diffInSeconds($actual);
+            
+            $request->merge([ 
                 'diferencia' => $diferencia
             ]);
 
@@ -214,8 +215,9 @@ $request->merge([
             $actual  = Carbon::now()->setTimezone(
                             $zona->nombre
                         );
-$diferencia = $fecha1->diffInSeconds($actual);
-$request->merge([ 
+            $diferencia = $fecha1->diffInSeconds($actual);
+            
+            $request->merge([ 
                 'diferencia' => $diferencia
             ]);
 
