@@ -109,7 +109,8 @@ class PagoFacilController extends Controller {
             $zona = $propiedad->zonaHoraria;
             
             $fecha1 = new Carbon(
-                $pago_o->updated_at, 
+                $pago_o->updated_at
+            )->setTimezone(
                 $zona->nombre
             );
 
@@ -209,7 +210,8 @@ class PagoFacilController extends Controller {
             $zona = $propiedad->zonaHoraria;
             
             $fecha1 = new Carbon(
-                $pago_o->updated_at, 
+                $pago_o->updated_at
+            )->setTimezone(
                 $zona->nombre
             );
 
