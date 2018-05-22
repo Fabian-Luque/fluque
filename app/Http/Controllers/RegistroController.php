@@ -894,9 +894,16 @@ class RegistroController extends Controller {
                     $pago->prox_fac, 
                     $zona->nombre
                 );
-            	// $diff = $fecha_actual2->diffInDays($fecha_actual2_anterior);
-            	// $fecha_actual2->addDays($diff);
-	        $pago->update(array('estado' => 0, 'prox_fac' => $fecha_actual2, 'pas_pago_id' => $request->pas_pago_id, 'prop_id' => $request->prop_id, 'plan_id' => $request->plan_id));
+       
+		        $pago->update(
+		        	array(
+			        	'estado' 	  => 0, 
+			        	'prox_fac' 	  => $fecha_actual2, 
+			        	'pas_pago_id' => $request->pas_pago_id, 
+			        	'prop_id' 	  => $request->prop_id, 
+			        	'plan_id'  	  => $request->plan_id
+		        	)
+		        );
 	        }
 
 	    	if ($monto == 0) {
@@ -910,9 +917,6 @@ class RegistroController extends Controller {
 				$request->merge([ 
 					'email'   => $propiedad->email
 				]);
-
-				$user = $propiedad->user->first();
-				$user->update(["paso" => 7]);
 
 		    	$resp = app('App\Http\Controllers\PagoFacilController')->Trans(
 					$request
