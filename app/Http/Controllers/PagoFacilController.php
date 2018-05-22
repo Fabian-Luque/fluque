@@ -55,7 +55,8 @@ class PagoFacilController extends Controller {
                 "ct_order_id"       => $respu['ct_order_id'],
                 "ct_token_service"  => config('app.PAGOFACIL_TOKEN_SERVICIO'),
                 "ct_token_tienda"   => config('app.PAGOFACIL_TOKEN_TIENDA'),
-                "ct_firma"          => $respu['ct_firma']
+                "ct_firma"          => $respu['ct_firma'],
+                "hola"              => "hola 12345678"
             ];
             $response = $client->post(
                 config('app.PAGOFACIL_URL'), [
@@ -109,9 +110,6 @@ class PagoFacilController extends Controller {
             } 
         } else {
             if (!is_null($propiedad)) {
-                $propiedad->estado_cuenta_id = 3;
-                $propiedad->save();
-
                 $pago_o->estado   = 0;
                 $pago_o->save();
             }
