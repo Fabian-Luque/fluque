@@ -122,6 +122,14 @@ class PagoFacilController extends Controller {
                 'diferencia' => $diff
             ]);
 
+            $request->merge([ 
+                'fecha1' => $fecha1
+            ]);
+
+            $request->merge([ 
+                'fecha2' => $actual
+            ]);
+
             if ($diff > 60  ) {
                 Event::fire(
                     new PagoFacilEvent(
@@ -212,6 +220,14 @@ class PagoFacilController extends Controller {
             $diff = $fecha1->diffInSeconds($actual);
             $request->merge([ 
                 'diferencia' => $diff
+            ]);
+
+            $request->merge([ 
+                'fecha1' => $fecha1
+            ]);
+
+            $request->merge([ 
+                'fecha2' => $actual
             ]);
 
             if ($diff > 60  ) {
