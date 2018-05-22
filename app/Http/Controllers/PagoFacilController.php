@@ -36,7 +36,7 @@ class PagoFacilController extends Controller {
             $retorno["msj"] = $validator->errors();
         } else { 
             $transaccion = new Transaccion(
-                ($request->prop_id."".rand(1000000, 9999999)), 
+                ($request->prop_id."".rand(100000, 999999)."".$request->plan_id), 
                 config('app.PAGOFACIL_TOKEN_TIENDA'), 
                 $request->monto, 
                 config('app.PAGOFACIL_TOKEN_SERVICIO'), 
@@ -55,8 +55,7 @@ class PagoFacilController extends Controller {
                 "ct_order_id"       => $respu['ct_order_id'],
                 "ct_token_service"  => config('app.PAGOFACIL_TOKEN_SERVICIO'),
                 "ct_token_tienda"   => config('app.PAGOFACIL_TOKEN_TIENDA'),
-                "ct_firma"          => $respu['ct_firma'],
-                "hola"              => "hola 12345678"
+                "ct_firma"          => $respu['ct_firma']
             ];
             $response = $client->post(
                 config('app.PAGOFACIL_URL'), [
@@ -69,7 +68,7 @@ class PagoFacilController extends Controller {
     }
 
     public function CallBack(Request $request) {
-        $prop_id = intval(((int) $request->ct_order_id) / 10000000);
+        $prop_id = intval(((int) $request->ct_order_id) / 1000000);
 
         Event::fire(
             new PagoFacilEvent(
@@ -78,19 +77,38 @@ class PagoFacilController extends Controller {
                 $prop_id
             )
         );
-
-        $propiedad = Propiedad::where(
-            "id",
-            $prop_id
-        )->first();
-
-        $pago_o = PagoOnline::where(
-            "prop_id",
-            $prop_id
-        )->first();
         
-        if (strcmp($request->ct_estado, "COMPLETADA") == 0) {
+    /*    if (strcmp($request->ct_estado, "COMPLETADA") == 0) {
             if (!is_null($propiedad)) {
+                $resp = app('App\Http\Controllers\RegistroController')->SeleccionPago(
+                    $request
+                );
+
+                'interval_time'     => 'required',
+              
+                $request->merge([ 
+                    'prop_id' => $prop_id
+                ]);
+                $request->merge([ 
+                    'pas_pago_id' => 1
+                ]);
+                $request->merge([ 
+                    'estado' => 1
+                ]);
+                $request->merge([ 
+                    'plan_id' => $plan_id
+                ]);
+
+                $propiedad = Propiedad::where(
+                    "id",
+                    $prop_id
+                )->first();
+
+                $pago_o = PagoOnline::where(
+                    "prop_id",
+                    $prop_id
+                )->first();
+
                 $propiedad->estado_cuenta_id = 2;
                 $propiedad->save();
 
@@ -116,13 +134,8 @@ class PagoFacilController extends Controller {
                 $pago_o->estado   = 1;
                 $pago_o->save();
             } 
-        } else {
-            if (!is_null($propiedad)) {
-                $pago_o->estado   = 0;
-                $pago_o->save();
-            }
-        }
-
+        } 
+        */
         return redirect(config('app.PANEL_PRINCIPAL'));
     }
 

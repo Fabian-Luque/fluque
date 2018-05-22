@@ -844,7 +844,6 @@ class RegistroController extends Controller {
 				$pago->save();
 
 	        } else {
-
 	        	switch ($request->plan_id) {
 	                case 1: //mensual
 	                	$aux = (1 * $request->interval_time);
@@ -906,23 +905,9 @@ class RegistroController extends Controller {
 		        );
 	        }
 
-	    	if ($monto == 0) {
-	    		$retorno['errors'] = false;
-				$retorno["msj"]    = "Es plan gratuito ha sido seleccionado con exito";
-				return Response::json($retorno); 
-	    	} else {
-	    		$request->merge([ 
-					'monto'   => $monto
-				]);
-				$request->merge([ 
-					'email'   => $propiedad->email
-				]);
-
-		    	$resp = app('App\Http\Controllers\PagoFacilController')->Trans(
-					$request
-				);
-				return $resp;
-	    	}
+	    	$retorno['errors'] = false;
+			$retorno["msj"]    = "Es plan ha sido seleccionado con exito";
+			return Response::json($retorno); 
 		}
 	}
 
