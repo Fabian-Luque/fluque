@@ -123,11 +123,11 @@ class PagoFacilController extends Controller {
             ]);
 
             $request->merge([ 
-                'fecha1' => $fecha1
+                'fecha1' => $fecha1->toDateTimeString()
             ]);
 
             $request->merge([ 
-                'fecha2' => $actual
+                'fecha2' => $actual->toDateTimeString()
             ]);
 
             if ($diff > 60  ) {
@@ -223,11 +223,11 @@ class PagoFacilController extends Controller {
             ]);
 
             $request->merge([ 
-                'fecha1' => $fecha1
+                'fecha1' => $fecha1->toDateTimeString()
             ]);
 
             $request->merge([ 
-                'fecha2' => $actual
+                'fecha2' => $actual->toDateTimeString()
             ]);
 
             if ($diff > 60  ) {
