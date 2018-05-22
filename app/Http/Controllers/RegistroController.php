@@ -773,7 +773,7 @@ class RegistroController extends Controller {
 				$request->prop_id
 			);
 
-			$zona = $propiedad->zonaHoraria->first();
+			$zona = $propiedad->zonaHoraria;
 
 			$fecha_actual = Carbon::now()->setTimezone(
 				$zona->nombre
@@ -788,7 +788,7 @@ class RegistroController extends Controller {
 				$pago = new PagoOnline();
 			}
 
-			$pago->fecha_facturacion  = $fecha_actual->toDateTimeString();
+			$pago->fecha_facturacion  = $fecha_actual;
 			$plan = Plan::find($request->plan_id);
 
 			if ($propiedad->numero_habitaciones >= 37) {
@@ -835,7 +835,16 @@ class RegistroController extends Controller {
 	                    )->addMonths($aux);
 	                    break;
 	            }
+
+	            $pago->estado 		= 0;
+			    $pago->prox_fac 	= $fecha_actual2;
+				$pago->pas_pago_id 	= $request->pas_pago_id;
+				$pago->prop_id 		= $request->prop_id;
+				$pago->plan_id 		= $request->plan_id;
+				$pago->save();
+
 	        } else {
+
 	        	switch ($request->plan_id) {
 	                case 1: //mensual
 	                	$aux = (1 * $request->interval_time);
@@ -844,7 +853,7 @@ class RegistroController extends Controller {
 		                    $pago->prox_fac, 
 		                    $zona->nombre
 		                );
-		                $fecha_actual2->addMonths($aux);
+		                $fecha_actual2 = $fecha_actual2->addMonths($aux);
 	                    break;
 
 	                case 2: //semestral
@@ -856,7 +865,7 @@ class RegistroController extends Controller {
 		                    $pago->prox_fac, 
 		                    $zona->nombre
 		                );
-		                $fecha_actual2->addMonths($aux);
+		                $fecha_actual2 = $fecha_actual2->addMonths($aux);
 	                    break;
 
 	                case 3: //anual
@@ -868,7 +877,7 @@ class RegistroController extends Controller {
 		                    $pago->prox_fac, 
 		                    $zona->nombre
 		                );
-		                $fecha_actual2->addYear($aux);
+		                $fecha_actual2 = $fecha_actual2->addYear($aux);
 	                    break;
 	                
 	                default: //gratis
@@ -878,24 +887,18 @@ class RegistroController extends Controller {
 		                    $pago->prox_fac, 
 		                    $zona->nombre
 		                );
-		                $fecha_actual2->addMonths($aux);
+		                $fecha_actual2 = $fecha_actual2->addMonths($aux);
 	                    break;
 	            }
 	            $fecha_actual2_anterior = new Carbon(
                     $pago->prox_fac, 
                     $zona->nombre
                 );
-            	$diff = $fecha_actual2_anterior->diffInDays($fecha_actual2);
-            	$fecha_actual2->addDays($diff);
+            	// $diff = $fecha_actual2->diffInDays($fecha_actual2_anterior);
+            	// $fecha_actual2->addDays($diff);
+	        $pago->update(array('estado' => 0, 'prox_fac' => $fecha_actual2, 'pas_pago_id' => $request->pas_pago_id, 'prop_id' => $request->prop_id, 'plan_id' => $request->plan_id));
 	        }
 
-			$pago->estado 		= 0;
-	    	$pago->prox_fac 	= $fecha_actual2->toDateTimeString();
-	    	$pago->pas_pago_id 	= $request->pas_pago_id;
-	    	$pago->prop_id 		= $request->prop_id;
-	    	$pago->plan_id 		= $request->plan_id;
-	    	$pago->save();
-dd($pago);
 	    	if ($monto == 0) {
 	    		$retorno['errors'] = false;
 				$retorno["msj"]    = "Es plan gratuito ha sido seleccionado con exito";
