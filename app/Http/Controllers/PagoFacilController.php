@@ -39,7 +39,7 @@ class PagoFacilController extends Controller {
                 (
                     $request->prop_id."".
                     $request->plan_id."".
-                    rand(100000, 999999)."".
+                    rand(10000, 99999)."".
                     $request->interval_time
                 ), 
                 config('app.PAGOFACIL_TOKEN_TIENDA'), 
@@ -75,8 +75,8 @@ class PagoFacilController extends Controller {
     public function CallBack(Request $request) {
         $interval_time = (int) substr($request->ct_order_id, -1);
         $data = substr($request->ct_order_id, 0, -1);
-        $prop_id = intval(((int) $data) / 10000000);
-        $aux = ("".(((int) $data) % 10000000) / 100000);
+        $prop_id = intval(((int) $data) / 1000000);
+        $aux = ("".(((int) $data) % 1000000) / 10000);
         $plan_id = (int) substr($aux, 0, 1);
     
         Event::fire(
@@ -150,8 +150,8 @@ class PagoFacilController extends Controller {
     public function Retorno(Request $request) {
         $interval_time = (int) substr($request->ct_order_id, -1);
         $data = substr($request->ct_order_id, 0, -1);
-        $prop_id = intval(((int) $data) / 10000000);
-        $aux = ("".(((int) $data) % 10000000) / 100000);
+        $prop_id = intval(((int) $data) / 1000000);
+        $aux = ("".(((int) $data) % 1000000) / 10000);
         $plan_id = (int) substr($aux, 0, 1);
     
         Event::fire(
