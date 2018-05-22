@@ -88,62 +88,61 @@ class PagoFacilController extends Controller {
         );
         
         if (strcmp($request->ct_estado, "COMPLETADA") == 0) {
-            if (!is_null($propiedad)) {
-                $request->merge([ 
-                    'prop_id'       => $prop_id
-                ]);
-                $request->merge([ 
-                    'pas_pago_id'   => 1
-                ]);
-                $request->merge([ 
-                    'estado'        => 1
-                ]);
-                $request->merge([ 
-                    'plan_id'       => $plan_id
-                ]);
-                $request->merge([ 
-                    'interval_time' => $interval_time
-                ]);
+            $request->merge([ 
+                'prop_id'       => $prop_id
+            ]);
+            $request->merge([ 
+                'pas_pago_id'   => 1
+            ]);
+            $request->merge([ 
+                'estado'        => 1
+            ]);
+            $request->merge([ 
+                'plan_id'       => $plan_id
+            ]);
+            $request->merge([ 
+                'interval_time' => $interval_time
+            ]);
 
-                $resp = app('App\Http\Controllers\RegistroController')->SeleccionPago(
-                    $request
-                );
+            $resp = app('App\Http\Controllers\RegistroController')->SeleccionPago(
+                $request
+            );
 
-                $propiedad = Propiedad::where(
-                    "id",
-                    $prop_id
-                )->first();
+            $propiedad = Propiedad::where(
+                "id",
+                $prop_id
+            )->first();
 
-                $pago_o = PagoOnline::where(
-                    "prop_id",
-                    $prop_id
-                )->first();
+            $pago_o = PagoOnline::where(
+                "prop_id",
+                $prop_id
+            )->first();
 
-                $propiedad->estado_cuenta_id = 2;
-                $propiedad->save();
+            $propiedad->estado_cuenta_id = 2;
+            $propiedad->save();
 
-                $user = $propiedad->user->first();
-                $user->update(["paso" => 8]);
+            $user = $propiedad->user->first();
+            $user->update(["paso" => 8]);
 
-                $pago_f = PagoFacil::where(
-                    "order_id",
-                    $request->ct_order_id
-                )->first();
+            $pago_f = PagoFacil::where(
+                "order_id",
+                $request->ct_order_id
+            )->first();
 
-                if (is_null($pago_f)) {
-                    $pago_f = new PagoFacil();
-                }
-                
-                $pago_f->order_id = $request->ct_order_id;
-                $pago_f->monto    = $request->ct_monto;
-                $pago_f->email    = $user->email;
-                $pago_f->status   = $request->ct_estado;
-                $pago_f->pago_id  = $pago_o->id;  
-                $pago_f->save();
+            if (is_null($pago_f)) {
+                $pago_f = new PagoFacil();
+            }
+            
+            $pago_f->order_id = $request->ct_order_id;
+            $pago_f->monto    = $request->ct_monto;
+            $pago_f->email    = $user->email;
+            $pago_f->status   = $request->ct_estado;
+            $pago_f->pago_id  = $pago_o->id;  
+            $pago_f->save();
 
-                $pago_o->estado   = 1;
-                $pago_o->save();
-            } 
+            $pago_o->estado   = 1;
+            $pago_o->save();
+            
         } 
         return redirect(config('app.PANEL_PRINCIPAL'));
     }
@@ -164,62 +163,61 @@ class PagoFacilController extends Controller {
         );
         
         if (strcmp($request->ct_estado, "COMPLETADA") == 0) {
-            if (!is_null($propiedad)) {
-                $request->merge([ 
-                    'prop_id'       => $prop_id
-                ]);
-                $request->merge([ 
-                    'pas_pago_id'   => 1
-                ]);
-                $request->merge([ 
-                    'estado'        => 1
-                ]);
-                $request->merge([ 
-                    'plan_id'       => $plan_id
-                ]);
-                $request->merge([ 
-                    'interval_time' => $interval_time
-                ]);
+            $request->merge([ 
+                'prop_id'       => $prop_id
+            ]);
+            $request->merge([ 
+                'pas_pago_id'   => 1
+            ]);
+            $request->merge([ 
+                'estado'        => 1
+            ]);
+            $request->merge([ 
+                'plan_id'       => $plan_id
+            ]);
+            $request->merge([ 
+                'interval_time' => $interval_time
+            ]);
 
-                $resp = app('App\Http\Controllers\RegistroController')->SeleccionPago(
-                    $request
-                );
+            $resp = app('App\Http\Controllers\RegistroController')->SeleccionPago(
+                $request
+            );
 
-                $propiedad = Propiedad::where(
-                    "id",
-                    $prop_id
-                )->first();
+            $propiedad = Propiedad::where(
+                "id",
+                $prop_id
+            )->first();
 
-                $pago_o = PagoOnline::where(
-                    "prop_id",
-                    $prop_id
-                )->first();
+            $pago_o = PagoOnline::where(
+                "prop_id",
+                $prop_id
+            )->first();
 
-                $propiedad->estado_cuenta_id = 2;
-                $propiedad->save();
+            $propiedad->estado_cuenta_id = 2;
+            $propiedad->save();
 
-                $user = $propiedad->user->first();
-                $user->update(["paso" => 8]);
+            $user = $propiedad->user->first();
+            $user->update(["paso" => 8]);
 
-                $pago_f = PagoFacil::where(
-                    "order_id",
-                    $request->ct_order_id
-                )->first();
+            $pago_f = PagoFacil::where(
+                "order_id",
+                $request->ct_order_id
+            )->first();
 
-                if (is_null($pago_f)) {
-                    $pago_f = new PagoFacil();
-                }
-                
-                $pago_f->order_id = $request->ct_order_id;
-                $pago_f->monto    = $request->ct_monto;
-                $pago_f->email    = $user->email;
-                $pago_f->status   = $request->ct_estado;
-                $pago_f->pago_id  = $pago_o->id;  
-                $pago_f->save();
+            if (is_null($pago_f)) {
+                $pago_f = new PagoFacil();
+            }
+            
+            $pago_f->order_id = $request->ct_order_id;
+            $pago_f->monto    = $request->ct_monto;
+            $pago_f->email    = $user->email;
+            $pago_f->status   = $request->ct_estado;
+            $pago_f->pago_id  = $pago_o->id;  
+            $pago_f->save();
 
-                $pago_o->estado   = 1;
-                $pago_o->save();
-            } 
+            $pago_o->estado   = 1;
+            $pago_o->save();
+            
         } 
         return redirect(config('app.PANEL_PRINCIPAL'));
     }
