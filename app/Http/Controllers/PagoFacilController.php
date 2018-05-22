@@ -118,10 +118,13 @@ class PagoFacilController extends Controller {
             $actual  = Carbon::now()->setTimezone(
                             $zona->nombre
                         );
+$diferencia = $fecha1->diffInSeconds($actual);
+$request->merge([ 
+                'diferencia' => $diferencia
+            ]);
 
 
-
-            if ($fecha1->diffInSeconds($actual) > 120  ) {
+            if ( $difernecia > 120  ) {
                 Event::fire(
                     new PagoFacilEvent(
                         "pagofacil",
@@ -171,6 +174,7 @@ class PagoFacilController extends Controller {
         $prop_id = intval(((int) $data) / 1000000);
         $aux = ("".(((int) $data) % 1000000) / 10000);
         $plan_id = (int) substr($aux, 0, 1);
+    
         
         if (strcmp($request->ct_estado, "COMPLETADA") == 0) {
             $request->merge([ 
@@ -210,10 +214,13 @@ class PagoFacilController extends Controller {
             $actual  = Carbon::now()->setTimezone(
                             $zona->nombre
                         );
+$diferencia = $fecha1->diffInSeconds($actual);
+$request->merge([ 
+                'diferencia' => $diferencia
+            ]);
 
 
-
-            if ($fecha1->diffInSeconds($actual) > 120  ) {
+            if ( $difernecia > 120  ) {
                 Event::fire(
                     new PagoFacilEvent(
                         "pagofacil",
