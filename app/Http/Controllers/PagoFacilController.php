@@ -25,9 +25,11 @@ class PagoFacilController extends Controller {
         $validator = Validator::make(
             $request->all(), 
             array(
-                'monto'       => 'required',
-                'email'       => 'required',
-                'prop_id'     => 'required'
+                'monto'         => 'required',
+                'email'         => 'required',
+                'prop_id'       => 'required',
+                'plan_id'       => 'required',
+                'interval_time' => 'required'
             )
         );
 
