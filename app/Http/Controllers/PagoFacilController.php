@@ -129,7 +129,7 @@ class PagoFacilController extends Controller {
                 'fecha2' => $actual->toDateTimeString()
             ]);
 
-            if ($diff > 60  ) {
+            if ($diff > 30  ) {
                 Event::fire(
                     new PagoFacilEvent(
                         "pagofacil",
@@ -228,7 +228,7 @@ class PagoFacilController extends Controller {
                 'fecha2' => $actual->toDateTimeString()
             ]);
 
-            if ($diff > 60  ) {
+            if ($diff > 30  ) {
                 Event::fire(
                     new PagoFacilEvent(
                         "pagofacil",
