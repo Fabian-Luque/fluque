@@ -25,11 +25,9 @@ class PagoFacilController extends Controller {
         $validator = Validator::make(
             $request->all(), 
             array(
-                'monto'         => 'required',
-                'email'         => 'required',
-                'prop_id'       => 'required',
-                'plan_id'       => 'required',
-                'interval_time' => 'required'
+                'monto'       => 'required',
+                'email'       => 'required',
+                'prop_id'     => 'required'
             )
         );
 
@@ -172,7 +170,7 @@ class PagoFacilController extends Controller {
                     $pago_o->save();
                 }
                 
-            } else {
+            } else {                        
                 Event::fire(
                     new PagoFacilEvent(
                         "pagofacil",
@@ -199,6 +197,11 @@ class PagoFacilController extends Controller {
                 if (is_null($pago_f)) {
                     $pago_f = new PagoFacil();
                 }
+
+                $pago_o = PagoOnline::where(
+                    "prop_id", 
+                    $prop_id
+                )->first();
                 
                 $pago_f->order_id = $request->ct_order_id;
                 $pago_f->monto    = $request->ct_monto;
@@ -209,7 +212,7 @@ class PagoFacilController extends Controller {
 
                 $pago_o->estado   = 1;
                 $pago_o->save();
-                
+
             }
 
         } 
@@ -314,7 +317,7 @@ class PagoFacilController extends Controller {
                     $pago_o->save();
                 }
                 
-            } else {
+            } else {                        
                 Event::fire(
                     new PagoFacilEvent(
                         "pagofacil",
@@ -341,6 +344,11 @@ class PagoFacilController extends Controller {
                 if (is_null($pago_f)) {
                     $pago_f = new PagoFacil();
                 }
+
+                $pago_o = PagoOnline::where(
+                    "prop_id", 
+                    $prop_id
+                )->first();
                 
                 $pago_f->order_id = $request->ct_order_id;
                 $pago_f->monto    = $request->ct_monto;
@@ -351,7 +359,7 @@ class PagoFacilController extends Controller {
 
                 $pago_o->estado   = 1;
                 $pago_o->save();
-                
+
             }
 
         } 
