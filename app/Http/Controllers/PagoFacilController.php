@@ -101,12 +101,12 @@ class PagoFacilController extends Controller {
                 $prop_id
             )->first();
 
+            $propiedad = Propiedad::where(
+                "id",
+                $prop_id
+            )->first();
             if (!is_null($pago_o)) {
 
-                $propiedad = Propiedad::where(
-                    "id",
-                    $prop_id
-                )->first();
 
                 $zona = $propiedad->zonaHoraria;
 
@@ -243,12 +243,12 @@ class PagoFacilController extends Controller {
                 $prop_id
             )->first();
 
+            $propiedad = Propiedad::where(
+                "id",
+                $prop_id
+            )->first();
             if (!is_null($pago_o)) {
 
-                $propiedad = Propiedad::where(
-                    "id",
-                    $prop_id
-                )->first();
 
                 $zona = $propiedad->zonaHoraria;
 
