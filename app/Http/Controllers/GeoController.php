@@ -308,7 +308,11 @@ class GeoController extends Controller {
                             $prop->disponible = false;
                         }
 
-                        array_push($props, $prop);
+                        $user = $propiedad->user->first();
+
+                        if ($user->paso == 8) {
+                            array_push($props, $prop);
+                        }
                     }
                 }
 
