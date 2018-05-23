@@ -78,23 +78,6 @@ class PagoFacilController extends Controller {
         $prop_id = intval(((int) $data) / 1000000);
         $aux = ("".(((int) $data) % 1000000) / 10000);
         $plan_id = (int) substr($aux, 0, 1);
-
-        $pago_o = PagoOnline::where(
-            "prop_id",
-            $prop_id
-        )->first();
-
-        $propiedad = Propiedad::where(
-            "id",
-            $prop_id
-        )->first();
-        
-        $zona       = $propiedad->zonaHoraria;
-        $updated_at = new Carbon($pago_o->updated_at);
-        $fecha1     = $updated_at->tz($zona->nombre);
-        $actual     = Carbon::now()->setTimezone(
-            $zona->nombre
-        );
         
         if (strcmp($request->ct_estado, "COMPLETADA") == 0) {
             $request->merge([ 
@@ -113,20 +96,81 @@ class PagoFacilController extends Controller {
                 'interval_time' => $interval_time
             ]);
 
-            $diff = $fecha1->diffInSeconds($actual);
-            $request->merge([ 
-                'diferencia' => $diff
-            ]);
+            $pago_o = PagoOnline::where(
+                "prop_id",
+                $prop_id
+            )->first();
 
-            $request->merge([ 
-                'fecha1' => $fecha1->toDateTimeString()
-            ]);
+            $propiedad = Propiedad::where(
+                "id",
+                $prop_id
+            )->first();
+            if (!is_null($pago_o)) {
 
-            $request->merge([ 
-                'fecha2' => $actual->toDateTimeString()
-            ]);
 
-            if ($diff > 30) {
+                $zona = $propiedad->zonaHoraria;
+
+                $updated_at = new Carbon($pago_o->updated_at);
+                
+                $fecha1 = $updated_at->tz($zona->nombre);
+
+                $actual  = Carbon::now()->setTimezone(
+                    $zona->nombre
+                );
+
+                $diff = $fecha1->diffInSeconds($actual);
+                $request->merge([ 
+                    'diferencia' => $diff
+                ]);
+
+                $request->merge([ 
+                    'fecha1' => $fecha1->toDateTimeString()
+                ]);
+
+                $request->merge([ 
+                    'fecha2' => $actual->toDateTimeString()
+                ]);
+
+                if ($diff > 30  ) {
+                    Event::fire(
+                        new PagoFacilEvent(
+                            "pagofacil",
+                            $request->all(),
+                            $prop_id
+                        )
+                    );
+
+                    $resp = app('App\Http\Controllers\RegistroController')->SeleccionPago(
+                        $request
+                    );
+
+                    $propiedad->estado_cuenta_id = 2;
+                    $propiedad->save();
+
+                    $user = $propiedad->user->first();
+                    $user->update(["paso" => 8]);
+
+                    $pago_f = PagoFacil::where(
+                        "order_id",
+                        $request->ct_order_id
+                    )->first();
+
+                    if (is_null($pago_f)) {
+                        $pago_f = new PagoFacil();
+                    }
+                    
+                    $pago_f->order_id = $request->ct_order_id;
+                    $pago_f->monto    = $request->ct_monto;
+                    $pago_f->email    = $user->email;
+                    $pago_f->status   = $request->ct_estado;
+                    $pago_f->pago_id  = $pago_o->id;  
+                    $pago_f->save();
+
+                    $pago_o->estado   = 1;
+                    $pago_o->save();
+                }
+                
+            } else {                        
                 Event::fire(
                     new PagoFacilEvent(
                         "pagofacil",
@@ -145,31 +189,33 @@ class PagoFacilController extends Controller {
                 $user = $propiedad->user->first();
                 $user->update(["paso" => 8]);
 
+                $pago_f = PagoFacil::where(
+                    "order_id",
+                    $request->ct_order_id
+                )->first();
+
+                if (is_null($pago_f)) {
+                    $pago_f = new PagoFacil();
+                }
+
+                $pago_o = PagoOnline::where(
+                    "prop_id", 
+                    $prop_id
+                )->first();
+                
+                $pago_f->order_id = $request->ct_order_id;
+                $pago_f->monto    = $request->ct_monto;
+                $pago_f->email    = $user->email;
+                $pago_f->status   = $request->ct_estado;
+                $pago_f->pago_id  = $pago_o->id;  
+                $pago_f->save();
+
                 $pago_o->estado   = 1;
                 $pago_o->save();
+
             }
+
         } 
-        if ($diff > 30) {
-            $pago_f = PagoFacil::where(
-                "order_id",
-                $request->ct_order_id
-            )->first();
-
-            if (is_null($pago_f)) {
-                $pago_f = new PagoFacil();
-            }
-            
-            $pago_f->order_id = $request->ct_order_id;
-            $pago_f->monto    = $request->ct_monto;
-            $pago_f->email    = $user->email;
-            $pago_f->status   = $request->ct_estado;
-            $pago_f->pago_id  = $pago_o->id;  
-            $pago_f->save();
-
-            if (!is_null($pago_o)) {
-                $pago_o = new PagoOnline();
-            }
-        }
         return redirect(config('app.PANEL_PRINCIPAL'));
     }
 
@@ -179,23 +225,6 @@ class PagoFacilController extends Controller {
         $prop_id = intval(((int) $data) / 1000000);
         $aux = ("".(((int) $data) % 1000000) / 10000);
         $plan_id = (int) substr($aux, 0, 1);
-
-        $pago_o = PagoOnline::where(
-            "prop_id",
-            $prop_id
-        )->first();
-
-        $propiedad = Propiedad::where(
-            "id",
-            $prop_id
-        )->first();
-        
-        $zona       = $propiedad->zonaHoraria;
-        $updated_at = new Carbon($pago_o->updated_at);
-        $fecha1     = $updated_at->tz($zona->nombre);
-        $actual     = Carbon::now()->setTimezone(
-            $zona->nombre
-        );
         
         if (strcmp($request->ct_estado, "COMPLETADA") == 0) {
             $request->merge([ 
@@ -214,20 +243,81 @@ class PagoFacilController extends Controller {
                 'interval_time' => $interval_time
             ]);
 
-            $diff = $fecha1->diffInSeconds($actual);
-            $request->merge([ 
-                'diferencia' => $diff
-            ]);
+            $pago_o = PagoOnline::where(
+                "prop_id",
+                $prop_id
+            )->first();
 
-            $request->merge([ 
-                'fecha1' => $fecha1->toDateTimeString()
-            ]);
+            $propiedad = Propiedad::where(
+                "id",
+                $prop_id
+            )->first();
+            if (!is_null($pago_o)) {
 
-            $request->merge([ 
-                'fecha2' => $actual->toDateTimeString()
-            ]);
 
-            if ($diff > 30) {
+                $zona = $propiedad->zonaHoraria;
+
+                $updated_at = new Carbon($pago_o->updated_at);
+                
+                $fecha1 = $updated_at->tz($zona->nombre);
+
+                $actual  = Carbon::now()->setTimezone(
+                    $zona->nombre
+                );
+
+                $diff = $fecha1->diffInSeconds($actual);
+                $request->merge([ 
+                    'diferencia' => $diff
+                ]);
+
+                $request->merge([ 
+                    'fecha1' => $fecha1->toDateTimeString()
+                ]);
+
+                $request->merge([ 
+                    'fecha2' => $actual->toDateTimeString()
+                ]);
+
+                if ($diff > 30  ) {
+                    Event::fire(
+                        new PagoFacilEvent(
+                            "pagofacil",
+                            $request->all(),
+                            $prop_id
+                        )
+                    );
+
+                    $resp = app('App\Http\Controllers\RegistroController')->SeleccionPago(
+                        $request
+                    );
+
+                    $propiedad->estado_cuenta_id = 2;
+                    $propiedad->save();
+
+                    $user = $propiedad->user->first();
+                    $user->update(["paso" => 8]);
+
+                    $pago_f = PagoFacil::where(
+                        "order_id",
+                        $request->ct_order_id
+                    )->first();
+
+                    if (is_null($pago_f)) {
+                        $pago_f = new PagoFacil();
+                    }
+                    
+                    $pago_f->order_id = $request->ct_order_id;
+                    $pago_f->monto    = $request->ct_monto;
+                    $pago_f->email    = $user->email;
+                    $pago_f->status   = $request->ct_estado;
+                    $pago_f->pago_id  = $pago_o->id;  
+                    $pago_f->save();
+
+                    $pago_o->estado   = 1;
+                    $pago_o->save();
+                }
+                
+            } else {                        
                 Event::fire(
                     new PagoFacilEvent(
                         "pagofacil",
@@ -246,31 +336,33 @@ class PagoFacilController extends Controller {
                 $user = $propiedad->user->first();
                 $user->update(["paso" => 8]);
 
+                $pago_f = PagoFacil::where(
+                    "order_id",
+                    $request->ct_order_id
+                )->first();
+
+                if (is_null($pago_f)) {
+                    $pago_f = new PagoFacil();
+                }
+
+                $pago_o = PagoOnline::where(
+                    "prop_id", 
+                    $prop_id
+                )->first();
+                
+                $pago_f->order_id = $request->ct_order_id;
+                $pago_f->monto    = $request->ct_monto;
+                $pago_f->email    = $user->email;
+                $pago_f->status   = $request->ct_estado;
+                $pago_f->pago_id  = $pago_o->id;  
+                $pago_f->save();
+
                 $pago_o->estado   = 1;
                 $pago_o->save();
+
             }
+
         } 
-        if ($diff > 30) {
-            $pago_f = PagoFacil::where(
-                "order_id",
-                $request->ct_order_id
-            )->first();
-
-            if (is_null($pago_f)) {
-                $pago_f = new PagoFacil();
-            }
-            
-            $pago_f->order_id = $request->ct_order_id;
-            $pago_f->monto    = $request->ct_monto;
-            $pago_f->email    = $user->email;
-            $pago_f->status   = $request->ct_estado;
-            $pago_f->pago_id  = $pago_o->id;  
-            $pago_f->save();
-
-            if (!is_null($pago_o)) {
-                $pago_o = new PagoOnline();
-            }
-        }
-        return redirect(config('app.PANEL_PRINCIPAL')); 
+        return redirect(config('app.PANEL_PRINCIPAL'));
     }
 }
