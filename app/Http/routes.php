@@ -19,7 +19,6 @@ Route::post('hab','RegistroController@ejm');
 Route::post('pasarela-pago/selecionar','RegistroController@SeleccionPago');
 Route::post('planes/obtener','RegistroController@getPlanes');
 Route::post('pagos-online/obtener','RegistroController@getPagos');
-Route::post('pagos-facil/obtener','RegistroController@getPagoFacil');
 
 Route::post('propiedad/ubicacion/actualizar','DashControllers\UserDashController@UpdateUbicacion');
 
@@ -205,6 +204,8 @@ Route::group(['as' => 'api.jarvis.'], function() {
 		Route::post('cuentas/actualizar', 'DashControllers\UserDashController@UpdateCuenta');
 		Route::post('dash/reserva/obtener', 'DashControllers\UserDashController@getReservas');
 		Route::post('dash/change/pass', 'DashControllers\UserDashController@ChagePass');
+
+		Route::post('pagos-facil/obtener','RegistroController@getPagoFacil');
 
 		Route::post('propiedades/obtener', 'DashControllers\UserDashController@getProps');
 		Route::post('propiedades/actualizar', 'DashControllers\UserDashController@UpdatePropiedad');
