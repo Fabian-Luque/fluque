@@ -50,10 +50,8 @@ class UserController extends Controller {
             )->first();
 
             if (!is_null($pago_o) && !is_null($prop)) {
-                $uno = new Carbon(
-                    $pago_o->prox_fac, 
-                    $zona->nombre
-                );
+                $uno = new Carbon($pago_o->prox_fac);
+                $uno = $uno->tz($zona->nombre);
 
                 $dos = Carbon::now()->setTimezone(
                     $zona->nombre
