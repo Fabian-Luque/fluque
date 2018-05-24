@@ -268,7 +268,7 @@ class GeoController extends Controller {
 
                 $props = [];
                 foreach ($propiedades as $prop) {
-                    $prop->propiedad  = Propiedad::find($prop->prop_id);
+                    $prop->propiedad = Propiedad::find($prop->prop_id);
                     return $property         = Propiedad::where('id', $prop->prop_id)->with('tiposHabitacion')->first();
 
                     if ($property->estado_cuenta_id == 2) {
@@ -308,7 +308,7 @@ class GeoController extends Controller {
                             $prop->disponible = false;
                         }
 
-                        $user = $prop->user->first();
+                        $user = $prop->propiedad->user->first();
 
                         if ($user->paso == 8) {
                             array_push($props, $prop);
