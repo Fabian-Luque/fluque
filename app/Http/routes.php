@@ -50,6 +50,9 @@ Route::post('hoteles/cercanos', 'GeoController@Gmaps');
 Route::post('ejmm', 'CorreoController@SendFileByEmail');
 
 
+Route::get('crear/pagos/online', 'RegistroController@crearPagosOnline');
+
+
 Route::get(
   '/upload', 
   function () {

@@ -935,4 +935,27 @@ class RegistroController extends Controller {
 		
 		return $retorno;
 	}
+
+	public function crearPagosOnline()
+	{
+		$propiedades = Propiedad::all();
+
+		foreach ($propiedades as $propiedad) {
+			$pago              = new PagoOnline();
+			$pago->estado 	   = 0;
+			$pago->prox_fac    = '2018-07-10';
+			$pago->pas_pago_id = 1; 
+			$pago->prop_id 	   = $propiedad->id;
+			$pago->plan_id     = 4;
+			$pago->save();
+
+		}
+
+		return "creados";
+
+
+	}
+
+
+
 }
