@@ -41,7 +41,7 @@ class UserController extends Controller {
             $propiedad_id = $users[0]->propiedad[0]['id'];
             $clientes = [];
 
-           
+            dd($users[0]->propiedad[0]['PagoOnline']->planes);
 
             $prop = Propiedad::find($propiedad_id);
             $zona = $prop->zonaHoraria->first();
