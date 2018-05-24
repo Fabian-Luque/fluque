@@ -42,10 +42,12 @@ class UserController extends Controller {
             $propiedad_id = $users[0]->propiedad[0]['id'];
             $clientes = [];
 
-            $users[0]->propiedad[0]['PagoOnline']->plan = Plan::where(
+            $plan = Plan::where(
                 "id",
                 $users[0]->propiedad[0]['PagoOnline']->plan_id
             )->first();
+
+            $users[0]->propiedad[0]['PagoOnline']->plan = $plan->facturacion;
 
             $prop = Propiedad::find($propiedad_id);
             $zona = $prop->zonaHoraria->first();
