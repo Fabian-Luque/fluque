@@ -14,6 +14,7 @@ use App\Caja;
 use App\Reserva;
 use App\Mensajeria; 
 use App\Cliente;
+use App\Plan;
 use App\PagoOnline; 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -41,7 +42,10 @@ class UserController extends Controller {
             $propiedad_id = $users[0]->propiedad[0]['id'];
             $clientes = [];
 
-            dd($users[0]->propiedad[0]['PagoOnline']->planes);
+            $users[0]->propiedad[0]['PagoOnline']->plan = Plan::where(
+                "id",
+                $users[0]->propiedad[0]['PagoOnline']->plan_id
+            )->first();
 
             $prop = Propiedad::find($propiedad_id);
             $zona = $prop->zonaHoraria->first();
