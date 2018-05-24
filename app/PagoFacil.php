@@ -3,6 +3,9 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\ZonaHoraria;
+use JWTAuth;
+use \Carbon\Carbon;
 
 class PagoFacil extends Model {
     protected $table = 'pago_facil';
@@ -35,5 +38,5 @@ class PagoFacil extends Model {
         
 
     }   
-    
+
 }
