@@ -269,48 +269,46 @@ class GeoController extends Controller {
                 $props = [];
                 foreach ($propiedades as $prop) {
                     $prop->propiedad = Propiedad::find($prop->prop_id);
-                    return $property         = Propiedad::where('id', $prop->prop_id)->with('tiposHabitacion')->first();
 
-                    if ($property->estado_cuenta_id == 2) {
-                        $tipos_habitacion = $property->tiposHabitacion;
-                        $config           = $tipos_habitacion->where('venta_propiedad', 0);
+                    $property         = Propiedad::where('id', $prop->prop_id)->with('tiposHabitacion')->first();
+                    $user = $property->user->first();
+                    if ($user->paso == 8) {
+                        if ($property->estado_cuenta_id == 2) {
+                            $tipos_habitacion = $property->tiposHabitacion;
+                            $config           = $tipos_habitacion->where('venta_propiedad', 0);
 
-                        $habitaciones_disponibles = Habitacion::where(
-                            'propiedad_id', 
-                            $prop->prop_id
-                        )->whereDoesntHave(
-                            'reservas', 
-                            function ($query) use ($fecha_inicio, $fecha_fin) {
-                                $query->whereIn('estado_reserva_id', [1,2,3,4,5])->where(
-                                    function ($query) use ($fecha_inicio, $fecha_fin) {
-                                        $query->where(
-                                            function ($query) use ($fecha_inicio, $fecha_fin) {
-                                                $query->where('checkin', '>=', $fecha_inicio);
-                                                $query->where('checkin', '<',  $fecha_fin);
-                                            }
-                                        );
-                                        $query->orWhere(
-                                            function($query) use ($fecha_inicio,$fecha_fin){
-                                                $query->where('checkin', '<=', $fecha_inicio);
-                                                $query->where('checkout', '>',  $fecha_inicio);
-                                            }
-                                        );                
-                                    }
-                                );
+                            $habitaciones_disponibles = Habitacion::where(
+                                'propiedad_id', 
+                                $prop->prop_id
+                            )->whereDoesntHave(
+                                'reservas', 
+                                function ($query) use ($fecha_inicio, $fecha_fin) {
+                                    $query->whereIn('estado_reserva_id', [1,2,3,4,5])->where(
+                                        function ($query) use ($fecha_inicio, $fecha_fin) {
+                                            $query->where(
+                                                function ($query) use ($fecha_inicio, $fecha_fin) {
+                                                    $query->where('checkin', '>=', $fecha_inicio);
+                                                    $query->where('checkin', '<',  $fecha_fin);
+                                                }
+                                            );
+                                            $query->orWhere(
+                                                function($query) use ($fecha_inicio,$fecha_fin){
+                                                    $query->where('checkin', '<=', $fecha_inicio);
+                                                    $query->where('checkout', '>',  $fecha_inicio);
+                                                }
+                                            );                
+                                        }
+                                    );
+                                }
+                            )->get();
+
+                            $prop->n_habitaciones_disponibles = $habitaciones_disponibles->count();
+
+                            if ($habitaciones_disponibles->count() != 0 && count($tipos_habitacion) != count($config)) {
+                                $prop->disponible = true;
+                            } else {
+                                $prop->disponible = false;
                             }
-                        )->get();
-
-                        $prop->n_habitaciones_disponibles = $habitaciones_disponibles->count();
-
-                        if ($habitaciones_disponibles->count() != 0 && count($tipos_habitacion) != count($config)) {
-                            $prop->disponible = true;
-                        } else {
-                            $prop->disponible = false;
-                        }
-
-                        $user = $prop->propiedad->user->first();
-
-                        if ($user->paso == 8) {
                             array_push($props, $prop);
                         }
                     }
