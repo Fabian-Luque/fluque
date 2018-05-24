@@ -668,6 +668,12 @@ class RegistroController extends Controller {
 				$pago_o->id
 			)->get();
 
+			$pago_o->plan = Plan::where(
+				"id",
+				$pago_o->plan_id
+			)->first()->facturacion;
+
+
 			$pago_o->detalle = $pago;
 			$retorno = $pago_o;
 		}

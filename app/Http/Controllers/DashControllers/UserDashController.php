@@ -25,7 +25,6 @@ use \Illuminate\Database\QueryException;
 use Webpatser\Uuid\Uuid;
 
 class UserDashController extends Controller {
-
     public function UpdateUbicacion(Request $request) {
         $validator = Validator::make(
             $request->all(), 

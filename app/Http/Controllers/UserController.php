@@ -14,6 +14,7 @@ use App\Caja;
 use App\Reserva;
 use App\Mensajeria; 
 use App\Cliente;
+use App\Plan;
 use App\PagoOnline; 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -41,6 +42,13 @@ class UserController extends Controller {
             $propiedad_id = $users[0]->propiedad[0]['id'];
             $clientes = [];
 
+            $plan = Plan::where(
+                "id",
+                $users[0]->propiedad[0]['PagoOnline']->plan_id
+            )->first();
+
+            $users[0]->propiedad[0]['PagoOnline']->plan = $plan->facturacion;
+
             $prop = Propiedad::find($propiedad_id);
             $zona = $prop->zonaHoraria->first();
 
@@ -50,10 +58,8 @@ class UserController extends Controller {
             )->first();
 
             if (!is_null($pago_o) && !is_null($prop)) {
-                $uno = new Carbon(
-                    $pago_o->prox_fac, 
-                    $zona->nombre
-                );
+                $uno = new Carbon($pago_o->prox_fac);
+                $uno = $uno->tz($zona->nombre);
 
                 $dos = Carbon::now()->setTimezone(
                     $zona->nombre
