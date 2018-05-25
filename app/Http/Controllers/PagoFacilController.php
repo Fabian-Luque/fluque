@@ -245,10 +245,9 @@ class PagoFacilController extends Controller {
                         )
                     );
                 }
-                return redirect(config('app.PANEL_PRINCIPAL'));
-            } else {
-                return redirect(config('app.PANEL_PRINCIPAL'));
-            }
+                
+            } 
+            return redirect(config('app.PANEL_PRINCIPAL'));
         }
     }
 
