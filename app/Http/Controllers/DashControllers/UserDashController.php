@@ -25,6 +25,36 @@ use \Illuminate\Database\QueryException;
 use Webpatser\Uuid\Uuid;
 
 class UserDashController extends Controller {
+    public function UpdateUbicacion(Request $request) {
+        $validator = Validator::make(
+            $request->all(), 
+            array(
+                'prop_id'                => 'required',
+                'latitud'                => 'required',
+                'longitud'               => 'required'
+            )
+        );
+
+        if ($validator->fails()) {
+            $retorno['errors'] = true;
+            $retorno["msg"] = $validator->errors();
+        } else {
+            $ubicacion           = UbicacionProp::where(
+                "prop_id",
+                $request->prop_id
+            )->first();
+
+            $ubicacion->location = new Point(
+                $request->longitud,
+                $request->latitud 
+            );
+            $ubicacion->save();
+
+            $retorno['errors'] = false;
+            $retorno["msg"] = "Ubicacion actualizada con exito!";
+        }
+        return Response::json($retorno);
+    }
 
     public function CreateUser(Request $request) {
         $validator = Validator::make(

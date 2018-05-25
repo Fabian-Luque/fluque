@@ -12,7 +12,7 @@ class AddCantidadDisponibleVentaToTipoHabitacionTable extends Migration
      */
     public function up()
     {
-        if (!Schema::hasTable('tipo_habitacion')) {
+        if (Schema::hasTable('tipo_habitacion')) {
         Schema::table('tipo_habitacion', function (Blueprint $table) {
             $table->integer('cantidad')->after('capacidad')->default(0);
             $table->integer('disponible_venta')->after('cantidad')->default(0);

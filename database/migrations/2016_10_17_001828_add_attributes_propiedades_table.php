@@ -12,18 +12,14 @@ class AddAttributesPropiedadesTable extends Migration
      */
     public function up()
     {
-        if (!Schema::hasTable('propiedades')) {
-            Schema::table('propiedades', function (Blueprint $table) {
+        Schema::table('propiedades', function (Blueprint $table) {
             $table->string('telefono')->after('direccion');
             $table->string('email')->after('telefono');
             $table->string('nombre_responsable')->after('email');
             $table->string('descripcion')->after('nombre_responsable');
             $table->integer('iva')->after('descripcion');
             $table->integer('porcentaje_deposito')->after('iva');
-           
-
         });
-        }
     }
 
     /**

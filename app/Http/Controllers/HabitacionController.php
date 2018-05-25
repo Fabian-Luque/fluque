@@ -352,29 +352,21 @@ class HabitacionController extends Controller
             $cantidad_habitaciones   = $propiedad->numero_habitaciones;
             $habitaciones_ingresadas = $propiedad->habitaciones->count();
 
-            if ($cantidad_habitaciones > $habitaciones_ingresadas) {
-                $habitacion                      = new Habitacion();
-                $habitacion->nombre              = $request->get('nombre');
-                $habitacion->propiedad_id        = $request->get('propiedad_id');
-                $habitacion->tipo_habitacion_id  = $request->get('tipo_habitacion_id');
-                $habitacion->save();
+            $habitacion                      = new Habitacion();
+            $habitacion->nombre              = $request->get('nombre');
+            $habitacion->propiedad_id        = $request->get('propiedad_id');
+            $habitacion->tipo_habitacion_id  = $request->get('tipo_habitacion_id');
+            $habitacion->save();
 
-                $tipo_habitacion = TipoHabitacion::where('id', $request->get('tipo_habitacion_id'))->first();
-                $cantidad = $tipo_habitacion->cantidad;
+            $tipo_habitacion = TipoHabitacion::where('id', $request->get('tipo_habitacion_id'))->first();
+            $cantidad = $tipo_habitacion->cantidad;
 
-                $tipo_habitacion->update(array('cantidad' => $cantidad + 1));
+            $tipo_habitacion->update(array('cantidad' => $cantidad + 1));
 
-                $data = [
-                    'errors' => false,
-                    'msg'    => 'Habitacion creado satisfactoriamente',];
-                return Response::json($data, 201);
-
-            } else {
-                $data = [
-                    'errors' => true,
-                    'msg'    => 'Habitaciones ya creadas',];
-                return Response::json($data, 400);
-            }
+            $data = [
+                'errors' => false,
+                'msg'    => 'Habitacion creado satisfactoriamente',];
+            return Response::json($data, 201);
         }
 
     }

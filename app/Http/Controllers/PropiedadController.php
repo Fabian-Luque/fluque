@@ -1579,10 +1579,11 @@ class PropiedadController extends Controller
             'email'               => '',
             'nombre_responsable'  => '',
             'descripcion'         => '',
+            'razon_social'        => '',
+            'rut'                 => '',
             'iva'                 => 'numeric',
             'porcentaje_deposito' => 'numeric',
             'pais_id'             => 'numeric',
-            'region_id'           => 'numeric',
             'tipo_cobro_id'       => 'numeric',
             'zona_horaria_id'     => 'numeric',
 
@@ -1725,7 +1726,7 @@ class PropiedadController extends Controller
 
                 $retorno = array(
                     'msj'   => "Moneda ingresada correctamente",
-                    'erros' => false,);
+                    'errors' => false,);
                 return Response::json($retorno, 201);
             } else {
                 $retorno = array(

@@ -21,6 +21,9 @@ class EventServiceProvider extends ServiceProvider {
         'App\Events\ReservasMapaEvent' => [
             'App\Listeners\ReservasMapaEventListener',
         ],
+        'App\Events\PagoFacilEvent' => [
+            'App\Listeners\PagoFacilListener',
+        ],
     ];
 
     /**
