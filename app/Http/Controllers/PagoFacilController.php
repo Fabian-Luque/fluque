@@ -225,12 +225,14 @@ class PagoFacilController extends Controller {
                     $prop_id
                 )->first();
                 
-                $pago_f->order_id = $request->ct_order_id;
-                $pago_f->monto    = $request->ct_monto;
-                $pago_f->email    = $user->email;
-                $pago_f->status   = $request->ct_estado;
-                $pago_f->pago_id  = $pago_o->id;  
-                $pago_f->save();
+                if (!is_null($pago_o)) {
+                    $pago_f->order_id = $request->ct_order_id;
+                    $pago_f->monto    = $request->ct_monto;
+                    $pago_f->email    = $user->email;
+                    $pago_f->status   = $request->ct_estado;
+                    $pago_f->pago_id  = $pago_o->id;  
+                    $pago_f->save();
+                }
             } 
 
             if ($diff > 30) {
@@ -397,12 +399,14 @@ class PagoFacilController extends Controller {
                     $prop_id
                 )->first();
                 
-                $pago_f->order_id = $request->ct_order_id;
-                $pago_f->monto    = $request->ct_monto;
-                $pago_f->email    = $user->email;
-                $pago_f->status   = $request->ct_estado;
-                $pago_f->pago_id  = $pago_o->id;  
-                $pago_f->save();
+                if (!is_null($pago_o)) {
+                    $pago_f->order_id = $request->ct_order_id;
+                    $pago_f->monto    = $request->ct_monto;
+                    $pago_f->email    = $user->email;
+                    $pago_f->status   = $request->ct_estado;
+                    $pago_f->pago_id  = $pago_o->id;  
+                    $pago_f->save();
+                }
             } 
 
             if ($diff > 30) {
