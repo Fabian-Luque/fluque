@@ -47,7 +47,7 @@ class UserController extends Controller {
                 $propiedad_id
             )->first();
 
-            if (!is_null($pago_o) && !is_null($prop)) {
+            if (!is_null($pago_o)) {
                 $plan = Plan::where(
                     "id",
                     $users[0]->propiedad[0]['PagoOnline']->plan_id
