@@ -42,22 +42,22 @@ class UserController extends Controller {
             $propiedad_id = $users[0]->propiedad[0]['id'];
             $clientes = [];
 
-            $plan = Plan::where(
-                "id",
-                $users[0]->propiedad[0]['PagoOnline']->plan_id
-            )->first();
-
-            $users[0]->propiedad[0]['PagoOnline']->plan = $plan->facturacion;
-
-            $prop = Propiedad::find($propiedad_id);
-            $zona = $prop->zonaHoraria->first();
-
             $pago_o = PagoOnline::where(
                 "prop_id", 
                 $propiedad_id
             )->first();
 
             if (!is_null($pago_o) && !is_null($prop)) {
+                $plan = Plan::where(
+                    "id",
+                    $users[0]->propiedad[0]['PagoOnline']->plan_id
+                )->first();
+
+                $users[0]->propiedad[0]['PagoOnline']->plan = $plan->facturacion;
+
+                $prop = Propiedad::find($propiedad_id);
+                $zona = $prop->zonaHoraria->first();
+
                 $uno = new Carbon($pago_o->prox_fac);
                 $uno = $uno->tz($zona->nombre);
 
