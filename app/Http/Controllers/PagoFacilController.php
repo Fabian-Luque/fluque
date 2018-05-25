@@ -110,25 +110,30 @@ class PagoFacilController extends Controller {
                 $request->ct_order_id
             )->first();
 
-            $zona = $propiedad->zonaHoraria;
-            $updated_at = new Carbon($pago_o->updated_at);
-            $fecha1 = $updated_at->tz($zona->nombre);
+            if (!is_null($pago_o)) {
+                $zona = $propiedad->zonaHoraria;
+                $updated_at = new Carbon($pago_o->updated_at);
+                $fecha1 = $updated_at->tz($zona->nombre);
 
-            $actual  = Carbon::now()->setTimezone(
-                $zona->nombre
-            );
+                $actual  = Carbon::now()->setTimezone(
+                    $zona->nombre
+                );
 
-            $diff = $fecha1->diffInSeconds($actual);
+                $diff = $fecha1->diffInSeconds($actual);
+
+                $request->merge([ 
+                    'fecha1' => $fecha1->toDateTimeString()
+                ]);
+
+                $request->merge([ 
+                    'fecha2' => $actual->toDateTimeString()
+                ]);
+            } else {
+                $diff = 10;
+            }
+            
             $request->merge([ 
                 'diferencia' => $diff
-            ]);
-
-            $request->merge([ 
-                'fecha1' => $fecha1->toDateTimeString()
-            ]);
-
-            $request->merge([ 
-                'fecha2' => $actual->toDateTimeString()
             ]);
 
             if (strcmp($request->ct_estado, "COMPLETADA") == 0) {
@@ -159,11 +164,6 @@ class PagoFacilController extends Controller {
 
                         $user = $propiedad->user->first();
                         $user->update(["paso" => 8]);
-
-                        $pago_f = PagoFacil::where(
-                            "order_id",
-                            $request->ct_order_id
-                        )->first();
 
                         if (is_null($pago_f)) {
                             $pago_f = new PagoFacil();
@@ -282,25 +282,30 @@ class PagoFacilController extends Controller {
                 $request->ct_order_id
             )->first();
 
-            $zona = $propiedad->zonaHoraria;
-            $updated_at = new Carbon($pago_o->updated_at);
-            $fecha1 = $updated_at->tz($zona->nombre);
+            if (!is_null($pago_o)) {
+                $zona = $propiedad->zonaHoraria;
+                $updated_at = new Carbon($pago_o->updated_at);
+                $fecha1 = $updated_at->tz($zona->nombre);
 
-            $actual  = Carbon::now()->setTimezone(
-                $zona->nombre
-            );
+                $actual  = Carbon::now()->setTimezone(
+                    $zona->nombre
+                );
 
-            $diff = $fecha1->diffInSeconds($actual);
+                $diff = $fecha1->diffInSeconds($actual);
+
+                $request->merge([ 
+                    'fecha1' => $fecha1->toDateTimeString()
+                ]);
+
+                $request->merge([ 
+                    'fecha2' => $actual->toDateTimeString()
+                ]);
+            } else {
+                $diff = 10;
+            }
+            
             $request->merge([ 
                 'diferencia' => $diff
-            ]);
-
-            $request->merge([ 
-                'fecha1' => $fecha1->toDateTimeString()
-            ]);
-
-            $request->merge([ 
-                'fecha2' => $actual->toDateTimeString()
             ]);
 
             if (strcmp($request->ct_estado, "COMPLETADA") == 0) {
@@ -331,11 +336,6 @@ class PagoFacilController extends Controller {
 
                         $user = $propiedad->user->first();
                         $user->update(["paso" => 8]);
-
-                        $pago_f = PagoFacil::where(
-                            "order_id",
-                            $request->ct_order_id
-                        )->first();
 
                         if (is_null($pago_f)) {
                             $pago_f = new PagoFacil();
