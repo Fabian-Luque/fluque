@@ -33,6 +33,8 @@ class Propiedad extends Model {
         'tipo_cobro_id', 
         'zona_horaria_id', 
         'codigo',
+        'razon_social',
+        'rut',
         'monto_contrato'
     ];
 
@@ -165,6 +167,10 @@ class Propiedad extends Model {
         return $this->belongsToMany('App\ClasificacionMoneda', 'propiedad_moneda')
             ->withPivot('tipo_moneda_id')
             ->withTimestamps();
+    }
+
+    public function PagoOnline(){
+        return $this->hasOne('App\PagoOnline', 'prop_id');
     }
 
     public function coloresMotor(){

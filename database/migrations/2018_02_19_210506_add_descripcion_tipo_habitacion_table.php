@@ -12,9 +12,11 @@ class AddDescripcionTipoHabitacionTable extends Migration
      */
     public function up()
     {
-        Schema::table('tipo_habitacion', function (Blueprint $table) {
-            $table->string('descripcion')->after('venta_propiedad');
-        });
+        if (!Schema::hasColumn('tipo_habitacion', 'descripcion')){
+            Schema::table('tipo_habitacion', function (Blueprint $table) {
+                $table->string('descripcion')->after('venta_propiedad');
+            });
+        }
     }
 
     /**

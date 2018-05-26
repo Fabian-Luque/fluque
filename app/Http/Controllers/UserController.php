@@ -13,22 +13,63 @@ use App\Estado;
 use App\Caja;
 use App\Reserva;
 use App\Mensajeria; 
-use App\Cliente; 
+use App\Cliente;
+use App\Plan;
+use App\PagoOnline; 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Response;
 use JWTAuth;
+use \Carbon\Carbon;
 
 class UserController extends Controller {
-    public function read(Request $request){
+    public function read(Request $request) {
         return Response::json(User::all());
     }
     public function show($id){
-        try {
-            $users        = User::where('id', $id)->with('propiedad.tipoPropiedad','propiedad.pais','propiedad.region','propiedad.zonaHoraria' ,'propiedad.tipoMonedas', 'propiedad.tipoCobro')->with('rol.permisos')->get();
-            $propiedad_id = $users[0]->propiedad[0]['id'];
+        try { 
+            $users = User::where('id', $id)->with(
+                'propiedad.tipoPropiedad',
+                'propiedad.pais',
+                'propiedad.region',
+                'propiedad.zonaHoraria',
+                'propiedad.tipoMonedas', 
+                'propiedad.tipoCobro', 
+                'propiedad.ubicacion', 
+                'propiedad.PagoOnline'
+            )->with('rol.permisos')->get();
 
+            $propiedad_id = $users[0]->propiedad[0]['id'];
             $clientes = [];
+
+            $pago_o = PagoOnline::where(
+                "prop_id", 
+                $propiedad_id
+            )->first();
+
+            if (!is_null($pago_o)) {
+                $plan = Plan::where(
+                    "id",
+                    $users[0]->propiedad[0]['PagoOnline']->plan_id
+                )->first();
+
+                $users[0]->propiedad[0]['PagoOnline']->plan = $plan->facturacion;
+
+                $prop = Propiedad::find($propiedad_id);
+                $zona = $prop->zonaHoraria->first();
+
+                $uno = new Carbon($pago_o->prox_fac);
+                $uno = $uno->tz($zona->nombre);
+
+                $dos = Carbon::now()->setTimezone(
+                    $zona->nombre
+                );
+
+                if ($uno->diffInMinutes($dos, false) >= 0) {
+                    $prop->estado_cuenta_id = 3;
+                    $prop->save();
+                }
+            }
 
             $reservas = Reserva::whereHas('tipoHabitacion', function ($query) use ($propiedad_id) {
             $query->where('propiedad_id', $propiedad_id);})
@@ -154,6 +195,7 @@ class UserController extends Controller {
             $usuario->password             = $request->get('password');
             $usuario->phone                = $request->get('phone');
             $usuario->rol_id               = $request->get('rol_id');
+            $usuario->paso                 = 8;
             $usuario->estado_id            = 1;
             $usuario->save();
 

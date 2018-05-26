@@ -220,125 +220,44 @@ class TemporadaController extends Controller
 
     }
 
-    public function getCalendario(Request $request)
+    public function obtenerCalendario(Request $request)
     {
-
         if ($request->has('propiedad_id')) {
-
-            $propiedad = Propiedad::where('id', $request->input('propiedad_id'))->first();
-
-            if (!is_null($propiedad)) {
-
-                $propiedad_id = $request->get('propiedad_id');
-                $now          = Carbon::now();
-
-                $comienzo     = $now->startOfMonth(); //primer dia del mes
-                $fecha_inicio = $comienzo->format('Y-m-d');
-
-                $termino       = $comienzo->addYears(1); //suma un año a fecha comienzo
-                $fecha_termino = $termino->format('Y-m-d');
-
-                $auxTemporada = 0;
-                $periodos     = [];
-                $dias         = [];
-                $auxInicio    = new Carbon($fecha_inicio);
-                $inicio       = $auxInicio->subMonths(4);
-                $auxFin       = new Carbon($fecha_termino);
-
-                while ($inicio <= $auxFin) {
-
-                    $fecha = Calendario::whereHas('temporada', function ($query) use ($propiedad_id) {
-
-                        $query->where('propiedad_id', $propiedad_id);
-
-                    })->where('fecha', $inicio)->with('temporada')->first();
-
-                    if (!is_null($fecha)) {
-
-                        if ($auxTemporada == $fecha->temporada_id) {
-
-                            $day = ["fecha" => $fecha->fecha];
-                            array_push($dias, $day);
-
-                        } else {
-
-                            if ($auxTemporada == 0) {
-
-                                $day = ["fecha" => $fecha->fecha];
-                                array_push($dias, $day);
-
-                            } else {
-
-                                if (count($dias) != 0) {
-
-                                    $color_temporada = Temporada::where('id', $auxTemporada)->first();
-
-                                    $periodo = ['temporada_id' => $auxTemporada, 'color' => $color_temporada->color, 'dias' => $dias];
-
-                                    array_push($periodos, $periodo);
-
-                                    $dias = [];
-
-                                    $day = ["fecha" => $fecha->fecha];
-                                    array_push($dias, $day);
-
-                                } else {
-
-                                    $day = ["fecha" => $fecha->fecha];
-                                    array_push($dias, $day);
-
-                                }
-                            }
-
-                            $auxTemporada = $fecha->temporada_id;
-                        }
-
-                    } else {
-
-                        if ($auxTemporada != 0) {
-
-                            if (count($dias) != 0) {
-
-                                $color_temporada = Temporada::where('id', $auxTemporada)->first();
-
-                                $periodo = ['temporada_id' => $auxTemporada, 'color' => $color_temporada->color, 'dias' => $dias];
-                                array_push($periodos, $periodo);
-
-                                $dias = [];
-
-                            }
-
-                        }
-                    }
-
-                    $inicio->addDay();
-
-                } // fin while
-
-                return $periodos;
-            } else {
-
-                $data = [
-                    'errors' => true,
-                    'msg'    => 'No se encuentra propiedad',
-
-                ];
-
-                return Response::json($data, 404);
-
+            $propiedad_id = $request->input('propiedad_id');
+            $propiedad    = Propiedad::where('id', $propiedad_id)->with('tipoMonedas')->first();
+            if (is_null($propiedad)) {
+                $retorno = array(
+                    'msj'    => "Propiedad no encontrada",
+                    'errors' => true);
+                return Response::json($retorno, 404);
             }
+        } else {
+            $retorno = array(
+                'msj'    => "No se envia propiedad_id",
+                'errors' => true);
+            return Response::json($retorno, 400);
+        }
+
+        if ($request->has('inicio') && $request->has('fin')) {
+            $inicio = $request->inicio;
+            $fin    = $request->fin;
 
         } else {
-
-            $data = [
-                    'errors' => true,
-                    'msg'    => 'Solicitud incompleta',
-
-                ];
-
-                return Response::json($data, 400);
-
+            $retorno = array(
+                'errors' => true,
+                'msg'    => 'Solicitud incompleta',);
+            return Response::json($data, 400);
         }
+
+        $temporadas = Temporada::where('propiedad_id', $request->propiedad_id)
+        ->with(['calendarios' => function ($q) use($inicio, $fin){
+            $q
+              ->where('fecha', '>=' ,$inicio)
+              ->where('fecha', '<=' , $fin);
+        }])
+        ->get();
+
+        return $temporadas;
 
     }
 

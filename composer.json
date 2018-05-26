@@ -24,7 +24,9 @@
         "cartalyst/stripe": "^2.1",
         "league/flysystem-aws-s3-v3": "^1.0",
         "slaughter550/intercom-laravel": "^3.1",
-        "webpatser/laravel-uuid": "^3.0"
+        "webpatser/laravel-uuid": "^3.0",
+        "ctala/http-helper": "^0.2.2",
+        "ctala/transaccion-default": "V0.1.12.3"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

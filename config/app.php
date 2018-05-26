@@ -30,6 +30,14 @@ return [
     'MAIL_USERNAME' => env('MAIL_USERNAME', null),
 
     'ADMIN_MAIL' => env('ADMIN_MAIL', null),
+    'FACTURE_MAIL' => env('FACTURE_MAIL', null),
+    
+    'PAGOFACIL_TOKEN_SECRET' => env('PAGOFACIL_TOKEN_SECRET', null),
+    'PAGOFACIL_TOKEN_SERVICIO' => env('PAGOFACIL_TOKEN_SERVICIO', null),
+    'PAGOFACIL_URL' => env('PAGOFACIL_URL', null),
+    'PAGOFACIL_TOKEN_TIENDA' => env('PAGOFACIL_TOKEN_TIENDA', null),
+
+    'PANEL_PRINCIPAL' => env('PANEL_PRINCIPAL', null),
 
 
     /*

@@ -12,9 +12,12 @@ class DeletePisoToHabitacionesTable extends Migration
      */
     public function up()
     {
-        Schema::table('habitaciones', function (Blueprint $table) {
-            $table->dropColumn('piso');
-        });
+        
+        if (Schema::hasColumn('habitaciones', 'piso')){
+            Schema::table('habitaciones', function (Blueprint $table) {
+                $table->dropColumn('piso');
+            });
+        }
     }
 
     /**
