@@ -936,8 +936,7 @@ class RegistroController extends Controller {
 		return $retorno;
 	}
 
-	public function crearPagosOnline()
-	{
+	public function crearPagosOnline() {
 		$propiedades = Propiedad::all();
 
 		foreach ($propiedades as $propiedad) {
@@ -950,12 +949,6 @@ class RegistroController extends Controller {
 			$pago->save();
 
 		}
-
 		return "creados";
-
-
 	}
-
-
-
 }
