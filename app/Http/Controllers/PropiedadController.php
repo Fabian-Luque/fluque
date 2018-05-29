@@ -38,6 +38,7 @@ use Illuminate\Http\Request;
 use Response;
 use Validator;
 use \Carbon\Carbon;
+use App\HuespedReservaServicio;
 
 class PropiedadController extends Controller
 {
@@ -53,7 +54,11 @@ class PropiedadController extends Controller
     {
         if ($request->has('propiedad_id')) {
             $propiedad_id = $request->input('propiedad_id');
-            $propiedad    = Propiedad::where('id', $propiedad_id)->first();
+            $propiedad    = Propiedad::where('id', $propiedad_id)
+            ->with(['tipoMonedas' => function ($q){
+                $q->orderBy('clasificacion_moneda_id', 'asc');
+            }])
+            ->first();
             if (is_null($propiedad)) {
                 $retorno = array(
                     'msj'    => "Propiedad no encontrada",
@@ -288,50 +293,12 @@ class PropiedadController extends Controller
             array_push($ingresos_tipo_cliente, $ingresos_habitacion);
         }
 
-        $servicios = Servicio::where('propiedad_id', $propiedad_id)->get();
-
-        $cantidad_servicios = [];
-        $servicios_vendidos = [];
-        foreach ($servicios as $servicio) {
-        $cantidad_vendido_huespedes   = 0;
-        $cantidad_vendido_particulares = 0;
-            foreach ($pagos as $pago) {
-                if ($pago->estado == 1) {
-                    foreach ($pago->reserva->huespedes as $huesped) {
-                        foreach ($huesped->servicios as $serv) {
-                            if ($servicio->nombre == $serv->nombre) {
-                                $id = $serv->pivot->id;
-                                if (!in_array($id, $servicios_vendidos)) {
-                                    if ($serv->pivot->estado == "Pagado") {
-                                        $cantidad_vendido_huespedes += $serv->pivot->cantidad;
-                                        array_push($servicios_vendidos, $id);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            foreach ($consumos  as $consumo) {
-                if ($servicio->id == $consumo->servicio_id) {
-                    $cantidad_vendido_particulares += $consumo->cantidad;
-                }
-            }
-
-
-            $cantidad_serv['id']       = $servicio->id;
-            $cantidad_serv['nombre']   = $servicio->nombre;
-            $cantidad_serv['cantidad_vendido_huespedes']    = $cantidad_vendido_huespedes;
-            $cantidad_serv['cantidad_vendido_particulares'] = $cantidad_vendido_particulares;
-            $cantidad_serv['total'] = $cantidad_vendido_huespedes + $cantidad_vendido_particulares;
-            array_push($cantidad_servicios, $cantidad_serv);
-        }
+        $ingresos_por_consumos = $this->reporteConsumos($propiedad, $propiedad_id, $fecha_inicio, $fecha_fin);
 
         $ingresos_total['ingresos_totales']         = $total_ingresos;
         $ingresos_total['ingresos_por_habitacion']  = $total_habitacion;
         $ingresos_total['ingresos_por_consumos']    = $total_consumos;
-        $ingresos_total['cantidad_servicios']       = $cantidad_servicios;
+        $ingresos_total['ingresos_por_servicios']   = $ingresos_por_consumos;
         $ingresos_total['tipos_habitaciones']       = $ingresos_tipo_habitacion;
         $ingresos_total['tipos_fuentes']            = $ingresos_tipo_fuente;
         $ingresos_total['tipos_clientes']           = $ingresos_tipo_cliente;
@@ -340,6 +307,59 @@ class PropiedadController extends Controller
         return $ingresos_total;
     }
 
+
+
+    public function reporteConsumos($propiedad, $propiedad_id, $fecha_inicio, $fecha_fin)
+    {
+        $propiedad_monedas = $propiedad->tipoMonedas;
+        $servicios         = $propiedad->servicios;
+
+        $consumos = HuespedReservaServicio::select('huesped_reserva_servicio.id', 'precio_total', 'cantidad', 'huesped_reserva_servicio.estado', 'servicio_id', 'pagos.tipo_moneda_id')
+            ->where('huesped_reserva_servicio.created_at','>=' , $fecha_inicio)->where('huesped_reserva_servicio.created_at', '<' , $fecha_fin)
+            ->whereHas('reserva.habitacion', function($query) use($propiedad_id){
+                $query->where('propiedad_id', $propiedad_id);})
+            ->join('pagos', 'pagos.id','=','pago_id')
+            ->get();
+
+        $consumos_propiedad = PropiedadServicio::where('propiedad_id', $propiedad_id)
+            ->where('created_at','>=' , $fecha_inicio)
+            ->where('created_at', '<' , $fecha_fin)
+            ->get();
+
+        $venta_servicios = [];
+        foreach ($servicios as $servicio) {
+            $suma_moneda = [];
+            $suma_cantidad = 0;
+            foreach ($propiedad_monedas as $moneda) {
+                $suma_total = 0;
+                foreach ($consumos as $consumo) {
+                    if ($servicio->id == $consumo->servicio_id && $moneda->id == $consumo->tipo_moneda_id && $consumo->estado == "Pagado") {
+                        $suma_total += $consumo->precio_total;
+                        $suma_cantidad += $consumo->cantidad;
+                    }
+                }
+
+                foreach ($consumos_propiedad as $cons) {
+                    if ($servicio->id == $cons->servicio_id && $moneda->id == $cons->tipo_moneda_id ) {
+                        $suma_total += $cons->precio_total;
+                        $suma_cantidad += $cons->cantidad;
+                    }
+                }
+                $monto['monto']                   = $suma_total;
+                $monto['tipo_moneda_id']          = $moneda->id;
+                $monto['nombre_moneda']           = $moneda->nombre;
+                $monto['cantidad_decimales']      = $moneda->cantidad_decimales;  
+                array_push($suma_moneda, $monto);    
+            }
+            $serv['nombre'] = $servicio->nombre;
+            $serv['cantidad'] = $suma_cantidad;
+            $serv['total']  = $suma_moneda;
+            array_push($venta_servicios, $serv);
+        }
+
+        return $venta_servicios;
+
+    }
     /**
      * Reporte financiero anual de propiedad
      *
